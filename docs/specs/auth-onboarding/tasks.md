@@ -1,0 +1,92 @@
+# Tasks: Auth & Onboarding
+
+**Feature:** 01 — Auth & Onboarding
+**Fase IA DLC:** Phase 01 — Requirements & Spec
+**Fecha:** 2026-03-05
+**Status:** Pendiente aprobacion CEO/CPO
+
+---
+
+## Checklist de Implementacion
+
+### Setup & Infraestructura
+- [ ] **TASK-001:** Crear proyecto en Supabase (staging + produccion)
+- [ ] **TASK-002:** Configurar variables de entorno — `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- [ ] **TASK-003:** Instalar dependencias — `@supabase/ssr`, `@supabase/supabase-js`, `react-hook-form`, `zod`, `@hookform/resolvers`
+- [ ] **TASK-004:** Configurar cliente Supabase para server components (`src/lib/supabase/server.ts`) y client components (`src/lib/supabase/client.ts`)
+- [ ] **TASK-005:** Crear `middleware.ts` en raiz del proyecto para proteccion de rutas y refresh de sesion
+
+### Base de Datos
+- [ ] **TASK-006:** Crear migracion `001_create_user_profiles.sql` — tabla `user_profiles` con RLS
+- [ ] **TASK-007:** Crear migracion `002_create_projects.sql` — tabla `projects` con RLS
+- [ ] **TASK-008:** Crear trigger `handle_new_user` para auto-crear `user_profile` al registrarse
+- [ ] **TASK-009:** Habilitar Google OAuth en Supabase Dashboard (configurar Client ID y Secret)
+- [ ] **TASK-010:** Configurar templates de email en Supabase (confirmacion de cuenta + reset de contrasena)
+
+### Auth — Backend
+- [ ] **TASK-011:** Crear `POST /api/onboarding/complete` — guarda persona + crea primer proyecto + marca onboarding como completado
+- [ ] **TASK-012:** Crear `PATCH /api/onboarding/step` — actualiza `onboarding_step` en user_profiles
+- [ ] **TASK-013:** Crear schemas Zod en `src/lib/validations/auth.ts` — register, login, forgot-password, reset-password
+- [ ] **TASK-014:** Crear schema Zod en `src/lib/validations/onboarding.ts` — persona, proyecto
+
+### Auth — Frontend
+- [ ] **TASK-015:** Crear layout de auth `src/app/(auth)/layout.tsx` — split design (valor prop izquierda, formulario derecha)
+- [ ] **TASK-016:** Crear pagina `/login` con formulario email+password + boton Google OAuth + link a register y forgot-password
+- [ ] **TASK-017:** Crear pagina `/register` con formulario email+password + boton Google OAuth + link a login
+- [ ] **TASK-018:** Crear pagina `/forgot-password` con formulario de email
+- [ ] **TASK-019:** Crear pagina `/auth/reset-password` con formulario de nueva contrasena
+- [ ] **TASK-020:** Crear pagina `/auth/callback` — maneja el redirect OAuth de Supabase y redirige a `/onboarding` o `/dashboard`
+- [ ] **TASK-021:** Crear componente `AuthForm` reutilizable con React Hook Form + Zod + estados de loading/error/success
+- [ ] **TASK-022:** Crear componente `OAuthButton` (Google) con manejo de loading y error
+
+### Onboarding — Frontend
+- [ ] **TASK-023:** Crear pagina `/onboarding` con layout de 4 pasos y barra de progreso
+- [ ] **TASK-024:** Crear componente `OnboardingStep1` — pantalla de bienvenida con intro a AI Squad e IA DLC
+- [ ] **TASK-025:** Crear componente `OnboardingStep2` — selector de persona (4 cards: Founder, PM, Consultor, Emprendedor)
+- [ ] **TASK-026:** Crear componente `OnboardingStep3` — formulario de primer proyecto (nombre, descripcion, industria)
+- [ ] **TASK-027:** Crear componente `OnboardingStep4` — timeline visual de las 8 fases IA DLC con animacion
+- [ ] **TASK-028:** Implementar logica de navegacion entre pasos (atras, siguiente, omitir) con persistencia de estado en DB via `PATCH /api/onboarding/step`
+- [ ] **TASK-029:** Al completar paso 4, llamar a `POST /api/onboarding/complete` y redirigir a `/projects/:id/phase/00`
+- [ ] **TASK-030:** Implementar guard en `/onboarding` — si `onboarding_completed = true`, redirigir a `/dashboard`
+
+### Tipos TypeScript
+- [ ] **TASK-031:** Crear `src/types/user.ts` — tipos `UserProfile`, `Persona`
+- [ ] **TASK-032:** Crear `src/types/project.ts` — tipos `Project`, `ProjectStatus`
+
+### Tests
+- [ ] **TASK-033:** Tests unitarios para schemas Zod de auth y onboarding (`tests/unit/validations/`)
+- [ ] **TASK-034:** Test E2E — flujo completo registro con email → confirmacion → login → onboarding → dashboard (`tests/e2e/auth.spec.ts`)
+- [ ] **TASK-035:** Test E2E — flujo login con Google OAuth (`tests/e2e/oauth.spec.ts`)
+- [ ] **TASK-036:** Test E2E — flujo forgot password → reset (`tests/e2e/password-reset.spec.ts`)
+
+### Deploy & Variables de Entorno
+- [ ] **TASK-037:** Configurar variables de entorno en Vercel (staging y produccion)
+- [ ] **TASK-038:** Configurar URLs de redirect OAuth en Supabase para staging (`*.vercel.app`) y produccion
+- [ ] **TASK-039:** Aplicar migraciones en base de datos de staging
+- [ ] **TASK-040:** Smoke test de flujo completo en staging antes de merge a main
+
+---
+
+## Orden de Ejecucion Sugerido
+
+```
+Semana 1: TASK-001 → 014 (Setup + DB + Backend)
+Semana 2: TASK-015 → 022 (Auth Frontend)
+Semana 3: TASK-023 → 032 (Onboarding + Tipos)
+Semana 4: TASK-033 → 040 (Tests + Deploy)
+```
+
+---
+
+## Definition of Done — Feature 01
+
+- [ ] Registro con email y Google OAuth funcional
+- [ ] Login con email y Google OAuth funcional
+- [ ] Recuperacion de contrasena funcional
+- [ ] Onboarding de 4 pasos completado con persistencia
+- [ ] Primer proyecto creado al finalizar onboarding
+- [ ] Usuario llega a Phase 00 de su proyecto al terminar
+- [ ] Rutas protegidas redirigen a /login si no autenticado
+- [ ] RLS habilitado en `user_profiles` y `projects`
+- [ ] Tests E2E pasando en staging
+- [ ] Deploy en Vercel sin errores
