@@ -1,0 +1,123 @@
+'use client'
+
+import { useState } from 'react'
+
+type SaveArtifactModalProps = {
+  projectId: string
+  content: string
+  onClose: () => void
+  onSaved: () => void
+}
+
+const PHASE_OPTIONS = [
+  { value: '', label: 'Sin fase especifica' },
+  { value: '0', label: 'Phase 00 — Discovery' },
+  { value: '1', label: 'Phase 01 — Requirements' },
+  { value: '2', label: 'Phase 02 — Architecture' },
+  { value: '3', label: 'Phase 03 — Environment' },
+  { value: '4', label: 'Phase 04 — Development' },
+  { value: '5', label: 'Phase 05 — Testing' },
+  { value: '6', label: 'Phase 06 — Launch' },
+  { value: '7', label: 'Phase 07 — Iteration' },
+]
+
+export function SaveArtifactModal({
+  projectId,
+  content,
+  onClose,
+  onSaved,
+}: SaveArtifactModalProps) {
+  const [name, setName] = useState('')
+  const [phaseNumber, setPhaseNumber] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSave() {
+    if (!name.trim()) return
+    setSaving(true)
+    setError('')
+
+    const res = await fetch(`/api/projects/${projectId}/artifacts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name.trim(),
+        content,
+        phase_number: phaseNumber ? parseInt(phaseNumber) : null,
+      }),
+    })
+
+    if (!res.ok) {
+      const body = await res.json()
+      setError(body.error || 'Error al guardar')
+      setSaving(false)
+      return
+    }
+
+    setSaving(false)
+    onSaved()
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-semibold text-gray-900">Guardar como Artifact</h3>
+
+        <div className="mt-4 space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ej: Arquitectura de pagos"
+              autoFocus
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Fase destino</label>
+            <select
+              value={phaseNumber}
+              onChange={(e) => setPhaseNumber(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            >
+              {PHASE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Preview</label>
+            <div className="mt-1 max-h-32 overflow-y-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-600">
+              {content.slice(0, 500)}
+              {content.length > 500 && '...'}
+            </div>
+          </div>
+
+          {error && <p className="text-sm text-red-600">{error}</p>}
+        </div>
+
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving || !name.trim()}
+            className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-700 disabled:opacity-50"
+          >
+            {saving ? 'Guardando...' : 'Guardar artifact'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}

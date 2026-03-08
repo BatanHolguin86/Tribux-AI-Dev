@@ -101,7 +101,86 @@ export async function getApprovedFeatureSpecs(
     .join('\n\n')
 }
 
-function truncateText(text: string, maxChars: number): string {
+export function truncateText(text: string, maxChars: number): string {
   if (text.length <= maxChars) return text
   return text.slice(0, maxChars) + '\n...[truncado]'
+}
+
+export async function buildFullProjectContext(projectId: string): Promise<{
+  name: string
+  description: string | null
+  industry: string | null
+  persona: string | null
+  currentPhase: number
+  phaseName: string
+  discoveryDocs: string
+  featureSpecs: string
+  artifacts: string
+}> {
+  const supabase = await createClient()
+
+  const { data: project } = await supabase
+    .from('projects')
+    .select('name, description, industry, current_phase, user_id')
+    .eq('id', projectId)
+    .single()
+
+  if (!project) throw new Error('Project not found')
+
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('persona')
+    .eq('id', project.user_id)
+    .single()
+
+  const PHASE_NAMES: Record<number, string> = {
+    0: 'Discovery & Ideation',
+    1: 'Requirements & Spec',
+    2: 'Architecture & Design',
+    3: 'Environment Setup',
+    4: 'Core Development',
+    5: 'Testing & QA',
+    6: 'Launch & Deployment',
+    7: 'Iteration & Growth',
+  }
+
+  const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
+  const featureSpecs = await getApprovedFeatureSpecs(projectId)
+
+  // Fetch artifacts
+  const { data: artifactDocs } = await supabase
+    .from('project_documents')
+    .select('section, content')
+    .eq('project_id', projectId)
+    .eq('document_type', 'artifact')
+
+  const artifacts = (artifactDocs ?? [])
+    .map((a) => `### ${a.section}\n${truncateText(a.content ?? '', 1000)}`)
+    .join('\n\n')
+
+  // Progressive truncation for large contexts
+  const totalChars = discoveryDocs.length + featureSpecs.length + artifacts.length
+  const maxTotal = 200000 // ~50K tokens
+
+  let finalDiscovery = discoveryDocs
+  let finalSpecs = featureSpecs
+  let finalArtifacts = artifacts
+
+  if (totalChars > maxTotal) {
+    finalArtifacts = truncateText(artifacts, 20000)
+    finalSpecs = truncateText(featureSpecs, 80000)
+    finalDiscovery = truncateText(discoveryDocs, 40000)
+  }
+
+  return {
+    name: project.name,
+    description: project.description,
+    industry: project.industry,
+    persona: profile?.persona ?? null,
+    currentPhase: project.current_phase,
+    phaseName: PHASE_NAMES[project.current_phase] ?? '',
+    discoveryDocs: finalDiscovery,
+    featureSpecs: finalSpecs,
+    artifacts: finalArtifacts,
+  }
 }

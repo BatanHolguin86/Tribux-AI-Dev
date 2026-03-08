@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { PHASE_NAMES } from '@/types/project'
+import { FloatingAgentButton } from '@/components/agents/FloatingAgentButton'
 
 export default async function ProjectLayout({
   children,
@@ -40,6 +41,8 @@ export default async function ProjectLayout({
       </nav>
 
       {children}
+
+      <FloatingAgentButton projectId={id} />
     </div>
   )
 }
