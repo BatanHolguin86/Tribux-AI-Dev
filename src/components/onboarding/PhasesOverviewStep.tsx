@@ -1,0 +1,62 @@
+'use client'
+
+import { PHASE_NAMES } from '@/types/project'
+
+const PHASE_ICONS = ['🔍', '📋', '🏗️', '⚙️', '💻', '🧪', '🚀', '📈']
+
+type PhasesOverviewStepProps = {
+  isSubmitting: boolean
+  onFinish: () => void
+  onBack: () => void
+}
+
+export function PhasesOverviewStep({ isSubmitting, onFinish, onBack }: PhasesOverviewStepProps) {
+  return (
+    <div className="mx-auto max-w-lg">
+      <h2 className="text-2xl font-bold text-gray-900">El camino de tu producto</h2>
+      <p className="mt-2 text-sm text-gray-600">
+        Tu equipo de agentes IA te guiara por estas 8 fases.
+      </p>
+
+      <div className="relative mt-6">
+        {/* Vertical line */}
+        <div className="absolute left-5 top-3 h-[calc(100%-24px)] w-0.5 bg-gray-200" />
+
+        <div className="space-y-4">
+          {Object.entries(PHASE_NAMES).map(([num, name]) => {
+            const phaseNum = Number(num)
+            return (
+              <div key={phaseNum} className="relative flex items-center gap-4">
+                <div className="z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-lg shadow-sm ring-2 ring-gray-200">
+                  {PHASE_ICONS[phaseNum]}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    Phase {String(phaseNum).padStart(2, '0')}
+                  </p>
+                  <p className="text-sm text-gray-600">{name}</p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="mt-8 flex gap-3">
+        <button
+          onClick={onBack}
+          className="rounded-lg border border-gray-300 px-6 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+        >
+          Atras
+        </button>
+        <button
+          onClick={onFinish}
+          disabled={isSubmitting}
+          className="flex-1 rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
+        >
+          {isSubmitting ? 'Creando proyecto...' : 'Comenzar mi proyecto'}
+        </button>
+      </div>
+    </div>
+  )
+}
