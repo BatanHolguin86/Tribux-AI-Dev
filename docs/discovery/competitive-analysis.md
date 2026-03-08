@@ -142,7 +142,7 @@ CONTROL HUMANO POR FASES
 - Devin es demasiado tecnico y caro para el usuario objetivo
 - Las agencias son caras, lentas e impredecibles
 
-**AI Squad ocupa el espacio vacio:** producto complejo + proceso estructurado + accesible para no-tecnicos + precio SaaS.
+**AI Squad ocupa el espacio vacio:** cualquier producto o solucion tecnologica (interfaces, integraciones, IA, agentes) + proceso estructurado + accesible para no-tecnicos + precio SaaS.
 
 ---
 

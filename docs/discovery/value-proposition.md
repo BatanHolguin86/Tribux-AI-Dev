@@ -87,7 +87,7 @@
 
 ### Products & Services
 
-- Plataforma web con orquestador IA (CTO Virtual)
+- Plataforma web con orquestador IA (CTO Virtual) que soporta cualquier tipo de producto — desde interfaces simples hasta productos complejos con integraciones, soluciones IA y agentes autonomos
 - 6 agentes especializados: Product Architect, System Architect, Lead Developer, QA Engineer, DevOps Engineer, Business Analyst
 - Metodologia IA DLC con 8 fases estructuradas
 - Formato KIRO para specs (requirements.md, design.md, tasks.md)
@@ -131,7 +131,7 @@
 **AI Squad Command Center es** una plataforma de desarrollo dirigido por IA con metodologia estructurada
 **Que** orquesta un equipo de agentes especializados siguiendo la metodologia IA DLC, con validacion humana en cada fase
 **A diferencia de** contratar freelancers, agencias, herramientas no-code o generadores de codigo sin proceso
-**Nuestra solucion** convierte la idea clara que ya tienen en un producto digital real — con velocidad, calidad y control estrategico — a una fraccion del costo de un equipo tecnico tradicional.
+**Nuestra solucion** convierte la idea clara que ya tienen en cualquier producto o solucion tecnologica real — desde interfaces simples hasta productos complejos con integraciones, soluciones IA y agentes autonomos — con velocidad, calidad y control estrategico, a una fraccion del costo de un equipo tecnico tradicional.
 
 ---
 

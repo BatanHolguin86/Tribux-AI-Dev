@@ -144,8 +144,9 @@ create trigger on_auth_user_created
 **Onboarding** (`/onboarding`)
 - Barra de progreso en la parte superior (Paso X de 4)
 - Navegacion Atras / Siguiente / Omitir
+- Paso 1: Mensaje de amplitud — "Desde una web simple hasta un SaaS con integraciones o una solucion con agentes IA — construye lo que imagines."
 - Paso 2: cards de seleccion de persona con icono, titulo y descripcion de 1 linea
-- Paso 3: formulario minimal — solo nombre es requerido
+- Paso 3: formulario minimal — solo nombre es requerido; ejemplos abiertos (cualquier tipo de producto)
 - Paso 4: timeline horizontal animado de las 8 fases con iconos y nombres
 
 ---

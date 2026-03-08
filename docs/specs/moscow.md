@@ -71,6 +71,37 @@
 - [x] Historial de conversaciones por proyecto y agente
 - [x] Manejo gracioso de errores del LLM con retry
 
+### Phase 02 — Arquitectura Interactiva
+- [ ] Guia interactiva para definir arquitectura y ADRs
+- [ ] Generacion de diagramas y documentos de arquitectura
+- [ ] Gate de aprobacion y desbloqueo de Phase 03
+
+### Phase 03 — Environment Setup Interactivo
+- [ ] Checklist guiado de environment setup (Supabase, Vercel, GitHub)
+- [ ] Validacion de configuracion y conexiones
+- [ ] Gate de aprobacion y desbloqueo de Phase 04
+
+### Phase 04 — Core Development Interactivo
+- [ ] Kanban de tasks generadas en KIRO
+- [ ] Integracion con chat de agentes para ejecutar tasks
+- [ ] Seguimiento de progreso por task
+- [ ] Gate de aprobacion y desbloqueo de Phase 05
+
+### Phase 05 — Testing & QA Interactivo
+- [ ] Generador de test cases desde specs
+- [ ] Reporte de QA interactivo con estado por test
+- [ ] Gate de aprobacion y desbloqueo de Phase 06
+
+### Phase 06 — Launch Interactivo
+- [ ] Launch checklist interactivo con estado de cada item
+- [ ] Validacion pre-deploy
+- [ ] Gate de aprobacion y desbloqueo de Phase 07
+
+### Phase 07 — Iteration Interactivo
+- [ ] Retrospectiva guiada
+- [ ] Generacion de backlog para siguiente sprint
+- [ ] Cierre de fase y proyecto
+
 ### Documentos y Artifacts
 - [x] Almacenamiento de todos los documentos del proyecto
 - [x] Vista formateada markdown + modo edicion raw
@@ -100,11 +131,6 @@
 - [ ] Notas personales por proyecto (scratch pad del CEO/CPO)
 - [ ] Vista de timeline del proyecto con fechas estimadas por fase
 
-### Phases 02–04 con Soporte Guiado
-- [ ] Phase 02 — Guia interactiva para definir arquitectura y ADRs
-- [ ] Phase 03 — Checklist guiado de environment setup (Supabase, Vercel, GitHub)
-- [ ] Phase 04 — Kanban de tasks generadas en KIRO + integracion con chat de agentes
-
 ### Documentos y Artifacts
 - [ ] Versionado de documentos (historial de cambios)
 - [ ] Export de specs KIRO completos como ZIP
@@ -125,11 +151,6 @@
 - [ ] Roles en el proyecto: Owner, Editor, Viewer
 - [ ] Comentarios y menciones en documentos
 - [ ] Historial de actividad del proyecto (audit trail)
-
-### Phases 05–07 con Soporte Guiado
-- [ ] Phase 05 — Generador de test cases y reporte de QA
-- [ ] Phase 06 — Launch checklist interactivo con estado de cada item
-- [ ] Phase 07 — Retrospectiva guiada y generacion de backlog para siguiente sprint
 
 ### Integraciones
 - [ ] Conexion directa con repositorio GitHub (push de codigo generado)
@@ -179,7 +200,7 @@
 
 | Version | Features | Timeline |
 |---------|----------|----------|
-| v1.0 MVP | 48 features Must Have | 12 semanas |
-| v1.1 | 20 features Should Have | +8 semanas |
+| v1.0 MVP | 48+ features Must Have (incl. Phases 02–07 guiadas) | 20–24 semanas |
+| v1.1 | 20 features Should Have | +6 semanas |
 | v2.0 | 28 features Could Have | +12 semanas |
 | Fuera de roadmap | 12 features Won't Have | — |

@@ -10,7 +10,7 @@
 
 ## Resumen Ejecutivo
 
-AI Squad Command Center es una plataforma SaaS B2B que permite a estrategas de negocio sin experiencia tecnica desarrollar productos digitales end-to-end, actuando como CEO/CPO de un equipo de agentes IA especializados que sigue la metodologia IA DLC de 8 fases.
+AI Squad Command Center es una plataforma SaaS B2B que permite a estrategas de negocio sin experiencia tecnica desarrollar **cualquier producto o solucion tecnologica** end-to-end — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos — actuando como CEO/CPO de un equipo de agentes IA especializados que sigue la metodologia IA DLC de 8 fases.
 
 **El insight central:** El mercado tiene herramientas para tecnicos o herramientas simplificadas que no escalan. Nadie ha construido la capa de metodologia y proceso que haga la IA generativa accesible y confiable para founders, PMs y consultores no-tecnicos.
 
@@ -58,7 +58,7 @@ Los cuatro perfiles comparten tres atributos clave: mentalidad experimentadora, 
 **Que** tienen clara su idea de negocio pero no saben por donde empezar a construirla tecnicamente
 **AI Squad es** una plataforma de desarrollo dirigido por IA con metodologia estructurada
 **A diferencia de** no-code tools (que no escalan), generadores de codigo (sin proceso) y agencias (caras y lentas)
-**Nuestra solucion** convierte la idea clara que ya tienen en un producto digital real — con velocidad, calidad y control estrategico — a una fraccion del costo de un equipo tecnico tradicional
+**Nuestra solucion** convierte la idea clara que ya tienen en cualquier producto o solucion tecnologica real — desde interfaces hasta productos complejos con integraciones y agentes IA — con velocidad, calidad y control estrategico, a una fraccion del costo de un equipo tecnico tradicional
 
 **Diferenciadores clave:**
 

@@ -125,12 +125,16 @@ CONTEXTO DEL PROYECTO: {nombre, descripcion, industria, perfil del usuario}
 SECCION ACTIVA: {nombre de la seccion}
 OBJETIVO: {que debe lograr esta seccion}
 CONVERSACION PREVIA: {historial de secciones anteriores aprobadas — resumen}
+ALCANCE: AI Squad soporta cualquier tipo de producto — desde interfaces simples hasta productos
+  complejos con integraciones, soluciones basadas en IA y agentes autonomos. Adapta tus
+  preguntas al tipo de producto que el usuario describe; no restringas por categorias.
 INSTRUCCIONES:
   - Usa lenguaje claro, sin jerga tecnica innecesaria
   - Haz una pregunta a la vez; no abrumes con multiples preguntas
   - Cuando tengas suficiente informacion, genera el documento
   - El documento debe estar en espanol (es-LATAM)
   - Si el usuario da respuestas vagas, pide elaboracion especifica
+  - Ayuda a priorizar alcance (MVP vs vision) por buenas practicas, no por limitaciones de plataforma
 OUTPUT ESPERADO: {estructura del documento a generar}
 ```
 

@@ -10,7 +10,7 @@
 
 ## 1. Objetivo del Producto
 
-AI Squad Command Center es una plataforma SaaS B2B que permite a personas sin experiencia tecnica construir productos digitales end-to-end, actuando como CEO/CPO de un equipo de agentes IA especializados que ejecuta la metodologia IA DLC (AI-Driven Development Lifecycle) de 8 fases.
+AI Squad Command Center es una plataforma SaaS B2B que permite a personas sin experiencia tecnica construir **cualquier producto o solucion tecnologica** end-to-end — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos — actuando como CEO/CPO de un equipo de agentes IA especializados que ejecuta la metodologia IA DLC (AI-Driven Development Lifecycle) de 8 fases.
 
 **El problema que resuelve:** La brecha entre tener una idea de negocio clara y saber como construir el producto tecnologico que la materializa. Los usuarios llegan con vision; AI Squad les da el equipo, el proceso y la ejecucion.
 
@@ -44,6 +44,31 @@ El mercado esta fragmentado entre herramientas para tecnicos (que excluyen al us
 
 ---
 
+## 3.1 Use Case Foco — Alcance del Producto
+
+**Objetivo de AI Squad:** Los cuatro usuarios objetivo (Founder, PM, Consultor, Emprendedor) tienen la capacidad de desarrollar **cualquier producto o solucion tecnologica** desde la interfaz de la plataforma — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos.
+
+### Espectro de casos de uso soportados
+
+La plataforma no restringe el tipo de producto. El orquestador y los agentes especializados guian al usuario a traves de la metodologia IA DLC para construir lo que su vision requiere. Incluye:
+
+| Categoria | Ejemplos |
+|-----------|----------|
+| **Interfaces y aplicaciones web** | Landing pages, dashboards, CRUD apps, portales de usuario, herramientas de productividad |
+| **Productos SaaS** | Subscripcion B2B/B2C, multi-tenant, gestion de usuarios, facturacion |
+| **Marketplaces y plataformas** | One-sided, two-sided, catalogos, reservas, pagos, splits |
+| **Productos con integraciones** | APIs externas, webhooks, OAuth, servicios de terceros (pagos, email, SMS, mapas, IA) |
+| **Soluciones con IA y agentes** | Asistentes inteligentes, chatbots, automatizacion con LLMs, pipelines de datos, RAG, agents autonomos |
+| **Sistemas complejos** | Logica en tiempo real, WebSockets, multi-tenant enterprise, SSO, RBAC avanzado |
+
+### Principio de no-restriccion
+
+- **Onboarding:** Los ejemplos en Paso 1 y 3 muestran la amplitud: *"Desde una web simple hasta un SaaS con integraciones o una solucion con agentes IA — construye lo que imagines."*
+- **Prompts del orquestador:** El system prompt de Phase 00 adapta las preguntas al tipo de producto que el usuario describe. No existe una lista cerrada de "productos permitidos"; el orquestador explora y profundiza segun el contexto.
+- **Validacion:** El orquestador ayuda al usuario a definir alcance y prioridades (MVP vs. vision completa), pero no sugiere "simplificar" por restricciones de la plataforma — solo por buenas practicas de producto (empezar por lo esencial).
+
+---
+
 ## 4. Alcance del Producto
 
 ### MVP (v1.0) — 5 Modulos Core
@@ -55,9 +80,14 @@ El mercado esta fragmentado entre herramientas para tecnicos (que excluyen al us
 | M3 | Phase 00 Interactivo | Flujo guiado de discovery con orquestador IA |
 | M4 | Generador KIRO | Phase 01 interactivo — genera requirements, design y tasks |
 | M5 | Orquestador + Agentes | Interfaz de chat con CTO Virtual y 6 agentes especializados |
+| M6 | Phase 02 Interactivo | Guia interactiva para definir arquitectura y ADRs |
+| M7 | Phase 03 Interactivo | Checklist guiado de environment setup (Supabase, Vercel, GitHub) |
+| M8 | Phase 04 Interactivo | Kanban de tasks generadas en KIRO + integracion con chat de agentes |
+| M9 | Phase 05 Interactivo | Generador de test cases y reporte de QA |
+| M10 | Phase 06 Interactivo | Launch checklist interactivo con estado de cada item |
+| M11 | Phase 07 Interactivo | Retrospectiva guiada y generacion de backlog para siguiente sprint |
 
 ### Fuera de Alcance MVP
-- Phases 02–07 con interfaz guiada (el orquestador las apoya via chat libre)
 - Multi-usuario por proyecto (colaboracion en equipo)
 - Integraciones directas con GitHub, Vercel, Supabase (links manuales)
 - Mobile app nativa
@@ -138,6 +168,19 @@ Landing page
     → Opcion de guardar respuesta como artifact en /docs/
 ```
 
+### Flow 6: Phases 02–07 — Flujos guiados
+
+```
+/projects/:id/phase/02  → Conversacion guiada para arquitectura y ADRs
+/projects/:id/phase/03  → Checklist guiado de environment setup
+/projects/:id/phase/04  → Kanban de tasks + chat con agentes
+/projects/:id/phase/05  → Generador de test cases y reporte QA
+/projects/:id/phase/06  → Launch checklist interactivo
+/projects/:id/phase/07  → Retrospectiva y backlog
+```
+
+Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de la siguiente fase.
+
 ---
 
 ## 6. Requerimientos Funcionales por Modulo
@@ -179,6 +222,37 @@ Landing page
 - Historial de conversaciones por proyecto
 - Opcion de exportar/guardar respuesta como artifact
 - Formato enriquecido: markdown, bloques de codigo, tablas
+
+### M6 — Phase 02 Interactivo
+- Conversacion guiada para definir arquitectura del sistema
+- Generacion de ADRs y diagramas
+- Gate de aprobacion y desbloqueo de Phase 03
+
+### M7 — Phase 03 Interactivo
+- Checklist guiado de environment setup (Supabase, Vercel, GitHub)
+- Validacion de configuracion
+- Gate de aprobacion y desbloqueo de Phase 04
+
+### M8 — Phase 04 Interactivo
+- Kanban de tasks generadas en KIRO
+- Integracion con chat de agentes para ejecutar tasks
+- Seguimiento de progreso por task
+- Gate de aprobacion y desbloqueo de Phase 05
+
+### M9 — Phase 05 Interactivo
+- Generador de test cases desde specs
+- Reporte de QA interactivo
+- Gate de aprobacion y desbloqueo de Phase 06
+
+### M10 — Phase 06 Interactivo
+- Launch checklist interactivo con estado por item
+- Validacion pre-deploy
+- Gate de aprobacion y desbloqueo de Phase 07
+
+### M11 — Phase 07 Interactivo
+- Retrospectiva guiada
+- Generacion de backlog para siguiente sprint
+- Cierre de fase y proyecto
 
 ---
 
@@ -289,6 +363,8 @@ auth.users (Supabase Auth)
 
 ## 10. Modelo de Negocio y Pricing
 
+Ver detalle de experimentos de trial y paywall en `docs/specs/pricing-experiments.md`.
+
 | Plan | Precio | Proyectos | Fases | Agentes |
 |------|--------|-----------|-------|---------|
 | Starter | $149/mes | 1 activo | 00–04 | CTO Virtual |
@@ -298,6 +374,8 @@ auth.users (Supabase Auth)
 ---
 
 ## 11. Metricas de Exito del Producto
+
+Ver instrumentacion de eventos, embudos y activacion en `docs/specs/metrics-instrumentation.md`.
 
 **North Star:** Proyectos completados hasta Phase 06 por mes
 
@@ -314,7 +392,7 @@ auth.users (Supabase Auth)
 
 | Version | Modulos | Timeline estimado |
 |---------|---------|-------------------|
-| v1.0 MVP | M1–M5 (Auth, Dashboard, Phase 00, KIRO, Agentes) | 12 semanas |
-| v1.1 | Phases 02–04 guiadas, notificaciones, mejoras UX | +8 semanas |
-| v2.0 | Phases 05–07 guiadas, colaboracion en equipo, integraciones GitHub/Vercel | +12 semanas |
+| v1.0 MVP | M1–M11 (Auth, Dashboard, Phases 00–07 guiadas, KIRO, Agentes) | 20–24 semanas |
+| v1.1 | Notificaciones, mejoras UX, versionado de documentos | +6 semanas |
+| v2.0 | Colaboracion en equipo, integraciones GitHub/Vercel, white-label | +12 semanas |
 | v3.0 | White-label, SSO, marketplace de templates, API publica | +16 semanas |

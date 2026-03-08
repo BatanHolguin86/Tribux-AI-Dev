@@ -121,7 +121,7 @@ Usa la plataforma como el "equipo tecnico" de su consultora. El actua como orque
 **Nombre:** Camila Torres
 **Edad:** 27 anos
 **Rol:** Emprendedora independiente, sin empresa constituida aun
-**Industria:** Variable — tiene una idea de producto o servicio digital (app, SaaS, marketplace, herramienta)
+**Industria:** Variable — tiene una idea de producto o servicio digital (app, SaaS, marketplace, herramienta, soluciones con IA, agentes, integraciones)
 **Ubicacion:** LATAM (Colombia, Mexico, Argentina, Peru)
 
 ### Contexto
