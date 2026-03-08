@@ -70,20 +70,46 @@ Los cuatro perfiles comparten tres atributos clave: mentalidad experimentadora, 
 
 ---
 
+## Metodologia IA DLC — Las 8 fases
+
+El ciclo de desarrollo que la plataforma guia, de la idea al producto en produccion y la iteracion posterior:
+
+| Fase | Nombre | Objetivo |
+|------|--------|----------|
+| 00 | Discovery & Ideation | Problema de negocio, usuarios, value prop, metricas, analisis competitivo |
+| 01 | Requirements & Spec (KIRO) | Requirements, design y tasks por feature — spec completo antes de codigo |
+| 02 | Architecture & Design | Arquitectura, ADRs, diagramas; wireframes y mockups a partir de specs |
+| 03 | Environment Setup | Repo, CI/CD, Supabase, Vercel — proyecto corriendo en staging |
+| 04 | Core Development | Implementacion segun tasks; integracion con agentes IA |
+| 05 | Testing & QA | Tests, reporte de calidad, criterios de aceptacion |
+| 06 | Launch & Deployment | Deploy a produccion, monitoring, runbook operacional |
+| 07 | Iteration & Growth | Retrospectiva, backlog, siguiente ciclo |
+
+Cada fase tiene un gate de aprobacion: el usuario valida antes de avanzar. Detalle operativo en `CLAUDE.md` y alcance por modulo en `docs/specs/prd.md`.
+
+---
+
 ## Modelo de Negocio
 
 **Tipo:** SaaS B2B
 **Modelo de pricing (hipotesis inicial):**
 
+| Plan       | Precio            | Para quien                   | Proyectos | Fases incluidas (IA DLC) | Agentes IA |
+| ---------- | ----------------- | ---------------------------- | --------- | ------------------------- | ---------- |
+| Starter    | $149/mes          | Founders early-stage         | 1 activo | **00–04** (Discovery → KIRO → Arquitectura/Diseño UI → Environment → Core Dev) | CTO Virtual |
+| Builder    | $299/mes          | PMs y founders con traccion  | 2 activos | **00–06** (hasta Launch & Deployment — producto en produccion) | CTO + 7 especializados |
+| Agency     | $699/mes          | Consultores y agencias       | 5 activos | **00–07** (ciclo completo + Phase 07 Iteration; multi-cliente) | CTO + 7 + white-label parcial |
+| Enterprise | Negociable        | Empresas, equipos internos, volumen | A medida  | **00–07** + alcance extendido | Todo + SSO, SLA, soporte prioritario, custom |
 
-| Plan    | Precio   | Para quien                  | Incluye                                         |
-| ------- | -------- | --------------------------- | ----------------------------------------------- |
-| Starter | $149/mes | Founders early-stage        | 1 proyecto activo, fases 00–04                  |
-| Builder | $299/mes | PMs y founders con traccion | 2 proyectos activos, fases 00–06                |
-| Agency  | $699/mes | Consultores y agencias      | 5 proyectos, multi-cliente, white-label parcial |
+**Enterprise** requiere negociacion previa: precio, numero de proyectos, fases y beneficios adicionales (SSO, SLA, soporte dedicado, integraciones a medida, etc.) se definen en funcion del volumen y necesidades del cliente. La oferta de valor se cotiza caso por caso.
 
+**Que implica cada rango de fases:**
+- **Starter (00–04):** Llevas tu idea desde discovery hasta specs KIRO, diseños UI/UX y desarrollo core; ideal para validar un primer MVP sin llegar a deploy publico.
+- **Builder (00–06):** Todo lo anterior mas Testing & QA y Launch — puedes poner productos en produccion; 2 proyectos en paralelo y acceso a todos los agentes (Product/System Architect, UI/UX Designer, Lead Dev, DB Admin, QA, DevOps).
+- **Agency (00–07):** Ciclo completo incluyendo Phase 07 (retrospectiva, backlog, siguiente sprint); 5 proyectos; orientado a consultoras que gestionan varios clientes.
+- **Enterprise (00–07 + extendido):** Mismo ciclo completo con alcance negociado: mas proyectos, SSO/SAML, SLA garantizado, soporte prioritario o dedicado, white-label completo, integraciones o limites custom. Precio y paquete se acuerdan tras discovery comercial.
 
-**Target MRR Mes 12:** $100k (≈500 clientes en mix de planes)
+**Target MRR Mes 12:** $100k (≈500 clientes en mix de planes Starter/Builder/Agency; Enterprise no incluido en este target — ingresos adicionales).
 
 ---
 

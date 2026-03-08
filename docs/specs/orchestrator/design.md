@@ -9,7 +9,7 @@
 
 ## Overview
 
-El modulo de Orquestador + Agentes expone una interfaz de chat libre con 7 agentes IA (CTO Virtual + 6 especializados), cada uno con un system prompt unico y el contexto completo del proyecto inyectado. A diferencia de Phase 00 y 01 (donde el chat es guiado), aqui el usuario hace preguntas abiertas y los agentes responden con formato rico. Se usa Claude claude-sonnet-4-6 via Vercel AI SDK con streaming. Las conversaciones se organizan en hilos por agente y se persisten en `agent_conversations`. Los artifacts (respuestas guardadas) se almacenan como documentos del proyecto.
+El modulo de Orquestador + Agentes expone una interfaz de chat libre con 8 agentes IA (CTO Virtual + 7 especializados), cada uno con un system prompt unico y el contexto completo del proyecto inyectado. A diferencia de Phase 00 y 01 (donde el chat es guiado), aqui el usuario hace preguntas abiertas y los agentes responden con formato rico. Se usa Claude claude-sonnet-4-6 via Vercel AI SDK con streaming. Las conversaciones se organizan en hilos por agente y se persisten en `agent_conversations`. Los artifacts (respuestas guardadas) se almacenan como documentos del proyecto.
 
 ---
 
@@ -20,7 +20,7 @@ El modulo de Orquestador + Agentes expone una interfaz de chat libre con 7 agent
 Se reutiliza la tabla existente con nuevos valores:
 - `phase_number = null` (conversaciones no vinculadas a una fase especifica)
 - `section = null`
-- `agent_type` = `'cto_virtual'` | `'product_architect'` | `'system_architect'` | `'lead_developer'` | `'db_admin'` | `'qa_engineer'` | `'devops_engineer'`
+- `agent_type` = `'cto_virtual'` | `'product_architect'` | `'system_architect'` | `'ui_ux_designer'` | `'lead_developer'` | `'db_admin'` | `'qa_engineer'` | `'devops_engineer'`
 
 ### Tabla: `conversation_threads`
 
@@ -80,6 +80,7 @@ bucket: project-documents
 | `cto_virtual` | CTO Virtual | 🧠 | Vision holistica, delegacion, metodologia IA DLC | Starter |
 | `product_architect` | Product Architect | 📐 | Producto, priorizacion, scope, user stories | Builder |
 | `system_architect` | System Architect | 🏗️ | Arquitectura, patrones, tecnologias, diagramas | Builder |
+| `ui_ux_designer` | UI/UX Designer | 🎨 | Wireframes, mockups, guias de estilo, consistencia visual a partir de specs | Builder |
 | `lead_developer` | Lead Developer | 💻 | Implementacion, codigo, debugging, best practices | Builder |
 | `db_admin` | DB Admin | 🗄️ | Esquemas, queries, migraciones, RLS, performance | Builder |
 | `qa_engineer` | QA Engineer | 🧪 | Testing, test cases, QA strategy, regression | Builder |
@@ -142,6 +143,11 @@ FORMATO DE RESPUESTA: {especifico por agente}
 - Enfocado en ops: CI/CD, deploy, monitoring, config, scripts
 - Formato: YAML configs, scripts shell, checklists de deploy
 
+**UI/UX Designer:**
+- Enfocado en diseño: wireframes, mockups, guías de estilo a partir de design.md y user flows
+- Puede invocar la API de generación de diseños cuando el usuario pide "genera wireframes para…"
+- Formato: descripciones de layout, referencias a pantallas, enlaces a diseños generados
+
 ---
 
 ## UI/UX Layout
@@ -159,6 +165,7 @@ FORMATO DE RESPUESTA: {especifico por agente}
 │   ├── Divider "Agentes Especializados"
 │   ├── AgentCard (Product Architect)
 │   ├── AgentCard (System Architect)
+│   ├── AgentCard (UI/UX Designer)
 │   ├── AgentCard (Lead Developer)
 │   ├── AgentCard (DB Admin)
 │   ├── AgentCard (QA Engineer)

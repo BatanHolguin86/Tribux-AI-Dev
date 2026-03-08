@@ -63,9 +63,16 @@
 - [x] Gate de aprobacion por documento y por feature
 - [x] Gate final de Phase 01 y desbloqueo de Phase 02
 
+### Diseño UI/UX (wireframes y mockups)
+- [ ] Generacion de wireframes por flujo/pantalla a partir de design.md y user flows
+- [ ] Generacion de mockups (low-fi o high-fi) para pantallas clave del producto
+- [ ] Almacenamiento y vista de diseños en el proyecto (docs/design/ o equivalente)
+- [ ] Integracion en el flujo: disponible tras Phase 01 (KIRO) y antes de Phase 04 (Core Development)
+- [ ] Agente IA dedicado UI/UX Designer en el orquestador para generar y refinar diseños
+
 ### Orquestador IA y Agentes
 - [x] Chat persistente con CTO Virtual (orquestador general)
-- [x] Acceso a 6 agentes especializados con contexto del proyecto
+- [x] Acceso a 7 agentes especializados con contexto del proyecto (incl. UI/UX Designer)
 - [x] Streaming de respuestas del LLM
 - [x] Renderizado markdown con syntax highlighting en chat
 - [x] Historial de conversaciones por proyecto y agente
@@ -190,7 +197,6 @@
 - [ ] API publica para integraciones de terceros — complejidad de mantenimiento alta
 - [ ] SSO empresarial (SAML / LDAP) — mercado enterprise no es el objetivo del MVP
 - [ ] Soporte de multiples idiomas en v1.0 — MVP es espanol, i18n se prepara pero no se activa
-- [ ] Generacion de disenos UI/UX (wireframes, mockups) — fuera del scope del CTO Virtual
 - [ ] Integracion con herramientas de PM (Jira, Linear, Asana) — v3 si hay demanda
 - [ ] Video tutoriales generados por IA — produccion costosa, baja prioridad
 
@@ -200,7 +206,7 @@
 
 | Version | Features | Timeline |
 |---------|----------|----------|
-| v1.0 MVP | 48+ features Must Have (incl. Phases 02–07 guiadas) | 20–24 semanas |
+| v1.0 MVP | 53+ features Must Have (incl. diseño UI/UX, Phases 02–07 guiadas) | 20–24 semanas |
 | v1.1 | 20 features Should Have | +6 semanas |
 | v2.0 | 28 features Could Have | +12 semanas |
 | Fuera de roadmap | 12 features Won't Have | — |

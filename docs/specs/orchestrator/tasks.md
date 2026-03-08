@@ -15,10 +15,11 @@
 - [ ] **TASK-180:** Verificar que `project_documents` soporta `document_type = 'artifact'` y `phase_number = null` sin conflictos de constraint
 
 ### System Prompts de Agentes
-- [ ] **TASK-181:** Crear `src/lib/ai/agents/index.ts` — definicion de los 7 agentes con metadata (id, name, icon, specialty, description, plan_required)
+- [ ] **TASK-181:** Crear `src/lib/ai/agents/index.ts` — definicion de los 8 agentes (CTO Virtual + 7 especializados) con metadata (id, name, icon, specialty, description, plan_required)
 - [ ] **TASK-182:** Crear `src/lib/ai/agents/cto-virtual.ts` — system prompt completo del CTO Virtual con instrucciones de delegacion a agentes especializados
 - [ ] **TASK-183:** Crear `src/lib/ai/agents/product-architect.ts` — system prompt con enfoque en producto, priorizacion y user stories
 - [ ] **TASK-184:** Crear `src/lib/ai/agents/system-architect.ts` — system prompt con enfoque en arquitectura, patrones y diagramas
+- [ ] **TASK-184b:** Crear `src/lib/ai/agents/ui-ux-designer.ts` — system prompt con enfoque en wireframes, mockups y guias de estilo a partir de specs
 - [ ] **TASK-185:** Crear `src/lib/ai/agents/lead-developer.ts` — system prompt con enfoque en implementacion, codigo y debugging
 - [ ] **TASK-186:** Crear `src/lib/ai/agents/db-admin.ts` — system prompt con enfoque en esquemas, queries, RLS y migraciones
 - [ ] **TASK-187:** Crear `src/lib/ai/agents/qa-engineer.ts` — system prompt con enfoque en testing, test cases y estrategia QA
@@ -97,7 +98,7 @@ Semana 4: TASK-215 → 228  (Tests + Deploy)
 
 ## Definition of Done — Feature 05
 
-- [ ] La pagina `/projects/:id/agents` muestra los 7 agentes con icono, nombre y especialidad
+- [ ] La pagina `/projects/:id/agents` muestra los 8 agentes (CTO Virtual + 7 especializados) con icono, nombre y especialidad
 - [ ] El chat con cada agente funciona con streaming (< 2s primer token)
 - [ ] Cada agente tiene system prompt unico y recibe el contexto completo del proyecto
 - [ ] El CTO Virtual sugiere agentes especializados cuando la pregunta es especifica
@@ -106,7 +107,7 @@ Semana 4: TASK-215 → 228  (Tests + Deploy)
 - [ ] Las respuestas se renderizan con markdown completo (code blocks, tablas, listas)
 - [ ] El boton "Copiar" copia al portapapeles; el boton "Guardar" crea artifact
 - [ ] Los artifacts aparecen en el sidebar de documentos del proyecto
-- [ ] El plan Starter solo tiene acceso al CTO Virtual; Builder/Agency a todos
+- [ ] El plan Starter solo tiene acceso al CTO Virtual; Builder, Agency y Enterprise a todos los 7 agentes (Enterprise segun contrato)
 - [ ] El floating agent button funciona desde todas las fases del proyecto
 - [ ] Los errores del LLM se manejan con mensaje amigable y boton retry
 - [ ] Tests E2E pasando en staging

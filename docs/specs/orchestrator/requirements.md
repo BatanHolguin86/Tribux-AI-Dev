@@ -9,7 +9,7 @@
 
 ## Contexto
 
-El Orquestador y los Agentes Especializados son el corazon inteligente de AI Squad. Mientras Phase 00 y Phase 01 usan el orquestador en modo guiado (conversacion estructurada con output definido), este modulo expone el chat libre con el CTO Virtual y 6 agentes especializados que el usuario puede consultar en cualquier momento del proyecto. Cada agente tiene un system prompt diferente, conocimiento especializado y acceso al contexto completo del proyecto.
+El Orquestador y los Agentes Especializados son el corazon inteligente de AI Squad. Mientras Phase 00 y Phase 01 usan el orquestador en modo guiado (conversacion estructurada con output definido), este modulo expone el chat libre con el CTO Virtual y 7 agentes especializados que el usuario puede consultar en cualquier momento del proyecto. Cada agente tiene un system prompt diferente, conocimiento especializado y acceso al contexto completo del proyecto.
 
 La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 que conoce tu proyecto en profundidad — no como un chatbot generico al que hay que dar contexto cada vez.
 
@@ -30,6 +30,7 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 ### Agentes Especializados
 - Como usuario, quiero chatear con el **Product Architect** para decisiones de producto, priorizacion de features y scope, para tener guia estrategica.
 - Como usuario, quiero chatear con el **System Architect** para decisiones de arquitectura, seleccion de tecnologias y patrones de diseno, para tener guia tecnica de alto nivel.
+- Como usuario, quiero chatear con el **UI/UX Designer** para wireframes, mockups y refinamiento de diseños a partir de los specs del proyecto, para tener referencias visuales antes de desarrollar.
 - Como usuario, quiero chatear con el **Lead Developer** para preguntas de implementacion, codigo, debugging y best practices, para resolver dudas de desarrollo.
 - Como usuario, quiero chatear con el **DB Admin** para diseno de esquemas, queries, migraciones, RLS y optimizacion de base de datos, para tener guia de datos.
 - Como usuario, quiero chatear con el **QA Engineer** para estrategia de testing, generacion de test cases y analisis de calidad, para asegurar la calidad del producto.
@@ -53,7 +54,7 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 
 ### Acceso y Navegacion
 - [ ] El chat de agentes es accesible desde `/projects/:id/agents` y desde un boton flotante visible en todas las fases del proyecto
-- [ ] La pagina muestra una lista de 7 agentes (CTO Virtual + 6 especializados) con: nombre, icono, especialidad (1 linea), descripcion (2-3 lineas)
+- [ ] La pagina muestra una lista de 8 agentes (CTO Virtual + 7 especializados) con: nombre, icono, especialidad (1 linea), descripcion (2-3 lineas)
 - [ ] Al seleccionar un agente, se abre la interfaz de chat con el historial existente cargado
 - [ ] El usuario puede navegar entre agentes sin perder el contexto de conversaciones abiertas
 
@@ -66,7 +67,7 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 - [ ] Cada agente tiene un system prompt unico que define su: rol, expertise, tono, tipo de preguntas que maneja, formato de respuesta preferido
 - [ ] Cada agente recibe automaticamente el contexto completo del proyecto al iniciar la conversacion
 - [ ] Los agentes responden dentro de su area de expertise; si la pregunta esta fuera de su ambito, redirigen al CTO Virtual o al agente apropiado
-- [ ] Los 6 agentes son: Product Architect, System Architect, Lead Developer, DB Admin, QA Engineer, DevOps Engineer
+- [ ] Los 7 agentes especializados son: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer
 
 ### Chat y Streaming
 - [ ] Las respuestas se streaman token por token; primer token en < 2s
@@ -90,7 +91,7 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 
 ### Restricciones de Plan
 - [ ] Plan Starter: acceso solo al CTO Virtual
-- [ ] Plan Builder y Agency: acceso a todos los 7 agentes
+- [ ] Plan Builder, Agency y Enterprise: acceso a todos los 7 agentes (Enterprise con limites y alcance segun contrato)
 - [ ] Si el usuario intenta acceder a un agente no incluido en su plan, se muestra paywall contextualizado
 
 ### Manejo de Errores

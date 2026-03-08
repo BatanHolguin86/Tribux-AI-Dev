@@ -88,7 +88,8 @@
 ### Products & Services
 
 - Plataforma web con orquestador IA (CTO Virtual) que soporta cualquier tipo de producto — desde interfaces simples hasta productos complejos con integraciones, soluciones IA y agentes autonomos
-- 6 agentes especializados: Product Architect, System Architect, Lead Developer, QA Engineer, DevOps Engineer, Business Analyst
+- 7 agentes especializados: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer
+- Cuatro planes: Starter, Builder, Agency y Enterprise (precio y alcance de Enterprise negociados caso por caso)
 - Metodologia IA DLC con 8 fases estructuradas
 - Formato KIRO para specs (requirements.md, design.md, tasks.md)
 - Validacion humana en cada fase antes de avanzar

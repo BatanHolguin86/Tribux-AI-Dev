@@ -31,7 +31,8 @@ El desarrollo de cualquier producto o solucion tecnologica sigue estas 8 fases s
 - Disenar la arquitectura del sistema (diagramas, flujos, modelos de datos)
 - Seleccionar stack tecnologico justificado
 - Definir APIs, esquemas de base de datos, estructura de carpetas
-- Output: `docs/architecture/` con diagramas y decisiones (ADRs)
+- **Diseño UI/UX:** generar wireframes y mockups a partir de design.md y user flows (delegar al agente UI/UX Designer)
+- Output: `docs/architecture/` con diagramas y ADRs; `docs/design/` con wireframes y mockups
 
 ### Phase 03 — Environment Setup
 - Configurar repositorio, CI/CD, variables de entorno, infraestructura base
@@ -296,7 +297,8 @@ El orquestador puede delegar a estos agentes segun la tarea:
 | Agente | Responsabilidad |
 |--------|----------------|
 | **Architect** | Disenar sistemas, elegir tecnologias, revisar ADRs |
-| **Frontend Dev** | Implementar UI/UX, componentes, integraciones de API |
+| **UI/UX Designer** | Generar wireframes y mockups a partir de specs y user flows; guias de estilo; mantener consistencia visual antes del desarrollo |
+| **Frontend Dev** | Implementar UI/UX siguiendo diseños generados, componentes, integraciones de API |
 | **Backend Dev** | API routes, logica de negocio, integraciones de servicios |
 | **DB Admin** | Esquemas Supabase, migraciones, RLS, optimizacion de queries |
 | **QA Engineer** | Tests, reportes de calidad, regression testing |

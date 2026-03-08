@@ -46,7 +46,7 @@ Esta metrica captura el valor real entregado: usuarios que no solo empezaron sin
 
 | KPI | Descripcion | Target Mes 3 | Target Mes 6 | Target Mes 12 |
 |-----|-------------|--------------|--------------|---------------|
-| MRR | Monthly Recurring Revenue | $5k | $25k | $100k |
+| MRR | Monthly Recurring Revenue (Starter/Builder/Agency; Enterprise es adicional) | $5k | $25k | $100k |
 | ARR | Annual Recurring Revenue | $60k | $300k | $1.2M |
 | ARPU global | Revenue promedio por usuario | $150 | $200 | $250 |
 | ARPU Emprendedor (Camila) | Revenue plan Starter | $99–$149 | $99–$149 | $149 |

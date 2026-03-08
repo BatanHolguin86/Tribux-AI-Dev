@@ -48,7 +48,7 @@
 - **C-BIZ-03:** El presupuesto mensual de infraestructura para el MVP no puede superar $200/mes hasta alcanzar $5k MRR. Stack elegido: Vercel Hobby/Pro ($0–$20), Supabase Free/Pro ($0–$25), Anthropic API ($50–$100 estimado para usuarios beta), Resend ($0–$20).
 
 ### Pricing y Modelo de Negocio
-- **C-BIZ-04:** El producto debe lanzar con minimo 2 planes de precio (Starter y Builder). El plan Agency puede lanzar en v1.1.
+- **C-BIZ-04:** El producto debe lanzar con minimo 2 planes de precio (Starter y Builder). El plan Agency puede lanzar en v1.1. El plan Enterprise se ofrece bajo negociacion previa (precio y alcance a medida).
 - **C-BIZ-05:** No existe plan gratuito en v1.0 MVP. El acceso es de pago desde el primer dia — validar willingness to pay desde el lanzamiento.
 - **C-BIZ-06:** El precio minimo del plan Starter es $99/mes. No se puede bajar de este umbral sin aprobacion del CEO/CPO — costo de la API de Anthropic por usuario activo lo hace inviable por debajo de este precio.
 
@@ -95,6 +95,7 @@
 - **C-UX-06:** Los documentos generados por el orquestador deben estar en espanol (es-LATAM) por defecto — el codigo y comentarios tecnicos en ingles.
 - **C-UX-07:** El orquestador debe siempre presentar el output como propuesta para aprobacion del usuario, nunca como decision tomada. El humano siempre aprueba antes de avanzar.
 - **C-UX-08:** Si el orquestador no tiene suficiente contexto para generar un documento de calidad, debe pedir mas informacion al usuario — jamas generar contenido vago o generico sin advertir al usuario.
+- **C-UX-09:** Los diseños UI/UX generados (wireframes, mockups) forman parte del alcance MVP (Phase 02) y deben presentarse como propuesta para aprobacion antes de considerarse "listos para desarrollo" — mismo principio que C-UX-07.
 
 ---
 

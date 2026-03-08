@@ -18,8 +18,11 @@ Definir explicitamente la estrategia de trial y pricing para el lanzamiento del 
 | Plan | Precio | Proyectos | Fases | Agentes |
 |------|--------|-----------|-------|---------|
 | Starter | $149/mes | 1 activo | 00–04 | CTO Virtual |
-| Builder | $299/mes | 2 activos | 00–06 | Todos (6) |
+| Builder | $299/mes | 2 activos | 00–06 | Todos (7) |
 | Agency | $699/mes | 5 activos | 00–07 | Todos + multi-cliente |
+| Enterprise | Negociable | A medida | 00–07 + extendido | Todo + SSO, SLA, soporte, custom |
+
+**Enterprise** no forma parte de la tabla de precios fijos: precio y oferta de valor se negocian previa discovery comercial. Ver `docs/discovery/brief.md` — Modelo de Negocio.
 
 **Pregunta abierta para v1.0:** ¿Hay trial gratuito? ¿Donde va el paywall?
 
@@ -30,7 +33,7 @@ Definir explicitamente la estrategia de trial y pricing para el lanzamiento del 
 ### Experimento A: Trial 14 dias — Full access
 
 **Configuracion:**
-- Nuevos usuarios tienen 14 dias de acceso completo (como plan Builder: 2 proyectos, fases 00–06, 6 agentes)
+- Nuevos usuarios tienen 14 dias de acceso completo (como plan Builder: 2 proyectos, fases 00–06, 7 agentes)
 - No requiere tarjeta para empezar
 - Al dia 12: recordatorio por email con CTA a suscribirse
 - Al dia 14: acceso bloqueado hasta que pague o downgrade a plan gratuito (si existe)
@@ -112,7 +115,7 @@ Definir explicitamente la estrategia de trial y pricing para el lanzamiento del 
 │  [Starter $149] [Builder $299] [Agency $699]    │
 │                                                  │
 │  • Starter: 1 proyecto, fases 00-04             │
-│  • Builder: 2 proyectos, fases 00-06, 6 agentes │
+│  • Builder: 2 proyectos, fases 00-06, 7 agentes │
 │  • Agency: 5 proyectos, multi-cliente           │
 │                                                  │
 │  [Comparar planes]  [Cerrar]                    │

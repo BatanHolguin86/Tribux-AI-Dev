@@ -104,7 +104,7 @@ La experiencia debe sentirse como una sesion de planificacion con un CTO experto
 
 ### Restricciones de Plan
 - [ ] Usuarios en plan Starter pueden completar Phase 01 sin restriccion
-- [ ] El numero maximo de features por proyecto depende del plan: Starter (5), Builder (10), Agency (20)
+- [ ] El numero maximo de features por proyecto depende del plan: Starter (5), Builder (10), Agency (20); Enterprise (negociado en contrato)
 
 ---
 

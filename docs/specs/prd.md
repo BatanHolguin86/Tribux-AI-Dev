@@ -71,7 +71,7 @@ La plataforma no restringe el tipo de producto. El orquestador y los agentes esp
 
 ## 4. Alcance del Producto
 
-### MVP (v1.0) — 5 Modulos Core
+### MVP (v1.0) — Modulos (M1–M11)
 
 | # | Modulo | Descripcion |
 |---|--------|-------------|
@@ -79,8 +79,8 @@ La plataforma no restringe el tipo de producto. El orquestador y los agentes esp
 | M2 | Project Dashboard | Vista y gestion de proyectos, estado de fases, navegacion |
 | M3 | Phase 00 Interactivo | Flujo guiado de discovery con orquestador IA |
 | M4 | Generador KIRO | Phase 01 interactivo — genera requirements, design y tasks |
-| M5 | Orquestador + Agentes | Interfaz de chat con CTO Virtual y 6 agentes especializados |
-| M6 | Phase 02 Interactivo | Guia interactiva para definir arquitectura y ADRs |
+| M5 | Orquestador + Agentes | Interfaz de chat con CTO Virtual y 7 agentes especializados (incl. UI/UX Designer) |
+| M6 | Phase 02 Interactivo | Guia interactiva para arquitectura, ADRs y generacion de diseños UI/UX (wireframes, mockups) |
 | M7 | Phase 03 Interactivo | Checklist guiado de environment setup (Supabase, Vercel, GitHub) |
 | M8 | Phase 04 Interactivo | Kanban de tasks generadas en KIRO + integracion con chat de agentes |
 | M9 | Phase 05 Interactivo | Generador de test cases y reporte de QA |
@@ -160,8 +160,8 @@ Landing page
 
 ```
 /projects/:id/agents
-    → Seleccion de agente: CTO Virtual, Architect, Frontend Dev,
-      Backend Dev, DB Admin, QA Engineer, DevOps
+    → Seleccion de agente: CTO Virtual, Product Architect, System Architect,
+      UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer
     → Chat contextualizado con el proyecto activo
     → El agente tiene acceso a todos los docs del proyecto (/docs/)
     → Respuestas incluyen: codigo, decisiones, recomendaciones
@@ -217,7 +217,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 
 ### M5 — Orquestador + Agentes
 - Chat persistente con el CTO Virtual (orquestador general)
-- Acceso a 6 agentes especializados via seleccion
+- Acceso a 7 agentes especializados via seleccion (Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer)
 - Contexto del proyecto inyectado automaticamente en cada conversacion
 - Historial de conversaciones por proyecto
 - Opcion de exportar/guardar respuesta como artifact
@@ -226,6 +226,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 ### M6 — Phase 02 Interactivo
 - Conversacion guiada para definir arquitectura del sistema
 - Generacion de ADRs y diagramas
+- Generacion de diseños UI/UX (wireframes y mockups) a partir de specs — agente UI/UX Designer y vista de diseños en el proyecto
 - Gate de aprobacion y desbloqueo de Phase 03
 
 ### M7 — Phase 03 Interactivo
@@ -368,8 +369,11 @@ Ver detalle de experimentos de trial y paywall en `docs/specs/pricing-experiment
 | Plan | Precio | Proyectos | Fases | Agentes |
 |------|--------|-----------|-------|---------|
 | Starter | $149/mes | 1 activo | 00–04 | CTO Virtual |
-| Builder | $299/mes | 2 activos | 00–06 | Todos (6) |
+| Builder | $299/mes | 2 activos | 00–06 | Todos (7) |
 | Agency | $699/mes | 5 activos | 00–07 | Todos + multi-cliente |
+| Enterprise | Negociable | A medida | 00–07 + extendido | Todo + SSO, SLA, soporte prioritario, custom |
+
+**Enterprise:** precio, numero de proyectos, fases y beneficios (SSO, SLA, soporte dedicado, etc.) se negocian caso por caso. Ver `docs/discovery/brief.md` — Modelo de Negocio.
 
 ---
 

@@ -74,7 +74,7 @@
 
 **REQ-025** WHEN a user selects a project, the system shall navigate directly to the active phase of that project.
 
-**REQ-026** The system shall enforce project limits per subscription plan: 1 project (Starter), 2 projects (Builder), 5 projects (Agency).
+**REQ-026** The system shall enforce project limits per subscription plan: 1 project (Starter), 2 projects (Builder), 5 projects (Agency). WHERE the plan is Enterprise, limits and phase scope are configured per contract (negotiated).
 
 **REQ-027** IF a user attempts to create a project beyond their plan limit, THEN the system shall display an upgrade prompt with plan comparison.
 
@@ -132,7 +132,7 @@
 
 **REQ-048** The system shall provide a persistent chat interface with the AI orchestrator (CTO Virtual) available from any project phase.
 
-**REQ-049** The system shall provide access to 6 specialized agents: Product Architect, System Architect, Lead Developer, DB Admin, QA Engineer, DevOps Engineer.
+**REQ-049** The system shall provide access to 7 specialized agents: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer.
 
 **REQ-050** WHEN a user initiates a conversation with an agent, the system shall automatically inject the full project context (all approved documents) into the agent's context.
 
@@ -154,7 +154,7 @@
 
 ## MOD-07: Documentos y Artifacts
 
-**REQ-058** The system shall store all project documents (discovery, specs, architecture decisions) associated to the project and accessible from the project interface.
+**REQ-058** The system shall store all project documents (discovery, specs, architecture decisions, design artifacts such as wireframes and mockups) associated to the project and accessible from the project interface.
 
 **REQ-059** The system shall render all documents in formatted markdown view with option to switch to raw edit mode.
 
