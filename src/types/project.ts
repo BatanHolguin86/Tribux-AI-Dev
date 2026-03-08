@@ -28,6 +28,19 @@ export type ProjectPhase = {
   updated_at: string
 }
 
+export type ProjectWithProgress = Project & {
+  active_phase: number
+  phases_completed: number
+  progress_percentage: number
+  next_action: string
+  phases?: ProjectPhase[]
+}
+
+export type DashboardSummary = {
+  total_active: number
+  phases_completed_this_week: number
+}
+
 export const PHASE_NAMES: Record<number, string> = {
   0: 'Discovery & Ideation',
   1: 'Requirements & Spec',

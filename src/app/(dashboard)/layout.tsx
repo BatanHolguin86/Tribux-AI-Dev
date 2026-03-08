@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function DashboardLayout({
@@ -15,10 +16,9 @@ export default async function DashboardLayout({
     redirect('/login')
   }
 
-  // Check onboarding status
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('onboarding_completed')
+    .select('onboarding_completed, full_name')
     .eq('id', user.id)
     .single()
 
@@ -26,20 +26,32 @@ export default async function DashboardLayout({
     redirect('/onboarding')
   }
 
+  const displayName = profile.full_name || user.email?.split('@')[0] || 'Usuario'
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Minimal header — will be expanded in Feature 02 (Dashboard) */}
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
-          <span className="text-lg font-bold text-violet-600">AI Squad</span>
-          <form action="/api/auth/signout" method="POST">
-            <button
-              type="submit"
+          <Link href="/dashboard" className="text-lg font-bold text-violet-600">
+            AI Squad
+          </Link>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-600">{displayName}</span>
+            <Link
+              href="/settings"
               className="text-sm text-gray-500 hover:text-gray-700"
             >
-              Cerrar sesion
-            </button>
-          </form>
+              Cuenta
+            </Link>
+            <form action="/api/auth/signout" method="POST">
+              <button
+                type="submit"
+                className="text-sm text-gray-500 hover:text-gray-700"
+              >
+                Salir
+              </button>
+            </form>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>
