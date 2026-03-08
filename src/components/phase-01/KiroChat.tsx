@@ -4,8 +4,8 @@ import { useRef, useEffect, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { TextStreamChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
-import type { Phase00Section, SectionStatus } from '@/types/conversation'
-import { SECTION_LABELS } from '@/lib/ai/prompts/phase-00'
+import type { KiroDocumentType } from '@/types/feature'
+import { KIRO_DOC_LABELS } from '@/lib/ai/prompts/phase-01'
 import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
@@ -18,33 +18,37 @@ function getTextContent(msg: UIMessage): string {
     .join('')
 }
 
-type ChatPanelProps = {
+type KiroChatProps = {
   projectId: string
-  section: Phase00Section
-  sectionStatus: SectionStatus
-  initialMessages: Array<{ role: string; content: string; created_at?: string }>
+  featureId: string
+  docType: KiroDocumentType
+  docStatus: string | null
+  initialMessages: Array<{ role: string; content: string }>
   hasDocument: boolean
-  onSectionApproved: () => void
   onDocumentGenerated: () => void
+  onDocumentApproved: () => void
 }
 
-export function ChatPanel({
+export function KiroChat({
   projectId,
-  section,
-  sectionStatus,
+  featureId,
+  docType,
+  docStatus,
   initialMessages,
   hasDocument,
-  onSectionApproved,
   onDocumentGenerated,
-}: ChatPanelProps) {
+  onDocumentApproved,
+}: KiroChatProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [input, setInput] = useState('')
-  const isApproved = sectionStatus === 'approved'
+  const isApproved = docStatus === 'approved'
+
+  const section = `feature_${featureId}_${docType}`
 
   const { messages, sendMessage, status, stop } = useChat({
     transport: new TextStreamChatTransport({
-      api: `/api/projects/${projectId}/phases/0/chat`,
-      body: { section },
+      api: `/api/projects/${projectId}/phases/1/features/${featureId}/chat`,
+      body: { section, docType },
     }),
     messages: initialMessages.map((m, i) => ({
       id: String(i),
@@ -55,14 +59,12 @@ export function ChatPanel({
 
   const isLoading = status === 'streaming' || status === 'submitted'
 
-  // Auto-scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages, isLoading])
 
-  // Check if last assistant message indicates section is ready
   const lastMessage = messages[messages.length - 1]
   const lastText = lastMessage ? getTextContent(lastMessage) : ''
   const sectionReady =
@@ -70,18 +72,19 @@ export function ChatPanel({
     (lastMessage?.role === 'assistant' && lastText.includes('[SECTION_READY]'))
 
   async function handleGenerate() {
-    await fetch(`/api/projects/${projectId}/phases/0/sections/${section}/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    })
+    await fetch(
+      `/api/projects/${projectId}/phases/1/features/${featureId}/documents/${docType}/generate`,
+      { method: 'POST' },
+    )
     onDocumentGenerated()
   }
 
   async function handleApprove() {
-    await fetch(`/api/projects/${projectId}/phases/0/sections/${section}/approve`, {
-      method: 'POST',
-    })
-    onSectionApproved()
+    await fetch(
+      `/api/projects/${projectId}/phases/1/features/${featureId}/documents/${docType}/approve`,
+      { method: 'POST' },
+    )
+    onDocumentApproved()
   }
 
   function handleRevision(feedback: string) {
@@ -94,13 +97,14 @@ export function ChatPanel({
     setInput('')
   }
 
+  const docLabel = KIRO_DOC_LABELS[docType]
+
   return (
     <div className="flex flex-1 flex-col">
-      {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !isLoading && (
           <div className="flex items-center justify-center py-12 text-sm text-gray-400">
-            Inicia la conversacion para comenzar con {SECTION_LABELS[section]}.
+            Inicia la conversacion para definir {docLabel}.
           </div>
         )}
 
@@ -118,36 +122,32 @@ export function ChatPanel({
         {isLoading && <StreamingIndicator />}
       </div>
 
-      {/* Generate button */}
       {sectionReady && !hasDocument && !isApproved && (
         <div className="mx-4 mb-3">
           <button
             onClick={handleGenerate}
             className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700"
           >
-            Generar documento de {SECTION_LABELS[section]}
+            Generar documento de {docLabel}
           </button>
         </div>
       )}
 
-      {/* Approval gate */}
       {hasDocument && !isApproved && (
         <ApprovalGate
-          sectionLabel={SECTION_LABELS[section]}
+          sectionLabel={docLabel}
           onApprove={handleApprove}
           onRevisionRequest={handleRevision}
           isApproving={false}
         />
       )}
 
-      {/* Approved banner */}
       {isApproved && (
         <div className="mx-4 mb-3 rounded-lg bg-green-50 p-3 text-center text-sm font-medium text-green-700">
-          Seccion aprobada
+          {docLabel} aprobado
         </div>
       )}
 
-      {/* Input */}
       {!isApproved && (
         <ChatInput
           value={input}
