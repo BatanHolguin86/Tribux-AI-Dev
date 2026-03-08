@@ -20,19 +20,19 @@ El desarrollo de cualquier producto o solucion tecnologica sigue estas 8 fases s
 ### Phase 00 — Discovery & Ideation
 - Entender el problema de negocio, usuarios objetivo y contexto
 - Validar la idea con preguntas criticas: problema real, mercado, diferenciador
-- Output: `docs/discovery/brief.md` con problem statement, hipotesis y criterios de exito
+- Output: `docs/00-discovery/brief.md` con problem statement, hipotesis y criterios de exito
 
 ### Phase 01 — Requirements & Spec (KIRO)
 - Definir requisitos funcionales y no funcionales
 - Crear el spec completo en formato KIRO (ver seccion KIRO mas abajo)
-- Output: `docs/specs/{feature}/requirements.md`, `design.md`, `tasks.md`
+- Output: `docs/01-specs/{feature}/requirements.md`, `design.md`, `tasks.md`
 
 ### Phase 02 — Architecture & Design
 - Disenar la arquitectura del sistema (diagramas, flujos, modelos de datos)
 - Seleccionar stack tecnologico justificado
 - Definir APIs, esquemas de base de datos, estructura de carpetas
 - **Diseño UI/UX:** generar wireframes y mockups a partir de design.md y user flows (delegar al agente UI/UX Designer)
-- Output: `docs/architecture/` con diagramas y ADRs; `docs/design/` con wireframes y mockups
+- Output: `docs/02-architecture/` con diagramas y ADRs; `docs/design/` con wireframes y mockups
 
 ### Phase 03 — Environment Setup
 - Configurar repositorio, CI/CD, variables de entorno, infraestructura base
@@ -47,14 +47,14 @@ El desarrollo de cualquier producto o solucion tecnologica sigue estas 8 fases s
 
 ### Phase 05 — Testing & QA
 - Tests unitarios, de integracion y E2E segun cobertura minima acordada
-- QA manual de flujos criticos documentados en `docs/qa/`
+- QA manual de flujos criticos documentados en `docs/05-qa/`
 - Performance audit (Lighthouse, bundle size, query performance)
-- Output: reporte de calidad en `docs/qa/report.md`
+- Output: reporte de calidad en `docs/05-qa/report.md`
 
 ### Phase 06 — Launch & Deployment
 - Deploy a produccion con checklist de lanzamiento
 - Configurar monitoring, alertas y logging
-- Documentar runbook operacional en `docs/ops/`
+- Documentar runbook operacional en `docs/06-ops/`
 - Output: producto en produccion con metricas base establecidas
 
 ### Phase 07 — Iteration & Growth
@@ -113,7 +113,7 @@ El desarrollo de cualquier producto o solucion tecnologica sigue estas 8 fases s
 
 ## Formato de Specs KIRO
 
-Todo feature nuevo requiere tres archivos en `docs/specs/{nombre-del-feature}/`:
+Todo feature nuevo requiere tres archivos en `docs/01-specs/{nombre-del-feature}/`:
 
 ### `requirements.md`
 ```markdown
@@ -197,16 +197,18 @@ Librerias, servicios externos, features previas necesarias.
 ├── .env.example                 # Template de variables (SÍ commitear)
 │
 ├── docs/                        # Toda la documentacion del proyecto
-│   ├── discovery/               # Phase 00 — briefs e investigacion
-│   ├── specs/                   # Phase 01 — specs KIRO por feature
+│   ├── 00-discovery/            # Phase 00 — briefs e investigacion
+│   ├── 01-specs/                # Phase 01 — specs KIRO por feature
 │   │   └── {feature-name}/
 │   │       ├── requirements.md
 │   │       ├── design.md
 │   │       └── tasks.md
-│   ├── architecture/            # Phase 02 — diagramas y ADRs
+│   ├── 02-architecture/         # Phase 02 — diagramas y ADRs
 │   │   └── decisions/           # Architecture Decision Records
-│   ├── qa/                      # Phase 05 — reportes de calidad
-│   └── ops/                     # Phase 06 — runbooks operacionales
+│   ├── 03-environment/          # Phase 03 — ver /infrastructure
+│   ├── 04-development/          # Phase 04 — ver /src
+│   ├── 05-qa/                   # Phase 05 — reportes de calidad
+│   └── 06-ops/                  # Phase 06 — runbooks operacionales
 │
 ├── src/                         # Codigo fuente de la aplicacion
 │   ├── app/                     # Next.js App Router
@@ -292,7 +294,7 @@ Librerias, servicios externos, features previas necesarias.
 
 ## Agentes Especializados
 
-El orquestador puede delegar a estos agentes segun la tarea:
+El orquestador puede delegar a estos agentes segun la tarea. En v1.0, al abrir el chat o un hilo vacio, el sistema muestra sugerencias proactivas (1–3 accionables) basadas en el estado del proyecto para orientar al usuario sin que tenga que preguntar.
 
 | Agente | Responsabilidad |
 |--------|----------------|
