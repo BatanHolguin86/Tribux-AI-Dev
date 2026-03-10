@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { PHASE05_SECTIONS } from '@/lib/ai/prompts/phase-05'
+import { PHASE07_SECTIONS } from '@/lib/ai/prompts/phase-07'
 
 export async function POST(
   _request: Request,
@@ -17,25 +17,28 @@ export async function POST(
     return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
   }
 
-  // Verify all tasks are done
-  const { data: tasks } = await supabase
-    .from('project_tasks')
-    .select('id, status')
+  // Verify all 4 sections are completed
+  const { data: sections } = await supabase
+    .from('phase_sections')
+    .select('section, status')
     .eq('project_id', projectId)
+    .eq('phase_number', 6)
 
-  if (!tasks || tasks.length === 0) {
-    return NextResponse.json({ error: 'No hay tasks' }, { status: 400 })
-  }
+  const pending = (sections ?? []).filter(
+    (s) => s.status !== 'completed' && s.status !== 'approved'
+  )
 
-  const pending = tasks.filter((t) => t.status !== 'done')
   if (pending.length > 0) {
     return NextResponse.json(
-      { error: `${pending.length} tasks pendientes` },
+      {
+        error: 'Faltan categorias por completar',
+        pending: pending.map((s) => s.section),
+      },
       { status: 400 }
     )
   }
 
-  // Complete Phase 04
+  // Complete Phase 06
   await supabase
     .from('project_phases')
     .update({
@@ -45,9 +48,9 @@ export async function POST(
       approved_by: user.id,
     })
     .eq('project_id', projectId)
-    .eq('phase_number', 4)
+    .eq('phase_number', 6)
 
-  // Unlock Phase 05
+  // Unlock Phase 07
   await supabase
     .from('project_phases')
     .update({
@@ -55,14 +58,14 @@ export async function POST(
       started_at: new Date().toISOString(),
     })
     .eq('project_id', projectId)
-    .eq('phase_number', 5)
+    .eq('phase_number', 7)
 
-  // Create Phase 05 sections
-  for (const section of PHASE05_SECTIONS) {
+  // Create Phase 07 sections
+  for (const section of PHASE07_SECTIONS) {
     await supabase.from('phase_sections').upsert(
       {
         project_id: projectId,
-        phase_number: 5,
+        phase_number: 7,
         section,
         status: 'pending',
       },
@@ -73,13 +76,13 @@ export async function POST(
   // Update project current phase
   await supabase
     .from('projects')
-    .update({ current_phase: 5, last_activity: new Date().toISOString() })
+    .update({ current_phase: 7, last_activity: new Date().toISOString() })
     .eq('id', projectId)
 
   return NextResponse.json({
-    phase: 4,
+    phase: 6,
     status: 'completed',
-    next_phase: 5,
+    next_phase: 7,
     unlocked: true,
   })
 }
