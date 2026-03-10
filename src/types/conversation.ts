@@ -21,6 +21,14 @@ export type Phase02Section =
   | 'api_design'
   | 'architecture_decisions'
 
+export type Phase03Section =
+  | 'repository'
+  | 'database'
+  | 'authentication'
+  | 'hosting'
+  | 'environment'
+  | 'verification'
+
 export type AgentConversation = {
   id: string
   project_id: string
