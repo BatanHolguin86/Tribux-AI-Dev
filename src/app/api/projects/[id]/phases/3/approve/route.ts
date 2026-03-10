@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { parseTasksFromMarkdown } from '@/lib/tasks/parse-tasks'
 
 export async function POST(
   _request: Request,
@@ -58,6 +59,47 @@ export async function POST(
     })
     .eq('project_id', projectId)
     .eq('phase_number', 4)
+
+  // Generate tasks from approved KIRO specs
+  const { data: featureDocs } = await supabase
+    .from('feature_documents')
+    .select('feature_id, content')
+    .eq('project_id', projectId)
+    .eq('document_type', 'tasks')
+    .eq('status', 'approved')
+
+  if (featureDocs && featureDocs.length > 0) {
+    let globalOrder = 0
+    const allTasks: Array<{
+      project_id: string
+      feature_id: string
+      task_key: string
+      title: string
+      category: string
+      status: string
+      display_order: number
+    }> = []
+
+    for (const doc of featureDocs) {
+      if (!doc.content) continue
+      const parsed = parseTasksFromMarkdown(doc.content)
+      for (const task of parsed) {
+        allTasks.push({
+          project_id: projectId,
+          feature_id: doc.feature_id,
+          task_key: task.task_key,
+          title: task.title,
+          category: task.category,
+          status: 'todo',
+          display_order: globalOrder++,
+        })
+      }
+    }
+
+    if (allTasks.length > 0) {
+      await supabase.from('project_tasks').insert(allTasks)
+    }
+  }
 
   // Update project current phase
   await supabase
