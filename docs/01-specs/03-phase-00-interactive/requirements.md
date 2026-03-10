@@ -74,11 +74,11 @@ La experiencia debe sentirse como trabajar con un consultor experto que hace las
 - [ ] El orquestador acusa recibo de ediciones manuales relevantes con un mensaje contextual en la siguiente interaccion
 
 ### Secciones y Documentos Generados
-- [ ] **Seccion 1 — Problem Statement** genera: `docs/00-discovery/brief.md` (problem statement + hipotesis + criterios de exito)
-- [ ] **Seccion 2 — User Personas** genera: `docs/00-discovery/personas.md` (minimo 3 personas con jobs, pains, gains)
-- [ ] **Seccion 3 — Value Proposition** genera: `docs/00-discovery/value-proposition.md` (VPC completo + fit statement)
-- [ ] **Seccion 4 — Success Metrics** genera: `docs/00-discovery/metrics.md` (north star + KPIs por dimension + targets)
-- [ ] **Seccion 5 — Competitive Analysis** genera: `docs/00-discovery/competitive-analysis.md` (landscape + matriz + gap)
+- [ ] **Seccion 1 — Problem Statement** genera: `docs/00-discovery/01-brief.md` (problem statement + hipotesis + criterios de exito)
+- [ ] **Seccion 2 — User Personas** genera: `docs/00-discovery/02-personas.md` (minimo 3 personas con jobs, pains, gains)
+- [ ] **Seccion 3 — Value Proposition** genera: `docs/00-discovery/03-value-proposition.md` (VPC completo + fit statement)
+- [ ] **Seccion 4 — Success Metrics** genera: `docs/00-discovery/04-metrics.md` (north star + KPIs por dimension + targets)
+- [ ] **Seccion 5 — Competitive Analysis** genera: `docs/00-discovery/05-competitive-analysis.md` (landscape + matriz + gap)
 
 ### Gates de Aprobacion
 - [ ] Al terminar cada seccion, el orquestador presenta el documento y muestra dos opciones: "Aprobar seccion" (boton) y campo de texto para solicitar revision

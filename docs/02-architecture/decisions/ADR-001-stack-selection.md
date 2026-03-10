@@ -13,6 +13,7 @@ Usar **Next.js 14 (App Router) + TypeScript + Supabase + Vercel + Tailwind/shadc
 ## Contexto
 
 Se necesita un stack que permita:
+
 1. Desarrollo rapido de un SaaS con auth, DB y real-time
 2. SSR para performance y SEO
 3. Streaming de respuestas del LLM
@@ -21,15 +22,17 @@ Se necesita un stack que permita:
 
 ## Opciones Evaluadas
 
-| Criterio | Next.js + Supabase + Vercel | Remix + Prisma + Railway | SvelteKit + PocketBase |
-|----------|:---:|:---:|:---:|
-| Auth integrado | ✓ (Supabase Auth) | Parcial (manual) | Parcial |
-| RLS nativo | ✓ (PostgreSQL) | ✗ | ✗ |
-| Streaming SSE | ✓ (Vercel AI SDK) | ✓ (manual) | ✓ (manual) |
-| Deploy + previews | ✓ (Vercel) | ✓ (Railway) | Parcial |
-| Ecosistema componentes | ✓ (shadcn/ui) | Parcial | Limitado |
-| Storage integrado | ✓ (Supabase Storage) | ✗ (S3 manual) | ✓ (PocketBase) |
-| Madurez y comunidad | Alta | Media | Media |
+
+| Criterio               | Next.js + Supabase + Vercel | Remix + Prisma + Railway | SvelteKit + PocketBase |
+| ---------------------- | --------------------------- | ------------------------ | ---------------------- |
+| Auth integrado         | ✓ (Supabase Auth)           | Parcial (manual)         | Parcial                |
+| RLS nativo             | ✓ (PostgreSQL)              | ✗                        | ✗                      |
+| Streaming SSE          | ✓ (Vercel AI SDK)           | ✓ (manual)               | ✓ (manual)             |
+| Deploy + previews      | ✓ (Vercel)                  | ✓ (Railway)              | Parcial                |
+| Ecosistema componentes | ✓ (shadcn/ui)               | Parcial                  | Limitado               |
+| Storage integrado      | ✓ (Supabase Storage)        | ✗ (S3 manual)            | ✓ (PocketBase)         |
+| Madurez y comunidad    | Alta                        | Media                    | Media                  |
+
 
 ## Justificacion
 
@@ -42,11 +45,14 @@ Se necesita un stack que permita:
 ## Consecuencias
 
 **Positivas:**
+
 - Time-to-market rapido — auth, DB y deploy resueltos desde dia 1
 - Unica fuente de verdad para seguridad (RLS en Supabase)
 - Streaming nativo para UX de chat con LLM
 
 **Negativas/Riesgos:**
+
 - Vendor lock-in parcial con Vercel (mitigable: Next.js es open source, desplegable en otros hosts)
 - Supabase como punto unico de falla para DB + Auth + Storage (mitigable: backups automaticos, plan Pro con SLA)
 - shadcn/ui componentes son copy-paste, no actualizables automaticamente (mitigable: bajo churn en componentes base)
+

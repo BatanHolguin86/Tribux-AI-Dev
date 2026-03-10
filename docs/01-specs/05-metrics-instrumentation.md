@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Fecha:** 2026-03-06
-**Referencia:** PRD §11, `docs/00-discovery/metrics.md`
+**Referencia:** PRD §11, `docs/00-discovery/04-metrics.md`
 **Status:** Pendiente aprobacion CEO/CPO
 
 ---

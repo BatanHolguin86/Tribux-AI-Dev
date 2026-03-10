@@ -21,10 +21,10 @@ AI Squad Command Center es una plataforma SaaS B2B que permite a personas sin ex
 ## 2. Contexto y Antecedentes
 
 Ver documentos de Phase 00:
-- `docs/00-discovery/brief.md` — Problem statement e hipotesis
-- `docs/00-discovery/personas.md` — 4 perfiles de usuario
-- `docs/00-discovery/competitive-analysis.md` — Landscape y gap
-- `docs/00-discovery/value-proposition.md` — Propuesta de valor
+- `docs/00-discovery/01-brief.md` — Problem statement e hipotesis
+- `docs/00-discovery/02-personas.md` — 4 perfiles de usuario
+- `docs/00-discovery/05-competitive-analysis.md` — Landscape y gap
+- `docs/00-discovery/03-value-proposition.md` — Propuesta de valor
 
 **Resumen ejecutivo del contexto:**
 El mercado esta fragmentado entre herramientas para tecnicos (que excluyen al usuario objetivo) y herramientas simplificadas que no escalan a productos complejos. Ninguna solucion combina metodologia estructurada + agentes IA especializados + control humano por fases a precio SaaS.
@@ -365,7 +365,7 @@ auth.users (Supabase Auth)
 
 ## 10. Modelo de Negocio y Pricing
 
-Ver detalle de experimentos de trial y paywall en `docs/01-specs/pricing-experiments.md`.
+Ver detalle de experimentos de trial y paywall en `docs/01-specs/06-pricing-experiments.md`.
 
 | Plan | Precio | Proyectos | Fases | Agentes |
 |------|--------|-----------|-------|---------|
@@ -374,13 +374,13 @@ Ver detalle de experimentos de trial y paywall en `docs/01-specs/pricing-experim
 | Agency | $699/mes | 5 activos | 00–07 | Todos + multi-cliente |
 | Enterprise | Negociable | A medida | 00–07 + extendido | Todo + SSO, SLA, soporte prioritario, custom |
 
-**Enterprise:** precio, numero de proyectos, fases y beneficios (SSO, SLA, soporte dedicado, etc.) se negocian caso por caso. Ver `docs/00-discovery/brief.md` — Modelo de Negocio.
+**Enterprise:** precio, numero de proyectos, fases y beneficios (SSO, SLA, soporte dedicado, etc.) se negocian caso por caso. Ver `docs/00-discovery/01-brief.md` — Modelo de Negocio.
 
 ---
 
 ## 11. Metricas de Exito del Producto
 
-Ver instrumentacion de eventos, embudos y activacion en `docs/01-specs/metrics-instrumentation.md`.
+Ver instrumentacion de eventos, embudos y activacion en `docs/01-specs/05-metrics-instrumentation.md`.
 
 **North Star:** Proyectos completados hasta Phase 06 por mes
 

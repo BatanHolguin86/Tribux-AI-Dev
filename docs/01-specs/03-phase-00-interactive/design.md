@@ -48,7 +48,7 @@ create table project_documents (
   phase_number  integer not null,
   section       text not null,
   document_type text not null,  -- 'brief' | 'personas' | 'value_proposition' | 'metrics' | 'competitive_analysis' | 'requirements' | 'design' | 'tasks'
-  storage_path  text not null,  -- path en Supabase Storage: projects/{project_id}/discovery/brief.md
+  storage_path  text not null,  -- path en Supabase Storage: projects/{project_id}/discovery/01-brief.md (o brief.md segun convencion del producto)
   content       text,           -- cache del contenido para lectura rapida (< 50KB)
   version       integer not null default 1,
   status        text not null default 'draft' check (status in ('draft', 'approved')),
@@ -101,11 +101,11 @@ bucket: project-documents (private, con RLS via signed URLs)
   └── projects/
       └── {project_id}/
           ├── discovery/
-          │   ├── brief.md
-          │   ├── personas.md
-          │   ├── value-proposition.md
-          │   ├── metrics.md
-          │   └── competitive-analysis.md
+          │   ├── 01-brief.md
+          │   ├── 02-personas.md
+          │   ├── 03-value-proposition.md
+          │   ├── 04-metrics.md
+          │   └── 05-competitive-analysis.md
           └── specs/
               └── {feature-name}/
                   ├── requirements.md
@@ -142,11 +142,11 @@ OUTPUT ESPERADO: {estructura del documento a generar}
 
 | Seccion | Documento generado | Preguntas clave del orquestador |
 |---------|-------------------|--------------------------------|
-| `problem_statement` | `brief.md` | ¿Que problema resuelves? ¿Para quien? ¿Como lo resuelven hoy? ¿Por que es urgente? |
-| `personas` | `personas.md` | ¿Quien es tu usuario ideal? ¿Que hace en su dia a dia? ¿Que le frustra? ¿Que logro busca? |
-| `value_proposition` | `value-proposition.md` | ¿Que hace tu producto que los demas no? ¿Cual es el momento "aha"? ¿Como describes tu producto en una oracion? |
-| `metrics` | `metrics.md` | ¿Como sabras que tuviste exito en 6 meses? ¿Cual es el norte que quieres medir? ¿Cuantos usuarios/ingresos en Mes 3, 6, 12? |
-| `competitive_analysis` | `competitive-analysis.md` | ¿Quien mas resuelve este problema hoy? ¿Por que tu usuario elegiria tu producto sobre esos? ¿Cual es tu ventaja real? |
+| `problem_statement` | `01-brief.md` | ¿Que problema resuelves? ¿Para quien? ¿Como lo resuelven hoy? ¿Por que es urgente? |
+| `personas` | `02-personas.md` | ¿Quien es tu usuario ideal? ¿Que hace en su dia a dia? ¿Que le frustra? ¿Que logro busca? |
+| `value_proposition` | `03-value-proposition.md` | ¿Que hace tu producto que los demas no? ¿Cual es el momento "aha"? ¿Como describes tu producto en una oracion? |
+| `metrics` | `04-metrics.md` | ¿Como sabras que tuviste exito en 6 meses? ¿Cual es el norte que quieres medir? ¿Cuantos usuarios/ingresos en Mes 3, 6, 12? |
+| `competitive_analysis` | `05-competitive-analysis.md` | ¿Quien mas resuelve este problema hoy? ¿Por que tu usuario elegiria tu producto sobre esos? ¿Cual es tu ventaja real? |
 
 ---
 
@@ -266,7 +266,7 @@ Dispara la generacion del documento para una seccion. El orquestador usa el hist
 **Response:** `text/event-stream` — streaming del documento generado
 ```
 data: {"type":"document_chunk","content":"# Brief\n\n## Problem Statement\n\n"}
-data: {"type":"document_done","document_id":"uuid","storage_path":"projects/.../brief.md"}
+data: {"type":"document_done","document_id":"uuid","storage_path":"projects/.../01-brief.md"}
 ```
 
 ### `PATCH /api/projects/:id/documents/:document_id`

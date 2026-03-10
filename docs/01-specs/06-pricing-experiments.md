@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Fecha:** 2026-03-06
-**Referencia:** PRD §10, `docs/00-discovery/brief.md`, `docs/01-specs/moscow.md`
+**Referencia:** PRD §10, `docs/00-discovery/01-brief.md`, `docs/01-specs/03-moscow.md`
 **Status:** Pendiente aprobacion CEO/CPO
 
 ---
@@ -22,7 +22,7 @@ Definir explicitamente la estrategia de trial y pricing para el lanzamiento del 
 | Agency | $699/mes | 5 activos | 00–07 | Todos + multi-cliente |
 | Enterprise | Negociable | A medida | 00–07 + extendido | Todo + SSO, SLA, soporte, custom |
 
-**Enterprise** no forma parte de la tabla de precios fijos: precio y oferta de valor se negocian previa discovery comercial. Ver `docs/00-discovery/brief.md` — Modelo de Negocio.
+**Enterprise** no forma parte de la tabla de precios fijos: precio y oferta de valor se negocian previa discovery comercial. Ver `docs/00-discovery/01-brief.md` — Modelo de Negocio.
 
 **Pregunta abierta para v1.0:** ¿Hay trial gratuito? ¿Donde va el paywall?
 
@@ -176,6 +176,6 @@ user_id, plan_type, trial_ends_at, subscription_id (Stripe, futuro)
 ## 6. Proximos pasos
 
 1. CEO/CPO elige experimento inicial (A, B o C)
-2. Agregar tareas de pricing a `docs/01-specs/auth-onboarding/tasks.md` o crear spec dedicado
+2. Agregar tareas de pricing a `docs/01-specs/01-auth-onboarding/tasks.md` o crear spec dedicado
 3. Integracion con Stripe en v1.1 (MoSCoW: Could Have)
 4. Para v1.0 sin Stripe: considerar "Request access" o waitlist para simular conversion
