@@ -8,6 +8,10 @@ export type DocumentType =
   | 'design'
   | 'tasks'
   | 'artifact'
+  | 'system_architecture'
+  | 'database_design'
+  | 'api_design'
+  | 'architecture_decisions'
 
 export type DocumentStatus = 'draft' | 'approved'
 

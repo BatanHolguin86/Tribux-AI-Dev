@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
-import type { Phase00Section } from '@/types/conversation'
+import type { Phase00Section, Phase02Section } from '@/types/conversation'
 import { SECTION_LABELS } from '@/lib/ai/prompts/phase-00'
+import { SECTION_LABELS as PHASE02_SECTION_LABELS } from '@/lib/ai/prompts/phase-02'
 
 export type ProjectContext = {
   name: string
@@ -104,6 +105,60 @@ export async function getApprovedFeatureSpecs(
 export function truncateText(text: string, maxChars: number): string {
   if (text.length <= maxChars) return text
   return text.slice(0, maxChars) + '\n...[truncado]'
+}
+
+export type Phase02Context = {
+  name: string
+  description: string | null
+  industry: string | null
+  persona: string | null
+  approvedSections: string[]
+  discoveryDocs: string
+  featureSpecs: string
+}
+
+export async function buildPhase02Context(projectId: string): Promise<Phase02Context> {
+  const supabase = await createClient()
+
+  const { data: project } = await supabase
+    .from('projects')
+    .select('name, description, industry, user_id')
+    .eq('id', projectId)
+    .single()
+
+  if (!project) throw new Error('Project not found')
+
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('persona')
+    .eq('id', project.user_id)
+    .single()
+
+  // Get approved Phase 02 sections for coherence
+  const { data: sections } = await supabase
+    .from('phase_sections')
+    .select('section, status')
+    .eq('project_id', projectId)
+    .eq('phase_number', 2)
+    .eq('status', 'approved')
+
+  const approvedSections = (sections ?? []).map(
+    (s) => PHASE02_SECTION_LABELS[s.section as Phase02Section] ?? s.section
+  )
+
+  // Get discovery docs and feature specs for context
+  const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
+  const featureSpecs = await getApprovedFeatureSpecs(projectId)
+
+  return {
+    name: project.name,
+    description: project.description,
+    industry: project.industry,
+    persona: profile?.persona ?? null,
+    approvedSections,
+    discoveryDocs: truncateText(discoveryDocs, 8000),
+    featureSpecs: truncateText(featureSpecs, 12000),
+  }
 }
 
 export async function buildFullProjectContext(projectId: string): Promise<{

@@ -5,13 +5,75 @@ import { buildProjectContext, getApprovedDiscoveryDocs, getApprovedFeatureSpecs 
 import { buildKiroPrompt } from '@/lib/ai/prompts/phase-01'
 import type { KiroDocumentType } from '@/types/feature'
 
+type CoreMessage = {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+type StoredMessage = {
+  role: string
+  content: string
+  created_at: string
+}
+
+function extractTextFromMessage(message: any): string {
+  if (!message) return ''
+
+  if (typeof message.content === 'string') {
+    return message.content
+  }
+
+  if (Array.isArray(message.parts)) {
+    return message.parts
+      .filter((p: any) => p && p.type === 'text' && typeof p.text === 'string')
+      .map((p: any) => p.text)
+      .join('')
+  }
+
+  if (Array.isArray(message.content)) {
+    return message.content
+      .filter((p: any) => p && p.type === 'text' && typeof p.text === 'string')
+      .map((p: any) => p.text)
+      .join('')
+  }
+
+  if (typeof message.text === 'string') {
+    return message.text
+  }
+
+  return ''
+}
+
+function toCoreMessages(rawMessages: unknown): CoreMessage[] {
+  if (!Array.isArray(rawMessages)) return []
+
+  return rawMessages.map((m: any) => ({
+    role: (m?.role ?? 'user') as CoreMessage['role'],
+    content: extractTextFromMessage(m),
+  }))
+}
+
+function toStoredMessages(rawMessages: unknown): StoredMessage[] {
+  if (!Array.isArray(rawMessages)) return []
+
+  const now = new Date().toISOString()
+
+  return rawMessages.map((m: any) => ({
+    role: m?.role ?? 'user',
+    content: extractTextFromMessage(m),
+    created_at: m?.created_at ?? now,
+  }))
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string; featureId: string }> }
 ) {
   const { id: projectId, featureId } = await params
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   if (!user) return new Response('Unauthorized', { status: 401 })
 
   const { document_type, messages } = await request.json()
@@ -47,15 +109,22 @@ export async function POST(
 
   const section = `feature_${featureId}_${docType}`
 
+  const coreMessages = toCoreMessages(messages)
+  const storedBaseMessages = toStoredMessages(messages)
+
   const result = streamText({
     model: defaultModel,
     system: systemPrompt,
-    messages,
+    messages: coreMessages,
     ...AI_CONFIG.chat,
     onFinish: async ({ text }) => {
       const allMessages = [
-        ...messages,
-        { role: 'assistant', content: text, created_at: new Date().toISOString() },
+        ...storedBaseMessages,
+        {
+          role: 'assistant',
+          content: text,
+          created_at: new Date().toISOString(),
+        },
       ]
       await supabase
         .from('agent_conversations')

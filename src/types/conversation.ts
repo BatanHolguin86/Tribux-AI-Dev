@@ -15,6 +15,12 @@ export type Phase00Section =
   | 'metrics'
   | 'competitive_analysis'
 
+export type Phase02Section =
+  | 'system_architecture'
+  | 'database_design'
+  | 'api_design'
+  | 'architecture_decisions'
+
 export type AgentConversation = {
   id: string
   project_id: string

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { PHASE02_SECTIONS } from '@/lib/ai/prompts/phase-02'
 
 export async function POST(
   _request: Request,
@@ -53,6 +54,21 @@ export async function POST(
     .update({ status: 'active', started_at: new Date().toISOString() })
     .eq('project_id', projectId)
     .eq('phase_number', 2)
+
+  // Create Phase 02 sections
+  for (const section of PHASE02_SECTIONS) {
+    await supabase
+      .from('phase_sections')
+      .upsert(
+        {
+          project_id: projectId,
+          phase_number: 2,
+          section,
+          status: 'pending',
+        },
+        { onConflict: 'project_id,phase_number,section' }
+      )
+  }
 
   await supabase
     .from('projects')
