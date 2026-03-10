@@ -27,41 +27,41 @@
 │
 ├── docs/                                  # Toda la documentacion del proyecto
 │   ├── discovery/                         # Phase 00 — briefs e investigacion
-│   │   ├── brief.md
-│   │   ├── personas.md
-│   │   ├── value-proposition.md
-│   │   ├── metrics.md
-│   │   └── competitive-analysis.md
+│   │   ├── 01-brief.md
+│   │   ├── 02-personas.md
+│   │   ├── 03-value-proposition.md
+│   │   ├── 04-metrics.md
+│   │   └── 05-competitive-analysis.md
 │   │
 │   ├── specs/                             # Phase 01 — specs KIRO por feature
-│   │   ├── prd.md                         # Product Requirements Document
-│   │   ├── requirements.md                # System requirements (EARS)
-│   │   ├── moscow.md                      # Feature priority matrix
-│   │   ├── constraints.md                 # Technical & business constraints
-│   │   ├── metrics-instrumentation.md     # Event tracking spec
-│   │   ├── pricing-experiments.md         # Pricing experiments spec
+│   │   ├── 01-prd.md                      # Product Requirements Document
+│   │   ├── 02-requirements.md             # System requirements (EARS)
+│   │   ├── 03-moscow.md                   # Feature priority matrix
+│   │   ├── 04-constraints.md              # Technical & business constraints
+│   │   ├── 05-metrics-instrumentation.md  # Event tracking spec
+│   │   ├── 06-pricing-experiments.md      # Pricing experiments spec
 │   │   │
-│   │   ├── auth-onboarding/
+│   │   ├── 01-auth-onboarding/
 │   │   │   ├── requirements.md
 │   │   │   ├── design.md
 │   │   │   └── tasks.md
-│   │   ├── project-dashboard/
+│   │   ├── 02-project-dashboard/
 │   │   │   ├── requirements.md
 │   │   │   ├── design.md
 │   │   │   └── tasks.md
-│   │   ├── phase-00-interactive/
+│   │   ├── 03-phase-00-interactive/
 │   │   │   ├── requirements.md
 │   │   │   ├── design.md
 │   │   │   └── tasks.md
-│   │   ├── kiro-generator/
+│   │   ├── 04-kiro-generator/
 │   │   │   ├── requirements.md
 │   │   │   ├── design.md
 │   │   │   └── tasks.md
-│   │   ├── orchestrator/
+│   │   ├── 05-orchestrator/
 │   │   │   ├── requirements.md
 │   │   │   ├── design.md
 │   │   │   └── tasks.md
-│   │   └── ui-ux-design-generator/
+│   │   └── 06-ui-ux-design-generator/
 │   │       ├── requirements.md
 │   │       ├── design.md
 │   │       └── tasks.md

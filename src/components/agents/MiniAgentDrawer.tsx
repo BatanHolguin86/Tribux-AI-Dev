@@ -7,6 +7,7 @@ import { TextStreamChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
+import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 
 function getTextContent(msg: UIMessage): string {
   return msg.parts
@@ -43,7 +44,7 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
     init()
   }, [projectId])
 
-  const { messages, sendMessage, status, stop } = useChat({
+  const { messages, sendMessage, status, stop, error } = useChat({
     transport: new TextStreamChatTransport({
       api: `/api/projects/${projectId}/agents/cto_virtual/threads/${threadId ?? 'pending'}/chat`,
     }),
@@ -89,6 +90,8 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
           </button>
         </div>
       </div>
+
+      {error && <ChatErrorBanner error={error} />}
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">

@@ -5,18 +5,20 @@ import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildFullProjectContext } from '@/lib/ai/context-builder'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { generateThreadTitle } from '@/lib/ai/title-generator'
+import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import type { AgentType } from '@/types/agent'
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string; agentType: string; threadId: string }> },
 ) {
-  const { id: projectId, agentType, threadId } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+  try {
+    const { id: projectId, agentType, threadId } = await params
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
-  // Get thread messages
+    // Get thread messages
   const { data: thread } = await supabase
     .from('conversation_threads')
     .select('messages, message_count')
@@ -81,5 +83,10 @@ export async function POST(
     },
   })
 
-  return result.toTextStreamResponse()
+    return result.toTextStreamResponse()
+  } catch (error: unknown) {
+    console.error('[Agents chat] Error', error)
+    const { status, body } = formatChatErrorResponse(error)
+    return NextResponse.json(body, { status })
+  }
 }

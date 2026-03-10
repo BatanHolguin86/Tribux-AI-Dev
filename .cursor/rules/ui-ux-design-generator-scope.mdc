@@ -1,0 +1,22 @@
+---
+description: Alcance v1 vs v2 del Generador de diseños UI/UX (06-ui-ux-design-generator)
+globs: docs/01-specs/06-ui-ux-design-generator/**/*
+alwaysApply: false
+---
+
+# UI/UX Design Generator — Alcance v1 vs v2
+
+**Feature:** Generador de diseños UI/UX (wireframes y mockups)  
+**Fase IA DLC:** Phase 02 — Architecture & Design (integrado)
+
+## Incluir en v1
+
+- Generación de wireframes y mockups (low-fi / high-fi opcional)
+- Vista de diseños, almacenamiento, descarga/export
+- Integración con Phase 01 (KIRO) y agente UI/UX Designer
+- Refinamiento vía lenguaje natural
+
+## NO incluir en v1 — Diferir a v2
+
+- Generación de **prototipos interactivos clickeables**
+- **Detección automática de componentes reutilizables** (design system) a partir de mockups

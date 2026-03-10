@@ -9,6 +9,7 @@ import { KIRO_DOC_LABELS } from '@/lib/ai/prompts/phase-01'
 import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
+import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
 
 function getTextContent(msg: UIMessage): string {
@@ -45,7 +46,7 @@ export function KiroChat({
 
   const section = `feature_${featureId}_${docType}`
 
-  const { messages, sendMessage, status, stop } = useChat({
+  const { messages, sendMessage, status, stop, error } = useChat({
     transport: new TextStreamChatTransport({
       api: `/api/projects/${projectId}/phases/1/features/${featureId}/chat`,
       body: { section, docType },
@@ -101,6 +102,7 @@ export function KiroChat({
 
   return (
     <div className="flex flex-1 flex-col">
+      {error && <ChatErrorBanner error={error} />}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !isLoading && (
           <div className="flex items-center justify-center py-12 text-sm text-gray-400">

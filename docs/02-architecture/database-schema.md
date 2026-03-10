@@ -481,11 +481,11 @@ project-documents/
 └── projects/
     └── {project_id}/
         ├── discovery/
-        │   ├── brief.md
-        │   ├── personas.md
-        │   ├── value-proposition.md
-        │   ├── metrics.md
-        │   └── competitive-analysis.md
+        │   ├── 01-brief.md
+        │   ├── 02-personas.md
+        │   ├── 03-value-proposition.md
+        │   ├── 04-metrics.md
+        │   └── 05-competitive-analysis.md
         ├── specs/
         │   └── {feature-name}/
         │       ├── requirements.md

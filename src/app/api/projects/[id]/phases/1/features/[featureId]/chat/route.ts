@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext, getApprovedDiscoveryDocs, getApprovedFeatureSpecs } from '@/lib/ai/context-builder'
 import { buildKiroPrompt } from '@/lib/ai/prompts/phase-01'
+import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import type { KiroDocumentType } from '@/types/feature'
 
 type CoreMessage = {
@@ -69,17 +70,18 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string; featureId: string }> }
 ) {
-  const { id: projectId, featureId } = await params
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) return new Response('Unauthorized', { status: 401 })
+  try {
+    const { id: projectId, featureId } = await params
+    const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
 
-  const { document_type, messages } = await request.json()
-  const docType = document_type as KiroDocumentType
+    const { document_type, messages } = await request.json()
+    const docType = document_type as KiroDocumentType
 
-  const context = await buildProjectContext(projectId)
+    const context = await buildProjectContext(projectId)
   const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
   const previousSpecs = await getApprovedFeatureSpecs(projectId, featureId)
 
@@ -141,5 +143,13 @@ export async function POST(
     },
   })
 
-  return result.toTextStreamResponse()
+    return result.toTextStreamResponse()
+  } catch (error: unknown) {
+    console.error('[Phase-01 feature chat] Error', error)
+    const { status, body } = formatChatErrorResponse(error)
+    return new Response(JSON.stringify(body), {
+      status,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
 }

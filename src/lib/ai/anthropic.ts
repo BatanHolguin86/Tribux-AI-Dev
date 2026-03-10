@@ -1,6 +1,7 @@
-import { anthropic } from '@ai-sdk/anthropic'
+import { getDefaultModel } from './models'
 
-export const defaultModel = anthropic('claude-sonnet-4-6')
+/** Default LLM model — resolved via AI_PROVIDER (anthropic|openai). */
+export const defaultModel = getDefaultModel()
 
 export const AI_CONFIG = {
   chat: { maxTokens: 4096, temperature: 0.7 },

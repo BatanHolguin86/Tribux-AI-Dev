@@ -20,7 +20,7 @@ El desarrollo de cualquier producto o solucion tecnologica sigue estas 8 fases s
 ### Phase 00 — Discovery & Ideation
 - Entender el problema de negocio, usuarios objetivo y contexto
 - Validar la idea con preguntas criticas: problema real, mercado, diferenciador
-- Output: `docs/00-discovery/brief.md` con problem statement, hipotesis y criterios de exito
+- Output: `docs/00-discovery/01-brief.md` con problem statement, hipotesis y criterios de exito
 
 ### Phase 01 — Requirements & Spec (KIRO)
 - Definir requisitos funcionales y no funcionales
@@ -199,10 +199,8 @@ Librerias, servicios externos, features previas necesarias.
 ├── docs/                        # Toda la documentacion del proyecto
 │   ├── 00-discovery/            # Phase 00 — briefs e investigacion
 │   ├── 01-specs/                # Phase 01 — specs KIRO por feature
-│   │   └── {feature-name}/
-│   │       ├── requirements.md
-│   │       ├── design.md
-│   │       └── tasks.md
+│   │   ├── 01-prd.md, 02-requirements.md, 03-moscow.md, ...
+│   │   └── 01-auth-onboarding/, 02-project-dashboard/, ... (requirements, design, tasks)
 │   ├── 02-architecture/         # Phase 02 — diagramas y ADRs
 │   │   └── decisions/           # Architecture Decision Records
 │   ├── 03-environment/          # Phase 03 — ver /infrastructure

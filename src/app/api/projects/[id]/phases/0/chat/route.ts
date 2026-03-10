@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext } from '@/lib/ai/context-builder'
 import { buildPhase00Prompt } from '@/lib/ai/prompts/phase-00'
+import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import type { Phase00Section } from '@/types/conversation'
 
 type CoreMessage = {
@@ -145,9 +146,9 @@ export async function POST(
     return result.toTextStreamResponse()
   } catch (error: unknown) {
     console.error('[Phase-00 chat] Error calling Anthropic or building response', error)
-    const message = error instanceof Error ? error.message : 'Unknown error'
-    return new Response(JSON.stringify({ error: message }), {
-      status: 500,
+    const { status, body } = formatChatErrorResponse(error)
+    return new Response(JSON.stringify(body), {
+      status,
       headers: { 'Content-Type': 'application/json' },
     })
   }

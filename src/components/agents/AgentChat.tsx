@@ -6,6 +6,7 @@ import { TextStreamChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
+import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { MessageActions } from './MessageActions'
 import { ProactiveSuggestions } from './ProactiveSuggestions'
 
@@ -34,7 +35,7 @@ export function AgentChat({
   const scrollRef = useRef<HTMLDivElement>(null)
   const [input, setInput] = useState('')
 
-  const { messages, sendMessage, status, stop } = useChat({
+  const { messages, sendMessage, status, stop, error } = useChat({
     transport: new TextStreamChatTransport({
       api: `/api/projects/${projectId}/agents/${agentType}/threads/${threadId}/chat`,
     }),
@@ -65,6 +66,7 @@ export function AgentChat({
 
   return (
     <div className="flex flex-1 flex-col">
+      {error && <ChatErrorBanner error={error} />}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !isLoading && (
           <>

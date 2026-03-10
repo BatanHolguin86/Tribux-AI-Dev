@@ -22,9 +22,9 @@ La carpeta `docs/` está ordenada según la **metodología IA DLC** (AI-Driven D
 
 ## Rutas rápidas
 
-- **Empezar por el problema y la propuesta:** `00-discovery/brief.md`
-- **Ver qué features está especificando el producto:** `01-specs/` (carpetas por feature: auth-onboarding, kiro-generator, orchestrator, etc.)
-- **Priorización y alcance:** `01-specs/moscow.md`, `01-specs/prd.md`
+- **Empezar por el problema y la propuesta:** `00-discovery/01-brief.md`
+- **Ver qué features está especificando el producto:** `01-specs/` (carpetas por feature: 01-auth-onboarding, 04-kiro-generator, 05-orchestrator, etc.)
+- **Priorización y alcance:** `01-specs/03-moscow.md`, `01-specs/01-prd.md`
 - **Decisiones técnicas:** `02-architecture/decisions/`
 
 ---

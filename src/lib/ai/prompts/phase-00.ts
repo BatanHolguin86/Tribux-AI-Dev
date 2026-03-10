@@ -272,9 +272,9 @@ export const SECTION_LABELS: Record<Phase00Section, string> = {
 }
 
 export const SECTION_DOC_NAMES: Record<Phase00Section, string> = {
-  problem_statement: 'brief.md',
-  personas: 'personas.md',
-  value_proposition: 'value-proposition.md',
-  metrics: 'metrics.md',
-  competitive_analysis: 'competitive-analysis.md',
+  problem_statement: '01-brief.md',
+  personas: '02-personas.md',
+  value_proposition: '03-value-proposition.md',
+  metrics: '04-metrics.md',
+  competitive_analysis: '05-competitive-analysis.md',
 }
