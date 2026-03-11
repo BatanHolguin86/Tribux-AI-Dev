@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { PHASE06_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-06'
 
 type Phase06FinalGateProps = {
@@ -22,9 +23,11 @@ export function Phase06FinalGate({ projectId }: Phase06FinalGateProps) {
 
     if (!res.ok) {
       setIsApproving(false)
+      toast.error('Error al aprobar la fase')
       return
     }
 
+    toast.success('Phase 06 aprobada — desbloqueando Phase 07...')
     setTimeout(() => {
       router.push(`/projects/${projectId}/phase/07`)
     }, 2000)

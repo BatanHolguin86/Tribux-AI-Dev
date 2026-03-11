@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { toast } from 'sonner'
 import type { SectionStatus } from '@/types/conversation'
 import { PHASE05_SECTIONS, CATEGORY_CONFIGS } from '@/lib/ai/prompts/phase-05'
 import { ChecklistCard } from '@/components/shared/ChecklistCard'
@@ -48,6 +49,7 @@ export function Phase05Layout({ projectId, categories: initialCategories }: Phas
         setCategories((prev) =>
           prev.map((c) => (c.key === sectionKey ? { ...c, status: category.status } : c))
         )
+        toast.error('Error al actualizar la categoria')
       }
     },
     [categories, projectId]

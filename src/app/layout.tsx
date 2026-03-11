@@ -1,5 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { ToastProvider } from '@/components/shared/ToastProvider'
 import './globals.css'
 
 const inter = Inter({
@@ -20,7 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} font-sans antialiased`}>{children}</body>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        {children}
+        <ToastProvider />
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   )
 }

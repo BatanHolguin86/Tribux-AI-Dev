@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { PHASE07_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-07'
 
 type Phase07FinalGateProps = {
@@ -22,9 +23,11 @@ export function Phase07FinalGate({ projectId }: Phase07FinalGateProps) {
 
     if (!res.ok) {
       setIsApproving(false)
+      toast.error('Error al completar el ciclo')
       return
     }
 
+    toast.success('Ciclo IA DLC completado!')
     setTimeout(() => {
       router.push(`/projects/${projectId}/dashboard`)
     }, 2000)
