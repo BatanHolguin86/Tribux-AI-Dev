@@ -63,10 +63,10 @@
 - [ ] **TASK-117:** Crear `src/stores/phase-00-store.ts` — store Zustand con: seccion activa, estado de cada seccion, documento activo, flag `isGenerating`; acciones: `setActiveSection`, `approveSection`, `setDocument`
 
 ### Tests
-- [ ] **TASK-118:** Tests unitarios para `buildPhase00Prompt` — verifica que cada seccion genera el prompt correcto con el contexto del proyecto (`tests/unit/ai/prompts/`)
-- [ ] **TASK-119:** Tests unitarios para `context-builder.ts` — verifica truncamiento y formato del contexto inyectado
-- [ ] **TASK-120:** Test de integracion para `POST /api/projects/[id]/phases/0/chat` — mock de la API de Anthropic, verifica persistencia del mensaje en DB (`tests/integration/api/phase-00-chat.test.ts`)
-- [ ] **TASK-121:** Test de integracion para el flujo de aprobacion — section approve → phase approve → project_phases updated (`tests/integration/api/phase-00-approve.test.ts`)
+- [x] **TASK-118:** Tests unitarios para `buildPhase00Prompt` — verifica que cada seccion genera el prompt correcto con el contexto del proyecto (`tests/unit/ai/prompts/`)
+- [x] **TASK-119:** Tests unitarios para `context-builder.ts` — verifica truncamiento y formato del contexto inyectado
+- [x] **TASK-120:** Test de integracion para `POST /api/projects/[id]/phases/0/chat` — mock de la API de Anthropic, verifica persistencia del mensaje en DB (`tests/integration/api/phase-00-chat.test.ts`)
+- [x] **TASK-121:** Test de integracion para el flujo de aprobacion — section approve → phase approve → project_phases updated (`tests/integration/api/phase-00-approve.test.ts`)
 - [ ] **TASK-122:** Test E2E — flujo completo Phase 00: entrar → conversar en Problem Statement → generar documento → aprobar seccion → completar las 5 secciones → aprobar Phase 00 → ver Phase 01 desbloqueada (`tests/e2e/phase-00.spec.ts`)
 - [ ] **TASK-123:** Test E2E — retomar Phase 00 a mitad: completar 2 secciones, recargar, verificar que el historial y los documentos persisten correctamente
 

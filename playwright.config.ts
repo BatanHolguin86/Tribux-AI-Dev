@@ -1,4 +1,13 @@
 import { defineConfig, devices } from '@playwright/test'
+import * as path from 'path'
+
+try {
+  require('dotenv').config({ path: '.env.local' })
+} catch {
+  // dotenv optional
+}
+
+const AUTH_FILE = path.join(__dirname, 'tests/.auth/user.json')
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -13,8 +22,24 @@ export default defineConfig({
   },
   projects: [
     {
+      name: 'setup',
+      testMatch: /auth\.setup\.ts/,
+      teardown: undefined,
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testIgnore: [/auth\.setup\.ts/, /\.authenticated\.spec\.ts/],
+      dependencies: [],
+    },
+    {
+      name: 'chromium-authenticated',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: AUTH_FILE,
+      },
+      testMatch: /\.authenticated\.spec\.ts/,
+      dependencies: ['setup'],
     },
   ],
   webServer: {
