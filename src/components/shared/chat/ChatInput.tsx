@@ -9,9 +9,10 @@ type ChatInputProps = {
   onStop?: () => void
   isLoading: boolean
   disabled?: boolean
+  placeholder?: string
 }
 
-export function ChatInput({ value, onChange, onSubmit, onStop, isLoading, disabled }: ChatInputProps) {
+export function ChatInput({ value, onChange, onSubmit, onStop, isLoading, disabled, placeholder }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export function ChatInput({ value, onChange, onSubmit, onStop, isLoading, disabl
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Escribe tu respuesta..."
+        placeholder={placeholder ?? "Escribe tu respuesta..."}
         disabled={disabled || isLoading}
         rows={1}
         className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 disabled:opacity-50"
