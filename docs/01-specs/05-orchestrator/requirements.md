@@ -9,7 +9,7 @@
 
 ## Contexto
 
-El Orquestador y los Agentes Especializados son el corazon inteligente de AI Squad. Mientras Phase 00 y Phase 01 usan el orquestador en modo guiado (conversacion estructurada con output definido), este modulo expone el chat libre con el CTO Virtual y 7 agentes especializados que el usuario puede consultar en cualquier momento del proyecto. Cada agente tiene un system prompt diferente, conocimiento especializado y acceso al contexto completo del proyecto.
+El Orquestador y los Agentes Especializados son el corazon inteligente de AI Squad. Mientras Phase 00 y Phase 01 usan el orquestador en modo guiado (conversacion estructurada con output definido), este modulo expone el chat libre con el CTO Virtual y 8 agentes especializados (incluyendo Operator) que el usuario puede consultar en cualquier momento del proyecto. Cada agente tiene un system prompt diferente, conocimiento especializado y acceso al contexto completo del proyecto.
 
 La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 que conoce tu proyecto en profundidad — no como un chatbot generico al que hay que dar contexto cada vez.
 
@@ -35,6 +35,7 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 - Como usuario, quiero chatear con el **DB Admin** para diseno de esquemas, queries, migraciones, RLS y optimizacion de base de datos, para tener guia de datos.
 - Como usuario, quiero chatear con el **QA Engineer** para estrategia de testing, generacion de test cases y analisis de calidad, para asegurar la calidad del producto.
 - Como usuario, quiero chatear con el **DevOps Engineer** para deployment, CI/CD, monitoring, infraestructura y configuracion de servicios, para tener guia operacional.
+- Como usuario, quiero chatear con el **Operator** para convertir specs y arquitectura aprobados en un plan ejecutable (repos, entornos, CI/CD y deploy), para cerrar el ciclo de diseño → construccion → lanzamiento.
 
 ### Conversacion y Contexto
 - Como usuario, quiero que las respuestas se muestren en streaming (palabra por palabra), para feedback inmediato.
@@ -42,6 +43,7 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 - Como usuario, quiero poder iniciar multiples conversaciones con el mismo agente (hilos separados), para organizar temas diferentes.
 - Como usuario, quiero que las respuestas incluyan formato markdown enriquecido (codigo, tablas, listas, headers), para respuestas utiles y bien formateadas.
 - Como usuario, quiero poder detener la generacion de una respuesta si el agente se fue por un camino incorrecto, para no desperdiciar tiempo.
+- Como usuario, quiero poder adjuntar capturas de pantalla, documentos o imagenes al chat, para que los agentes puedan analizar ejemplos concretos de problemas, diseños o errores.
 
 ### Artifacts y Exportacion
 - Como usuario, quiero poder guardar una respuesta del agente como artifact (documento) dentro de mi proyecto, para preservar decisiones y recomendaciones importantes.
@@ -60,7 +62,7 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 
 ### Acceso y Navegacion
 - [ ] El chat de agentes es accesible desde `/projects/:id/agents` y desde un boton flotante visible en todas las fases del proyecto
-- [ ] La pagina muestra una lista de 8 agentes (CTO Virtual + 7 especializados) con: nombre, icono, especialidad (1 linea), descripcion (2-3 lineas)
+- [ ] La pagina muestra una lista de 9 agentes (CTO Virtual + 8 especializados) con: nombre, icono, especialidad (1 linea), descripcion (2-3 lineas)
 - [ ] Al seleccionar un agente, se abre la interfaz de chat con el historial existente cargado
 - [ ] El usuario puede navegar entre agentes sin perder el contexto de conversaciones abiertas
 
@@ -80,7 +82,7 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 - [ ] Cada agente tiene un system prompt unico que define su: rol, expertise, tono, tipo de preguntas que maneja, formato de respuesta preferido
 - [ ] Cada agente recibe automaticamente el contexto completo del proyecto al iniciar la conversacion
 - [ ] Los agentes responden dentro de su area de expertise; si la pregunta esta fuera de su ambito, redirigen al CTO Virtual o al agente apropiado
-- [ ] Los 7 agentes especializados son: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer
+- [ ] Los 8 agentes especializados son: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer, Operator
 
 ### Chat y Streaming
 - [ ] Las respuestas se streaman token por token; primer token en < 2s
@@ -88,6 +90,13 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 - [ ] El usuario puede detener la generacion en cualquier momento con un boton "Stop"
 - [ ] El input acepta texto multilinea (Shift+Enter para nueva linea, Enter para enviar)
 - [ ] El historial de conversacion persiste en `agent_conversations` y se carga al re-abrir el chat
+
+### Adjuntos en el Chat
+- [ ] El usuario puede adjuntar archivos al chat de agentes (al menos imagenes y PDF) mediante un boton de \"Adjuntar\" en la interfaz.
+- [ ] Para cada mensaje que incluya adjuntos, el sistema muestra una vista previa (thumbnail para imagenes, icono/titulo para otros tipos de archivo).
+- [ ] El sistema limita el tamano maximo y tipos de archivo permitidos (p.ej. <= 10MB; imagenes comunes y PDF); si el archivo no cumple, muestra un mensaje de error claro.
+- [ ] Los archivos adjuntos se almacenan en Supabase Storage bajo `projects/{id}/chat-attachments/{threadId}/{filename}` y se referencian desde el mensaje correspondiente en `conversation_threads`.
+- [ ] Los agentes reciben en su contexto una lista de adjuntos por mensaje (URLs firmadas y metadatos basicos) para poder razonar sobre ellos en las respuestas.
 
 ### Hilos de Conversacion
 - [ ] El usuario puede crear un nuevo hilo con el mismo agente (boton "Nueva conversacion")
@@ -130,6 +139,5 @@ La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 qu
 - Agentes que ejecutan codigo (corren scripts, hacen commits) — v2.0
 - Agentes con memoria persistente entre proyectos — v2.0
 - Conversaciones multi-agente (dos agentes discuten entre si) — v2.0
-- Adjuntar archivos o imagenes al chat — v1.1
 - Audio/voz para input del usuario — v2.0
 - Personalizacion de system prompts por el usuario — v2.0

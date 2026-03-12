@@ -85,11 +85,15 @@
 
 ## Value Map
 
-### Products & Services
-
 - Plataforma web con orquestador IA (CTO Virtual) que soporta cualquier tipo de producto — desde interfaces simples hasta productos complejos con integraciones, soluciones IA y agentes autonomos
-- 7 agentes especializados: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer
+- 8 agentes especializados: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer, Operator
 - Sugerencias proactivas de los agentes (v1.0): el sistema ofrece 1–3 sugerencias contextuales al abrir el chat, sin que el usuario tenga que saber que preguntar
+- Cuatro planes: Starter, Builder, Agency y Enterprise (precio y alcance de Enterprise negociados caso por caso)
+- Metodologia IA DLC con 8 fases estructuradas
+- Adjuntar archivos (imagenes, capturas, documentos clave) en el chat de agentes para que puedan analizar contexto visual o evidencias de problemas
+- Formato KIRO para specs (requirements.md, design.md, tasks.md)
+- Validacion humana en cada fase antes de avanzar
+- Stack tecnico opinado y probado (Next.js, Supabase, Vercel)
 - Cuatro planes: Starter, Builder, Agency y Enterprise (precio y alcance de Enterprise negociados caso por caso)
 - Metodologia IA DLC con 8 fases estructuradas
 - Formato KIRO para specs (requirements.md, design.md, tasks.md)

@@ -29,6 +29,10 @@ pnpm exec playwright test --ui
 | `tests/e2e/protected-routes.spec.ts` | Redirección a login cuando no hay sesión |
 | `tests/e2e/phase-00.spec.ts` | Phase 00: redirect sin auth |
 | `tests/e2e/phase-00.authenticated.spec.ts` | Phase 00 con sesión: carga y muestra chat input |
+| `tests/e2e/agents.spec.ts` | Agentes: redirect a login sin auth |
+| `tests/e2e/agents.authenticated.spec.ts` | Agentes con sesión: cargar, crear conversación, enviar mensaje, flujo con artifact (requiere créditos Anthropic) |
+| `tests/e2e/smoke-staging.authenticated.spec.ts` | Smoke TASK-176: dashboard → Phase 00 → Phase 01; comprueba carga de páginas clave (local o staging) |
+| `tests/e2e/agents-paywall.authenticated.spec.ts` | TASK-222: usuario Starter ve agentes Builder bloqueados (candado/disabled); asume plan starter en BD |
 
 ## Flujos autenticados
 
@@ -47,8 +51,20 @@ El proyecto `setup` hace login y guarda la sesión; el proyecto `chromium-authen
 
 ## Chat y créditos
 
-Los tests no envían mensajes al chat. Para probar Phase 00/01 con IA real, se requiere:
+Los tests de agents.authenticated.spec.ts incluyen envío de mensajes al chat. Para que el flujo completo (respuesta + guardar artifact) pase, se requiere:
 
 - `ANTHROPIC_API_KEY` válida con créditos
 - Usuario autenticado
 - Proyecto existente
+
+Sin créditos, el test "create conversation, see chat input and send message" pasa (verifica que el mensaje del usuario se muestra). El test "full flow" requiere respuesta de la IA.
+
+## Smoke test en staging (TASK-176)
+
+Para ejecutar el smoke contra **staging** en lugar de localhost:
+
+```bash
+BASE_URL=https://tu-staging.vercel.app TEST_USER_EMAIL=... TEST_USER_PASSWORD=... pnpm test:e2e tests/e2e/smoke-staging.authenticated.spec.ts
+```
+
+El runbook completo (checklist manual + criterios) está en `docs/05-qa/smoke-staging-phase00-phase01.md`.

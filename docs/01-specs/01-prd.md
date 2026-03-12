@@ -79,7 +79,7 @@ La plataforma no restringe el tipo de producto. El orquestador y los agentes esp
 | M2 | Project Dashboard | Vista y gestion de proyectos, estado de fases, navegacion |
 | M3 | Phase 00 Interactivo | Flujo guiado de discovery con orquestador IA |
 | M4 | Generador KIRO | Phase 01 interactivo — genera requirements, design y tasks |
-| M5 | Orquestador + Agentes | Interfaz de chat con CTO Virtual y 7 agentes especializados (incl. UI/UX Designer) |
+| M5 | Orquestador + Agentes | Interfaz de chat con CTO Virtual y 8 agentes especializados (incl. UI/UX Designer y Operator) |
 | M6 | Phase 02 Interactivo | Guia interactiva para arquitectura, ADRs y generacion de diseños UI/UX (wireframes, mockups) |
 | M7 | Phase 03 Interactivo | Checklist guiado de environment setup (Supabase, Vercel, GitHub) |
 | M8 | Phase 04 Interactivo | Kanban de tasks generadas en KIRO + integracion con chat de agentes |
@@ -217,7 +217,8 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 
 ### M5 — Orquestador + Agentes
 - Chat persistente con el CTO Virtual (orquestador general)
-- Acceso a 7 agentes especializados via seleccion (Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer)
+- Acceso a 8 agentes especializados via seleccion (Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer, Operator)
+- Adjuntar archivos (al menos imagenes y PDF) en las conversaciones con agentes, almacenados por proyecto y visibles como adjuntos en el historial
 - Sugerencias proactivas (v1.0): al abrir el chat o un hilo vacio, el sistema muestra 1–3 sugerencias contextuales basadas en el estado del proyecto (fase, documentos pendientes); el usuario puede usarlas como primer mensaje o ignorarlas
 - Contexto del proyecto inyectado automaticamente en cada conversacion
 - Historial de conversaciones por proyecto

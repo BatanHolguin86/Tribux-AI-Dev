@@ -10,8 +10,8 @@
 ## Checklist de Implementacion
 
 ### Base de Datos
-- [ ] **TASK-129:** Crear migracion `008_create_project_features.sql` — tabla `project_features` con RLS, unique constraint (project_id, name) e indice en (project_id, display_order)
-- [ ] **TASK-130:** Crear migracion `009_create_feature_documents.sql` — tabla `feature_documents` con RLS y unique constraint (feature_id, document_type)
+- [ ] **TASK-129:** Crear migracion `007_create_project_features.sql` — tabla `project_features` con RLS, unique constraint (project_id, name) e indice en (project_id, display_order)
+- [ ] **TASK-130:** Crear migracion `008_create_feature_documents.sql` — tabla `feature_documents` con RLS y unique constraint (feature_id, document_type)
 - [ ] **TASK-131:** Actualizar politicas de `agent_conversations` para soportar `phase_number = 1` con section pattern `feature_{feature_id}_{document_type}`
 
 ### Refactorizacion — Componentes Compartidos
@@ -25,7 +25,7 @@
 - [ ] **TASK-137:** Crear `src/lib/ai/prompts/phase-01.ts` — system prompts para cada tipo de documento KIRO (requirements, design, tasks) + funcion `buildKiroPrompt(docType, projectContext, discoveryDocs, previousSpecs)`
 - [ ] **TASK-138:** Crear `src/lib/ai/prompts/feature-suggestions.ts` — prompt especializado para sugerir features basados en el discovery
 - [ ] **TASK-139:** Actualizar `src/lib/ai/context-builder.ts` — agregar funciones `getApprovedDiscoveryDocs(projectId)` y `getApprovedFeatureSpecs(projectId, currentFeatureId)` para construir contexto acumulativo
-- [ ] **TASK-140:** Implementar truncamiento inteligente de contexto cuando supera 50K tokens — resumir specs de features anteriores manteniendo data models y API contracts
+- [x] **TASK-140:** Implementar truncamiento inteligente de contexto cuando supera 50K tokens — `applyProgressiveTruncation` en context-builder; cap en `getApprovedFeatureSpecs`
 
 ### Backend — API Routes
 - [ ] **TASK-141:** Crear `GET /api/projects/[id]/phases/1/features` — retorna features con estado de documentos; incluye conteo de features completados
@@ -36,7 +36,8 @@
 - [ ] **TASK-146:** Crear `POST /api/projects/[id]/phases/1/features/[featureId]/chat` — chat con orquestador para documento especifico; construye contexto completo (discovery + specs previos); streaming via Vercel AI SDK
 - [ ] **TASK-147:** Crear `POST /api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/generate` — genera documento KIRO; almacena en Storage y registra en `feature_documents`; streaming
 - [ ] **TASK-148:** Crear `PATCH /api/projects/[id]/phases/1/features/[featureId]/documents/[docType]` — edicion manual de documento; incrementa version
-- [ ] **TASK-149:** Crear `POST /api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/approve` — aprueba documento; si los 3 estan aprobados, marca feature como `spec_complete`
+- [ ] **TASK-149a:** Crear `src/lib/specs/coherence-validator.ts` — validacion automatica: detecta tablas/columnas duplicadas, referencias inexistentes, violacion de convenciones; retorna lista de inconsistencias con sugerencias
+- [ ] **TASK-149:** Crear `POST /api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/approve` — ejecuta validacion de coherencia (usa TASK-149a); si OK, aprueba documento; si los 3 estan aprobados, marca feature como `spec_complete`
 - [ ] **TASK-150:** Crear `POST /api/projects/[id]/phases/1/approve` — valida todos los features aprobados; actualiza `project_phases` phase 1 → completed, phase 2 → active
 
 ### Frontend — Layout y Pagina
@@ -65,19 +66,19 @@
 - [ ] **TASK-165:** Crear `src/stores/phase-01-store.ts` — store Zustand con: feature activo, document_type activo, lista de features, estado de documentos; acciones: `setActiveFeature`, `setActiveDocType`, `approveDocument`, `addFeature`, `reorderFeatures`
 
 ### Tests
-- [ ] **TASK-166:** Tests unitarios para `buildKiroPrompt` — verifica prompt correcto para cada tipo de documento con contexto del proyecto (`tests/unit/ai/prompts/phase-01.test.ts`)
-- [ ] **TASK-167:** Tests unitarios para truncamiento de contexto — verifica que contextos > 50K tokens se resumen correctamente
-- [ ] **TASK-168:** Test de integracion para CRUD de features — crear, editar, reordenar, eliminar (`tests/integration/api/features.test.ts`)
-- [ ] **TASK-169:** Test de integracion para flujo de generacion de documentos — chat → generate → approve por cada tipo (`tests/integration/api/kiro-documents.test.ts`)
-- [ ] **TASK-170:** Test de integracion para aprobacion de Phase 01 — todos los features aprobados → phase approve → project_phases updated (`tests/integration/api/phase-01-approve.test.ts`)
-- [ ] **TASK-171:** Test E2E — flujo completo Phase 01: definir features → generar requirements → aprobar → generar design → aprobar → generar tasks → aprobar → aprobar feature → aprobar Phase 01 (`tests/e2e/phase-01.spec.ts`)
-- [ ] **TASK-172:** Test E2E — retomar Phase 01: completar 1 feature, recargar, verificar persistencia de features, documentos y conversaciones
-- [ ] **TASK-173:** Test de regresion — verificar que Phase 00 sigue funcionando tras la refactorizacion de componentes compartidos
+- [x] **TASK-166:** Tests unitarios para `buildKiroPrompt` — verifica prompt correcto para cada tipo de documento con contexto del proyecto (`tests/unit/ai/prompts/phase-01.test.ts`)
+- [x] **TASK-167:** Tests unitarios para truncamiento de contexto — verifica que contextos > 50K tokens se resumen correctamente (`tests/unit/lib/context-truncation.test.ts`)
+- [x] **TASK-168:** Test de integracion para CRUD de features — crear, editar, reordenar, eliminar (`tests/integration/api/features.test.ts`)
+- [x] **TASK-169:** Test de integracion para flujo de generacion de documentos — chat → generate → approve por cada tipo (`tests/integration/api/kiro-documents.test.ts`)
+- [x] **TASK-170:** Test de integracion para aprobacion de Phase 01 — todos los features aprobados → phase approve → project_phases updated (`tests/integration/api/phase-01-approve.test.ts`)
+- [x] **TASK-171:** Test E2E — flujo completo Phase 01: definir features → generar requirements → aprobar → generar design → aprobar → generar tasks → aprobar → aprobar feature → aprobar Phase 01 (`tests/e2e/phase-01.spec.ts`, `phase-01.authenticated.spec.ts`)
+- [x] **TASK-172:** Test E2E — retomar Phase 01: completar 1 feature, recargar, verificar persistencia de features, documentos y conversaciones (`phase-01.authenticated.spec.ts` — persistence after reload)
+- [x] **TASK-173:** Test de regresion — verificar que Phase 00 sigue funcionando tras la refactorizacion de componentes compartidos (`phase-00.authenticated.spec.ts` — TASK-173 regression test)
 
 ### Deploy
-- [ ] **TASK-174:** Aplicar migraciones 008 y 009 en staging
+- [x] **TASK-174:** Aplicar migraciones 007 y 008 (project_features, feature_documents) en staging si aun no aplicadas — runbook: `docs/06-ops/apply-migrations-staging.md`
 - [ ] **TASK-175:** Instalar `@dnd-kit/core` + `@dnd-kit/sortable` en el proyecto
-- [ ] **TASK-176:** Smoke test en staging: crear proyecto, completar Phase 00, entrar a Phase 01, definir features, generar spec completo de un feature, aprobar
+- [x] **TASK-176:** Smoke test en staging: crear proyecto, completar Phase 00, entrar a Phase 01, definir features, generar spec completo de un feature, aprobar (`docs/05-qa/smoke-staging-phase00-phase01.md`, `tests/e2e/smoke-staging.authenticated.spec.ts`, `BASE_URL` en Playwright)
 - [ ] **TASK-177:** Verificar rendimiento del contexto acumulativo con 5+ features especificados (token usage y latencia)
 
 ---
@@ -106,4 +107,5 @@ Semana 4: TASK-166 → 177  (Tests + Deploy)
 - [ ] Al aprobar Phase 01: phase 1 → completed, phase 2 → active, celebracion visual
 - [ ] Retomar Phase 01 carga features, documentos y conversaciones correctamente
 - [ ] Componentes compartidos de Phase 00 refactorizados y Phase 00 sigue funcionando
+- [ ] Validacion automatica de coherencia entre specs: detecta inconsistencias al aprobar y las muestra al usuario
 - [ ] Tests E2E pasando en staging

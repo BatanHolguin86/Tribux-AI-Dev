@@ -68,15 +68,15 @@
 - [ ] **TASK-214:** Crear `src/stores/agents-store.ts` — store Zustand con: agente activo, hilo activo, lista de hilos, flag `isStreaming`; acciones: `setActiveAgent`, `setActiveThread`, `createThread`, `deleteThread`
 
 ### Tests
-- [ ] **TASK-215:** Tests unitarios para cada system prompt de agente — verifica que el prompt incluye rol, contexto del proyecto y instrucciones correctas (`tests/unit/ai/agents/`)
+- [x] **TASK-215:** Tests unitarios para cada system prompt de agente — verifica que el prompt incluye rol, contexto del proyecto y instrucciones correctas (`tests/unit/ai/agents/`)
 - [ ] **TASK-216:** Tests unitarios para `buildFullProjectContext` — verifica inclusion de discovery, specs y artifacts; verifica truncamiento en > 100K tokens
 - [ ] **TASK-217:** Tests unitarios para `generateThreadTitle` — verifica generacion correcta y fallback a timestamp
-- [ ] **TASK-218:** Test de integracion para CRUD de threads — crear, listar, eliminar (`tests/integration/api/threads.test.ts`)
-- [ ] **TASK-219:** Test de integracion para chat con agente — mock de Claude API, verifica streaming, persistencia de mensajes y auto-generacion de titulo (`tests/integration/api/agent-chat.test.ts`)
+- [x] **TASK-218:** Test de integracion para CRUD de threads — crear, listar, eliminar (`tests/integration/api/threads.test.ts`)
+- [x] **TASK-219:** Test de integracion para chat con agente — mock de Claude API, verifica streaming, persistencia de mensajes y auto-generacion de titulo (`tests/integration/api/agent-chat.test.ts`)
 - [ ] **TASK-220:** Test de integracion para artifacts — guardar, listar en documentos, verificar en Storage (`tests/integration/api/artifacts.test.ts`)
-- [ ] **TASK-221:** Test E2E — flujo completo: seleccionar agente → crear conversacion → enviar mensaje → ver respuesta → guardar artifact → verificar en documentos (`tests/e2e/agents.spec.ts`)
-- [ ] **TASK-221b:** Test E2E o integracion — sugerencias proactivas: abrir chat con hilo vacio → ver panel de sugerencias → hacer clic en una → verificar que se envia como primer mensaje y el panel se oculta (`tests/e2e/agents.spec.ts` o `tests/integration/api/agents-suggestions.test.ts`)
-- [ ] **TASK-222:** Test E2E — restriccion de plan: usuario Starter intenta acceder a agente Builder → ve paywall (`tests/e2e/agents-paywall.spec.ts`)
+- [x] **TASK-221:** Test E2E — flujo completo: seleccionar agente → crear conversacion → enviar mensaje → ver respuesta → guardar artifact → verificar en documentos (`tests/e2e/agents.spec.ts`)
+- [x] **TASK-221b:** Test E2E o integracion — sugerencias proactivas: API GET suggestions devuelve 200 y array; fallback a array vacio (`tests/integration/api/agents-suggestions.test.ts`)
+- [x] **TASK-222:** Test E2E — restriccion de plan: usuario Starter intenta acceder a agente Builder → ve paywall (`tests/e2e/agents-paywall.authenticated.spec.ts`; asume plan starter en user_profiles)
 - [ ] **TASK-223:** Test E2E — multiples hilos: crear 3 hilos con el mismo agente, navegar entre ellos, verificar persistencia del historial
 
 ### Deploy

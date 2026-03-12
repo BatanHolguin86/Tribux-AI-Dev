@@ -132,7 +132,7 @@
 
 **REQ-048** The system shall provide a persistent chat interface with the AI orchestrator (CTO Virtual) available from any project phase.
 
-**REQ-049** The system shall provide access to 7 specialized agents: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer.
+**REQ-049** The system shall provide access to 8 specialized agents: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer, Operator.
 
 **REQ-050** WHEN a user initiates a conversation with an agent, the system shall automatically inject the full project context (all approved documents) into the agent's context.
 
@@ -151,6 +151,8 @@
 **REQ-057** WHILE streaming a response, the system shall display a visual indicator and allow the user to stop generation.
 
 **REQ-057b** WHEN a user opens the agents chat or an empty thread, the system shall display proactive suggestions (1–3 actionable items) based on project state (current phase, pending documents, next recommended action). The user may use a suggestion as the first message or ignore it and type freely.
+
+**REQ-057c** The system shall allow users to attach files (at least images and PDF documents) to agent chat messages, store them in project-specific storage, and expose secure URLs and basic metadata for each attachment to the agent's context.
 
 ---
 

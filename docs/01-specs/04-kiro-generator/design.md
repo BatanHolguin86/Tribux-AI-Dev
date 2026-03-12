@@ -307,10 +307,11 @@ Actualiza contenido de un documento (edicion manual).
 **Response 200:** `{ "document_id": "uuid", "version": 2 }`
 
 ### `POST /api/projects/:id/phases/1/features/:featureId/documents/:docType/approve`
-Aprueba un documento individual.
+Aprueba un documento individual. Ejecuta validacion de coherencia contra specs anteriores antes de aprobar.
 
 **Request:** `{}`
 **Response 200:** `{ "document_type": "requirements", "status": "approved", "next_document": "design" }`
+**Response 400** (inconsistencias detectadas): `{ "error": "Inconsistencias de coherencia", "inconsistencies": [{ "type": "duplicate_table", "message": "...", "suggestion": "..." }] }`
 
 ### `POST /api/projects/:id/phases/1/approve`
 Aprueba Phase 01 completo. Requiere todos los features con status `approved`.
@@ -393,6 +394,12 @@ Los componentes de chat y documento de Phase 00 se refactorizan a `shared/` para
 
 ### Task numbering global por proyecto
 Los TASK-IDs no reinician por feature — son globales al proyecto. Esto evita conflictos y facilita referencia cruzada entre features.
+
+### Validacion automatica de coherencia (v1.0)
+Al aprobar un documento (design.md o requirements.md), el sistema ejecuta validaciones programaticas comparando con specs de features anteriores:
+- **Data model:** tablas duplicadas con nombres distintos (ej. `users` vs `user`), columnas que referencian entidades inexistentes
+- **Convenciones:** snake_case para tablas/columnas, plural para tablas
+- Las inconsistencias se muestran en la UI antes de aprobar; el usuario puede corregir o forzar aprobacion con confirmacion
 
 ---
 
