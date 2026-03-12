@@ -7,6 +7,7 @@ import { LEAD_DEVELOPER_PROMPT } from './lead-developer'
 import { DB_ADMIN_PROMPT } from './db-admin'
 import { QA_ENGINEER_PROMPT } from './qa-engineer'
 import { DEVOPS_ENGINEER_PROMPT } from './devops-engineer'
+import { OPERATOR_PROMPT } from './operator'
 
 const AGENT_PROMPTS: Record<AgentType, string> = {
   cto_virtual: CTO_VIRTUAL_PROMPT,
@@ -17,6 +18,7 @@ const AGENT_PROMPTS: Record<AgentType, string> = {
   db_admin: DB_ADMIN_PROMPT,
   qa_engineer: QA_ENGINEER_PROMPT,
   devops_engineer: DEVOPS_ENGINEER_PROMPT,
+  operator: OPERATOR_PROMPT,
 }
 
 export type FullProjectContext = {

@@ -7,7 +7,7 @@ export function getNextAction(activePhase: number): string {
     case 0:
       return 'Completa el brief de Discovery'
     case 1:
-      return 'Aprueba los specs KIRO'
+      return 'Define y aprueba los specs KIRO de tus features'
     case 2:
       return 'Revisa la arquitectura del sistema'
     case 3:

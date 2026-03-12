@@ -97,14 +97,36 @@ export async function getApprovedFeatureSpecs(
     )
   }
 
-  return Object.values(byFeature)
+  const raw = Object.values(byFeature)
     .map((f) => `### Feature: ${f.name}\n${f.docs.join('\n')}`)
     .join('\n\n')
+
+  // Cap total size for context (~50K tokens ≈ 200k chars); keep recent features fuller
+  const maxFeatureSpecsChars = 120_000
+  return truncateText(raw, maxFeatureSpecsChars)
 }
 
 export function truncateText(text: string, maxChars: number): string {
   if (text.length <= maxChars) return text
   return text.slice(0, maxChars) + '\n...[truncado]'
+}
+
+/** ~50K tokens ≈ 200k chars. When total exceeds maxTotal, truncate progressively. */
+export function applyProgressiveTruncation(
+  discoveryDocs: string,
+  featureSpecs: string,
+  artifacts: string,
+  maxTotal: number = 200_000,
+): { discoveryDocs: string; featureSpecs: string; artifacts: string } {
+  const totalChars = discoveryDocs.length + featureSpecs.length + artifacts.length
+  if (totalChars <= maxTotal) {
+    return { discoveryDocs, featureSpecs, artifacts }
+  }
+  return {
+    discoveryDocs: truncateText(discoveryDocs, 40_000),
+    featureSpecs: truncateText(featureSpecs, 80_000),
+    artifacts: truncateText(artifacts, 20_000),
+  }
 }
 
 export type Phase02Context = {
@@ -213,19 +235,8 @@ export async function buildFullProjectContext(projectId: string): Promise<{
     .map((a) => `### ${a.section}\n${truncateText(a.content ?? '', 1000)}`)
     .join('\n\n')
 
-  // Progressive truncation for large contexts
-  const totalChars = discoveryDocs.length + featureSpecs.length + artifacts.length
-  const maxTotal = 200000 // ~50K tokens
-
-  let finalDiscovery = discoveryDocs
-  let finalSpecs = featureSpecs
-  let finalArtifacts = artifacts
-
-  if (totalChars > maxTotal) {
-    finalArtifacts = truncateText(artifacts, 20000)
-    finalSpecs = truncateText(featureSpecs, 80000)
-    finalDiscovery = truncateText(discoveryDocs, 40000)
-  }
+  const { discoveryDocs: finalDiscovery, featureSpecs: finalSpecs, artifacts: finalArtifacts } =
+    applyProgressiveTruncation(discoveryDocs, featureSpecs, artifacts, 200_000)
 
   return {
     name: project.name,

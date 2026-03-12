@@ -30,7 +30,10 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
             desc: 'Defines la vision, tomas decisiones y apruebas cada fase.',
           },
           {
-            title: '7 agentes especializados',
+          {
+            title: 'Equipo de 9 agentes',
+            desc: 'CTO Virtual + 8 agentes especializados que diseñan, construyen y lanzan contigo.',
+          },
             desc: 'Arquitectos, desarrolladores, disenadores y QA trabajan para ti.',
           },
           {

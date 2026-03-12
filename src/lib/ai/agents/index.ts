@@ -83,6 +83,15 @@ export const AGENTS: AgentMeta[] = [
       'Ingeniero de operaciones: configura CI/CD, deploy, monitoring y scripts de infraestructura.',
     planRequired: 'builder',
   },
+  {
+    id: 'operator',
+    name: 'Operator',
+    icon: '🛠️',
+    specialty: 'Opera sistemas end-to-end: repos, entornos, CI/CD y deploys reproducibles',
+    description:
+      'Cierra el ciclo: toma specs y arquitectura aprobados y los traduce en repos, pipelines y planes de deploy listos para ejecutar.',
+    planRequired: 'agency',
+  },
 ]
 
 export const AGENT_MAP: Record<AgentType, AgentMeta> = Object.fromEntries(

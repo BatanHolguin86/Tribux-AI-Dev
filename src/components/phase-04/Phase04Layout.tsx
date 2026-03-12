@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import type { TaskWithFeature, TaskStatus } from '@/types/task'
+import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { KanbanBoard } from './KanbanBoard'
 import { Phase04FinalGate } from './Phase04FinalGate'
 
@@ -58,26 +59,12 @@ export function Phase04Layout({ projectId, initialTasks }: Phase04LayoutProps) {
 
   return (
     <div>
-      {/* Progress */}
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">Core Development</h2>
-          <p className="text-sm text-gray-600">
-            {doneTasks} de {totalTasks} tasks completadas
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
-            <div
-              className="h-2 rounded-full bg-violet-600 transition-all"
-              style={{ width: `${(doneTasks / totalTasks) * 100}%` }}
-            />
-          </div>
-          <span className="text-xs font-medium text-gray-500">
-            {Math.round((doneTasks / totalTasks) * 100)}%
-          </span>
-        </div>
-      </div>
+      <PhaseProgressHeader
+        title="Core Development"
+        completedCount={doneTasks}
+        totalCount={totalTasks}
+        unitLabel="tasks"
+      />
 
       {allDone ? (
         <Phase04FinalGate projectId={projectId} totalTasks={totalTasks} />

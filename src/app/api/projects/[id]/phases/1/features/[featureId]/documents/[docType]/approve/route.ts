@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getApprovedFeatureSpecs } from '@/lib/ai/context-builder'
+import { validateSpecCoherence } from '@/lib/specs/coherence-validator'
 import { KIRO_DOC_TYPES } from '@/lib/ai/prompts/phase-01'
 import type { KiroDocumentType } from '@/types/feature'
 
@@ -14,16 +16,33 @@ export async function POST(
 
   const docTypeKey = docType as KiroDocumentType
 
-  // Verify document exists
   const { data: doc } = await supabase
     .from('feature_documents')
-    .select('id')
+    .select('id, content')
     .eq('feature_id', featureId)
     .eq('document_type', docTypeKey)
     .single()
 
   if (!doc) {
     return NextResponse.json({ error: 'No hay documento para aprobar' }, { status: 400 })
+  }
+
+  if (docTypeKey === 'design' || docTypeKey === 'requirements') {
+    const previousSpecs = await getApprovedFeatureSpecs(projectId, featureId)
+    const issues = validateSpecCoherence(
+      docTypeKey,
+      doc.content ?? '',
+      previousSpecs,
+    )
+    if (issues.length > 0) {
+      return NextResponse.json(
+        {
+          error: 'Inconsistencias de coherencia',
+          inconsistencies: issues,
+        },
+        { status: 400 },
+      )
+    }
   }
 
   // Approve doc

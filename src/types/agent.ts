@@ -9,6 +9,7 @@ export type AgentType =
   | 'db_admin'
   | 'qa_engineer'
   | 'devops_engineer'
+  | 'operator'
 
 export type AgentDefinition = {
   id: AgentType

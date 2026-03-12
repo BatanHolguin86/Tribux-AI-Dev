@@ -17,6 +17,11 @@ export function PhasesOverviewStep({ isSubmitting, onFinish, onBack }: PhasesOve
       <p className="mt-2 text-sm text-gray-600">
         Tu equipo de agentes IA te guiara por estas 8 fases.
       </p>
+      <p className="mt-1 text-xs text-gray-500">
+        Justo despues de este paso empezaras en la <span className="font-medium">Phase 00 (Discovery)</span>,
+        donde conversaras con el orquestador para definir el problema, tus usuarios y la propuesta de valor
+        antes de pasar a los specs y al desarrollo.
+      </p>
 
       <div className="relative mt-6">
         {/* Vertical line */}

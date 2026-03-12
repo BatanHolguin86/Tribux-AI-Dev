@@ -4,8 +4,12 @@ import { useState, useCallback } from 'react'
 import { toast } from 'sonner'
 import type { SectionStatus } from '@/types/conversation'
 import { PHASE07_SECTIONS, CATEGORY_CONFIGS } from '@/lib/ai/prompts/phase-07'
+import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCard } from '@/components/shared/ChecklistCard'
 import { Phase07FinalGate } from './Phase07FinalGate'
+
+const PHASE_OBJECTIVE =
+  'Recopila feedback, analiza métricas y planifica el siguiente ciclo del producto.'
 
 type CategoryData = {
   key: string
@@ -57,25 +61,12 @@ export function Phase07Layout({ projectId, categories: initialCategories }: Phas
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">Iteration & Growth</h2>
-          <p className="text-sm text-gray-600">
-            {completedCount} de {totalCategories} categorias completadas
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
-            <div
-              className="h-2 rounded-full bg-violet-600 transition-all"
-              style={{ width: `${(completedCount / totalCategories) * 100}%` }}
-            />
-          </div>
-          <span className="text-xs font-medium text-gray-500">
-            {Math.round((completedCount / totalCategories) * 100)}%
-          </span>
-        </div>
-      </div>
+      <PhaseProgressHeader
+        title="Iteration & Growth"
+        completedCount={completedCount}
+        totalCount={totalCategories}
+        objective={PHASE_OBJECTIVE}
+      />
 
       {allCompleted ? (
         <Phase07FinalGate projectId={projectId} />

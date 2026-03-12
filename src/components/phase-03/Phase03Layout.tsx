@@ -3,8 +3,12 @@
 import { useState, useCallback } from 'react'
 import type { SectionStatus } from '@/types/conversation'
 import { PHASE03_SECTIONS } from '@/lib/ai/prompts/phase-03'
+import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCategory } from './ChecklistCategory'
 import { Phase03FinalGate } from './Phase03FinalGate'
+
+const PHASE_OBJECTIVE =
+  'Configura repositorio, base de datos, autenticación, hosting y variables de entorno antes de pasar a desarrollo.'
 
 type CategoryData = {
   key: string
@@ -57,26 +61,12 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
 
   return (
     <div>
-      {/* Progress bar */}
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">Environment Setup</h2>
-          <p className="text-sm text-gray-600">
-            {completedCount} de {totalCategories} categorias completadas
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
-            <div
-              className="h-2 rounded-full bg-violet-600 transition-all"
-              style={{ width: `${(completedCount / totalCategories) * 100}%` }}
-            />
-          </div>
-          <span className="text-xs font-medium text-gray-500">
-            {Math.round((completedCount / totalCategories) * 100)}%
-          </span>
-        </div>
-      </div>
+      <PhaseProgressHeader
+        title="Environment Setup"
+        completedCount={completedCount}
+        totalCount={totalCategories}
+        objective={PHASE_OBJECTIVE}
+      />
 
       {allCompleted ? (
         <Phase03FinalGate projectId={projectId} />

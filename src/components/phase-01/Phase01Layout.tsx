@@ -81,7 +81,7 @@ export function Phase01Layout({
   return (
     <div>
       {/* Progress bar */}
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between">
         <p className="text-sm text-gray-600">
           {completedFeatures} de {features.length} features completados
         </p>
@@ -99,6 +99,14 @@ export function Phase01Layout({
           </div>
         )}
       </div>
+
+      {/* Helper text: qué hacer en Phase 01 */}
+      <p className="mb-4 text-xs text-gray-500">
+        En Phase 01 dividimos tu producto en <span className="font-medium">features</span>{' '}
+        (partes como <span className="italic">login, pagos, panel de admin</span>). Para cada
+        feature, el orquestador te guiara para definir{' '}
+        <span className="font-medium">Requirements → Design → Tasks</span> en ese orden.
+      </p>
 
       {/* Discovery summary */}
       <DiscoverySummary docs={discoverySummary} />

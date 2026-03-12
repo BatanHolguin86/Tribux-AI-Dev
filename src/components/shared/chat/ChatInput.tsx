@@ -10,10 +10,23 @@ type ChatInputProps = {
   isLoading: boolean
   disabled?: boolean
   placeholder?: string
+  onFilesChange?: (files: FileList | null) => void
+  hasAttachments?: boolean
 }
 
-export function ChatInput({ value, onChange, onSubmit, onStop, isLoading, disabled, placeholder }: ChatInputProps) {
+export function ChatInput({
+  value,
+  onChange,
+  onSubmit,
+  onStop,
+  isLoading,
+  disabled,
+  placeholder,
+  onFilesChange,
+  hasAttachments,
+}: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -33,6 +46,26 @@ export function ChatInput({ value, onChange, onSubmit, onStop, isLoading, disabl
 
   return (
     <div className="flex items-end gap-2 border-t border-gray-100 px-4 py-3">
+      {onFilesChange && (
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            className="hidden"
+            onChange={(e) => onFilesChange(e.target.files)}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={disabled || isLoading}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 shadow-sm transition-colors hover:bg-gray-50 disabled:opacity-50"
+            title="Adjuntar archivos"
+          >
+            <span className="text-lg leading-none">+</span>
+          </button>
+        </>
+      )}
       <textarea
         ref={textareaRef}
         value={value}
@@ -43,6 +76,11 @@ export function ChatInput({ value, onChange, onSubmit, onStop, isLoading, disabl
         rows={1}
         className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 disabled:opacity-50"
       />
+      {hasAttachments && (
+        <div className="text-xs text-gray-500">
+          Adjuntos listos
+        </div>
+      )}
       {isLoading ? (
         <button
           onClick={onStop}
