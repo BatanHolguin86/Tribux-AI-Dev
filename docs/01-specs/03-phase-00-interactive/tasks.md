@@ -70,6 +70,12 @@
 - [ ] **TASK-122:** Test E2E — flujo completo Phase 00: entrar → conversar en Problem Statement → generar documento → aprobar seccion → completar las 5 secciones → aprobar Phase 00 → ver Phase 01 desbloqueada (`tests/e2e/phase-00.spec.ts`)
 - [ ] **TASK-123:** Test E2E — retomar Phase 00 a mitad: completar 2 secciones, recargar, verificar que el historial y los documentos persisten correctamente
 
+### Alineacion v1.0 KIRO
+- [ ] **TASK-510:** Revisar `requirements.md` de Phase 00 para marcar explicitamente los acceptance que quedan dentro del alcance v1.0 y mover a v1.1/v2 los que no se implementaran ahora (versionado historico completo, concurrencia avanzada, etc.)
+- [ ] **TASK-511:** Actualizar `design.md` de Phase 00 con el modelo de datos y flujos reales (tablas `phase_sections`, `project_documents`, gates de aprobacion, redirecciones Phase 00→01)
+- [ ] **TASK-512:** Completar y ajustar este `tasks.md` para que refleje el estado actual del codigo y las tareas restantes v1.0 (incluyendo gates finales, mensajes de celebracion y redireccion automatica)
+- [ ] **TASK-513:** Implementar o ajustar en la UI de Phase 00 los gates finales y la redireccion automatica a Phase 01 tras aprobar todas las secciones, asegurando que el comportamiento coincide con el spec KIRO
+
 ### Deploy
 - [ ] **TASK-124:** Agregar variable de entorno `ANTHROPIC_API_KEY` en Vercel (staging y produccion)
 - [ ] **TASK-125:** Aplicar migraciones 005, 006 y 007 en staging

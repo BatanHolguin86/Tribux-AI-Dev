@@ -81,6 +81,12 @@
 - [x] **TASK-176:** Smoke test en staging: crear proyecto, completar Phase 00, entrar a Phase 01, definir features, generar spec completo de un feature, aprobar (`docs/05-qa/smoke-staging-phase00-phase01.md`, `tests/e2e/smoke-staging.authenticated.spec.ts`, `BASE_URL` en Playwright)
 - [ ] **TASK-177:** Verificar rendimiento del contexto acumulativo con 5+ features especificados (token usage y latencia)
 
+### Alineacion v1.0 KIRO
+- [ ] **TASK-520:** Revisar `requirements.md` de Phase 01 (Generador KIRO) para marcar explicitamente que acceptance se incluyen en v1.0 y cuales se mueven a v1.1/v2 (p.ej. drag&drop avanzado de features, limites por plan muy granulares)
+- [ ] **TASK-521:** Actualizar `design.md` de KIRO con el modelo de datos y flujos actuales (tablas `project_features`, `feature_documents`, validacion de coherencia, gates Phase 01→02) para que refleje fielmente la implementacion
+- [ ] **TASK-522:** Completar y ajustar este `tasks.md` para que tenga una seccion clara de tareas v1.0 pendientes y otra de backlog v1.1/v2, alineadas con el estado real del codigo
+- [ ] **TASK-523:** Ajustar detalles de UX en Phase 01 (mensajes de celebracion, redireccion a Phase 02 al aprobar Phase 01, textos de ayuda) para que el flujo real coincida con el spec KIRO y el valor de producto esperado
+
 ---
 
 ## Orden de Ejecucion Sugerido

@@ -31,6 +31,7 @@ export type FullProjectContext = {
   discoveryDocs: string
   featureSpecs: string
   artifacts: string
+  attachmentsSummary?: string
 }
 
 export function buildAgentPrompt(
@@ -38,6 +39,10 @@ export function buildAgentPrompt(
   context: FullProjectContext,
 ): string {
   const basePrompt = AGENT_PROMPTS[agentType]
+
+  const attachmentsBlock = context.attachmentsSummary
+    ? `\n### Adjuntos recientes del hilo\n${context.attachmentsSummary}\n`
+    : ''
 
   return `${basePrompt}
 
@@ -57,7 +62,8 @@ ${context.discoveryDocs || 'No hay documentos de discovery aprobados.'}
 ${context.featureSpecs || 'No hay specs de features aprobados.'}
 
 ### Artifacts
-${context.artifacts || 'No hay artifacts guardados.'}`
+${context.artifacts || 'No hay artifacts guardados.'}
+${attachmentsBlock}`}
 }
 
 export function buildSuggestionsPrompt(context: FullProjectContext): string {

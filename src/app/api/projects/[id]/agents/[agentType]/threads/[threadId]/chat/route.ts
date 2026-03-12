@@ -73,6 +73,23 @@ async function parseFormDataBody(
   }
 }
 
+function buildAttachmentsSummary(attachments: Array<Record<string, unknown>>): string | undefined {
+  if (!attachments.length) return undefined
+
+  const lines = attachments
+    .slice(-5)
+    .map((att, idx) => {
+      const filename = (att.filename as string | undefined) ?? `archivo-${idx + 1}`
+      const mime = (att.mimeType as string | undefined) ?? 'tipo-desconocido'
+      const size = att.size as number | undefined
+      const sizeLabel =
+        typeof size === 'number' ? `${(size / 1024).toFixed(1)} KB` : 'tamano-desconocido'
+      return `- ${filename} (${mime}, ${sizeLabel})`
+    })
+
+  return lines.join('\n')
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string; agentType: string; threadId: string }> },
@@ -158,7 +175,11 @@ export async function POST(
 
     // Build context and prompt
     const projectContext = await buildFullProjectContext(projectId)
-    const systemPrompt = buildAgentPrompt(agentType as AgentType, projectContext)
+    const attachmentsSummary = buildAttachmentsSummary(allAttachments)
+    const systemPrompt = buildAgentPrompt(agentType as AgentType, {
+      ...projectContext,
+      attachmentsSummary,
+    })
 
     // Build full message history
     const existingMessages = (thread.messages as Array<{ role: string; content: string }>) ?? []

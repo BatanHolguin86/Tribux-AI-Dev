@@ -51,6 +51,15 @@
 - [ ] **TASK-027:** Variables de entorno para generación (API de imágenes si se usa; timeouts para jobs)
 - [ ] **TASK-028:** Documentar en `docs/02-architecture/` o ADR la decisión de generación (LLM+SVG/HTML vs API de imágenes) y ubicación de artefactos (Storage path)
 
+### Alineacion v1.0 KIRO
+- [ ] **TASK-601:** Revisar `requirements.md` del Generador de diseños UI/UX para definir explicitamente el alcance v1.0 (wireframes/diseños textuales mínimos y, opcionalmente, mockups low-fi) y mover a v1.1/v2 lo que requiera image APIs avanzadas, Figma, prototipos interactivos, etc.
+- [ ] **TASK-602:** Escribir o actualizar `design.md` minimo viable del Generador de diseños con el modelo de datos (`design_artifacts`), rutas API, integracion con Phase 02 y referencia desde Phase 04, asegurando que describe la implementacion actual
+- [ ] **TASK-603:** Ajustar este `tasks.md` para separar claramente tareas v1.0 (MVP navegable de diseños en el proyecto) y backlog posterior, alineado con la estrategia de producto
+- [ ] **TASK-604:** Implementar migracion y modelo para `design_artifacts` en Supabase, conectandolo con el bucket de diseños y garantizando RLS adecuada
+- [ ] **TASK-605:** Implementar la API de generacion de diseños (`POST /designs/generate`) usando el agente UI/UX Designer y el contexto KIRO como input, guardando resultados en `design_artifacts`
+- [ ] **TASK-606:** Implementar la vista "Diseño" en el proyecto (`/projects/[id]/designs`) que liste diseños con nombre de pantalla/flujo, tipo, estado y fecha, y permita navegar al detalle
+- [ ] **TASK-607:** Permitir marcar diseños como "aprobado para desarrollo" y mostrarlos filtrados en Phase 04 como referencia para el Frontend Dev
+
 ---
 
 ## Orden de Ejecucion Sugerido

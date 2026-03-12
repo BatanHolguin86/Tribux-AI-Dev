@@ -63,6 +63,12 @@
 - [ ] **TASK-075:** Test E2E — flujo completo: crear proyecto → ver en dashboard → expandir timeline → archivar → restaurar (`tests/e2e/dashboard.spec.ts`)
 - [ ] **TASK-076:** Test E2E — limite de plan: usuario Starter intenta crear segundo proyecto → ve modal de upgrade (`tests/e2e/plan-limits.spec.ts`)
 
+### Alineacion v1.0 KIRO
+- [ ] **TASK-540:** Revisar `requirements.md` de Project Dashboard para marcar explicitamente que acceptance se incluyen en v1.0 (vista de proyectos, progreso, creacion, archivo/restauracion, limite de plan basico) y cuales se posponen a v1.1/v2 (metricas avanzadas, drag&drop manual, estadisticas de tiempo)
+- [ ] **TASK-541:** Crear o actualizar `design.md` del dashboard con el modelo de datos y flujos actuales (consultas de proyectos con fases, calculo de progreso, filtros y estados vacios, tratamiento de limites por plan)
+- [ ] **TASK-542:** Completar y ajustar este `tasks.md` con una seccion especifica de tareas v1.0 pendientes (limites por plan, estados vacios ricos, CTA “Crea tu primer proyecto”, mensajes de error claros) y backlog posterior
+- [ ] **TASK-543:** Implementar o ajustar en el codigo los limites por plan y estados vacios para que el comportamiento real del dashboard coincida con lo acordado en KIRO (mensa jerarquica de valor, flows claros para crear/archivar/restaurar proyectos)
+
 ### Deploy
 - [ ] **TASK-077:** Aplicar migraciones 003 y 004 en base de datos staging
 - [ ] **TASK-078:** Verificar que el trigger `on_project_created` inicializa correctamente las 8 fases en staging

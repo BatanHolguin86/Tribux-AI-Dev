@@ -59,6 +59,12 @@
 - [ ] **TASK-035:** Test E2E — flujo login con Google OAuth (`tests/e2e/oauth.spec.ts`)
 - [ ] **TASK-036:** Test E2E — flujo forgot password → reset (`tests/e2e/password-reset.spec.ts`)
 
+### Alineacion v1.0 KIRO
+- [ ] **TASK-530:** Revisar `requirements.md` de Auth & Onboarding para decidir y marcar explicitamente que acceptance forman parte del alcance v1.0 (happy path solido de registro/login/onboarding) y cuales se aplazan a v1.1/v2 (p.ej. rate limiting agresivo, historial de sesiones, mejoras avanzadas de seguridad)
+- [ ] **TASK-531:** Crear o actualizar `design.md` de Auth & Onboarding con los flujos reales (Supabase Auth, paginas de login/register/forgot/reset, middleware de proteccion de rutas, flujo completo hacia el primer proyecto en Phase 00)
+- [ ] **TASK-532:** Completar y ajustar este `tasks.md` con una seccion de tareas v1.0 (centrada en hacer muy solido el happy path Auth → Onboarding → Dashboard/Phase 00) y un backlog posterior
+- [ ] **TASK-533:** Verificar y ajustar en el codigo las redirecciones y guards para que el flujo real coincida con el spec: usuario no autenticado → /login, primer login → /onboarding, onboarding completado → `/projects/:id/phase/00`
+
 ### Deploy & Variables de Entorno
 - [ ] **TASK-037:** Configurar variables de entorno en Vercel (staging y produccion)
 - [ ] **TASK-038:** Configurar URLs de redirect OAuth en Supabase para staging (`*.vercel.app`) y produccion

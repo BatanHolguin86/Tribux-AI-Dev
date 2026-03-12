@@ -33,6 +33,7 @@ pnpm exec playwright test --ui
 | `tests/e2e/agents.authenticated.spec.ts` | Agentes con sesión: cargar, crear conversación, enviar mensaje, flujo con artifact (requiere créditos Anthropic) |
 | `tests/e2e/smoke-staging.authenticated.spec.ts` | Smoke TASK-176: dashboard → Phase 00 → Phase 01; comprueba carga de páginas clave (local o staging) |
 | `tests/e2e/agents-paywall.authenticated.spec.ts` | TASK-222: usuario Starter ve agentes Builder bloqueados (candado/disabled); asume plan starter en BD |
+| `tests/e2e/agents-with-attachments.authenticated.spec.ts` (propuesto) | TASK-710/712: chat de agentes con adjuntos: subir archivo, ver listado compacto en el hilo, recibir respuesta sin errores |
 
 ## Flujos autenticados
 

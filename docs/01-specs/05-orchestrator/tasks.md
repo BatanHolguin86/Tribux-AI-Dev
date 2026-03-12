@@ -13,6 +13,7 @@
 - [ ] **TASK-178:** Crear migracion `010_create_conversation_threads.sql` — tabla `conversation_threads` con RLS e indice en (project_id, agent_type, last_message_at desc)
 - [ ] **TASK-179:** Actualizar constraint de `agent_conversations` para permitir `phase_number = null` y `section = null` (ALTER TABLE si es necesario)
 - [ ] **TASK-180:** Verificar que `project_documents` soporta `document_type = 'artifact'` y `phase_number = null` sin conflictos de constraint
+- [ ] **TASK-501:** Añadir columna `attachments jsonb` en `conversation_threads` y actualizar indices segun diseno de adjuntos
 
 ### System Prompts de Agentes
 - [ ] **TASK-181:** Crear `src/lib/ai/agents/index.ts` — definicion de los 8 agentes (CTO Virtual + 7 especializados) con metadata (id, name, icon, specialty, description, plan_required)
@@ -40,6 +41,7 @@
 - [ ] **TASK-197b:** Crear `GET /api/projects/[id]/agents/suggestions` — construye contexto del proyecto, llama a LLM con prompt de sugerencias proactivas, retorna 1–3 sugerencias accionables (opcional query `agent_type`); cache corto (ej. 5 min) por proyecto para no abusar del LLM
 - [ ] **TASK-198:** Actualizar `src/lib/ai/context-builder.ts` — agregar funcion `buildFullProjectContext(projectId)` que incluye: discovery + specs + artifacts + fase actual; implementar truncamiento progresivo para contextos > 100K tokens
 - [ ] **TASK-199:** Crear `src/lib/ai/title-generator.ts` — funcion para auto-generar titulo del hilo a partir del primer mensaje (< 50 tokens, fallback a timestamp)
+- [ ] **TASK-502:** Exponer en `GET /api/projects/[id]/agents/[agentType]/threads/[threadId]` los campos basicos del hilo (id, title, attachments) para uso en UI
 
 ### Frontend — Layout y Pagina
 - [ ] **TASK-200:** Crear `src/app/(dashboard)/projects/[id]/agents/page.tsx` — Server Component que carga la lista de agentes y threads del agente por defecto (CTO Virtual)
@@ -59,6 +61,7 @@
 - [ ] **TASK-209:** Crear `MessageActions.tsx` — barra de acciones que aparece al hover en mensajes del agente: boton copiar (clipboard API) + boton guardar como artifact
 - [ ] **TASK-210:** Extender `ChatMessage.tsx` (shared) para aceptar slot de acciones via prop (render prop o children) para integrar `MessageActions`
 - [ ] **TASK-211:** Crear `SaveArtifactModal.tsx` — modal con form: nombre del artifact (input), fase destino (select), preview del contenido; boton guardar llama a `POST /api/.../artifacts`
+- [ ] **TASK-505:** Mostrar, en la UI de chat, un listado compacto de adjuntos recientes del hilo y chips de adjuntos por mensaje cuando existan archivos asociados
 
 ### Frontend — Floating Button
 - [ ] **TASK-212:** Crear `FloatingAgentButton.tsx` — boton fijo en esquina inferior derecha; visible en todas las paginas del proyecto excepto `/agents`; click abre mini-drawer con chat del CTO Virtual o ultimo agente usado
@@ -78,6 +81,7 @@
 - [x] **TASK-221b:** Test E2E o integracion — sugerencias proactivas: API GET suggestions devuelve 200 y array; fallback a array vacio (`tests/integration/api/agents-suggestions.test.ts`)
 - [x] **TASK-222:** Test E2E — restriccion de plan: usuario Starter intenta acceder a agente Builder → ve paywall (`tests/e2e/agents-paywall.authenticated.spec.ts`; asume plan starter en user_profiles)
 - [ ] **TASK-223:** Test E2E — multiples hilos: crear 3 hilos con el mismo agente, navegar entre ellos, verificar persistencia del historial
+- [ ] **TASK-504:** Tests de integracion/unidad para adjuntos: subida de archivos, persistencia en `attachments` y exposicion en API /threads/[threadId]
 
 ### Deploy
 - [ ] **TASK-224:** Aplicar migracion 010 en staging
