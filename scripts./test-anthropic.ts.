@@ -1,0 +1,29 @@
+import 'dotenv/config';
+import { anthropic } from '@ai-sdk/anthropic';
+import { generateText } from 'ai';
+async function main() {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    console.error('❌ ANTHROPIC_API_KEY no está definida en el entorno.');
+    process.exit(1);
+  }
+  console.log('✅ ANTHROPIC_API_KEY detectada. Probando modelo claude-sonnet-4-6...');
+  try {
+    const model = anthropic('claude-sonnet-4-6');
+    const { text } = await generateText({
+      model,
+      prompt: 'Responde en una frase corta: di que esta es una prueba de conexión desde AI Squad Command Center.',
+      maxTokens: 128,
+      temperature: 0.2,
+    });
+    console.log('✅ Respuesta del modelo:');
+    console.log('---');
+    console.log(text);
+    console.log('---');
+    console.log('Si ves este texto, la key y el modelo están OK.');
+  } catch (error) {
+    console.error('❌ Error llamando a Anthropic:', error);
+    process.exit(1);
+  }
+}
+main();
