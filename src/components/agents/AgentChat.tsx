@@ -54,32 +54,32 @@ export function AgentChat({
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new TextStreamChatTransport({
       api: `/api/projects/${projectId}/agents/${agentType}/threads/${threadId}/chat`,
+      fetch: async (input, init) => {
+        // Adaptar el payload para enviar FormData con mensajes + adjuntos
+        const url = typeof input === 'string' ? input : input.toString()
+        const headers = new Headers(init?.headers)
+        const isJson = headers.get('Content-Type')?.includes('application/json')
+
+        if (isJson && pendingFiles.length > 0) {
+          const body = init?.body ? JSON.parse(init.body as string) : {}
+          const formData = new FormData()
+          formData.append('messages', JSON.stringify(body.messages ?? []))
+          pendingFiles.forEach((file) => {
+            formData.append('attachments', file)
+          })
+
+          headers.delete('Content-Type')
+
+          return fetch(url, {
+            ...init,
+            headers,
+            body: formData,
+          })
+        }
+
+        return fetch(input, init)
+      },
     }),
-    fetch: async (input, init) => {
-      // Adaptar el payload para enviar FormData con mensajes + adjuntos
-      const url = typeof input === 'string' ? input : input.toString()
-      const headers = new Headers(init?.headers)
-      const isJson = headers.get('Content-Type')?.includes('application/json')
-
-      if (isJson) {
-        const body = init?.body ? JSON.parse(init.body as string) : {}
-        const formData = new FormData()
-        formData.append('messages', JSON.stringify(body.messages ?? []))
-        pendingFiles.forEach((file) => {
-          formData.append('attachments', file)
-        })
-
-        headers.delete('Content-Type')
-
-        return fetch(url, {
-          ...init,
-          headers,
-          body: formData,
-        })
-      }
-
-      return fetch(input, init)
-    },
     messages: initialMessages.map((m, i) => ({
       id: String(i),
       role: m.role as 'user' | 'assistant',

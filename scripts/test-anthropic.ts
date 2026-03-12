@@ -24,7 +24,7 @@ async function main() {
   try {
     const { text } = await generateText({
       model: anthropic('claude-sonnet-4-6'),
-      maxTokens: 100,
+      maxOutputTokens: 100,
       prompt: 'Responde en una sola frase: ¿Cuánto es 2+2?',
     })
     const elapsed = Date.now() - start
