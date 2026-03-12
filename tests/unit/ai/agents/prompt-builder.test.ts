@@ -24,6 +24,7 @@ const AGENT_TYPES: AgentType[] = [
   'db_admin',
   'qa_engineer',
   'devops_engineer',
+  'operator',
 ]
 
 describe('buildAgentPrompt', () => {

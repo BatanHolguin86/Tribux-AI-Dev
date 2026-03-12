@@ -10,8 +10,8 @@ test.skip(
   'Auth file missing — run with TEST_USER_EMAIL and TEST_USER_PASSWORD'
 )
 
-test.describe('Phase 00 — authenticated', () => {
-  test('Phase 00 loads and shows chat input when authenticated', async ({ page }) => {
+test.describe('Phase 01 — authenticated', () => {
+  test('Phase 01 loads and shows features area when authenticated', async ({ page }) => {
     let projectId: string
 
     if (fs.existsSync(PROJECT_ID_FILE)) {
@@ -19,7 +19,7 @@ test.describe('Phase 00 — authenticated', () => {
       projectId = data.projectId
     } else {
       await page.goto('/dashboard')
-      const link = page.getByRole('link', { name: /continuar/i }).first()
+      const link = page.getByRole('link', { name: /continuar|phase|proyecto/i }).first()
       await expect(link).toBeVisible()
       const href = await link.getAttribute('href')
       const match = href?.match(/\/projects\/([a-f0-9-]+)\/phase\//i)
@@ -27,15 +27,14 @@ test.describe('Phase 00 — authenticated', () => {
       projectId = match[1]
     }
 
-    await page.goto(`/projects/${projectId}/phase/00`)
+    await page.goto(`/projects/${projectId}/phase/01`)
 
-    await expect(page.getByPlaceholder(/escribe|mensaje|pregunta/i)).toBeVisible()
-    await expect(page.getByText(/problem statement|brief|personas/i)).toBeVisible()
+    await expect(
+      page.getByText(/features|especificación|requisitos|design|tasks/i).first()
+    ).toBeVisible({ timeout: 10000 })
   })
 
-  test('TASK-173: Phase 00 regression — page and shared layout load without error', async ({
-    page,
-  }) => {
+  test('Phase 01 retomar: persistence after reload', async ({ page }) => {
     let projectId: string
 
     if (fs.existsSync(PROJECT_ID_FILE)) {
@@ -43,7 +42,7 @@ test.describe('Phase 00 — authenticated', () => {
       projectId = data.projectId
     } else {
       await page.goto('/dashboard')
-      const link = page.getByRole('link', { name: /continuar/i }).first()
+      const link = page.getByRole('link', { name: /continuar|phase|proyecto/i }).first()
       await expect(link).toBeVisible()
       const href = await link.getAttribute('href')
       const match = href?.match(/\/projects\/([a-f0-9-]+)\/phase\//i)
@@ -51,8 +50,14 @@ test.describe('Phase 00 — authenticated', () => {
       projectId = match[1]
     }
 
-    const res = await page.goto(`/projects/${projectId}/phase/00`)
-    expect(res?.status()).toBe(200)
-    await expect(page.getByRole('main')).toBeVisible()
+    await page.goto(`/projects/${projectId}/phase/01`)
+    await expect(
+      page.getByText(/features|especificación|requisitos|design|tasks/i).first()
+    ).toBeVisible({ timeout: 10000 })
+
+    await page.reload()
+    await expect(
+      page.getByText(/features|especificación|requisitos|design|tasks/i).first()
+    ).toBeVisible({ timeout: 10000 })
   })
 })
