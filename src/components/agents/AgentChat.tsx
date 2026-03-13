@@ -119,8 +119,8 @@ export function AgentChat({
       {error && <ChatErrorBanner error={error} />}
       {attachments.length > 0 && (
         <div className="border-b border-gray-100 px-4 py-2 text-xs text-gray-500">
-          <div className="mb-1 font-medium text-gray-600">
-            Adjuntos recientes del hilo
+          <div className="mb-1 font-medium text-gray-700">
+            Archivos adjuntos en esta conversacion
           </div>
           <div className="flex flex-wrap gap-2">
             {attachments.slice(-3).map((att, index) => {
@@ -132,7 +132,7 @@ export function AgentChat({
                   key={key}
                   className="flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1"
                 >
-                  <span className="text-[10px] uppercase text-gray-400">FILE</span>
+                  <span className="text-[10px] uppercase text-gray-400">ARCHIVO</span>
                   <span className="max-w-[140px] truncate text-xs text-gray-700">
                     {name}
                   </span>

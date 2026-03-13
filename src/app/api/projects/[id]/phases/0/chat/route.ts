@@ -71,6 +71,21 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error('[Phase-00 chat] Missing ANTHROPIC_API_KEY')
+      return new Response(
+        JSON.stringify({
+          error: 'missing_anthropic_key',
+          message:
+            'La IA de Discovery no está configurada (falta ANTHROPIC_API_KEY en el servidor). Pide a quien administra el proyecto que configure la clave de Anthropic.',
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      )
+    }
+
     const { id: projectId } = await params
     const supabase = await createClient()
 

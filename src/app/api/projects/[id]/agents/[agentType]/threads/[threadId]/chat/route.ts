@@ -173,14 +173,6 @@ export async function POST(
       )
     }
 
-    // Build context and prompt
-    const projectContext = await buildFullProjectContext(projectId)
-    const attachmentsSummary = buildAttachmentsSummary(allAttachments)
-    const systemPrompt = buildAgentPrompt(agentType as AgentType, {
-      ...projectContext,
-      attachmentsSummary,
-    })
-
     // Build full message history
     const existingMessages = (thread.messages as Array<{ role: string; content: string }>) ?? []
     const existingAttachments =
@@ -206,6 +198,14 @@ export async function POST(
         : []
 
     const allAttachments = [...existingAttachments, ...newAttachments]
+
+    // Build context and prompt (including summary of recent attachments)
+    const projectContext = await buildFullProjectContext(projectId)
+    const attachmentsSummary = buildAttachmentsSummary(allAttachments)
+    const systemPrompt = buildAgentPrompt(agentType as AgentType, {
+      ...projectContext,
+      attachmentsSummary,
+    })
 
     const result = streamText({
       model: defaultModel,

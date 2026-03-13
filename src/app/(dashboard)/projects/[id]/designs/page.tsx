@@ -9,18 +9,21 @@ export default async function DesignsPage({
   const { id: projectId } = await params
   const supabase = await createClient()
 
-  // Load existing design artifacts
+  // Load existing design artifacts from dedicated table
   const { data: artifacts } = await supabase
-    .from('project_documents')
-    .select('id, title, document_type, status, created_at')
+    .from('design_artifacts')
+    .select('id, screen_name, type, status, created_at')
     .eq('project_id', projectId)
-    .eq('document_type', 'artifact')
     .order('created_at', { ascending: false })
 
-  return (
-    <DesignGenerator
-      projectId={projectId}
-      existingArtifacts={artifacts ?? []}
-    />
-  )
+  const mappedArtifacts =
+    artifacts?.map((a) => ({
+      id: a.id as string,
+      title: a.screen_name as string,
+      document_type: a.type as string,
+      status: a.status as string,
+      created_at: a.created_at as string,
+    })) ?? []
+
+  return <DesignGenerator projectId={projectId} existingArtifacts={mappedArtifacts} />
 }
