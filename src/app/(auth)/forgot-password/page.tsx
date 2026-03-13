@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { forgotPasswordSchema } from '@/lib/validations/auth'
-import { createClient } from '@/lib/supabase/client'
 import { z } from 'zod'
 
 type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
@@ -24,13 +23,20 @@ export default function ForgotPasswordPage() {
 
   async function onSubmit(data: ForgotPasswordInput) {
     setError(null)
-    const supabase = createClient()
 
-    const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     })
 
-    if (error) {
+    if (res.status === 429) {
+      const body = await res.json()
+      setError(`Demasiados intentos. Intenta de nuevo en ${Math.ceil(body.retryAfter / 60)} minutos.`)
+      return
+    }
+
+    if (!res.ok) {
       setError('Error al enviar el email. Intenta de nuevo.')
       return
     }

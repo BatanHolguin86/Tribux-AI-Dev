@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { registerSchema, type RegisterInput } from '@/lib/validations/auth'
-import { createClient } from '@/lib/supabase/client'
 import { OAuthButton } from '@/components/auth/OAuthButton'
 
 export default function RegisterPage() {
@@ -22,23 +21,22 @@ export default function RegisterPage() {
 
   async function onSubmit(data: RegisterInput) {
     setError(null)
-    const supabase = createClient()
 
-    const { error } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: { full_name: data.full_name },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     })
 
-    if (error) {
-      if (error.message.includes('already registered')) {
-        setError('Este email ya esta registrado. Intenta iniciar sesion.')
-      } else {
-        setError('Error al crear la cuenta. Intenta de nuevo.')
-      }
+    if (res.status === 429) {
+      const body = await res.json()
+      setError(`Demasiados intentos. Intenta de nuevo en ${Math.ceil(body.retryAfter / 60)} minutos.`)
+      return
+    }
+
+    if (!res.ok) {
+      const body = await res.json()
+      setError(body.error || 'Error al crear la cuenta. Intenta de nuevo.')
       return
     }
 

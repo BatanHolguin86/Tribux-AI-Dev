@@ -6,12 +6,12 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema, type LoginInput } from '@/lib/validations/auth'
-import { createClient } from '@/lib/supabase/client'
 import { OAuthButton } from '@/components/auth/OAuthButton'
 
 export default function LoginPage() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+  const [rateLimited, setRateLimited] = useState(false)
 
   const {
     register,
@@ -23,15 +23,24 @@ export default function LoginPage() {
 
   async function onSubmit(data: LoginInput) {
     setError(null)
-    const supabase = createClient()
+    setRateLimited(false)
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     })
 
-    if (error) {
-      setError('Email o contrasena incorrectos.')
+    if (res.status === 429) {
+      const body = await res.json()
+      setRateLimited(true)
+      setError(`Demasiados intentos. Intenta de nuevo en ${Math.ceil(body.retryAfter / 60)} minutos.`)
+      return
+    }
+
+    if (!res.ok) {
+      const body = await res.json()
+      setError(body.error || 'Email o contrasena incorrectos.')
       return
     }
 
@@ -95,7 +104,7 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || rateLimited}
           className="w-full rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
         >
           {isSubmitting ? 'Iniciando sesion...' : 'Iniciar sesion'}
