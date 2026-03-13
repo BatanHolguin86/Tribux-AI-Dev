@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
 
 const AUTH_FILE = path.join(__dirname, '../.auth/user.json')
@@ -26,7 +27,7 @@ test.describe('Agents — authenticated with attachments', () => {
     return match[1]
   }
 
-  test('upload attachment, see chips and get response without error', async ({ page, tmpPath }) => {
+  test('upload attachment, see chips and get response without error', async ({ page }) => {
     const projectId = await getProjectId(page)
 
     await page.goto(`/projects/${projectId}/agents`)
@@ -41,7 +42,8 @@ test.describe('Agents — authenticated with attachments', () => {
     await expect(chatInput).toBeVisible({ timeout: 5000 })
 
     // Crear archivo temporal a adjuntar
-    const filePath = path.join(tmpPath, 'nota-ejemplo.txt')
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'e2e-attach-'))
+    const filePath = path.join(tmpDir, 'nota-ejemplo.txt')
     fs.writeFileSync(filePath, 'Esta es una nota de ejemplo para adjuntar al chat de agentes.')
 
     // Abrir selector de archivos y adjuntar
@@ -81,4 +83,4 @@ test.describe('Agents — authenticated with attachments', () => {
     const errorBanner = page.getByText(/error de conexi[óo]n|no se pudo cargar la conversaci[óo]n/i)
     await expect(errorBanner).toHaveCount(0)
   })
-}
+})
