@@ -40,11 +40,7 @@ export function buildAgentPrompt(
 ): string {
   const basePrompt = AGENT_PROMPTS[agentType]
 
-  const attachmentsBlock = context.attachmentsSummary
-    ? `\n### Adjuntos recientes del hilo\n${context.attachmentsSummary}\n`
-    : ''
-
-  return `${basePrompt}
+  let prompt = `${basePrompt}
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.name}
@@ -62,8 +58,13 @@ ${context.discoveryDocs || 'No hay documentos de discovery aprobados.'}
 ${context.featureSpecs || 'No hay specs de features aprobados.'}
 
 ### Artifacts
-${context.artifacts || 'No hay artifacts guardados.'}
-${attachmentsBlock}`}
+${context.artifacts || 'No hay artifacts guardados.'}`
+
+  if (context.attachmentsSummary) {
+    prompt += `\n\n### Adjuntos recientes del hilo\n${context.attachmentsSummary}\n`
+  }
+
+  return prompt
 }
 
 export function buildSuggestionsPrompt(context: FullProjectContext): string {
@@ -91,3 +92,4 @@ FORMATO DE RESPUESTA (JSON):
   ]
 }`
 }
+
