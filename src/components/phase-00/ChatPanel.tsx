@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { TextStreamChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
@@ -11,6 +11,14 @@ import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
+
+const SECTION_KICKOFF: Record<string, string> = {
+  problem_statement: 'Hola, estoy listo para definir el Problem Statement de mi proyecto. Guiame con las preguntas clave.',
+  personas: 'Necesito definir las User Personas de mi proyecto. Hazme las preguntas necesarias para construirlas.',
+  value_proposition: 'Quiero trabajar en la Value Proposition. Guiame paso a paso.',
+  metrics: 'Vamos a definir las Success Metrics del proyecto. Que necesitas saber?',
+  competitive_analysis: 'Es momento del Competitive Analysis. Ayudame a estructurarlo.',
+}
 
 function getTextContent(msg: UIMessage): string {
   return msg.parts
@@ -57,6 +65,28 @@ export function ChatPanel({
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+  const autoStartedRef = useRef(false)
+
+  // Auto-start conversation when section has no messages
+  useEffect(() => {
+    if (
+      !autoStartedRef.current &&
+      initialMessages.length === 0 &&
+      messages.length === 0 &&
+      !isLoading &&
+      !isApproved &&
+      !hasDocument
+    ) {
+      autoStartedRef.current = true
+      const kickoff = SECTION_KICKOFF[section] ?? `Vamos a trabajar en ${SECTION_LABELS[section]}.`
+      sendMessage({ text: kickoff })
+    }
+  }, [section, initialMessages.length, messages.length, isLoading, isApproved, hasDocument, sendMessage])
+
+  // Reset auto-start flag when section changes
+  useEffect(() => {
+    autoStartedRef.current = false
+  }, [section])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -129,7 +159,7 @@ export function ChatPanel({
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !isLoading && (
           <div className="flex items-center justify-center py-12 text-sm text-gray-400">
-            Inicia la conversacion para comenzar con {SECTION_LABELS[section]}.
+            Preparando la sesion de {SECTION_LABELS[section]}...
           </div>
         )}
 
