@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* AI Squad — Design tokens (v1) */
+/* AI Squad — Design tokens (v2) */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -30,6 +30,8 @@
   /* Spacing (reference) */
   --sidebar-width: 16rem;
   --header-height: 3.5rem;
+  /* Content area height — used by split-view layouts */
+  --content-height: calc(100vh - 11rem);
 }
 
 @theme inline {
@@ -57,4 +59,13 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

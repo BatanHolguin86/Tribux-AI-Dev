@@ -54,7 +54,7 @@ function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
       const isNumbered = items.some((l) => /^\d+\.\s/.test(l))
       const Tag = isNumbered ? 'ol' : 'ul'
       return (
-        <Tag key={pi} className={`my-1.5 space-y-0.5 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${isUser ? 'marker:text-violet-200' : 'marker:text-gray-400'}`}>
+        <Tag key={pi} className={`my-1.5 space-y-0.5 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${isUser ? 'marker:text-violet-200' : 'marker:text-gray-400 dark:marker:text-gray-500'}`}>
           {items.map((item, li) => (
             <li key={li} className="pl-0.5">
               {renderInline(item.replace(/^[-*]\s|^\d+\.\s/, ''))}
@@ -85,10 +85,10 @@ export function ChatMessage({ role, content, createdAt }: ChatMessageProps) {
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
       {/* Avatar */}
       <div
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-sm ${
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-sm dark:shadow-gray-900/20 ${
           isUser
             ? 'bg-violet-600 text-white'
-            : 'bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 ring-1 ring-gray-200'
+            : 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-400 ring-1 ring-gray-200 dark:ring-gray-600'
         }`}
       >
         {isUser ? 'Tu' : 'AI'}
@@ -100,13 +100,13 @@ export function ChatMessage({ role, content, createdAt }: ChatMessageProps) {
           className={`inline-block rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed ${
             isUser
               ? 'rounded-tr-sm bg-violet-600 text-white'
-              : 'rounded-tl-sm bg-gray-50 text-gray-800 ring-1 ring-gray-100'
+              : 'rounded-tl-sm bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200 ring-1 ring-gray-100 dark:ring-gray-800'
           }`}
         >
           {renderMarkdown(content, isUser)}
         </div>
         {createdAt && (
-          <p className={`mt-1 text-[10px] text-gray-400 ${isUser ? 'text-right' : ''}`}>
+          <p className={`mt-1 text-[10px] text-gray-400 dark:text-gray-500 ${isUser ? 'text-right' : ''}`}>
             {formatRelativeDate(createdAt)}
           </p>
         )}

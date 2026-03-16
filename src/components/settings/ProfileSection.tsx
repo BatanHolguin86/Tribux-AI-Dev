@@ -40,12 +40,12 @@ export function ProfileSection({ fullName, email, persona }: ProfileSectionProps
   }
 
   return (
-    <section className="rounded-lg border border-gray-200 bg-white p-6">
-      <h2 className="text-lg font-semibold text-gray-900">Perfil</h2>
+    <section className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Perfil</h2>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Nombre completo
           </label>
           <div className="mt-1 flex gap-2">
@@ -54,7 +54,7 @@ export function ProfileSection({ fullName, email, persona }: ProfileSectionProps
               type="text"
               value={name}
               onChange={(e) => { setName(e.target.value); setSaved(false) }}
-              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 dark:bg-gray-800 dark:text-gray-100"
             />
             <button
               onClick={handleSave}
@@ -68,16 +68,16 @@ export function ProfileSection({ fullName, email, persona }: ProfileSectionProps
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <p className="mt-1 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+          <p className="mt-1 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-600 dark:text-gray-400">
             {email}
           </p>
         </div>
 
         {persona && (
           <div>
-            <label className="block text-sm font-medium text-gray-700">Rol</label>
-            <p className="mt-1 text-sm text-gray-600">{PERSONA_LABELS[persona] ?? persona}</p>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Rol</label>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{PERSONA_LABELS[persona] ?? persona}</p>
           </div>
         )}
       </div>

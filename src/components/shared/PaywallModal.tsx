@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useFocusTrap } from '@/hooks/use-focus-trap'
 
 const PLANS = [
   {
@@ -45,6 +46,15 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const trapRef = useFocusTrap<HTMLDivElement>(open)
+
+  useEffect(() => {
+    if (!open) return
+    function handleEsc(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [open, onClose])
+
   if (!open) return null
 
   const planOrder = ['free', 'starter', 'builder', 'agency']
@@ -84,13 +94,13 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
-        <h2 className="text-lg font-semibold text-gray-900">
+      <div ref={trapRef} role="dialog" aria-modal="true" className="relative z-10 w-full max-w-2xl rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           {feature
             ? `Upgrade para acceder a ${feature}`
             : 'Upgrade tu plan'}
         </h2>
-        <p className="mt-1 text-sm text-gray-600">
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Tu plan actual no incluye esta funcionalidad. Elige un plan para continuar.
         </p>
 
@@ -107,30 +117,30 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
                 onClick={() => isUpgrade && setSelectedPlan(plan.key)}
                 className={`rounded-lg border-2 p-4 text-left transition-colors ${
                   isSelected
-                    ? 'border-violet-600 bg-violet-50 ring-2 ring-violet-300'
+                    ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20 ring-2 ring-violet-300'
                     : isCurrent
-                      ? 'border-violet-600 bg-violet-50'
+                      ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20'
                       : isUpgrade
-                        ? 'border-gray-200 hover:border-violet-400 cursor-pointer'
-                        : 'border-gray-200 opacity-50'
+                        ? 'border-gray-200 dark:border-gray-700 hover:border-violet-400 cursor-pointer'
+                        : 'border-gray-200 dark:border-gray-700 opacity-50'
                 }`}
               >
-                <p className="font-semibold text-gray-900">{plan.name}</p>
-                <p className="text-sm font-medium text-violet-600">{plan.price}</p>
+                <p className="font-semibold text-gray-900 dark:text-gray-100">{plan.name}</p>
+                <p className="text-sm font-medium text-violet-600 dark:text-violet-400">{plan.price}</p>
                 <ul className="mt-2 space-y-1">
                   {plan.features.map((f) => (
-                    <li key={f} className="text-xs text-gray-500">
+                    <li key={f} className="text-xs text-gray-500 dark:text-gray-400">
                       {f}
                     </li>
                   ))}
                 </ul>
                 {isCurrent && (
-                  <span className="mt-2 inline-block text-xs font-medium text-violet-600">
+                  <span className="mt-2 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
                     Plan actual
                   </span>
                 )}
                 {isSelected && (
-                  <span className="mt-2 inline-block text-xs font-medium text-violet-600">
+                  <span className="mt-2 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
                     Seleccionado
                   </span>
                 )}
@@ -140,13 +150,13 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
         </div>
 
         {error && (
-          <p className="mt-3 text-sm text-red-600">{error}</p>
+          <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>
         )}
 
         <div className="mt-6 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
           >
             Cerrar
           </button>

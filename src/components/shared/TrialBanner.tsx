@@ -39,7 +39,7 @@ export function TrialBanner({ daysRemaining, subscriptionStatus }: TrialBannerPr
       className={`rounded-lg px-4 py-2.5 text-center text-sm font-medium ${
         urgency
           ? 'bg-amber-50 text-amber-800 border border-amber-200'
-          : 'bg-violet-50 text-violet-700 border border-violet-200'
+          : 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 border border-violet-200'
       }`}
     >
       {daysRemaining === 1

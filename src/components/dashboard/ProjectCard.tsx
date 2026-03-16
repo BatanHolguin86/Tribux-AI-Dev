@@ -22,7 +22,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
   const phaseName = PHASE_NAMES[project.active_phase] ?? 'Unknown'
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+    <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-900/20 transition-shadow hover:shadow-md">
       <div className="p-5">
         {/* Header: industry + menu */}
         <div className="flex items-start justify-between">
@@ -30,7 +30,8 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded p-1 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-400"
+              aria-label="Menu del proyecto"
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                 <circle cx="12" cy="5" r="1.5" />
@@ -41,13 +42,13 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
             {menuOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-                <div className="absolute right-0 z-20 mt-1 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                <div className="absolute right-0 z-20 mt-1 w-40 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 py-1 shadow-lg">
                   <button
                     onClick={() => {
                       setMenuOpen(false)
                       onEdit(project)
                     }}
-                    className="flex w-full items-center px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                    className="flex w-full items-center px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     Editar
                   </button>
@@ -56,7 +57,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
                       setMenuOpen(false)
                       onArchive(project)
                     }}
-                    className="flex w-full items-center px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                    className="flex w-full items-center px-3 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     {project.status === 'archived' ? 'Restaurar' : 'Archivar'}
                   </button>
@@ -67,13 +68,13 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
         </div>
 
         {/* Name + description */}
-        <h3 className="mt-2 text-base font-semibold text-gray-900">{project.name}</h3>
+        <h3 className="mt-2 text-base font-semibold text-gray-900 dark:text-gray-100">{project.name}</h3>
         {project.description && (
-          <p className="mt-1 truncate text-sm text-gray-500">{project.description}</p>
+          <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-400">{project.description}</p>
         )}
 
         {/* Active phase + progress */}
-        <p className="mt-3 text-xs font-medium text-violet-600">
+        <p className="mt-3 text-xs font-medium text-violet-600 dark:text-violet-400">
           Phase {String(project.active_phase).padStart(2, '0')}: {phaseName}
         </p>
         <div className="mt-2">
@@ -88,17 +89,17 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
         )}
 
         {/* Next action */}
-        <p className="mt-3 text-xs text-gray-500">
-          Siguiente: <span className="font-medium text-gray-700">{project.next_action}</span>
+        <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+          Siguiente: <span className="font-medium text-gray-700 dark:text-gray-300">{project.next_action}</span>
         </p>
 
         {/* Footer */}
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-xs text-gray-400">{formatRelativeDate(project.last_activity)}</span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">{formatRelativeDate(project.last_activity)}</span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setExpanded(!expanded)}
-              className="rounded p-1 text-gray-400 hover:text-gray-600"
+              className="rounded p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400"
               title={expanded ? 'Contraer' : 'Expandir timeline'}
             >
               <svg
@@ -122,7 +123,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
 
       {/* Expanded timeline */}
       {expanded && project.phases && project.phases.length > 0 && (
-        <div className="border-t border-gray-100 px-5 py-4">
+        <div className="border-t border-gray-100 dark:border-gray-800 px-5 py-4">
           <PhaseTimeline phases={project.phases} variant="full" />
         </div>
       )}

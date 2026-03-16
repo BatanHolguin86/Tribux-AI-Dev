@@ -144,11 +144,11 @@ export function AgentsLayout({
   return (
     <div>
       {/* Mobile tabs */}
-      <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 p-1 lg:hidden">
+      <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 dark:bg-gray-800 p-1 lg:hidden">
         <button
           onClick={() => setMobileTab('agents')}
           className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-            mobileTab === 'agents' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+            mobileTab === 'agents' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
           Agentes
@@ -156,14 +156,14 @@ export function AgentsLayout({
         <button
           onClick={() => setMobileTab('chat')}
           className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-            mobileTab === 'chat' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+            mobileTab === 'chat' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
           Chat
         </button>
       </div>
 
-      <div className="flex h-[calc(100vh-12rem)] gap-4">
+      <div className="flex h-[var(--content-height)] gap-4">
         {/* Agent Selector sidebar */}
         <div
           className={`w-64 flex-shrink-0 overflow-y-auto ${
@@ -179,7 +179,7 @@ export function AgentsLayout({
 
         {/* Chat area */}
         <div
-          className={`flex flex-1 flex-col rounded-lg border border-gray-200 bg-white ${
+          className={`flex flex-1 flex-col rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 ${
             mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
           }`}
         >
@@ -215,14 +215,14 @@ export function AgentsLayout({
               <div className="flex flex-1 items-center justify-center">
                 <div className="text-center">
                   <div className="mx-auto mb-3 text-4xl">{activeAgentInfo.icon}</div>
-                  <p className="text-sm font-medium text-gray-900">{activeAgentInfo.name}</p>
-                  <p className="mt-1 max-w-xs text-xs text-gray-500">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{activeAgentInfo.name}</p>
+                  <p className="mt-1 max-w-xs text-xs text-gray-500 dark:text-gray-400">
                     {activeAgentInfo.description}
                   </p>
                   <button
                     onClick={handleNewThread}
                     disabled={isCreatingThread}
-                    className="mt-4 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-700 disabled:opacity-50"
+                    className="mt-4 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm dark:shadow-gray-900/20 hover:bg-violet-700 disabled:opacity-50"
                   >
                     {isCreatingThread ? 'Creando...' : 'Iniciar conversacion'}
                   </button>

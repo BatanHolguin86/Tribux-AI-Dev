@@ -13,14 +13,14 @@ function StatusIcon({ status }: { status: SectionStatus }) {
   switch (status) {
     case 'approved':
       return (
-        <svg className="h-3.5 w-3.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="h-3.5 w-3.5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
         </svg>
       )
     case 'completed':
     case 'in_progress':
       return (
-        <svg className="h-3.5 w-3.5 animate-pulse text-violet-600" fill="currentColor" viewBox="0 0 24 24">
+        <svg className="h-3.5 w-3.5 animate-pulse text-violet-600 dark:text-violet-400" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z" />
         </svg>
       )
@@ -49,7 +49,7 @@ const SHORT_LABELS: Record<string, string> = {
 
 export function SectionNav({ sections, activeSection, onSelect }: SectionNavProps) {
   return (
-    <div className="flex items-center gap-0.5 overflow-x-auto border-b border-gray-200 bg-gray-50 px-3 py-2 scrollbar-hide">
+    <div className="flex items-center gap-0.5 overflow-x-auto border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 scrollbar-hide">
       {sections.map((section, i) => {
         const accessible = isSectionAccessible(section.key, sections)
         const isActive = section.key === activeSection
@@ -63,21 +63,21 @@ export function SectionNav({ sections, activeSection, onSelect }: SectionNavProp
             disabled={isLocked}
             className={`group relative flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
               isActive
-                ? 'bg-white text-violet-700 shadow-sm ring-1 ring-gray-200'
+                ? 'bg-white dark:bg-gray-900 text-violet-700 dark:text-violet-400 shadow-sm dark:shadow-gray-900/20 ring-1 ring-gray-200 dark:ring-gray-700'
                 : isApproved
-                  ? 'text-green-700 hover:bg-white/70'
+                  ? 'text-green-700 dark:text-green-400 hover:bg-white/70'
                   : isLocked
-                    ? 'cursor-not-allowed text-gray-300'
-                    : 'text-gray-500 hover:bg-white/70 hover:text-gray-700'
+                    ? 'cursor-not-allowed text-gray-300 dark:text-gray-600'
+                    : 'text-gray-500 dark:text-gray-400 hover:bg-white/70 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
             title={isLocked ? 'Aprueba la seccion anterior para desbloquear' : SECTION_LABELS[section.key]}
           >
             <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
               isApproved
-                ? 'bg-green-100 text-green-700'
+                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
                 : isActive
-                  ? 'bg-violet-100 text-violet-600'
-                  : 'bg-gray-100 text-gray-400'
+                  ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
             }`}>
               {isApproved ? (
                 <StatusIcon status={section.status} />

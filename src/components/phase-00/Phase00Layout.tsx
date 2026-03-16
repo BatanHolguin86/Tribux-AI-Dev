@@ -67,14 +67,14 @@ export function Phase00Layout({
                     ? 'bg-emerald-500'
                     : s.key === activeSection
                       ? 'bg-violet-400'
-                      : 'bg-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700'
                 }`}
               />
-              {i < sections.length - 1 && <div className="h-px w-1.5 bg-gray-200" />}
+              {i < sections.length - 1 && <div className="h-px w-1.5 bg-gray-200 dark:bg-gray-700" />}
             </div>
           ))}
         </div>
-        <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
+        <span className="shrink-0 rounded-full bg-gray-100 dark:bg-gray-800 px-2.5 py-0.5 text-xs font-semibold text-gray-600 dark:text-gray-400">
           {approvedCount}/{sections.length}
         </span>
       </div>
@@ -84,11 +84,11 @@ export function Phase00Layout({
       ) : (
         <>
           {/* Mobile tabs */}
-          <div className="flex gap-1 rounded-xl bg-gray-100 p-1 lg:hidden">
+          <div className="flex gap-1 rounded-xl bg-gray-100 dark:bg-gray-800 p-1 lg:hidden">
             <button
               onClick={() => setMobileTab('chat')}
               className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${
-                mobileTab === 'chat' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                mobileTab === 'chat' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               Conversacion
@@ -96,7 +96,7 @@ export function Phase00Layout({
             <button
               onClick={() => setMobileTab('document')}
               className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${
-                mobileTab === 'document' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                mobileTab === 'document' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               Documento
@@ -104,9 +104,9 @@ export function Phase00Layout({
           </div>
 
           {/* Desktop: split view */}
-          <div className="flex h-[calc(100vh-11rem)] gap-4">
+          <div className="flex h-[var(--content-height)] gap-4">
             {/* Left: Chat */}
-            <div className={`flex min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm lg:flex-[3] ${
+            <div className={`flex min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-900/20 lg:flex-[3] ${
               mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
             }`}>
               <SectionNav

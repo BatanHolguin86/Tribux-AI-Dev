@@ -118,8 +118,8 @@ export function AgentChat({
     <div className="flex flex-1 flex-col">
       {error && <ChatErrorBanner error={error} />}
       {attachments.length > 0 && (
-        <div className="border-b border-gray-100 px-4 py-2 text-xs text-gray-500">
-          <div className="mb-1 font-medium text-gray-700">
+        <div className="border-b border-gray-100 dark:border-gray-800 px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
+          <div className="mb-1 font-medium text-gray-700 dark:text-gray-300">
             Archivos adjuntos en esta conversacion
           </div>
           <div className="flex flex-wrap gap-2">
@@ -130,14 +130,14 @@ export function AgentChat({
               return (
                 <div
                   key={key}
-                  className="flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1"
+                  className="flex items-center gap-1 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-2.5 py-1"
                 >
-                  <span className="text-[10px] uppercase text-gray-400">ARCHIVO</span>
-                  <span className="max-w-[140px] truncate text-xs text-gray-700">
+                  <span className="text-[10px] uppercase text-gray-400 dark:text-gray-500">ARCHIVO</span>
+                  <span className="max-w-[140px] truncate text-xs text-gray-700 dark:text-gray-300">
                     {name}
                   </span>
                   {typeof size === 'number' && (
-                    <span className="text-[10px] text-gray-400">
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500">
                       {(size / 1024).toFixed(1)} KB
                     </span>
                   )}
@@ -147,7 +147,7 @@ export function AgentChat({
           </div>
         </div>
       )}
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" role="log" aria-live="polite">
         {messages.length === 0 && !isLoading && (
           <>
             <ProactiveSuggestions
@@ -155,7 +155,7 @@ export function AgentChat({
               agentType={agentType}
               onSuggestionClick={handleSuggestionClick}
             />
-            <div className="flex items-center justify-center py-8 text-sm text-gray-400">
+            <div className="flex items-center justify-center py-8 text-sm text-gray-400 dark:text-gray-500">
               Escribe tu pregunta para comenzar la conversacion.
             </div>
           </>
@@ -167,8 +167,8 @@ export function AgentChat({
           return (
             <div key={msg.id} className={`group flex gap-3 ${!isAssistant ? 'flex-row-reverse' : ''}`}>
               <div
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                  !isAssistant ? 'bg-gray-200 text-gray-600' : 'bg-violet-100 text-violet-600'
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-sm dark:shadow-gray-900/20 ${
+                  !isAssistant ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400' : 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400'
                 }`}
               >
                 {!isAssistant ? 'Tu' : 'AI'}
@@ -178,7 +178,7 @@ export function AgentChat({
                   className={`inline-block rounded-2xl px-4 py-2.5 text-sm ${
                     !isAssistant
                       ? 'rounded-br-md bg-violet-600 text-white'
-                      : 'rounded-bl-md bg-gray-100 text-gray-800'
+                      : 'rounded-bl-md bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
                   }`}
                 >
                   <div className="whitespace-pre-wrap">{text}</div>

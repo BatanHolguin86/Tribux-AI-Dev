@@ -82,18 +82,18 @@ export function Phase01Layout({
     <div>
       {/* Progress bar */}
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           {completedFeatures} de {features.length} features completados
         </p>
         {features.length > 0 && (
           <div className="flex items-center gap-2">
-            <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
+            <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
               <div
-                className="h-2 rounded-full bg-violet-600 transition-all"
+                className="h-1.5 rounded-full bg-violet-600 transition-all"
                 style={{ width: `${(completedFeatures / features.length) * 100}%` }}
               />
             </div>
-            <span className="text-xs font-medium text-gray-500">
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
               {Math.round((completedFeatures / features.length) * 100)}%
             </span>
           </div>
@@ -101,7 +101,7 @@ export function Phase01Layout({
       </div>
 
       {/* Helper text: qué hacer en Phase 01 */}
-      <p className="mb-4 text-xs text-gray-500">
+      <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
         En Phase 01 dividimos tu producto en <span className="font-medium">features</span>{' '}
         (partes como <span className="italic">login, pagos, panel de admin</span>). Para cada
         feature, el orquestador te guiara para definir{' '}
@@ -119,13 +119,13 @@ export function Phase01Layout({
       ) : (
         <>
           {/* Mobile tabs */}
-          <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 p-1 lg:hidden">
+          <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 dark:bg-gray-800 p-1 lg:hidden">
             {(['list', 'chat', 'document'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setMobileTab(tab)}
                 className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-                  mobileTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                  mobileTab === tab ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
                 {tab === 'list' ? 'Features' : tab === 'chat' ? 'Chat' : 'Documento'}
@@ -133,7 +133,7 @@ export function Phase01Layout({
             ))}
           </div>
 
-          <div className="flex h-[calc(100vh-16rem)] gap-4">
+          <div className="flex h-[var(--content-height)] gap-4">
             {/* Left sidebar: Feature list */}
             <div
               className={`w-64 flex-shrink-0 space-y-3 overflow-y-auto ${
@@ -163,7 +163,7 @@ export function Phase01Layout({
               <>
                 {/* Center: Chat */}
                 <div
-                  className={`flex flex-col rounded-lg border border-gray-200 bg-white lg:flex-[6] ${
+                  className={`flex flex-col rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 lg:flex-[6] ${
                     mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
                   }`}
                 >
@@ -199,9 +199,9 @@ export function Phase01Layout({
                 </div>
               </>
             ) : (
-              <div className="flex flex-1 items-center justify-center rounded-lg border border-gray-200 bg-white">
+              <div className="flex flex-1 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {features.length === 0
                       ? 'Agrega o pide sugerencias de features para comenzar.'
                       : 'Selecciona un feature para comenzar su spec KIRO.'}

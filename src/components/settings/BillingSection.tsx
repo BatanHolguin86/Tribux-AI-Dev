@@ -97,8 +97,8 @@ export function BillingSection({
   }
 
   return (
-    <section id="billing" className="rounded-lg border border-gray-200 bg-white p-6">
-      <h2 className="text-lg font-semibold text-gray-900">Plan y facturacion</h2>
+    <section id="billing" className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Plan y facturacion</h2>
 
       {showAlert && billingStatus === 'success' && (
         <div className="mt-3 rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">
@@ -115,13 +115,13 @@ export function BillingSection({
       <div className="mt-4 flex items-start gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <p className="text-xl font-bold text-gray-900">{planDetail?.name ?? currentPlan}</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{planDetail?.name ?? currentPlan}</p>
             <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusInfo.color}`}>
               {statusInfo.label}
             </span>
           </div>
           {planDetail && (
-            <p className="mt-1 text-sm text-gray-500">{planDetail.price}</p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{planDetail.price}</p>
           )}
           {isTrialActive && (
             <p className="mt-1 text-sm text-blue-600">
@@ -133,7 +133,7 @@ export function BillingSection({
           {planDetail && (
             <ul className="mt-3 space-y-1">
               {planDetail.features.map((f) => (
-                <li key={f} className="flex items-center gap-1.5 text-sm text-gray-600">
+                <li key={f} className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
                   <span className="text-green-500">&#10003;</span> {f}
                 </li>
               ))}
@@ -148,7 +148,7 @@ export function BillingSection({
 
       {!isPaid && (
         <div className="mt-6">
-          <h3 className="text-sm font-medium text-gray-700">Planes disponibles</h3>
+          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Planes disponibles</h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {planOrder
               .filter((p) => p !== 'enterprise')
@@ -162,21 +162,21 @@ export function BillingSection({
                     key={plan}
                     className={`rounded-lg border-2 p-4 ${
                       isCurrent
-                        ? 'border-violet-600 bg-violet-50'
+                        ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20'
                         : isUpgrade
-                          ? 'border-gray-200'
-                          : 'border-gray-200 opacity-50'
+                          ? 'border-gray-200 dark:border-gray-700'
+                          : 'border-gray-200 dark:border-gray-700 opacity-50'
                     }`}
                   >
-                    <p className="font-semibold text-gray-900">{detail.name}</p>
-                    <p className="text-sm font-medium text-violet-600">{detail.price}</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">{detail.name}</p>
+                    <p className="text-sm font-medium text-violet-600 dark:text-violet-400">{detail.price}</p>
                     <ul className="mt-2 space-y-1">
                       {detail.features.map((f) => (
-                        <li key={f} className="text-xs text-gray-500">{f}</li>
+                        <li key={f} className="text-xs text-gray-500 dark:text-gray-400">{f}</li>
                       ))}
                     </ul>
                     {isCurrent ? (
-                      <span className="mt-3 inline-block text-xs font-medium text-violet-600">
+                      <span className="mt-3 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
                         Plan actual
                       </span>
                     ) : isUpgrade ? (
@@ -196,7 +196,7 @@ export function BillingSection({
       )}
 
       {isPaid && (
-        <p className="mt-4 text-xs text-gray-400">
+        <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
           Para cambiar o cancelar tu suscripcion, contacta a soporte.
         </p>
       )}

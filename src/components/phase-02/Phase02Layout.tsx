@@ -25,12 +25,20 @@ type Phase02LayoutProps = {
   projectId: string
   sections: SectionData[]
   initialActiveSection: Phase02Section
+  approvedDesigns: Array<{
+    id: string
+    screen_name: string
+    type: string
+    status: string
+    created_at: string
+  }>
 }
 
 export function Phase02Layout({
   projectId,
   sections: initialSections,
   initialActiveSection,
+  approvedDesigns,
 }: Phase02LayoutProps) {
   const [sections, setSections] = useState(initialSections)
   const [activeSection, setActiveSection] = useState<Phase02Section>(initialActiveSection)
@@ -56,24 +64,123 @@ export function Phase02Layout({
 
   return (
     <div>
-      {/* Progress bar */}
-      <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm text-gray-600">
-          {approvedCount} de {totalSections} secciones completadas
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
-            <div
-              className="h-2 rounded-full bg-violet-600 transition-all"
-              style={{ width: `${(approvedCount / totalSections) * 100}%` }}
-            />
+      {/* Header: progreso + puente arquitectura/diseño */}
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {approvedCount} de {totalSections} secciones completadas
+          </p>
+          <div className="flex items-center gap-2">
+            <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+              <div
+                className="h-1.5 rounded-full bg-violet-600 transition-all"
+                style={{ width: `${(approvedCount / totalSections) * 100}%` }}
+              />
+            </div>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+              {Math.round((approvedCount / totalSections) * 100)}%
+            </span>
           </div>
-          <span className="text-xs font-medium text-gray-500">
-            {Math.round((approvedCount / totalSections) * 100)}%
-          </span>
-          <Link href={`/projects/${projectId}/designs`} className="text-sm text-violet-600 hover:text-violet-700 font-medium">
-            Generar wireframes
-          </Link>
+        </div>
+
+        {/* Architecture & Design summary */}
+        <div className="grid w-full gap-3 text-xs text-gray-700 dark:text-gray-300 lg:w-auto lg:grid-cols-3">
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+              Arquitectura
+            </p>
+            <ul className="space-y-1">
+              <li>
+                <Link
+                  href="/docs/02-architecture/system-architecture"
+                  className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+                >
+                  Diagrama de sistema
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/docs/02-architecture/database-schema"
+                  className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+                >
+                  Esquema de base de datos
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+              ADRs clave
+            </p>
+            <ul className="space-y-1">
+              <li>
+                <Link
+                  href="/docs/02-architecture/decisions/ADR-001-stack-selection"
+                  className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+                >
+                  Stack selection
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/docs/02-architecture/decisions/ADR-002-supabase-auth"
+                  className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+                >
+                  Supabase Auth
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/docs/02-architecture/decisions/ADR-005-agent-architecture"
+                  className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+                >
+                  Agent architecture
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+              Diseños UI/UX
+            </p>
+            {approvedDesigns.length === 0 ? (
+              <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                Aún no hay diseños aprobados.{' '}
+                <Link
+                  href={`/projects/${projectId}/designs`}
+                  className="font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+                >
+                  Generar diseños
+                </Link>
+              </p>
+            ) : (
+              <ul className="space-y-1">
+                {approvedDesigns.slice(0, 3).map((d) => (
+                  <li key={d.id} className="flex items-center justify-between gap-2">
+                    <span className="truncate">
+                      {d.screen_name || 'Pantalla sin nombre'}
+                    </span>
+                    <span className="rounded-full bg-green-50 dark:bg-green-900/30 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-400">
+                      Aprobado
+                    </span>
+                  </li>
+                ))}
+                {approvedDesigns.length > 3 && (
+                  <li className="text-[11px] text-gray-500 dark:text-gray-400">
+                    +{approvedDesigns.length - 3} más
+                  </li>
+                )}
+                <li>
+                  <Link
+                    href={`/projects/${projectId}/designs`}
+                    className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+                  >
+                    Ver todos los diseños
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </div>
         </div>
       </div>
 
@@ -82,11 +189,11 @@ export function Phase02Layout({
       ) : (
         <>
           {/* Mobile tabs */}
-          <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 p-1 lg:hidden">
+          <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 dark:bg-gray-800 p-1 lg:hidden">
             <button
               onClick={() => setMobileTab('chat')}
               className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-                mobileTab === 'chat' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                mobileTab === 'chat' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               Conversacion
@@ -94,7 +201,7 @@ export function Phase02Layout({
             <button
               onClick={() => setMobileTab('document')}
               className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-                mobileTab === 'document' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                mobileTab === 'document' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               Documento
@@ -102,9 +209,9 @@ export function Phase02Layout({
           </div>
 
           {/* Desktop: split view */}
-          <div className="flex h-[calc(100vh-14rem)] gap-4">
+          <div className="flex h-[var(--content-height)] gap-4">
             {/* Left: Chat */}
-            <div className={`flex flex-col rounded-lg border border-gray-200 bg-white lg:flex-[6] ${
+            <div className={`flex flex-col rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 lg:flex-[6] ${
               mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
             }`}>
               <SectionNav

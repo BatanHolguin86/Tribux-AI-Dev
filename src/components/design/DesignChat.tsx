@@ -57,15 +57,15 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
   return (
     <div className="flex h-full flex-col">
       {error && <ChatErrorBanner error={error} />}
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" role="log" aria-live="polite">
         {messages.map((msg) => {
           const text = getTextContent(msg)
           const isAssistant = msg.role === 'assistant'
           return (
             <div key={msg.id} className={`flex gap-3 ${!isAssistant ? 'flex-row-reverse' : ''}`}>
               <div
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                  !isAssistant ? 'bg-gray-200 text-gray-600' : 'bg-violet-100 text-violet-600'
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-sm dark:shadow-gray-900/20 ${
+                  !isAssistant ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400' : 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400'
                 }`}
               >
                 {!isAssistant ? 'Tu' : '🎨'}
@@ -75,7 +75,7 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
                   className={`inline-block rounded-2xl px-4 py-2.5 text-sm ${
                     !isAssistant
                       ? 'rounded-br-md bg-violet-600 text-white'
-                      : 'rounded-bl-md bg-gray-100 text-gray-800'
+                      : 'rounded-bl-md bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
                   }`}
                 >
                   <div className="whitespace-pre-wrap">{text}</div>
@@ -91,7 +91,7 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
         {isLoading && <StreamingIndicator />}
       </div>
 
-      <div className="border-t border-gray-100 p-3">
+      <div className="border-t border-gray-100 dark:border-gray-800 p-3">
         <ChatInput
           value={input}
           onChange={setInput}
@@ -118,7 +118,7 @@ function CopyButton({ content }: { content: string }) {
     <div className="mt-1">
       <button
         onClick={handleCopy}
-        className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        className="rounded p-1 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-400"
         title="Copiar al portapapeles"
       >
         {copied ? (

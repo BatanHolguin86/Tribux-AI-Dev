@@ -31,9 +31,9 @@ export function PhaseProgressHeader({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+          <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
             <div
-              className="h-2 rounded-full bg-violet-600 transition-all dark:bg-violet-500"
+              className="h-1.5 rounded-full bg-violet-600 transition-all dark:bg-violet-500"
               style={{ width: `${pct}%` }}
             />
           </div>

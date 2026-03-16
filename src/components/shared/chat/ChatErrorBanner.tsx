@@ -42,13 +42,13 @@ export function ChatErrorBanner({ error }: ChatErrorBannerProps) {
     <div
       className={`mx-4 mt-2 mb-2 rounded-xl border p-3 text-sm ${
         isCredits
-          ? 'border-amber-200 bg-amber-50 text-amber-800'
-          : 'border-red-200 bg-red-50 text-red-800'
+          ? 'border-amber-200 bg-amber-50 dark:bg-amber-900/20 text-amber-800'
+          : 'border-red-200 bg-red-50 dark:bg-red-900/20 text-red-800'
       }`}
       role="alert"
     >
       <div className="flex items-start gap-2.5">
-        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isCredits ? 'bg-amber-100' : 'bg-red-100'}`}>
+        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isCredits ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
           <svg className={`h-3.5 w-3.5 ${isCredits ? 'text-amber-600' : 'text-red-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isCredits ? 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z' : 'M6 18L18 6M6 6l12 12'} />
           </svg>

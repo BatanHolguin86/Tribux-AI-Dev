@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useFocusTrap } from '@/hooks/use-focus-trap'
 
 type SaveArtifactModalProps = {
   projectId: string
@@ -31,6 +32,13 @@ export function SaveArtifactModal({
   const [phaseNumber, setPhaseNumber] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const trapRef = useFocusTrap<HTMLDivElement>()
+
+  useEffect(() => {
+    function handleEsc(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [onClose])
 
   async function handleSave() {
     if (!name.trim()) return
@@ -60,28 +68,28 @@ export function SaveArtifactModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-gray-900">Guardar como Artifact</h3>
+      <div ref={trapRef} role="dialog" aria-modal="true" className="mx-4 w-full max-w-md rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Guardar como Artifact</h3>
 
         <div className="mt-4 space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Arquitectura de pagos"
               autoFocus
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Fase destino</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fase destino</label>
             <select
               value={phaseNumber}
               onChange={(e) => setPhaseNumber(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             >
               {PHASE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -92,8 +100,8 @@ export function SaveArtifactModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Preview</label>
-            <div className="mt-1 max-h-32 overflow-y-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-600">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Preview</label>
+            <div className="mt-1 max-h-32 overflow-y-auto rounded-lg bg-gray-50 dark:bg-gray-800 p-3 text-xs text-gray-600 dark:text-gray-400">
               {content.slice(0, 500)}
               {content.length > 500 && '...'}
             </div>
@@ -105,14 +113,14 @@ export function SaveArtifactModal({
         <div className="mt-6 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
           >
             Cancelar
           </button>
           <button
             onClick={handleSave}
             disabled={saving || !name.trim()}
-            className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-700 disabled:opacity-50"
+            className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm dark:shadow-gray-900/20 hover:bg-violet-700 disabled:opacity-50"
           >
             {saving ? 'Guardando...' : 'Guardar artifact'}
           </button>

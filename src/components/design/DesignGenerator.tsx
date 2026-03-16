@@ -96,7 +96,8 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
       <div>
         <button
           onClick={handleBack}
-          className="mb-4 flex items-center gap-1 text-sm text-gray-500 hover:text-violet-600"
+          className="mb-4 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400"
+          aria-label="Volver a plantillas"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -106,17 +107,17 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
 
         <div className="mb-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-lg">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30 text-lg">
               {resolvedTemplate.icon}
             </span>
             <div>
-              <h2 className="text-lg font-bold text-gray-900">{resolvedTemplate.title}</h2>
-              <p className="text-sm text-gray-500">{resolvedTemplate.description}</p>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{resolvedTemplate.title}</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{resolvedTemplate.description}</p>
             </div>
           </div>
         </div>
 
-        <div className="h-[calc(100vh-18rem)] rounded-lg border border-gray-200 bg-white">
+        <div className="h-[var(--content-height)] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           <DesignChat
             projectId={projectId}
             threadId={threadId}
@@ -131,23 +132,23 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900">UI/UX Design Generator</h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">UI/UX Design Generator</h2>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Genera wireframes, componentes y guias de estilo basados en los specs KIRO de tu proyecto.
         </p>
       </div>
 
       {/* Simple form to generate designs from specs */}
-      <div className="mb-8 rounded-lg border border-gray-200 bg-white p-4">
-        <h3 className="text-sm font-semibold text-gray-900">Generar diseños desde specs KIRO</h3>
-        <p className="mt-1 text-xs text-gray-500">
+      <div className="mb-8 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Generar diseños desde specs KIRO</h3>
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           Escribe los nombres de las pantallas o flujos separados por coma (por ejemplo:
           &quot;Login, Dashboard principal, Detalle de presupuesto&quot;), elige el tipo de diseño y
           opcionalmente añade instrucciones de refinamiento.
         </p>
         <div className="mt-3 space-y-3">
           <div>
-            <label className="block text-xs font-medium text-gray-700">
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">
               Pantallas / flujos
             </label>
             <input
@@ -155,11 +156,11 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
               value={screensInput}
               onChange={(e) => setScreensInput(e.target.value)}
               placeholder="Login, Dashboard, Detalle de presupuesto..."
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700">Tipo de diseño</label>
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">Tipo de diseño</label>
             <div className="mt-1 flex gap-3 text-xs">
               <label className="flex items-center gap-1">
                 <input
@@ -188,7 +189,7 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700">
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">
               Instrucciones de refinamiento (opcional)
             </label>
             <textarea
@@ -196,7 +197,7 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
               onChange={(e) => setRefinement(e.target.value)}
               placeholder="Ej: estilo minimalista, enfasis en CTA principal..."
               rows={2}
-              className="mt-1 w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="mt-1 w-full resize-none rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
           </div>
           <div className="flex justify-end">
@@ -204,7 +205,7 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
               type="button"
               onClick={handleGenerateFromSpecs}
               disabled={!screensInput.trim() || isGenerating}
-              className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
+              className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm dark:shadow-gray-900/20 transition-colors hover:bg-violet-700 disabled:opacity-50"
             >
               {isGenerating ? 'Generando...' : 'Generar diseños'}
             </button>
@@ -218,40 +219,40 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
           <button
             key={tmpl.id}
             onClick={() => handleSelectTemplate(tmpl.id)}
-            className="rounded-lg border-2 border-gray-200 bg-white p-5 text-left transition-all hover:border-violet-300 hover:shadow-md"
+            className="rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 text-left transition-all hover:border-violet-300 hover:shadow-md"
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-50 text-lg">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-lg">
               {tmpl.icon}
             </span>
-            <h3 className="mt-3 font-semibold text-gray-900">{tmpl.title}</h3>
-            <p className="mt-1 text-sm text-gray-500">{tmpl.description}</p>
+            <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">{tmpl.title}</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{tmpl.description}</p>
           </button>
         ))}
 
         {/* Custom design card */}
         <button
           onClick={() => handleSelectTemplate('custom')}
-          className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-5 text-left transition-all hover:border-violet-300 hover:bg-white"
+          className="rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-5 text-left transition-all hover:border-violet-300 hover:bg-white dark:hover:bg-gray-900"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-lg">
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-lg">
             ✏️
           </span>
-          <h3 className="mt-3 font-semibold text-gray-900">Diseno Custom</h3>
-          <p className="mt-1 text-sm text-gray-500">Describe lo que necesitas al UI/UX Designer.</p>
+          <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">Diseno Custom</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Describe lo que necesitas al UI/UX Designer.</p>
         </button>
       </div>
 
       {/* Existing artifacts */}
       {artifacts.length > 0 && (
         <div className="mt-8">
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
             Artifacts guardados
           </h3>
           <div className="space-y-2">
             {artifacts.map((artifact) => (
               <div
                 key={artifact.id}
-                className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3"
+                className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-base">🎨</span>
