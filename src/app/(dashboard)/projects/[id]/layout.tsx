@@ -6,6 +6,7 @@ import { FloatingAgentButton } from '@/components/agents/FloatingAgentButton'
 import { PhasesStepper } from '@/components/projects/PhasesStepper'
 import { ProactiveSuggestions } from '@/components/projects/ProactiveSuggestions'
 import { ProjectTools } from '@/components/projects/ProjectTools'
+import { MobileSidebarDrawer } from '@/components/projects/MobileSidebarDrawer'
 
 export default async function ProjectLayout({
   children,
@@ -77,6 +78,7 @@ export default async function ProjectLayout({
       </div>
 
       <FloatingAgentButton projectId={id} />
+      <MobileSidebarDrawer projectId={id} phases={phases} currentPhase={currentPhase} />
     </div>
   )
 }
