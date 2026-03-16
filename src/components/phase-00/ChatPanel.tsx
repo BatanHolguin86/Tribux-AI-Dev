@@ -153,13 +153,20 @@ export function ChatPanel({
   }
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col overflow-hidden">
       {error && <ChatErrorBanner error={error} />}
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !isLoading && (
-          <div className="flex items-center justify-center py-12 text-sm text-gray-400">
-            Preparando la sesion de {SECTION_LABELS[section]}...
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-100">
+              <svg className="h-5 w-5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <p className="mt-3 text-sm text-gray-400">
+              Preparando la sesion de {SECTION_LABELS[section]}...
+            </p>
           </div>
         )}
 
@@ -185,14 +192,24 @@ export function ChatPanel({
       {sectionReady && !hasDocument && !isApproved && (
         <div className="mx-4 mb-3">
           {generateError && (
-            <p className="mb-2 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">{generateError}</p>
+            <p className="mb-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700 ring-1 ring-red-100">{generateError}</p>
           )}
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-violet-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:from-violet-700 hover:to-violet-800 disabled:opacity-50"
           >
-            {generating ? 'Generando documento...' : `Generar documento de ${SECTION_LABELS[section]}`}
+            {generating ? (
+              <>
+                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Generando documento...
+              </>
+            ) : (
+              `Generar documento de ${SECTION_LABELS[section]}`
+            )}
           </button>
         </div>
       )}
@@ -209,8 +226,11 @@ export function ChatPanel({
 
       {/* Approved banner */}
       {isApproved && (
-        <div className="mx-4 mb-3 rounded-lg bg-green-50 p-3 text-center text-sm font-medium text-green-700">
-          Seccion aprobada
+        <div className="mx-4 mb-3 flex items-center justify-center gap-2 rounded-xl bg-emerald-50 p-3 ring-1 ring-emerald-100">
+          <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-sm font-medium text-emerald-700">Seccion aprobada</span>
         </div>
       )}
 

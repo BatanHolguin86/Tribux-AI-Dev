@@ -45,7 +45,7 @@ export function ChatInput({
   }
 
   return (
-    <div className="flex items-end gap-2 border-t border-gray-100 px-4 py-3">
+    <div className="flex items-end gap-2 border-t border-gray-100 bg-white px-4 py-3">
       {onFilesChange && (
         <>
           <input
@@ -59,10 +59,12 @@ export function ChatInput({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled || isLoading}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 shadow-sm transition-colors hover:bg-gray-50 disabled:opacity-50"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-500 disabled:opacity-50"
             title="Adjuntar archivos"
           >
-            <span className="text-lg leading-none">+</span>
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+            </svg>
           </button>
         </>
       )}
@@ -74,7 +76,7 @@ export function ChatInput({
         placeholder={placeholder ?? "Escribe tu respuesta..."}
         disabled={disabled || isLoading}
         rows={1}
-        className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 disabled:opacity-50"
+        className="flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm transition-colors placeholder:text-gray-400 focus:border-violet-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-violet-400 disabled:opacity-50"
       />
       {hasAttachments && (
         <div className="text-xs text-gray-500">
@@ -84,17 +86,23 @@ export function ChatInput({
       {isLoading ? (
         <button
           onClick={onStop}
-          className="shrink-0 rounded-lg bg-red-100 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-200"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-500 transition-colors hover:bg-red-100"
+          title="Detener"
         >
-          Detener
+          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+            <rect x="6" y="6" width="12" height="12" rx="2" />
+          </svg>
         </button>
       ) : (
         <button
           onClick={onSubmit}
           disabled={!value.trim() || disabled}
-          className="shrink-0 rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm transition-all hover:bg-violet-700 disabled:opacity-40"
+          title="Enviar"
         >
-          Enviar
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </button>
       )}
     </div>

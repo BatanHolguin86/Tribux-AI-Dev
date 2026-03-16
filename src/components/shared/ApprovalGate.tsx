@@ -16,37 +16,55 @@ export function ApprovalGate({
   isApproving,
 }: ApprovalGateProps) {
   const [feedback, setFeedback] = useState('')
+  const [showRevision, setShowRevision] = useState(false)
 
   return (
-    <div className="mx-4 mb-4 rounded-lg border-2 border-violet-200 bg-violet-50 p-4">
-      <p className="text-sm font-medium text-violet-800">
-        El documento de {sectionLabel} esta listo para tu revision.
-      </p>
-      <p className="mt-1 text-xs text-violet-600">
-        Revisa el panel derecho y cuando estes conforme, aprueba la seccion.
-      </p>
+    <div className="mx-4 mb-3 rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 p-4">
+      <div className="flex items-start gap-3">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100">
+          <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-gray-900">
+            Documento listo para revision
+          </p>
+          <p className="mt-0.5 text-xs text-gray-500">
+            Revisa {sectionLabel} en el panel derecho y aprueba cuando estes conforme.
+          </p>
+        </div>
+      </div>
 
-      <button
-        onClick={onApprove}
-        disabled={isApproving}
-        className="mt-3 w-full rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
-      >
-        {isApproving ? 'Aprobando...' : `Aprobar ${sectionLabel}`}
-      </button>
+      <div className="mt-3 flex gap-2">
+        <button
+          onClick={onApprove}
+          disabled={isApproving}
+          className="flex-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:opacity-50"
+        >
+          {isApproving ? 'Aprobando...' : 'Aprobar seccion'}
+        </button>
+        <button
+          onClick={() => setShowRevision(!showRevision)}
+          className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          Pedir cambios
+        </button>
+      </div>
 
-      <div className="mt-3">
-        <p className="text-xs text-violet-600">O escribe si quieres cambiar algo:</p>
-        <div className="mt-1 flex gap-2">
+      {showRevision && (
+        <div className="mt-3 flex gap-2">
           <input
             type="text"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            placeholder="Agrega mas detalle sobre..."
-            className="flex-1 rounded-lg border border-violet-200 bg-white px-3 py-1.5 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            placeholder="Describe los cambios que necesitas..."
+            className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-400"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && feedback.trim()) {
                 onRevisionRequest(feedback)
                 setFeedback('')
+                setShowRevision(false)
               }
             }}
           />
@@ -55,15 +73,16 @@ export function ApprovalGate({
               if (feedback.trim()) {
                 onRevisionRequest(feedback)
                 setFeedback('')
+                setShowRevision(false)
               }
             }}
             disabled={!feedback.trim()}
-            className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-violet-600 shadow-sm transition-colors hover:bg-violet-100 disabled:opacity-50"
+            className="rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700 disabled:opacity-40"
           >
             Enviar
           </button>
         </div>
-      </div>
+      )}
     </div>
   )
 }

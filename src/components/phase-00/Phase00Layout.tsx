@@ -55,29 +55,27 @@ export function Phase00Layout({
   const approvedCount = sections.filter((s) => s.status === 'approved').length
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {/* Progress bar */}
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            {sections.map((s, i) => (
-              <div key={s.key} className="flex items-center gap-1">
-                <div
-                  className={`h-1.5 w-8 rounded-full transition-all ${
-                    s.status === 'approved'
-                      ? 'bg-violet-600'
-                      : s.key === activeSection
-                        ? 'bg-violet-300'
-                        : 'bg-gray-200'
-                  }`}
-                />
-                {i < sections.length - 1 && <div className="h-px w-1 bg-gray-200" />}
-              </div>
-            ))}
-          </div>
+      <div className="flex items-center gap-4">
+        <div className="flex flex-1 items-center gap-1">
+          {sections.map((s, i) => (
+            <div key={s.key} className="flex flex-1 items-center gap-1">
+              <div
+                className={`h-1.5 flex-1 rounded-full transition-all ${
+                  s.status === 'approved'
+                    ? 'bg-emerald-500'
+                    : s.key === activeSection
+                      ? 'bg-violet-400'
+                      : 'bg-gray-200'
+                }`}
+              />
+              {i < sections.length - 1 && <div className="h-px w-1.5 bg-gray-200" />}
+            </div>
+          ))}
         </div>
-        <span className="shrink-0 text-xs font-medium text-gray-500">
-          {approvedCount}/5
+        <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
+          {approvedCount}/{sections.length}
         </span>
       </div>
 
@@ -86,10 +84,10 @@ export function Phase00Layout({
       ) : (
         <>
           {/* Mobile tabs */}
-          <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 p-1 lg:hidden">
+          <div className="flex gap-1 rounded-xl bg-gray-100 p-1 lg:hidden">
             <button
               onClick={() => setMobileTab('chat')}
-              className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+              className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${
                 mobileTab === 'chat' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
               }`}
             >
@@ -97,7 +95,7 @@ export function Phase00Layout({
             </button>
             <button
               onClick={() => setMobileTab('document')}
-              className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+              className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${
                 mobileTab === 'document' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
               }`}
             >
@@ -106,7 +104,7 @@ export function Phase00Layout({
           </div>
 
           {/* Desktop: split view */}
-          <div className="flex h-[calc(100vh-12rem)] gap-3">
+          <div className="flex h-[calc(100vh-11rem)] gap-4">
             {/* Left: Chat */}
             <div className={`flex min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm lg:flex-[3] ${
               mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'

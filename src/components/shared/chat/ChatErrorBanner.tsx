@@ -40,20 +40,22 @@ export function ChatErrorBanner({ error }: ChatErrorBannerProps) {
 
   return (
     <div
-      className={`mx-4 mb-3 rounded-lg border p-3 text-sm ${
+      className={`mx-4 mt-2 mb-2 rounded-xl border p-3 text-sm ${
         isCredits
           ? 'border-amber-200 bg-amber-50 text-amber-800'
           : 'border-red-200 bg-red-50 text-red-800'
       }`}
       role="alert"
     >
-      <div className="flex items-start gap-2">
-        <span className="shrink-0" aria-hidden>
-          {isCredits ? '⚠️' : '❌'}
-        </span>
-        <div className="flex-1">
-          <p className="font-medium">{isCredits ? 'Créditos insuficientes' : 'Error de conexión'}</p>
-          <p className="mt-0.5 opacity-90">{message}</p>
+      <div className="flex items-start gap-2.5">
+        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isCredits ? 'bg-amber-100' : 'bg-red-100'}`}>
+          <svg className={`h-3.5 w-3.5 ${isCredits ? 'text-amber-600' : 'text-red-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isCredits ? 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z' : 'M6 18L18 6M6 6l12 12'} />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-medium text-xs">{isCredits ? 'Creditos insuficientes' : 'Error de conexion'}</p>
+          <p className="mt-0.5 text-xs opacity-80">{message}</p>
         </div>
       </div>
     </div>
