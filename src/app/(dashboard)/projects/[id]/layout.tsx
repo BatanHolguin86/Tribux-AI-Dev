@@ -61,11 +61,13 @@ export default async function ProjectLayout({
 
       {/* Main layout: sidebar + content */}
       <div className="flex gap-6">
-        {/* Sidebar — hidden on mobile */}
-        <aside className="hidden w-64 shrink-0 space-y-5 lg:block">
-          <PhasesStepper projectId={id} phases={phases} />
-          <ProjectTools projectId={id} />
-          <ProactiveSuggestions projectId={id} phases={phases} currentPhase={currentPhase} />
+        {/* Sidebar — sticky with scroll, hidden on mobile */}
+        <aside className="hidden w-64 shrink-0 lg:block">
+          <div className="sticky top-6 max-h-[calc(100vh-5rem)] space-y-5 overflow-y-auto scrollbar-hide pb-6">
+            <PhasesStepper projectId={id} phases={phases} />
+            <ProjectTools projectId={id} />
+            <ProactiveSuggestions projectId={id} phases={phases} currentPhase={currentPhase} />
+          </div>
         </aside>
 
         {/* Content */}

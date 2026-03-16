@@ -57,10 +57,12 @@ export default async function DashboardLayout({
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-8">
-        <TrialBanner
-          daysRemaining={getTrialDaysRemaining(profile.trial_ends_at)}
-          subscriptionStatus={profile.subscription_status ?? 'free'}
-        />
+        <div className="mb-6">
+          <TrialBanner
+            daysRemaining={getTrialDaysRemaining(profile.trial_ends_at)}
+            subscriptionStatus={profile.subscription_status ?? 'free'}
+          />
+        </div>
         {children}
       </main>
     </div>
