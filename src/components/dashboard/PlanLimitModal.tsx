@@ -1,14 +1,16 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useFocusTrap } from '@/hooks/use-focus-trap'
 
 const PLANS = [
-  { name: 'Starter', price: '$149/mes', projects: '1 proyecto', current: true },
-  { name: 'Builder', price: '$299/mes', projects: '3 proyectos', current: false },
-  { name: 'Agency', price: '$699/mes', projects: '10 proyectos', current: false },
-  { name: 'Enterprise', price: 'Contactar', projects: 'Ilimitados', current: false },
+  { key: 'starter', name: 'Starter', price: '$149/mes', projects: '1 proyecto' },
+  { key: 'builder', name: 'Builder', price: '$299/mes', projects: '3 proyectos' },
+  { key: 'agency', name: 'Agency', price: '$699/mes', projects: '10 proyectos' },
+  { key: 'enterprise', name: 'Enterprise', price: 'Contactar', projects: 'Ilimitados' },
 ]
+
+const PLAN_ORDER = ['starter', 'builder', 'agency', 'enterprise']
 
 type PlanLimitModalProps = {
   open: boolean
@@ -17,10 +19,15 @@ type PlanLimitModalProps = {
 }
 
 export function PlanLimitModal({ open, currentPlan, onClose }: PlanLimitModalProps) {
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const trapRef = useFocusTrap<HTMLDivElement>(open)
 
   useEffect(() => {
     if (!open) return
+    setSelectedPlan(null)
+    setError(null)
     function handleEsc(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', handleEsc)
     return () => document.removeEventListener('keydown', handleEsc)
@@ -28,10 +35,37 @@ export function PlanLimitModal({ open, currentPlan, onClose }: PlanLimitModalPro
 
   if (!open) return null
 
-  const plans = PLANS.map((p) => ({
-    ...p,
-    current: p.name.toLowerCase() === currentPlan,
-  }))
+  const currentIndex = PLAN_ORDER.indexOf(currentPlan)
+
+  async function handleUpgrade() {
+    if (!selectedPlan) return
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const res = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: selectedPlan }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.message ?? data.error ?? 'Error al procesar el pago')
+        return
+      }
+
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch {
+      setError('Error de conexion. Intenta de nuevo.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -39,28 +73,52 @@ export function PlanLimitModal({ open, currentPlan, onClose }: PlanLimitModalPro
       <div ref={trapRef} role="dialog" aria-modal="true" className="relative z-10 w-full max-w-lg rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Limite de proyectos alcanzado</h2>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-          Tu plan actual no permite mas proyectos. Upgrade para continuar.
+          Tu plan actual no permite mas proyectos. Elige un plan superior para continuar.
         </p>
 
         <div className="mt-4 grid grid-cols-2 gap-3">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`rounded-lg border-2 p-4 ${
-                plan.current ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20' : 'border-gray-200 dark:border-gray-700'
-              }`}
-            >
-              <p className="font-semibold text-gray-900 dark:text-gray-100">{plan.name}</p>
-              <p className="text-sm font-medium text-violet-600 dark:text-violet-400">{plan.price}</p>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{plan.projects}</p>
-              {plan.current && (
-                <span className="mt-2 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
-                  Plan actual
-                </span>
-              )}
-            </div>
-          ))}
+          {PLANS.map((plan) => {
+            const isCurrent = plan.key === currentPlan
+            const isUpgrade = PLAN_ORDER.indexOf(plan.key) > currentIndex
+            const isSelected = selectedPlan === plan.key
+
+            return (
+              <button
+                key={plan.key}
+                type="button"
+                disabled={!isUpgrade}
+                onClick={() => isUpgrade && setSelectedPlan(plan.key)}
+                className={`rounded-lg border-2 p-4 text-left transition-colors ${
+                  isSelected
+                    ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20 ring-2 ring-violet-300'
+                    : isCurrent
+                      ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20'
+                      : isUpgrade
+                        ? 'border-gray-200 dark:border-gray-700 hover:border-violet-400 cursor-pointer'
+                        : 'border-gray-200 dark:border-gray-700 opacity-50'
+                }`}
+              >
+                <p className="font-semibold text-gray-900 dark:text-gray-100">{plan.name}</p>
+                <p className="text-sm font-medium text-violet-600 dark:text-violet-400">{plan.price}</p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{plan.projects}</p>
+                {isCurrent && (
+                  <span className="mt-2 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
+                    Plan actual
+                  </span>
+                )}
+                {isSelected && (
+                  <span className="mt-2 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
+                    Seleccionado
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
+
+        {error && (
+          <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>
+        )}
 
         <div className="mt-6 flex gap-3">
           <button
@@ -70,13 +128,11 @@ export function PlanLimitModal({ open, currentPlan, onClose }: PlanLimitModalPro
             Cerrar
           </button>
           <button
-            onClick={() => {
-              // TODO: integrate with Stripe checkout
-              onClose()
-            }}
-            className="flex-1 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700"
+            onClick={handleUpgrade}
+            disabled={!selectedPlan || loading}
+            className="flex-1 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Upgrade
+            {loading ? 'Procesando...' : 'Upgrade'}
           </button>
         </div>
       </div>

@@ -51,8 +51,8 @@ export default function LoginPage() {
   return (
     <>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Inicia sesion</h2>
-        <p className="mt-2 text-sm text-gray-600">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Inicia sesion</h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Accede a tu equipo de agentes IA
         </p>
       </div>
@@ -60,14 +60,14 @@ export default function LoginPage() {
       <OAuthButton />
 
       <div className="my-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-gray-200" />
-        <span className="text-sm text-gray-400">o continua con email</span>
-        <div className="h-px flex-1 bg-gray-200" />
+        <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+        <span className="text-sm text-gray-400 dark:text-gray-500">o continua con email</span>
+        <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Email
           </label>
           <input
@@ -75,7 +75,7 @@ export default function LoginPage() {
             type="email"
             autoComplete="email"
             {...register('email')}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
           />
           {errors.email && (
             <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -83,7 +83,7 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Contrasena
           </label>
           <input
@@ -91,7 +91,7 @@ export default function LoginPage() {
             type="password"
             autoComplete="current-password"
             {...register('password')}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
           />
           {errors.password && (
             <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
@@ -99,7 +99,7 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-3 text-sm text-red-700 dark:text-red-400">{error}</div>
         )}
 
         <button
@@ -112,10 +112,10 @@ export default function LoginPage() {
       </form>
 
       <div className="mt-4 flex justify-between text-sm">
-        <Link href="/forgot-password" className="text-violet-600 hover:text-violet-700">
+        <Link href="/forgot-password" className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300">
           Olvide mi contrasena
         </Link>
-        <Link href="/register" className="text-violet-600 hover:text-violet-700">
+        <Link href="/register" className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300">
           Crear cuenta
         </Link>
       </div>

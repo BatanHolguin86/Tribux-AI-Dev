@@ -55,13 +55,13 @@ export default function ResetPasswordPage() {
   if (success) {
     return (
       <div className="text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-          <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
+          <svg className="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-xl font-bold text-gray-900">Contrasena actualizada</h2>
-        <p className="mt-2 text-sm text-gray-600">Redirigiendo al inicio de sesion...</p>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Contrasena actualizada</h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Redirigiendo al inicio de sesion...</p>
       </div>
     )
   }
@@ -69,13 +69,13 @@ export default function ResetPasswordPage() {
   return (
     <>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Nueva contrasena</h2>
-        <p className="mt-2 text-sm text-gray-600">Ingresa tu nueva contrasena</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Nueva contrasena</h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Ingresa tu nueva contrasena</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Nueva contrasena
           </label>
           <input
@@ -83,7 +83,7 @@ export default function ResetPasswordPage() {
             type="password"
             autoComplete="new-password"
             {...register('password')}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             placeholder="Minimo 8 caracteres, al menos 1 numero"
           />
           {errors.password && (
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Confirmar contrasena
           </label>
           <input
@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
             type="password"
             autoComplete="new-password"
             {...register('confirmPassword')}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
           />
           {errors.confirmPassword && (
             <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-3 text-sm text-red-700 dark:text-red-400">{error}</div>
         )}
 
         <button

@@ -1,3 +1,11 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Accede a tu cuenta',
+  description:
+    'Inicia sesion o crea tu cuenta en AI Squad Command Center para construir productos tecnologicos con agentes IA.',
+}
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
@@ -28,7 +36,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       </div>
 
       {/* Right panel — auth form */}
-      <div className="flex w-full lg:w-1/2 flex-col items-center justify-center px-6 py-12">
+      <div className="flex w-full lg:w-1/2 flex-col items-center justify-center px-6 py-12 bg-white dark:bg-gray-950">
         <div className="w-full max-w-sm">{children}</div>
       </div>
     </div>
