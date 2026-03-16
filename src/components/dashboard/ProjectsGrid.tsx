@@ -74,31 +74,36 @@ export function ProjectsGrid({ projects: initialProjects }: ProjectsGridProps) {
       <DashboardHeader summary={summary} onCreateProject={() => setCreateOpen(true)} />
 
       {/* Toolbar: search + tabs */}
-      <div className="mt-6 flex items-center gap-4">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearchValue(e.target.value)}
-          placeholder="Buscar proyectos..."
-          className="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-        />
-        <div className="flex rounded-lg border border-gray-200 bg-white">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearchValue(e.target.value)}
+            placeholder="Buscar proyectos..."
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pl-10 pr-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 sm:w-72"
+          />
+        </div>
+        <div className="flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1">
           <button
             onClick={() => setTab('active')}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-lg px-4 py-1.5 text-sm font-medium transition-all ${
               currentTab !== 'archived'
-                ? 'bg-violet-50 text-violet-700'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
             Activos ({activeCount})
           </button>
           <button
             onClick={() => setTab('archived')}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-lg px-4 py-1.5 text-sm font-medium transition-all ${
               currentTab === 'archived'
-                ? 'bg-violet-50 text-violet-700'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
             Archivados ({archivedCount})

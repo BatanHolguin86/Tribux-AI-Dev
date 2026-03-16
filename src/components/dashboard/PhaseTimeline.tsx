@@ -9,20 +9,20 @@ type PhaseTimelineProps = {
 function PhaseIcon({ status }: { status: string }) {
   if (status === 'completed') {
     return (
-      <svg className="h-3.5 w-3.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-3.5 w-3.5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
       </svg>
     )
   }
   if (status === 'active') {
     return (
-      <svg className="h-3.5 w-3.5 animate-pulse text-violet-600" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="h-3.5 w-3.5 animate-pulse text-violet-600 dark:text-violet-400" fill="currentColor" viewBox="0 0 24 24">
         <path d="M8 5v14l11-7z" />
       </svg>
     )
   }
   return (
-    <svg className="h-3.5 w-3.5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -42,10 +42,10 @@ export function PhaseTimeline({ phases, variant }: PhaseTimelineProps) {
             key={phase.phase_number}
             className={`flex h-6 w-6 items-center justify-center rounded-full ${
               phase.status === 'completed'
-                ? 'bg-green-100'
+                ? 'bg-green-100 dark:bg-green-900/30'
                 : phase.status === 'active'
-                  ? 'bg-violet-100'
-                  : 'bg-gray-100'
+                  ? 'bg-violet-100 dark:bg-violet-900/30'
+                  : 'bg-gray-100 dark:bg-gray-800'
             }`}
             title={PHASES_META[phase.phase_number]?.name}
           >
@@ -65,27 +65,27 @@ export function PhaseTimeline({ phases, variant }: PhaseTimelineProps) {
             <div
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
                 phase.status === 'completed'
-                  ? 'bg-green-100'
+                  ? 'bg-green-100 dark:bg-green-900/30'
                   : phase.status === 'active'
-                    ? 'bg-violet-100'
-                    : 'bg-gray-100'
+                    ? 'bg-violet-100 dark:bg-violet-900/30'
+                    : 'bg-gray-100 dark:bg-gray-800'
               }`}
             >
               <PhaseIcon status={phase.status} />
             </div>
             <div className="flex-1">
-              <span className="text-sm font-medium text-gray-900">
+              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                 Phase {String(phase.phase_number).padStart(2, '0')}
               </span>
-              <span className="ml-2 text-sm text-gray-500">{meta?.name}</span>
+              <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{meta?.name}</span>
             </div>
             <span
-              className={`text-xs font-medium ${
+              className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                 phase.status === 'completed'
-                  ? 'text-green-600'
+                  ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
                   : phase.status === 'active'
-                    ? 'text-violet-600'
-                    : 'text-gray-400'
+                    ? 'bg-violet-100 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
               }`}
             >
               {phase.status === 'completed'

@@ -9,13 +9,13 @@ export function ProgressBar({ value, size = 'sm' }: ProgressBarProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className={`flex-1 overflow-hidden rounded-full bg-gray-200 ${height}`}>
+      <div className={`flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700 ${height}`}>
         <div
-          className={`${height} rounded-full bg-violet-600 transition-all`}
+          className={`${height} rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all`}
           style={{ width: `${clamped}%` }}
         />
       </div>
-      <span className="text-xs font-medium text-gray-500">{clamped}%</span>
+      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{clamped}%</span>
     </div>
   )
 }
