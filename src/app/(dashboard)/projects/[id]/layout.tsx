@@ -41,16 +41,20 @@ export default async function ProjectLayout({
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/dashboard" className="hover:text-violet-600">
+      <nav className="mb-6 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
+        <Link href="/dashboard" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
           Proyectos
         </Link>
-        <span>/</span>
-        <Link href={`/projects/${id}/phase/${String(currentPhase).padStart(2, '0')}`} className="hover:text-violet-600">
+        <svg className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+        <Link href={`/projects/${id}/phase/${String(currentPhase).padStart(2, '0')}`} className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
           {projectName}
         </Link>
-        <span>/</span>
-        <span className="font-medium text-gray-900">
+        <svg className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+        <span className="font-medium text-gray-900 dark:text-gray-100">
           Phase {String(currentPhase).padStart(2, '0')}: {phaseName}
         </span>
       </nav>
@@ -58,7 +62,7 @@ export default async function ProjectLayout({
       {/* Main layout: sidebar + content */}
       <div className="flex gap-6">
         {/* Sidebar — hidden on mobile */}
-        <aside className="hidden w-64 shrink-0 space-y-4 lg:block">
+        <aside className="hidden w-64 shrink-0 space-y-5 lg:block">
           <PhasesStepper projectId={id} phases={phases} />
           <ProjectTools projectId={id} />
           <ProactiveSuggestions projectId={id} phases={phases} currentPhase={currentPhase} />

@@ -92,35 +92,69 @@ function generateSuggestions(
   return suggestions.slice(0, 3)
 }
 
-const priorityStyles = {
-  high: 'border-violet-200 bg-violet-50 hover:bg-violet-100',
-  medium: 'border-gray-200 bg-white hover:bg-gray-50',
-  low: 'border-gray-100 bg-gray-50 hover:bg-gray-100',
-}
-
 export function ProactiveSuggestions({ projectId, phases, currentPhase }: ProactiveSuggestionsProps) {
   const suggestions = generateSuggestions(projectId, phases, currentPhase)
 
   if (suggestions.length === 0) return null
 
   return (
-    <div className="space-y-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-        Acciones sugeridas
+    <div>
+      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+        Siguiente paso
       </h3>
-      {suggestions.map((s, i) => (
-        <Link
-          key={i}
-          href={s.href}
-          className={`flex items-center gap-3 rounded-lg border p-3 transition-colors ${priorityStyles[s.priority]}`}
-        >
-          <span className="text-lg">{s.icon}</span>
-          <span className="flex-1 text-sm font-medium text-gray-700">{s.text}</span>
-          <svg className="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Link>
-      ))}
+      <div className="space-y-2">
+        {suggestions.map((s, i) => {
+          const isHigh = s.priority === 'high'
+
+          return (
+            <Link
+              key={i}
+              href={s.href}
+              className={`group flex items-center gap-3 rounded-xl border p-3 transition-all ${
+                isHigh
+                  ? 'border-violet-200 dark:border-violet-800 bg-gradient-to-r from-violet-50 to-white dark:from-violet-900/20 dark:to-gray-900 hover:shadow-md hover:shadow-violet-100/50 dark:hover:shadow-violet-900/20 hover:border-violet-300 dark:hover:border-violet-700'
+                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              <div
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-base ${
+                  isHigh
+                    ? 'bg-violet-100 dark:bg-violet-900/30'
+                    : 'bg-gray-100 dark:bg-gray-800'
+                }`}
+              >
+                {s.icon}
+              </div>
+              <div className="min-w-0 flex-1">
+                <span
+                  className={`block text-xs font-semibold leading-snug ${
+                    isHigh
+                      ? 'text-violet-800 dark:text-violet-300'
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                >
+                  {s.text}
+                </span>
+                {isHigh && (
+                  <span className="mt-0.5 block text-[10px] text-violet-500 dark:text-violet-500">
+                    Accion recomendada
+                  </span>
+                )}
+              </div>
+              <svg
+                className={`h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                  isHigh ? 'text-violet-400 dark:text-violet-500' : 'text-gray-300 dark:text-gray-600'
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          )
+        })}
+      </div>
     </div>
   )
 }
