@@ -40,6 +40,8 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [input, setInput] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState<string | null>(null)
   const isApproved = sectionStatus === 'approved'
 
   const { messages, sendMessage, status, stop, error } = useChat({
@@ -71,11 +73,35 @@ export function ChatPanel({
     (lastMessage?.role === 'assistant' && lastText.includes('[SECTION_READY]'))
 
   async function handleGenerate() {
-    await fetch(`/api/projects/${projectId}/phases/2/sections/${section}/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    })
-    onDocumentGenerated()
+    setGenerating(true)
+    setGenerateError(null)
+
+    try {
+      const res = await fetch(`/api/projects/${projectId}/phases/2/sections/${section}/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        setGenerateError(text || `Error ${res.status}`)
+        return
+      }
+
+      const reader = res.body?.getReader()
+      if (reader) {
+        while (true) {
+          const { done } = await reader.read()
+          if (done) break
+        }
+      }
+
+      onDocumentGenerated()
+    } catch (err) {
+      setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
+    } finally {
+      setGenerating(false)
+    }
   }
 
   async function handleApprove() {
@@ -123,11 +149,15 @@ export function ChatPanel({
       {/* Generate button */}
       {sectionReady && !hasDocument && !isApproved && (
         <div className="mx-4 mb-3">
+          {generateError && (
+            <p className="mb-2 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">{generateError}</p>
+          )}
           <button
             onClick={handleGenerate}
-            className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700"
+            disabled={generating}
+            className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
-            Generar documento de {SECTION_LABELS[section]}
+            {generating ? 'Generando documento...' : `Generar documento de ${SECTION_LABELS[section]}`}
           </button>
         </div>
       )}
