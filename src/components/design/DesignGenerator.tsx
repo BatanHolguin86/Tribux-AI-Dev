@@ -20,6 +20,11 @@ type DesignGeneratorProps = {
 export function DesignGenerator({ projectId, existingArtifacts }: DesignGeneratorProps) {
   const [activeTemplate, setActiveTemplate] = useState<string | null>(null)
   const [threadId, setThreadId] = useState<string | null>(null)
+  const [artifacts, setArtifacts] = useState<Artifact[]>(existingArtifacts)
+  const [screensInput, setScreensInput] = useState('')
+  const [type, setType] = useState<'wireframe' | 'mockup_lowfi' | 'mockup_highfi'>('wireframe')
+  const [refinement, setRefinement] = useState('')
+  const [isGenerating, setIsGenerating] = useState(false)
 
   async function handleSelectTemplate(templateId: string) {
     // Create a new thread with the UI/UX Designer agent
@@ -44,6 +49,46 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
   const template = DESIGN_TEMPLATES.find((t) => t.id === activeTemplate)
   const customTemplate = { id: 'custom', title: 'Diseno Custom', description: 'Describe lo que necesitas.', icon: '✏️', prompt: '' }
   const resolvedTemplate = template ?? (activeTemplate === 'custom' ? customTemplate : null)
+
+  async function handleGenerateFromSpecs() {
+    const screens = screensInput
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+
+    if (screens.length === 0) return
+
+    setIsGenerating(true)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/designs/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type,
+          screens,
+          refinement: refinement || undefined,
+        }),
+      })
+
+      if (!res.ok) {
+        // En v1.0 mantenemos el manejo simple; se podria mostrar toast
+        console.error('[DesignGenerator] Error generating designs', await res.text())
+      } else {
+        // Refrescar lista de artifacts
+        const listRes = await fetch(`/api/projects/${projectId}/designs`)
+        if (listRes.ok) {
+          const json = (await listRes.json()) as { artifacts?: Artifact[] }
+          if (Array.isArray(json.artifacts)) {
+            setArtifacts(json.artifacts)
+          }
+        }
+      }
+    } catch (error) {
+      console.error('[DesignGenerator] Unexpected error', error)
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
   // Active chat view
   if (activeTemplate && threadId && resolvedTemplate) {
@@ -92,6 +137,81 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
         </p>
       </div>
 
+      {/* Simple form to generate designs from specs */}
+      <div className="mb-8 rounded-lg border border-gray-200 bg-white p-4">
+        <h3 className="text-sm font-semibold text-gray-900">Generar diseños desde specs KIRO</h3>
+        <p className="mt-1 text-xs text-gray-500">
+          Escribe los nombres de las pantallas o flujos separados por coma (por ejemplo:
+          &quot;Login, Dashboard principal, Detalle de presupuesto&quot;), elige el tipo de diseño y
+          opcionalmente añade instrucciones de refinamiento.
+        </p>
+        <div className="mt-3 space-y-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-700">
+              Pantallas / flujos
+            </label>
+            <input
+              type="text"
+              value={screensInput}
+              onChange={(e) => setScreensInput(e.target.value)}
+              placeholder="Login, Dashboard, Detalle de presupuesto..."
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700">Tipo de diseño</label>
+            <div className="mt-1 flex gap-3 text-xs">
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  checked={type === 'wireframe'}
+                  onChange={() => setType('wireframe')}
+                />
+                Wireframe
+              </label>
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  checked={type === 'mockup_lowfi'}
+                  onChange={() => setType('mockup_lowfi')}
+                />
+                Mockup low-fi
+              </label>
+              <label className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  checked={type === 'mockup_highfi'}
+                  onChange={() => setType('mockup_highfi')}
+                />
+                Mockup high-fi
+              </label>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700">
+              Instrucciones de refinamiento (opcional)
+            </label>
+            <textarea
+              value={refinement}
+              onChange={(e) => setRefinement(e.target.value)}
+              placeholder="Ej: estilo minimalista, enfasis en CTA principal..."
+              rows={2}
+              className="mt-1 w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            />
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={handleGenerateFromSpecs}
+              disabled={!screensInput.trim() || isGenerating}
+              className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
+            >
+              {isGenerating ? 'Generando...' : 'Generar diseños'}
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Templates grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {DESIGN_TEMPLATES.map((tmpl) => (
@@ -122,13 +242,13 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
       </div>
 
       {/* Existing artifacts */}
-      {existingArtifacts.length > 0 && (
+      {artifacts.length > 0 && (
         <div className="mt-8">
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
             Artifacts guardados
           </h3>
           <div className="space-y-2">
-            {existingArtifacts.map((artifact) => (
+            {artifacts.map((artifact) => (
               <div
                 key={artifact.id}
                 className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3"
