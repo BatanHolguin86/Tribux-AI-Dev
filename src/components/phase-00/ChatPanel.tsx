@@ -163,7 +163,11 @@ export function ChatPanel({
           </div>
         )}
 
-        {messages.map((msg) => {
+        {messages.map((msg, idx) => {
+          // Hide the auto-kickoff user message (first msg when auto-started)
+          if (idx === 0 && msg.role === 'user' && autoStartedRef.current && initialMessages.length === 0) {
+            return null
+          }
           const text = getTextContent(msg)
           return (
             <ChatMessage

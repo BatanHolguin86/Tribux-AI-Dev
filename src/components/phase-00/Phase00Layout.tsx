@@ -117,6 +117,7 @@ export function Phase00Layout({
                 onSelect={setActiveSection}
               />
               <ChatPanel
+                key={activeSection}
                 projectId={projectId}
                 section={activeSection}
                 sectionStatus={currentSection.status}
