@@ -52,36 +52,56 @@ export async function POST(
     ],
     ...AI_CONFIG.documentGeneration,
     onFinish: async ({ text }) => {
-      const docName = SECTION_DOC_NAMES[sectionKey]
-      const storagePath = `discovery/${docName}`
+      try {
+        const docName = SECTION_DOC_NAMES[sectionKey]
+        const storagePath = `discovery/${docName}`
 
-      // Upload to storage
-      await uploadDocument(projectId, storagePath, text)
+        // Upload to storage
+        await uploadDocument(projectId, storagePath, text)
 
-      // Upsert document record
-      await supabase
-        .from('project_documents')
-        .upsert(
-          {
+        // Save document record (delete existing + insert to avoid unique constraint issues)
+        const docType = section === 'problem_statement' ? 'brief' : section
+        await supabase
+          .from('project_documents')
+          .delete()
+          .eq('project_id', projectId)
+          .eq('phase_number', 0)
+          .eq('section', section)
+          .eq('document_type', docType)
+
+        const { error: insertError } = await supabase
+          .from('project_documents')
+          .insert({
             project_id: projectId,
             phase_number: 0,
             section,
-            document_type: section === 'problem_statement' ? 'brief' : section,
+            document_type: docType,
             storage_path: `projects/${projectId}/${storagePath}`,
             content: text,
             version: 1,
             status: 'draft',
-          },
-          { onConflict: 'project_id,phase_number,section,document_type' }
-        )
+          })
 
-      // Update section to completed
-      await supabase
-        .from('phase_sections')
-        .update({ status: 'completed' })
-        .eq('project_id', projectId)
-        .eq('phase_number', 0)
-        .eq('section', section)
+        if (insertError) {
+          console.error('[Generate] Error saving document:', insertError.message)
+        }
+
+        // Update section to completed
+        const { error: sectionError } = await supabase
+          .from('phase_sections')
+          .update({ status: 'completed' })
+          .eq('project_id', projectId)
+          .eq('phase_number', 0)
+          .eq('section', section)
+
+        if (sectionError) {
+          console.error('[Generate] Error updating section:', sectionError.message)
+        }
+
+        console.log(`[Generate] Document saved for ${section} in project ${projectId}`)
+      } catch (err) {
+        console.error('[Generate] onFinish error:', err)
+      }
     },
   })
 
