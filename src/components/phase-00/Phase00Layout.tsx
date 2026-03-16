@@ -57,19 +57,28 @@ export function Phase00Layout({
   return (
     <div>
       {/* Progress bar */}
-      <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm text-gray-600">
-          {approvedCount} de 5 secciones completadas
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
-            <div
-              className="h-2 rounded-full bg-violet-600 transition-all"
-              style={{ width: `${(approvedCount / 5) * 100}%` }}
-            />
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            {sections.map((s, i) => (
+              <div key={s.key} className="flex items-center gap-1">
+                <div
+                  className={`h-1.5 w-8 rounded-full transition-all ${
+                    s.status === 'approved'
+                      ? 'bg-violet-600'
+                      : s.key === activeSection
+                        ? 'bg-violet-300'
+                        : 'bg-gray-200'
+                  }`}
+                />
+                {i < sections.length - 1 && <div className="h-px w-1 bg-gray-200" />}
+              </div>
+            ))}
           </div>
-          <span className="text-xs font-medium text-gray-500">{Math.round((approvedCount / 5) * 100)}%</span>
         </div>
+        <span className="shrink-0 text-xs font-medium text-gray-500">
+          {approvedCount}/5
+        </span>
       </div>
 
       {allApproved ? (
@@ -97,9 +106,9 @@ export function Phase00Layout({
           </div>
 
           {/* Desktop: split view */}
-          <div className="flex h-[calc(100vh-14rem)] gap-4">
+          <div className="flex h-[calc(100vh-12rem)] gap-3">
             {/* Left: Chat */}
-            <div className={`flex flex-col rounded-lg border border-gray-200 bg-white lg:flex-[6] ${
+            <div className={`flex min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm lg:flex-[3] ${
               mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
             }`}>
               <SectionNav
@@ -119,7 +128,7 @@ export function Phase00Layout({
             </div>
 
             {/* Right: Document */}
-            <div className={`lg:flex-[4] ${
+            <div className={`lg:flex-[2] ${
               mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
             }`}>
               <DocumentPanel
