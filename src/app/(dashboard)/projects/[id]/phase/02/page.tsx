@@ -18,6 +18,14 @@ type SectionData = {
   } | null
 }
 
+type ApprovedDesign = {
+  id: string
+  screen_name: string
+  type: string
+  status: string
+  created_at: string
+}
+
 export default async function Phase02Page({
   params,
 }: {
@@ -46,8 +54,8 @@ export default async function Phase02Page({
     )
   }
 
-  // Fetch sections, conversations, and documents
-  const [sectionsRes, conversationsRes, documentsRes] = await Promise.all([
+  // Fetch sections, conversations, documents and approved designs
+  const [sectionsRes, conversationsRes, documentsRes, designsRes] = await Promise.all([
     supabase
       .from('phase_sections')
       .select('*')
@@ -63,11 +71,18 @@ export default async function Phase02Page({
       .select('id, section, content, version, status')
       .eq('project_id', projectId)
       .eq('phase_number', 2),
+    supabase
+      .from('design_artifacts')
+      .select('id, screen_name, type, status, created_at')
+      .eq('project_id', projectId)
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false })
   ])
 
   const sections = sectionsRes.data ?? []
   const conversations = conversationsRes.data ?? []
   const documents = documentsRes.data ?? []
+  const approvedDesigns: ApprovedDesign[] = (designsRes.data as ApprovedDesign[]) ?? []
 
   const sectionData: SectionData[] = PHASE02_SECTIONS.map((key) => {
     const sectionRow = sections.find((s) => s.section === key)
@@ -93,6 +108,7 @@ export default async function Phase02Page({
       projectId={projectId}
       sections={sectionData}
       initialActiveSection={activeSection}
+      approvedDesigns={approvedDesigns}
     />
   )
 }
