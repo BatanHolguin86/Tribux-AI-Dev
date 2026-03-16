@@ -91,21 +91,21 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
         <div className="flex items-center gap-3">
           <Link
             href={`/projects/${projectId}/designs`}
-            className="text-sm text-gray-500 hover:text-gray-700"
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           >
             &larr; Disenos
           </Link>
-          <h1 className="text-xl font-semibold text-gray-900">{artifact.screen_name}</h1>
-          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{artifact.screen_name}</h1>
+          <span className="rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-400">
             {TYPE_LABELS[artifact.type]}
           </span>
           <span
-            className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
               status === 'approved'
-                ? 'bg-green-100 text-green-700'
+                ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
                 : status === 'generating'
-                  ? 'bg-yellow-100 text-yellow-700'
-                  : 'bg-gray-100 text-gray-600'
+                  ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
             }`}
           >
             {STATUS_LABELS[status]}
@@ -124,13 +124,13 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
       </div>
 
       {/* Content display */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
         {displayContent ? (
-          <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800">
+          <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800 dark:text-gray-200">
             {displayContent}
           </pre>
         ) : (
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
             {status === 'generating' ? 'Generando diseno...' : 'Sin contenido disponible.'}
           </p>
         )}
@@ -138,15 +138,15 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
 
       {/* Refine section */}
       {status !== 'approved' && (
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4">
-          <h3 className="text-sm font-medium text-gray-700">Refinar diseno</h3>
+        <div className="mt-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Refinar diseno</h3>
           <div className="mt-2 flex gap-2">
             <input
               type="text"
               value={refineInput}
               onChange={(e) => setRefineInput(e.target.value)}
               placeholder="Ej: Agrega un sidebar de navegacion, cambia el layout a 3 columnas..."
-              className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
               disabled={isRefining}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {

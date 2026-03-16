@@ -26,11 +26,11 @@ const PLAN_DETAILS: Record<string, { name: string; price: string; features: stri
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  trialing: { label: 'Periodo de prueba', color: 'bg-blue-100 text-blue-800' },
-  active: { label: 'Activo', color: 'bg-green-100 text-green-800' },
-  free: { label: 'Gratuito', color: 'bg-gray-100 text-gray-800' },
-  canceled: { label: 'Cancelado', color: 'bg-red-100 text-red-800' },
-  past_due: { label: 'Pago pendiente', color: 'bg-amber-100 text-amber-800' },
+  trialing: { label: 'Periodo de prueba', color: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' },
+  active: { label: 'Activo', color: 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' },
+  free: { label: 'Gratuito', color: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' },
+  canceled: { label: 'Cancelado', color: 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400' },
+  past_due: { label: 'Pago pendiente', color: 'bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400' },
 }
 
 type BillingSectionProps = {
@@ -116,7 +116,7 @@ export function BillingSection({
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{planDetail?.name ?? currentPlan}</p>
-            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusInfo.color}`}>
+            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${statusInfo.color}`}>
               {statusInfo.label}
             </span>
           </div>

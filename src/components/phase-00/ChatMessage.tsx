@@ -16,19 +16,21 @@ export function ChatMessage({ role, content, createdAt }: ChatMessageProps) {
       {/* Avatar */}
       <div
         className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-sm dark:shadow-gray-900/20 ${
-          isUser ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400' : 'bg-violet-100 text-violet-600 dark:text-violet-400'
+          isUser
+            ? 'bg-violet-600 text-white'
+            : 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-400 ring-1 ring-gray-200 dark:ring-gray-600'
         }`}
       >
         {isUser ? 'Tu' : 'AI'}
       </div>
 
       {/* Message bubble */}
-      <div className={`max-w-[80%] ${isUser ? 'text-right' : ''}`}>
+      <div className={`max-w-[80%] min-w-0 ${isUser ? 'text-right' : ''}`}>
         <div
-          className={`inline-block rounded-2xl px-4 py-2.5 text-sm ${
+          className={`inline-block rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed ${
             isUser
-              ? 'rounded-br-md bg-violet-600 text-white'
-              : 'rounded-bl-md bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+              ? 'rounded-tr-sm bg-violet-600 text-white'
+              : 'rounded-tl-sm bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200 ring-1 ring-gray-100 dark:ring-gray-800'
           }`}
         >
           <div className="whitespace-pre-wrap">{content}</div>

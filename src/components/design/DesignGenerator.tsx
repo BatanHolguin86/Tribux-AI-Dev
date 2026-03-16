@@ -257,16 +257,16 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
                 <div className="flex items-center gap-3">
                   <span className="text-base">🎨</span>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{artifact.title}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{artifact.title}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
                       {new Date(artifact.created_at).toLocaleDateString('es-ES')}
                     </p>
                   </div>
                 </div>
                 <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                   artifact.status === 'approved'
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-600'
+                    ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                 }`}>
                   {artifact.status === 'approved' ? 'Aprobado' : 'Draft'}
                 </span>

@@ -160,7 +160,7 @@ export function Phase02Layout({
                     <span className="truncate">
                       {d.screen_name || 'Pantalla sin nombre'}
                     </span>
-                    <span className="rounded-full bg-green-50 dark:bg-green-900/30 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-400">
+                    <span className="rounded-full bg-green-100 dark:bg-green-900/20 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400">
                       Aprobado
                     </span>
                   </li>
