@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import Link from 'next/link'
 import type { Phase02Section, SectionStatus } from '@/types/conversation'
 import { SectionNav } from './SectionNav'
 import { ChatPanel } from './ChatPanel'
@@ -70,6 +71,9 @@ export function Phase02Layout({
           <span className="text-xs font-medium text-gray-500">
             {Math.round((approvedCount / totalSections) * 100)}%
           </span>
+          <Link href={`/projects/${projectId}/designs`} className="text-sm text-violet-600 hover:text-violet-700 font-medium">
+            Generar wireframes
+          </Link>
         </div>
       </div>
 

@@ -33,6 +33,25 @@ vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn().mockResolvedValue(createMockSupabase()),
 }))
 
+vi.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: vi.fn().mockReturnValue({ allowed: true, remaining: 29, resetAt: 0 }),
+  getClientIp: vi.fn().mockReturnValue('127.0.0.1'),
+  AGENT_CHAT_RATE_LIMIT: { maxAttempts: 30, windowMs: 3600000 },
+}))
+
+vi.mock('@/lib/ai/chat-errors', () => ({
+  formatChatErrorResponse: vi.fn().mockReturnValue({ status: 500, body: { error: 'Error' } }),
+}))
+
+vi.mock('@/lib/ai/anthropic', () => ({
+  defaultModel: 'test-model',
+  AI_CONFIG: { chat: { maxTokens: 100, temperature: 0.5 } },
+}))
+
+vi.mock('@/lib/ai/prompts/phase-00', () => ({
+  buildPhase00Prompt: vi.fn().mockReturnValue('You are a discovery assistant.'),
+}))
+
 vi.mock('@/lib/ai/context-builder', () => ({
   buildProjectContext: mockBuildProjectContext,
 }))
@@ -52,6 +71,7 @@ vi.mock('ai', () => ({
 describe('POST /api/projects/[id]/phases/0/chat', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    process.env.ANTHROPIC_API_KEY = 'test-key'
     mockBuildProjectContext.mockResolvedValue({
       name: 'Test Project',
       description: 'Test description',

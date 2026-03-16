@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createFeatureSchema } from '@/lib/validations/features'
+import { canCreateFeatureInPhase01 } from '@/lib/plans/guards'
 
 export async function GET(
   _request: Request,
@@ -63,11 +64,25 @@ export async function POST(
     return NextResponse.json({ error: 'Datos invalidos', details: parsed.error.flatten() }, { status: 400 })
   }
 
-  // Get next display_order
+  // Get next display_order and check feature limit
   const { count } = await supabase
     .from('project_features')
     .select('*', { count: 'exact', head: true })
     .eq('project_id', projectId)
+
+  // Plan guard: check feature count limit
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('plan, subscription_status, trial_ends_at')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile || !canCreateFeatureInPhase01(count ?? 0, profile)) {
+    return NextResponse.json(
+      { error: 'plan_required', message: 'Tu plan solo permite 1 feature. Upgrade para agregar mas.' },
+      { status: 403 },
+    )
+  }
 
   const { data: feature, error } = await supabase
     .from('project_features')

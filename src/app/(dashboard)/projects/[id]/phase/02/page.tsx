@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Phase02Layout } from '@/components/phase-02/Phase02Layout'
+import { PlanGuard } from '@/components/shared/PlanGuard'
+import { canAccessPhase } from '@/lib/plans/guards'
 import { PHASE02_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-02'
 import type { Phase02Section, SectionStatus } from '@/types/conversation'
 
@@ -23,6 +25,26 @@ export default async function Phase02Page({
 }) {
   const { id: projectId } = await params
   const supabase = await createClient()
+
+  // Plan guard check
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user
+    ? await supabase
+        .from('user_profiles')
+        .select('plan, subscription_status, trial_ends_at')
+        .eq('id', user.id)
+        .single()
+    : { data: null }
+
+  const hasAccess = profile ? canAccessPhase(2, profile) : false
+
+  if (!hasAccess) {
+    return (
+      <PlanGuard hasAccess={false} currentPlan={profile?.plan ?? 'starter'} feature="Phase 02 — Arquitectura">
+        <div />
+      </PlanGuard>
+    )
+  }
 
   // Fetch sections, conversations, and documents
   const [sectionsRes, conversationsRes, documentsRes] = await Promise.all([

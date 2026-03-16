@@ -1,0 +1,164 @@
+'use client'
+
+import { useState } from 'react'
+
+const PLANS = [
+  {
+    key: 'free',
+    name: 'Free',
+    price: '$0',
+    features: ['Phase 00 — Discovery', '1 feature en Phase 01', 'CTO Virtual'],
+    purchasable: false,
+  },
+  {
+    key: 'starter',
+    name: 'Starter',
+    price: '$149/mes',
+    features: ['Todo en Free', '1 proyecto', 'CTO Virtual', '7 dias de prueba gratis'],
+    purchasable: true,
+  },
+  {
+    key: 'builder',
+    name: 'Builder',
+    price: '$299/mes',
+    features: ['Todo en Starter', '3 proyectos', '8 agentes especializados', 'Phases 02-07'],
+    purchasable: true,
+  },
+  {
+    key: 'agency',
+    name: 'Agency',
+    price: '$699/mes',
+    features: ['Todo en Builder', '10 proyectos', 'Agente Operator', 'Soporte prioritario'],
+    purchasable: true,
+  },
+]
+
+type PaywallModalProps = {
+  open: boolean
+  currentPlan: string
+  feature?: string
+  onClose: () => void
+}
+
+export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallModalProps) {
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  if (!open) return null
+
+  const planOrder = ['free', 'starter', 'builder', 'agency']
+  const currentIndex = planOrder.indexOf(currentPlan)
+
+  async function handleUpgrade() {
+    const plan = selectedPlan
+    if (!plan) return
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const res = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.message ?? data.error ?? 'Error al procesar el pago')
+        return
+      }
+
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch {
+      setError('Error de conexion. Intenta de nuevo.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
+        <h2 className="text-lg font-semibold text-gray-900">
+          {feature
+            ? `Upgrade para acceder a ${feature}`
+            : 'Upgrade tu plan'}
+        </h2>
+        <p className="mt-1 text-sm text-gray-600">
+          Tu plan actual no incluye esta funcionalidad. Elige un plan para continuar.
+        </p>
+
+        <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {PLANS.map((plan) => {
+            const isCurrent = plan.key === currentPlan
+            const isUpgrade = plan.purchasable && planOrder.indexOf(plan.key) > currentIndex
+            const isSelected = selectedPlan === plan.key
+            return (
+              <button
+                key={plan.key}
+                type="button"
+                disabled={!isUpgrade}
+                onClick={() => isUpgrade && setSelectedPlan(plan.key)}
+                className={`rounded-lg border-2 p-4 text-left transition-colors ${
+                  isSelected
+                    ? 'border-violet-600 bg-violet-50 ring-2 ring-violet-300'
+                    : isCurrent
+                      ? 'border-violet-600 bg-violet-50'
+                      : isUpgrade
+                        ? 'border-gray-200 hover:border-violet-400 cursor-pointer'
+                        : 'border-gray-200 opacity-50'
+                }`}
+              >
+                <p className="font-semibold text-gray-900">{plan.name}</p>
+                <p className="text-sm font-medium text-violet-600">{plan.price}</p>
+                <ul className="mt-2 space-y-1">
+                  {plan.features.map((f) => (
+                    <li key={f} className="text-xs text-gray-500">
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                {isCurrent && (
+                  <span className="mt-2 inline-block text-xs font-medium text-violet-600">
+                    Plan actual
+                  </span>
+                )}
+                {isSelected && (
+                  <span className="mt-2 inline-block text-xs font-medium text-violet-600">
+                    Seleccionado
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+
+        {error && (
+          <p className="mt-3 text-sm text-red-600">{error}</p>
+        )}
+
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+          >
+            Cerrar
+          </button>
+          <button
+            onClick={handleUpgrade}
+            disabled={!selectedPlan || loading}
+            className="flex-1 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Procesando...' : 'Upgrade'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -90,3 +90,15 @@ export const FORGOT_PASSWORD_RATE_LIMIT: RateLimitConfig = {
   maxAttempts: 3,
   windowMs: 15 * 60 * 1000,
 }
+
+/** Preset: Agent chat — 30 messages per hour */
+export const AGENT_CHAT_RATE_LIMIT: RateLimitConfig = {
+  maxAttempts: 30,
+  windowMs: 60 * 60 * 1000,
+}
+
+/** Preset: Design generation — 10 generations per hour */
+export const DESIGN_RATE_LIMIT: RateLimitConfig = {
+  maxAttempts: 10,
+  windowMs: 60 * 60 * 1000,
+}

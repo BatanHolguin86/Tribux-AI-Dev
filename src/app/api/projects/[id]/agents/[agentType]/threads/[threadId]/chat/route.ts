@@ -7,6 +7,9 @@ import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { generateThreadTitle } from '@/lib/ai/title-generator'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { uploadChatAttachment } from '@/lib/storage/chat-attachments'
+import { canUseAgent } from '@/lib/plans/guards'
+import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
+import { AGENT_MAP } from '@/lib/ai/agents'
 import type { AgentType } from '@/types/agent'
 
 function extractTextFromMessage(message: any): string {
@@ -99,6 +102,34 @@ export async function POST(
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+
+    // Plan guard: check agent access
+    const agentMeta = AGENT_MAP[agentType as AgentType]
+    if (agentMeta) {
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('plan, subscription_status, trial_ends_at')
+        .eq('id', user.id)
+        .single()
+
+      if (!profile || !canUseAgent(agentType, agentMeta.planRequired, profile)) {
+        return NextResponse.json(
+          { error: 'plan_required', message: 'Tu plan no incluye acceso a este agente. Upgrade para continuar.' },
+          { status: 403 },
+        )
+      }
+    }
+
+    // Rate limit
+    const chatIp = getClientIp(request)
+    const chatRateLimitKey = `agent-chat:${user.id}:${chatIp}`
+    const chatRateResult = checkRateLimit(chatRateLimitKey, AGENT_CHAT_RATE_LIMIT)
+    if (!chatRateResult.allowed) {
+      return NextResponse.json(
+        { error: 'rate_limited', message: 'Has alcanzado el limite de mensajes por hora. Intenta mas tarde.' },
+        { status: 429 },
+      )
+    }
 
     // Get thread messages and attachments
     const { data: thread, error: threadError } = await supabase

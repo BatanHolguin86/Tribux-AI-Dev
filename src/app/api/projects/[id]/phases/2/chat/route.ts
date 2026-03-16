@@ -4,6 +4,8 @@ import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildPhase02Context } from '@/lib/ai/context-builder'
 import { buildPhase02Prompt } from '@/lib/ai/prompts/phase-02'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
+import { canAccessPhase } from '@/lib/plans/guards'
+import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
 import type { Phase02Section } from '@/types/conversation'
 
 type CoreMessage = {
@@ -80,6 +82,31 @@ export async function POST(
 
     if (!user) {
       return new Response('Unauthorized', { status: 401 })
+    }
+
+    // Plan guard: Phase 02 requires trial or paid plan
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('plan, subscription_status, trial_ends_at')
+      .eq('id', user.id)
+      .single()
+
+    if (!profile || !canAccessPhase(2, profile)) {
+      return new Response(
+        JSON.stringify({ error: 'plan_required', message: 'Tu plan no incluye acceso a Phase 02. Upgrade para continuar.' }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } },
+      )
+    }
+
+    // Rate limit
+    const ip = getClientIp(request)
+    const rateLimitKey = `phase-chat:${user.id}:${ip}`
+    const rateResult = checkRateLimit(rateLimitKey, AGENT_CHAT_RATE_LIMIT)
+    if (!rateResult.allowed) {
+      return new Response(
+        JSON.stringify({ error: 'rate_limited', message: 'Has alcanzado el limite de mensajes por hora. Intenta mas tarde.' }),
+        { status: 429, headers: { 'Content-Type': 'application/json' } },
+      )
     }
 
     const { section, messages } = await request.json()

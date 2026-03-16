@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Phase03Layout } from '@/components/phase-03/Phase03Layout'
+import { PlanGuard } from '@/components/shared/PlanGuard'
+import { canAccessPhase } from '@/lib/plans/guards'
 import { PHASE03_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-03'
 import type { SectionStatus } from '@/types/conversation'
 
@@ -16,6 +18,19 @@ export default async function Phase03Page({
 }) {
   const { id: projectId } = await params
   const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user
+    ? await supabase.from('user_profiles').select('plan, subscription_status, trial_ends_at').eq('id', user.id).single()
+    : { data: null }
+
+  if (!profile || !canAccessPhase(3, profile)) {
+    return (
+      <PlanGuard hasAccess={false} currentPlan={profile?.plan ?? 'starter'} feature="Phase 03 — Environment Setup">
+        <div />
+      </PlanGuard>
+    )
+  }
 
   const { data: sections } = await supabase
     .from('phase_sections')

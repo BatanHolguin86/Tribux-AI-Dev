@@ -342,3 +342,29 @@ begin
   return new;
 end;
 $$ language plpgsql security definer;
+
+-- 016_add_plan_fields.sql
+
+alter table user_profiles
+  add column trial_ends_at timestamptz,
+  add column subscription_status text not null default 'trialing'
+    check (subscription_status in ('trialing', 'active', 'free', 'canceled', 'past_due'));
+
+update user_profiles
+  set trial_ends_at = now() + interval '7 days',
+      subscription_status = 'trialing'
+  where trial_ends_at is null;
+
+create or replace function handle_new_user()
+returns trigger as $$
+begin
+  insert into public.user_profiles (id, full_name, trial_ends_at, subscription_status)
+  values (
+    new.id,
+    new.raw_user_meta_data->>'full_name',
+    now() + interval '7 days',
+    'trialing'
+  );
+  return new;
+end;
+$$ language plpgsql security definer;

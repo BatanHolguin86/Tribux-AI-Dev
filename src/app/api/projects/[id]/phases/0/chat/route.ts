@@ -4,6 +4,7 @@ import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext } from '@/lib/ai/context-builder'
 import { buildPhase00Prompt } from '@/lib/ai/prompts/phase-00'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
+import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
 import type { Phase00Section } from '@/types/conversation'
 
 type CoreMessage = {
@@ -95,6 +96,17 @@ export async function POST(
 
     if (!user) {
       return new Response('Unauthorized', { status: 401 })
+    }
+
+    // Rate limit
+    const ip = getClientIp(request)
+    const rateLimitKey = `phase-chat:${user.id}:${ip}`
+    const rateResult = checkRateLimit(rateLimitKey, AGENT_CHAT_RATE_LIMIT)
+    if (!rateResult.allowed) {
+      return new Response(
+        JSON.stringify({ error: 'rate_limited', message: 'Has alcanzado el limite de mensajes por hora. Intenta mas tarde.' }),
+        { status: 429, headers: { 'Content-Type': 'application/json' } },
+      )
     }
 
     const { section, messages } = await request.json()

@@ -17,6 +17,18 @@ const createMockFrom = (options?: {
   threadError?: { code: string }
 }) => {
   return vi.fn((table: string) => {
+    if (table === 'user_profiles') {
+      return {
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: { plan: 'builder', subscription_status: 'active', trial_ends_at: null },
+              error: null,
+            }),
+          }),
+        }),
+      }
+    }
     if (table === 'conversation_threads') {
       if (options?.threadError) {
         return {
@@ -62,6 +74,25 @@ const createMockSupabase = (opts?: Parameters<typeof createMockFrom>[0]) => ({
 })
 
 vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
+vi.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: vi.fn().mockReturnValue({ allowed: true, remaining: 29, resetAt: 0 }),
+  getClientIp: vi.fn().mockReturnValue('127.0.0.1'),
+  AGENT_CHAT_RATE_LIMIT: { maxAttempts: 30, windowMs: 3600000 },
+}))
+vi.mock('@/lib/plans/guards', () => ({
+  canUseAgent: vi.fn().mockReturnValue(true),
+}))
+vi.mock('@/lib/ai/agents', () => ({
+  AGENT_MAP: {
+    cto_virtual: { id: 'cto_virtual', planRequired: 'starter' },
+  },
+}))
+vi.mock('@/lib/ai/chat-errors', () => ({
+  formatChatErrorResponse: vi.fn().mockReturnValue({ status: 500, body: { error: 'Error' } }),
+}))
+vi.mock('@/lib/storage/chat-attachments', () => ({
+  uploadChatAttachment: vi.fn().mockResolvedValue({}),
+}))
 vi.mock('@/lib/ai/context-builder', () => ({
   buildFullProjectContext: vi.fn().mockResolvedValue({
     name: 'Test',

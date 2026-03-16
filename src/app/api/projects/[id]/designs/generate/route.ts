@@ -1,0 +1,154 @@
+import { streamText } from 'ai'
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
+import { getApprovedDiscoveryDocs, getApprovedFeatureSpecs } from '@/lib/ai/context-builder'
+import { buildDesignGenerationPrompt } from '@/lib/ai/prompts/design-generation'
+import { generateDesignSchema } from '@/lib/validations/designs'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
+import { DESIGN_RATE_LIMIT } from '@/lib/rate-limit'
+
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id: projectId } = await params
+    const supabase = await createClient()
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+
+    // Rate limit: 10 generations/hour/user
+    const ip = getClientIp(request)
+    const rateLimitKey = `design-gen:${user.id}:${ip}`
+    const rateResult = checkRateLimit(rateLimitKey, DESIGN_RATE_LIMIT)
+    if (!rateResult.allowed) {
+      return NextResponse.json(
+        { error: 'rate_limited', message: 'Has alcanzado el limite de generaciones. Intenta en unos minutos.' },
+        { status: 429 },
+      )
+    }
+
+    // Validate request body
+    const body = await request.json()
+    const parsed = generateDesignSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Datos invalidos', details: parsed.error.flatten() },
+        { status: 400 },
+      )
+    }
+
+    // Verify Phase 01 is completed before allowing generation
+    const { data: phase01 } = await supabase
+      .from('project_phases')
+      .select('status')
+      .eq('project_id', projectId)
+      .eq('phase_number', 1)
+      .single()
+
+    if (!phase01 || phase01.status !== 'completed') {
+      return NextResponse.json(
+        { error: 'phase_incomplete', message: 'Completa Phase 01 (Requirements & Spec) antes de generar disenos.' },
+        { status: 400 },
+      )
+    }
+
+    // Get project info for context
+    const { data: project } = await supabase
+      .from('projects')
+      .select('name')
+      .eq('id', projectId)
+      .single()
+
+    if (!project) {
+      return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
+    }
+
+    // Build context
+    const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
+    const featureSpecs = await getApprovedFeatureSpecs(projectId)
+
+    const systemPrompt = buildDesignGenerationPrompt({
+      projectName: project.name,
+      screens: parsed.data.screens,
+      type: parsed.data.type,
+      featureSpecs,
+      discoveryDocs,
+      refinement: parsed.data.refinement,
+    })
+
+    // Create artifact record with 'generating' status
+    const { data: artifact, error: insertError } = await supabase
+      .from('design_artifacts')
+      .insert({
+        project_id: projectId,
+        type: parsed.data.type,
+        screen_name: parsed.data.screens.join(', '),
+        status: 'generating',
+        prompt_used: systemPrompt.slice(0, 2000),
+        storage_path: '',
+        mime_type: 'text/markdown',
+      })
+      .select('id')
+      .single()
+
+    if (insertError) {
+      console.error('[Design generate] Insert error', insertError)
+      return NextResponse.json({ error: 'Error al crear artefacto' }, { status: 500 })
+    }
+
+    const result = streamText({
+      model: defaultModel,
+      system: systemPrompt,
+      messages: [
+        {
+          role: 'user',
+          content: `Genera los wireframes/disenos para las pantallas: ${parsed.data.screens.join(', ')}`,
+        },
+      ],
+      ...AI_CONFIG.designPrompts,
+      onFinish: async ({ text }) => {
+        try {
+          // Upload generated content to storage
+          const storagePath = `projects/${projectId}/designs/${artifact.id}.md`
+          const blob = new Blob([text], { type: 'text/markdown' })
+
+          await supabase.storage
+            .from('project-designs')
+            .upload(storagePath, blob, {
+              contentType: 'text/markdown',
+              upsert: true,
+            })
+
+          // Update artifact with content and status
+          await supabase
+            .from('design_artifacts')
+            .update({
+              storage_path: storagePath,
+              status: 'draft',
+            })
+            .eq('id', artifact.id)
+        } catch (error) {
+          console.error('[Design generate] Error saving artifact', error)
+          await supabase
+            .from('design_artifacts')
+            .update({ status: 'draft', storage_path: '' })
+            .eq('id', artifact.id)
+        }
+      },
+    })
+
+    // Return streaming response with artifact ID in header
+    const response = result.toTextStreamResponse()
+    response.headers.set('X-Artifact-Id', artifact.id)
+    return response
+  } catch (error) {
+    console.error('[Design generate] Error', error)
+    return NextResponse.json(
+      { error: 'Error al generar diseno' },
+      { status: 500 },
+    )
+  }
+}

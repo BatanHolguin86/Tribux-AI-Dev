@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { TrialBanner } from '@/components/shared/TrialBanner'
+import { getTrialDaysRemaining } from '@/lib/plans/guards'
 
 export default async function DashboardLayout({
   children,
@@ -18,7 +20,7 @@ export default async function DashboardLayout({
 
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('onboarding_completed, full_name')
+    .select('onboarding_completed, full_name, subscription_status, trial_ends_at')
     .eq('id', user.id)
     .single()
 
@@ -54,7 +56,13 @@ export default async function DashboardLayout({
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>
+      <main className="mx-auto max-w-7xl px-6 py-8">
+        <TrialBanner
+          daysRemaining={getTrialDaysRemaining(profile.trial_ends_at)}
+          subscriptionStatus={profile.subscription_status ?? 'free'}
+        />
+        {children}
+      </main>
     </div>
   )
 }

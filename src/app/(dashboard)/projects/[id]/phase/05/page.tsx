@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Phase05Layout } from '@/components/phase-05/Phase05Layout'
+import { PlanGuard } from '@/components/shared/PlanGuard'
+import { canAccessPhase } from '@/lib/plans/guards'
 import { PHASE05_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-05'
 import type { SectionStatus } from '@/types/conversation'
 
@@ -16,6 +18,19 @@ export default async function Phase05Page({
 }) {
   const { id: projectId } = await params
   const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user
+    ? await supabase.from('user_profiles').select('plan, subscription_status, trial_ends_at').eq('id', user.id).single()
+    : { data: null }
+
+  if (!profile || !canAccessPhase(5, profile)) {
+    return (
+      <PlanGuard hasAccess={false} currentPlan={profile?.plan ?? 'starter'} feature="Phase 05 — Testing & QA">
+        <div />
+      </PlanGuard>
+    )
+  }
 
   const { data: sections } = await supabase
     .from('phase_sections')

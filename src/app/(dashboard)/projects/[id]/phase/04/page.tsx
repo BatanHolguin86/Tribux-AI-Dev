@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Phase04Layout } from '@/components/phase-04/Phase04Layout'
+import { PlanGuard } from '@/components/shared/PlanGuard'
+import { canAccessPhase } from '@/lib/plans/guards'
 import type { TaskWithFeature } from '@/types/task'
 
 export default async function Phase04Page({
@@ -9,6 +11,19 @@ export default async function Phase04Page({
 }) {
   const { id: projectId } = await params
   const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user
+    ? await supabase.from('user_profiles').select('plan, subscription_status, trial_ends_at').eq('id', user.id).single()
+    : { data: null }
+
+  if (!profile || !canAccessPhase(4, profile)) {
+    return (
+      <PlanGuard hasAccess={false} currentPlan={profile?.plan ?? 'starter'} feature="Phase 04 — Core Development">
+        <div />
+      </PlanGuard>
+    )
+  }
 
   // Fetch tasks with feature names
   const { data: tasks } = await supabase

@@ -20,6 +20,18 @@ const createMockSupabase = (overrides?: {
   featureDeleteSelect?: { data: { status: string } | null }
 }) => {
   const mockFrom = vi.fn((table: string) => {
+    if (table === 'user_profiles') {
+      return {
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: { plan: 'builder', subscription_status: 'active', trial_ends_at: null },
+              error: null,
+            }),
+          }),
+        }),
+      }
+    }
     if (table !== 'project_features') return {}
 
     const select = vi.fn().mockReturnValue({
@@ -90,6 +102,9 @@ const createMockSupabase = (overrides?: {
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
+}))
+vi.mock('@/lib/plans/guards', () => ({
+  canCreateFeatureInPhase01: vi.fn().mockReturnValue(true),
 }))
 
 describe('Features CRUD API', () => {
