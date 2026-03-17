@@ -32,17 +32,28 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // Public routes that don't require auth
-  const publicPaths = ['/login', '/register', '/forgot-password', '/auth/callback', '/auth/reset-password']
+  const publicPaths = ['/login', '/register', '/forgot-password', '/auth/callback', '/auth/reset-password', '/admin/login']
   const isPublicPath = publicPaths.some((path) => request.nextUrl.pathname.startsWith(path))
 
   if (!user && !isPublicPath && request.nextUrl.pathname !== '/') {
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    url.searchParams.set('redirect', request.nextUrl.pathname)
+    // Admin routes redirect to admin login
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+      url.pathname = '/admin/login'
+    } else {
+      url.pathname = '/login'
+      url.searchParams.set('redirect', request.nextUrl.pathname)
+    }
     return NextResponse.redirect(url)
   }
 
   if (user && isPublicPath) {
+    // Don't redirect admin login to product dashboard
+    if (request.nextUrl.pathname === '/admin/login') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin/finance'
+      return NextResponse.redirect(url)
+    }
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
