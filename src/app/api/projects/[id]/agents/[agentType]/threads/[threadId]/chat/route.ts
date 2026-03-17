@@ -6,6 +6,7 @@ import { buildFullProjectContext } from '@/lib/ai/context-builder'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { generateThreadTitle } from '@/lib/ai/title-generator'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
+import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import { uploadChatAttachment } from '@/lib/storage/chat-attachments'
 import { canUseAgent } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
@@ -260,6 +261,21 @@ export async function POST(
             attachments: allAttachments,
           })
           .eq('id', threadId)
+
+        // Record AI usage for financial backoffice (estimated tokens when SDK does not provide usage)
+        const inputTokens =
+          response.usage?.promptTokens ??
+          estimateTokensFromText(systemPrompt + allMessages.map((m) => extractTextFromMessage(m)).join(''))
+        const outputTokens =
+          response.usage?.completionTokens ?? estimateTokensFromText(response.text ?? '')
+        recordAiUsage(supabase, {
+          userId: user.id,
+          projectId,
+          eventType: 'agent_chat',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens,
+          outputTokens,
+        }).catch(() => {})
 
         // Auto-generate title on first message
         if (thread.message_count === 0) {

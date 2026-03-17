@@ -4,6 +4,8 @@ export type Plan = 'starter' | 'builder' | 'agency' | 'enterprise'
 
 export type SubscriptionStatus = 'trialing' | 'active' | 'free' | 'canceled' | 'past_due'
 
+export type UserRole = 'user' | 'financial_admin' | 'super_admin'
+
 export type UserProfile = {
   id: string
   full_name: string | null
@@ -13,6 +15,7 @@ export type UserProfile = {
   subscription_status: SubscriptionStatus
   onboarding_completed: boolean
   onboarding_step: number
+  role: UserRole
   created_at: string
   updated_at: string
 }
