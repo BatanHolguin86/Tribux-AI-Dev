@@ -10,6 +10,13 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json(
+      { error: 'missing_api_key', message: 'Falta ANTHROPIC_API_KEY en el servidor.' },
+      { status: 500 },
+    )
+  }
+
   const { id: projectId } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -22,31 +29,43 @@ export async function POST(
     .single()
 
   const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
+
+  if (!discoveryDocs.trim()) {
+    return NextResponse.json(
+      { error: 'no_discovery', message: 'Completa y aprueba el Discovery (Phase 00) antes de pedir sugerencias.' },
+      { status: 400 },
+    )
+  }
+
   const prompt = buildFeatureSuggestionsPrompt(project?.name ?? '', discoveryDocs)
 
-  const { text, usage } = await generateText({
-    model: defaultModel,
-    prompt,
-    maxOutputTokens: 2048,
-    temperature: 0.6,
-  })
-
-  // Record AI usage for financial backoffice
-  const inputTokens = usage?.inputTokens ?? estimateTokensFromText(prompt)
-  const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-  recordAiUsage(supabase, {
-    userId: user.id,
-    projectId,
-    eventType: 'suggestions',
-    model: defaultModel?.toString?.() ?? undefined,
-    inputTokens,
-    outputTokens,
-  }).catch(() => {})
-
   try {
+    const { text, usage } = await generateText({
+      model: defaultModel,
+      prompt,
+      maxOutputTokens: 2048,
+      temperature: 0.6,
+    })
+
+    // Record AI usage for financial backoffice
+    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(prompt)
+    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+    recordAiUsage(supabase, {
+      userId: user.id,
+      projectId,
+      eventType: 'suggestions',
+      model: defaultModel?.toString?.() ?? undefined,
+      inputTokens,
+      outputTokens,
+    }).catch(() => {})
+
     const parsed = JSON.parse(text)
     return NextResponse.json(parsed)
-  } catch {
-    return NextResponse.json({ features: [] })
+  } catch (err) {
+    console.error('[Feature suggest] Error', err)
+    return NextResponse.json(
+      { error: 'generation_failed', message: 'Error al generar sugerencias. Verifica tu API key e intenta de nuevo.' },
+      { status: 500 },
+    )
   }
 }
