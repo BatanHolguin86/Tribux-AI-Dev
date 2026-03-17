@@ -1,4 +1,5 @@
 import type { Phase02Section } from '@/types/conversation'
+import { CTO_VIRTUAL_PROMPT } from '../agents/cto-virtual'
 
 type ProjectContext = {
   name: string
@@ -12,19 +13,20 @@ type ProjectContext = {
 
 const SECTION_CONFIGS: Record<
   Phase02Section,
-  { title: string; objective: string; keyQuestions: string[]; outputStructure: string }
+  { title: string; objective: string; approach: string; outputStructure: string }
 > = {
   system_architecture: {
     title: 'System Architecture',
     objective:
       'Definir la arquitectura de alto nivel del sistema: componentes principales, flujo de datos, stack tecnologico y como se conectan las piezas.',
-    keyQuestions: [
-      'Que tipo de aplicacion es? (web app, API, mobile, SaaS multi-tenant, etc.)',
-      'Quienes son los actores del sistema? (usuarios finales, admins, servicios externos)',
-      'Que servicios externos necesitas integrar? (pagos, email, auth, IA, storage, etc.)',
-      'Cual es el volumen esperado de usuarios y datos? (para decidir escalabilidad)',
-      'Necesitas funcionalidad en tiempo real? (chat, notificaciones, dashboards live)',
-    ],
+    approach: `COMO LIDERAR ESTA SECCION:
+- Ya tienes Discovery + Feature Specs. PROPONE una arquitectura basada en lo que sabes del producto.
+- El stack base ya esta definido (Next.js + Supabase + Vercel). No preguntes "que tecnologias quieres usar?" — en su lugar, propone la arquitectura concreta y explica tus decisiones.
+- Genera un diagrama ASCII de los componentes principales y el flujo de datos.
+- Identifica los puntos de integracion externos (pagos, email, IA, storage, etc.) basados en los features del spec.
+- Piensa en escalabilidad desde el diseno: que cambiaria si pasan de 100 a 10,000 usuarios?
+- Para decisiones arquitectonicas complejas, sugiere al usuario abrir un hilo con el System Architect para profundizar.
+- Modelos de seguridad: define auth flow, autorizacion (roles/permisos), y proteccion de datos sensibles.`,
     outputStructure: `# System Architecture
 
 ## Overview
@@ -75,13 +77,14 @@ const SECTION_CONFIGS: Record<
     title: 'Database Design',
     objective:
       'Disenar el modelo de datos del sistema: entidades, relaciones, tablas, campos y estrategia de almacenamiento.',
-    keyQuestions: [
-      'Cuales son las entidades principales de tu sistema? (usuarios, productos, ordenes, etc.)',
-      'Que relaciones existen entre ellas? (1:1, 1:N, N:N)',
-      'Que datos necesitas almacenar por cada entidad? (campos clave)',
-      'Necesitas almacenar archivos? (imagenes, documentos, videos)',
-      'Hay datos que requieren busqueda avanzada o filtros complejos?',
-    ],
+    approach: `COMO LIDERAR ESTA SECCION:
+- Extrae las entidades de los Feature Specs (requirements + design). No preguntes "cuales son tus entidades?" — proponelas TU.
+- Genera tablas completas con campos, tipos PostgreSQL, constraints (PK, FK, UNIQUE, NOT NULL), y defaults.
+- Disena RLS policies desde el inicio: cada tabla debe tener al menos una policy basica.
+- Piensa en indices: que columnas se usan en WHERE y JOIN frecuentemente?
+- Incluye columnas de auditoria: created_at, updated_at (con triggers).
+- Para modelos de datos complejos, sugiere al usuario abrir un hilo con el DB Admin para optimizar queries y RLS.
+- Si el producto necesita almacenar archivos, define la estrategia: Supabase Storage para archivos, DB para metadata.`,
     outputStructure: `# Database Design
 
 ## Entity Relationship Diagram
@@ -101,22 +104,20 @@ const SECTION_CONFIGS: Record<
 
 **Relationships:**
 - [relacion 1]
-- [relacion 2]
 
 **Indexes:**
 - [indice 1 y justificacion]
+
+**RLS Policies:**
+- [politica 1: quien puede leer/escribir y condicion]
 
 ### [tabla_2]
 [misma estructura]
 
 ## Storage Strategy
 - **Base de datos:** [que se almacena en DB]
-- **File storage:** [que se almacena en storage/S3]
+- **File storage:** [que se almacena en Supabase Storage]
 - **Cache:** [estrategia de cache si aplica]
-
-## Security (RLS / Access Control)
-- [Tabla 1]: [politica de acceso]
-- [Tabla 2]: [politica de acceso]
 
 ## Migration Plan
 [Orden de creacion de tablas y migraciones]`,
@@ -125,21 +126,23 @@ const SECTION_CONFIGS: Record<
     title: 'API Design',
     objective:
       'Definir los endpoints de la API, contratos request/response, autenticacion requerida y manejo de errores.',
-    keyQuestions: [
-      'Cuales son las operaciones principales que necesita tu sistema? (CRUD, acciones especiales)',
-      'Que endpoints necesitan autenticacion y cuales son publicos?',
-      'Hay operaciones que requieren permisos especiales o roles?',
-      'Necesitas paginacion, filtros o busqueda en algun endpoint?',
-      'Hay integraciones con APIs externas que necesiten webhooks?',
-    ],
+    approach: `COMO LIDERAR ESTA SECCION:
+- Extrae los endpoints necesarios de los Feature Specs. PROPONE los endpoints con sus contratos.
+- Usa el formato de Next.js App Router: /api/[recurso]/route.ts con GET, POST, PATCH, DELETE.
+- Define request/response schemas con tipos TypeScript y validacion Zod.
+- Marca claramente cuales endpoints requieren auth y cuales son publicos.
+- Piensa en paginacion (cursor-based o offset), filtros, y sorting para endpoints de listado.
+- Define el patron de error handling consistente: { error: string, code?: string }.
+- Identifica endpoints que necesitan rate limiting y define los limites.
+- Para integraciones complejas con APIs externas, sugiere al usuario consultar con el Lead Developer.`,
     outputStructure: `# API Design
 
 ## Base URL
-\`[base_url]\`
+\`/api\`
 
 ## Authentication
-- **Method:** [JWT / API Key / OAuth]
-- **Header:** \`Authorization: Bearer {token}\`
+- **Method:** Supabase Auth (JWT)
+- **Header:** Cookie-based (SSR) / \`Authorization: Bearer {token}\` (client)
 - **Public endpoints:** [lista]
 
 ## Endpoints
@@ -160,7 +163,6 @@ const SECTION_CONFIGS: Record<
 
 #### \`POST /api/[recurso]\`
 - **Auth:** Requerida
-- **Description:** [que hace]
 - **Request body:**
 \`\`\`json
 {
@@ -176,12 +178,6 @@ const SECTION_CONFIGS: Record<
 }
 \`\`\`
 
-#### \`PATCH /api/[recurso]/:id\`
-[misma estructura]
-
-#### \`DELETE /api/[recurso]/:id\`
-[misma estructura]
-
 ### [Recurso 2]
 [misma estructura]
 
@@ -195,22 +191,19 @@ const SECTION_CONFIGS: Record<
 | 500 | Server Error | \`{ "error": "Error interno" }\` |
 
 ## Rate Limiting
-[Politica de rate limiting por endpoint]
-
-## Webhooks (si aplica)
-[Endpoints de webhook y payloads]`,
+[Politica de rate limiting por endpoint]`,
   },
   architecture_decisions: {
     title: 'Architecture Decisions (ADRs)',
     objective:
       'Documentar las decisiones arquitectonicas clave del proyecto con justificacion, alternativas consideradas y consecuencias.',
-    keyQuestions: [
-      'Cual es la decision tecnica mas importante de tu proyecto? (stack, DB, auth, hosting)',
-      'Que alternativas consideraste y por que las descartaste?',
-      'Hay trade-offs que necesitas hacer consciente? (velocidad vs escalabilidad, costo vs features)',
-      'Que dependencias externas tiene tu proyecto? (APIs, servicios, librerias criticas)',
-      'Hay decisiones que podrian cambiar en el futuro? (deuda tecnica aceptada)',
-    ],
+    approach: `COMO LIDERAR ESTA SECCION:
+- Extrae las decisiones arquitectonicas de las secciones anteriores (System Architecture, Database, API).
+- PROPONE los ADRs basandote en las decisiones ya tomadas. No preguntes "cual es tu decision mas importante?" — tu YA las identificaste.
+- Cada ADR debe tener: contexto, opciones evaluadas (con pros/contras), decision tomada, y consecuencias.
+- Incluye ADRs para: stack tecnologico, patron de arquitectura, estrategia de auth, modelo de datos, estrategia de deploy.
+- Si hay trade-offs importantes (velocidad vs escalabilidad, costo vs features), documentalos explicitamente.
+- Marca deuda tecnica aceptada conscientemente y plan de mitigacion.`,
     outputStructure: `# Architecture Decision Records
 
 ## ADR-001: [Titulo de la Decision]
@@ -224,7 +217,6 @@ const SECTION_CONFIGS: Record<
 |--------|------|---------|
 | [Opcion A] | [ventajas] | [desventajas] |
 | [Opcion B] | [ventajas] | [desventajas] |
-| [Opcion C] | [ventajas] | [desventajas] |
 
 ### Decision
 [Que se decidio y por que]
@@ -236,22 +228,16 @@ const SECTION_CONFIGS: Record<
 
 ---
 
-## ADR-002: [Titulo de la Decision]
-[misma estructura]
-
----
-
-## ADR-003: [Titulo de la Decision]
+## ADR-002: [Titulo]
 [misma estructura]
 
 ---
 
 ## Resumen de Decisiones
-| # | Decision | Tecnologia Elegida | Alternativa Principal |
-|---|----------|-------------------|----------------------|
+| # | Decision | Elegida | Alternativa |
+|---|----------|---------|-------------|
 | 001 | [decision] | [elegida] | [descartada] |
-| 002 | [decision] | [elegida] | [descartada] |
-| 003 | [decision] | [elegida] | [descartada] |`,
+| 002 | [decision] | [elegida] | [descartada] |`,
   },
 }
 
@@ -262,7 +248,7 @@ export function buildPhase02Prompt(
   const config = SECTION_CONFIGS[section]
   const approvedContext =
     context.approvedSections.length > 0
-      ? `\nSECCIONES DE ARCHITECTURE APROBADAS PREVIAMENTE: ${context.approvedSections.join(', ')}. Usa la informacion de estas secciones como contexto para mantener coherencia.`
+      ? `\nSECCIONES DE ARCHITECTURE YA APROBADAS: ${context.approvedSections.join(', ')}. Construye sobre estas secciones manteniendo coherencia total.`
       : ''
 
   const discoveryContext = context.discoveryDocs
@@ -273,7 +259,13 @@ export function buildPhase02Prompt(
     ? `\n\nSPECS DE FEATURES (Phase 01 — KIRO aprobados):\n${context.featureSpecs}`
     : ''
 
-  return `ROL: Eres el System Architect de AI Squad Command Center. Tu tono es tecnico pero accesible — explicas decisiones complejas con claridad para que un CEO/CPO no-tecnico pueda entender y aprobar.
+  return `${CTO_VIRTUAL_PROMPT}
+
+---
+
+FASE ACTIVA: Phase 02 — Architecture & Design
+SECCION: ${config.title}
+OBJETIVO: ${config.objective}
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.name}
@@ -284,26 +276,12 @@ ${approvedContext}
 ${discoveryContext}
 ${featureContext}
 
-SECCION ACTIVA: ${config.title}
-OBJETIVO: ${config.objective}
-
-INSTRUCCIONES:
-- Comunicate en espanol (es-LATAM)
-- Usa lenguaje tecnico cuando sea necesario, pero siempre explica brevemente los conceptos
-- Basa tus recomendaciones en los documentos de Discovery y los Specs de Features aprobados
-- Haz UNA pregunta a la vez; no abrumes con multiples preguntas
-- Proporciona recomendaciones concretas basadas en el tipo de proyecto y sus features
-- Si el usuario no tiene preferencia tecnica, sugiere el stack mas apropiado con justificacion
-- Cuando tengas suficiente informacion para generar el documento, indica al usuario que esta listo
-- Si el usuario da respuestas vagas, pide elaboracion especifica con ejemplos
-
-PREGUNTAS CLAVE A EXPLORAR:
-${config.keyQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
+${config.approach}
 
 ESTRUCTURA DEL DOCUMENTO A GENERAR:
 ${config.outputStructure}
 
-IMPORTANTE: Cuando consideres que tienes suficiente informacion, responde con el texto exacto "[SECTION_READY]" al final de tu mensaje. Esto activara el boton de generacion de documento en la interfaz.`
+REGLA CRITICA: Cuando tengas suficiente informacion para generar el documento, responde con "[SECTION_READY]" al final de tu mensaje. Resume lo que vas a documentar y pregunta si quiere ajustar algo antes de generar.`
 }
 
 export function buildDocumentGenerationPrompt(
@@ -320,7 +298,7 @@ export function buildDocumentGenerationPrompt(
     ? `\n\nSPECS DE FEATURES APROBADOS:\n${context.featureSpecs}`
     : ''
 
-  return `ROL: Eres el System Architect de AI Squad Command Center. Tu tarea es generar un documento formal de arquitectura basado en la conversacion con el usuario.
+  return `ROL: Eres el CTO Virtual de AI Squad. Genera un documento formal de arquitectura basado en la conversacion.
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.name}
@@ -332,12 +310,11 @@ ${featureContext}
 SECCION: ${config.title}
 
 INSTRUCCIONES:
-- Genera el documento en espanol (es-LATAM)
+- Genera en espanol (es-LATAM)
 - Usa la estructura definida abajo
-- Basa el contenido exclusivamente en lo que el usuario compartio en la conversacion y en los documentos de contexto
-- Se especifico y concreto — no uses placeholders genericos
-- Incluye detalles tecnicos reales (tipos de datos, nombres de tablas, endpoints reales)
-- El documento debe estar listo para revision sin ediciones adicionales
+- Basa el contenido en lo que el usuario compartio + documentos de contexto
+- Se especifico y concreto — usa tipos de datos reales, nombres de tablas reales, endpoints reales
+- El documento debe estar listo para revision sin ediciones
 - Formato: Markdown
 
 ESTRUCTURA REQUERIDA:

@@ -1,4 +1,5 @@
 import type { KiroDocumentType } from '@/types/feature'
+import { CTO_VIRTUAL_PROMPT } from '../agents/cto-virtual'
 
 type KiroContext = {
   projectName: string
@@ -13,20 +14,20 @@ type KiroContext = {
 
 const DOC_CONFIGS: Record<
   KiroDocumentType,
-  { title: string; objective: string; keyQuestions: string[]; outputStructure: string }
+  { title: string; objective: string; approach: string; outputStructure: string }
 > = {
   requirements: {
     title: 'Requirements',
     objective:
       'Definir user stories, acceptance criteria, requisitos no funcionales y alcance del feature.',
-    keyQuestions: [
-      'Que necesita poder hacer el usuario con este feature?',
-      'Cuales son los user stories principales?',
-      'Que criterios de aceptacion debe cumplir cada story?',
-      'Hay requisitos de performance, seguridad o accesibilidad?',
-      'Que NO incluye esta version del feature?',
-      'Cuales son los casos borde mas importantes?',
-    ],
+    approach: `COMO LIDERAR ESTA SECCION:
+- Ya tienes el Discovery completo y la descripcion del feature. USA ESO como base: propone user stories basadas en lo que ya sabes del producto, las personas y la propuesta de valor.
+- No preguntes "que necesita poder hacer el usuario?" si ya lo sabes del Discovery. En su lugar, presenta tus user stories propuestas y pide al usuario que las valide, ajuste o agregue nuevas.
+- Piensa en los acceptance criteria como si fueras el QA: cada criterio debe ser especifico, verificable y no ambiguo.
+- Identifica edge cases criticos: que pasa si el usuario no tiene datos? Si se cae la conexion? Si tiene permisos incorrectos?
+- Define claramente el "Out of Scope" — esto es TAN importante como definir el alcance. Se firme.
+- Si hay specs de features anteriores, asegurate de mantener coherencia (mismas convenciones, mismos patrones).
+- Para NFRs piensa en: performance (tiempos de carga), seguridad (auth, RLS), accesibilidad (WCAG 2.1 AA), y escalabilidad.`,
     outputStructure: `# Requirements: {Nombre del Feature}
 
 ## User Stories
@@ -41,6 +42,10 @@ const DOC_CONFIGS: Record<
 - Security: ...
 - Accessibility: ...
 
+## Edge Cases
+- [Caso borde 1 y como manejarlo]
+- [Caso borde 2 y como manejarlo]
+
 ## Out of Scope
 - Lista de lo que NO incluye este feature`,
   },
@@ -48,13 +53,14 @@ const DOC_CONFIGS: Record<
     title: 'Design',
     objective:
       'Disenar la solucion tecnica: modelo de datos, API, flujo de UI y decisiones arquitectonicas.',
-    keyQuestions: [
-      'Que datos necesita almacenar este feature? (tablas, campos, tipos)',
-      'Que endpoints de API necesitas? (metodo, path, request/response)',
-      'Como se ve la UI? (pantallas, layout, componentes)',
-      'Como se conecta con features anteriores? (tablas compartidas, APIs)',
-      'Que decisiones arquitectonicas hay que tomar?',
-    ],
+    approach: `COMO LIDERAR ESTA SECCION:
+- Ya tienes los requirements aprobados. PROPONE un diseno tecnico basado en el stack del proyecto (Next.js, Supabase, Tailwind).
+- Para el modelo de datos, propone las tablas con campos, tipos y constraints. Piensa en RLS desde el inicio.
+- Para la API, propone los endpoints (Next.js App Router format: /api/...) con request/response schemas.
+- Para la UI, describe los componentes principales y el flujo de usuario. Si es complejo, sugiere al usuario abrir un hilo con el UI/UX Designer para wireframes detallados.
+- Documenta decisiones arquitectonicas: por que elegiste cierto patron, que alternativas descartaste.
+- Mantene coherencia con features anteriores: reutiliza tablas existentes, sigue convenciones de naming, no dupliques endpoints.
+- Piensa en la implementacion: cada pieza del diseno debe ser implementable por el Lead Developer sin ambiguedad.`,
     outputStructure: `# Design: {Nombre del Feature}
 
 ## Overview
@@ -79,9 +85,13 @@ Librerias, servicios externos, features previas necesarias.`,
     title: 'Tasks',
     objective:
       'Descomponer el feature en tasks atomicas y accionables basadas en requirements y design aprobados.',
-    keyQuestions: [
-      'Este documento se genera automaticamente basado en requirements y design aprobados.',
-    ],
+    approach: `COMO LIDERAR ESTA SECCION:
+- Este documento se genera semi-automaticamente basado en requirements y design aprobados.
+- Cada task debe ser atomica: un desarrollador debe poder completarla en 1-4 horas.
+- Ordena por dependencias: primero setup/DB, luego backend/API, luego frontend, luego tests.
+- Numeracion secuencial: TASK-001, TASK-002, etc.
+- Incluye tasks de testing desde el principio (no como afterthought).
+- Si el feature requiere migraciones de DB, incluye tanto la migracion como el rollback.`,
     outputStructure: `# Tasks: {Nombre del Feature}
 
 ## Checklist de Implementacion
@@ -113,7 +123,13 @@ export function buildKiroPrompt(
 ): string {
   const config = DOC_CONFIGS[docType]
 
-  return `ROL: Eres el CTO Virtual y Orquestador de AI Squad Command Center. Tu tono es profesional pero accesible.
+  return `${CTO_VIRTUAL_PROMPT}
+
+---
+
+FASE ACTIVA: Phase 01 — Requirements & Spec (KIRO)
+DOCUMENTO: ${config.title}
+OBJETIVO: ${config.objective}
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.projectName}
@@ -130,27 +146,16 @@ ${context.previousSpecs || 'Este es el primer feature.'}
 FEATURE ACTIVO: ${context.featureName}
 ${context.featureDescription ? `Descripcion: ${context.featureDescription}` : ''}
 
-DOCUMENTO A GENERAR: ${config.title}
-OBJETIVO: ${config.objective}
-
 STACK TECNICO: Next.js 14+ (App Router), TypeScript strict, Supabase (PostgreSQL + Auth + Storage + RLS), Tailwind CSS, shadcn/ui, Vercel AI SDK, Zustand, React Hook Form + Zod.
 
-INSTRUCCIONES:
-- Comunicate en espanol (es-LATAM)
-- Haz UNA pregunta a la vez
-- Usa el discovery aprobado como fundamento — no contradigas lo que ya se definio
-- Mantene coherencia con specs de features anteriores (mismas convenciones, mismas tablas base)
-- Genera documentos en espanol (excepto codigo y nombres tecnicos en ingles)
-- Si el usuario da respuestas vagas, pide elaboracion especifica
-${docType === 'tasks' ? '- Para tasks: genera automaticamente basado en requirements y design aprobados, con numeracion TASK-XXX secuencial' : ''}
+${config.approach}
 
-PREGUNTAS CLAVE:
-${config.keyQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
+COHERENCIA: Usa el Discovery aprobado como fundamento — no contradigas lo que ya se definio. Si hay specs de features anteriores, mantene las mismas convenciones, tablas base y patrones.
 
 ESTRUCTURA DEL DOCUMENTO:
 ${config.outputStructure}
 
-IMPORTANTE: Cuando consideres que tienes suficiente informacion, responde con "[SECTION_READY]" al final de tu mensaje.`
+REGLA CRITICA: Cuando tengas suficiente informacion para generar el documento, responde con "[SECTION_READY]" al final de tu mensaje. Resume lo que vas a documentar y pregunta si quiere ajustar algo antes de generar.`
 }
 
 export function buildKiroDocGenerationPrompt(
@@ -159,7 +164,7 @@ export function buildKiroDocGenerationPrompt(
 ): string {
   const config = DOC_CONFIGS[docType]
 
-  return `ROL: Eres el CTO Virtual de AI Squad Command Center. Genera un documento KIRO formal.
+  return `ROL: Eres el CTO Virtual de AI Squad. Genera un documento KIRO formal basado en la conversacion.
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.projectName}
