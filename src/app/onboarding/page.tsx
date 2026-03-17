@@ -103,20 +103,20 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-gray-950">
       {/* Progress bar */}
-      <div className="border-b border-gray-100 px-6 py-4">
+      <div className="border-b border-gray-100 dark:border-gray-800 px-6 py-4">
         <div className="mx-auto flex max-w-lg items-center gap-2">
           {STEP_LABELS.map((label, i) => (
             <div key={label} className="flex flex-1 flex-col items-center gap-1.5">
               <div
                 className={`h-1.5 w-full rounded-full transition-colors ${
-                  i <= step ? 'bg-violet-600' : 'bg-gray-200'
+                  i <= step ? 'bg-violet-600' : 'bg-gray-200 dark:bg-gray-700'
                 }`}
               />
               <span
                 className={`text-xs ${
-                  i <= step ? 'font-medium text-violet-600' : 'text-gray-400'
+                  i <= step ? 'font-medium text-violet-600' : 'text-gray-400 dark:text-gray-500'
                 }`}
               >
                 {label}
