@@ -105,13 +105,34 @@ export async function GET(request: Request) {
     }
   })
 
+  const totalAiCost = rows.reduce((s, r) => s + r.costCurrentMonthUsd, 0)
+  const totalRevenue = rows
+    .filter((r) => r.subscriptionStatus === 'active' || r.subscriptionStatus === 'trialing')
+    .reduce((s, r) => s + r.planPriceUsd, 0)
+
+  // Infrastructure costs (monthly estimates — update via env vars or here)
+  const infraCosts = {
+    supabase: Number(process.env.COST_SUPABASE_MONTHLY ?? 25),
+    vercel: Number(process.env.COST_VERCEL_MONTHLY ?? 20),
+    anthropicPlatform: Number(process.env.COST_ANTHROPIC_PLATFORM ?? 0),
+    domain: Number(process.env.COST_DOMAIN_MONTHLY ?? 1),
+    sentry: Number(process.env.COST_SENTRY_MONTHLY ?? 0),
+    resend: Number(process.env.COST_RESEND_MONTHLY ?? 0),
+    other: Number(process.env.COST_OTHER_MONTHLY ?? 0),
+  }
+  const totalInfraCost = Object.values(infraCosts).reduce((s, v) => s + v, 0)
+  const totalCosts = totalAiCost + totalInfraCost
+  const netProfit = totalRevenue - totalCosts
+
   const summary = {
     totalUsers: rows.length,
-    totalCostCurrentMonthUsd: rows.reduce((s, r) => s + r.costCurrentMonthUsd, 0),
+    totalCostCurrentMonthUsd: totalAiCost,
     totalCostPreviousMonthUsd: rows.reduce((s, r) => s + r.costPreviousMonthUsd, 0),
-    totalRevenueCurrentMonthUsd: rows
-      .filter((r) => r.subscriptionStatus === 'active' || r.subscriptionStatus === 'trialing')
-      .reduce((s, r) => s + r.planPriceUsd, 0),
+    totalRevenueCurrentMonthUsd: totalRevenue,
+    totalInfraCostUsd: totalInfraCost,
+    totalCostsUsd: totalCosts,
+    netProfitUsd: netProfit,
+    infraCosts,
   }
 
   return NextResponse.json({
