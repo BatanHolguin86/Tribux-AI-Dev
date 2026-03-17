@@ -4,6 +4,7 @@ import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext } from '@/lib/ai/context-builder'
 import { buildDocumentGenerationPrompt, SECTION_DOC_NAMES } from '@/lib/ai/prompts/phase-00'
 import { uploadDocument } from '@/lib/storage/documents'
+import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase00Section } from '@/types/conversation'
 
 export async function POST(
@@ -51,7 +52,7 @@ export async function POST(
       },
     ],
     ...AI_CONFIG.documentGeneration,
-    onFinish: async ({ text }) => {
+    onFinish: async ({ text, usage }) => {
       try {
         const docName = SECTION_DOC_NAMES[sectionKey]
         const storagePath = `discovery/${docName}`
@@ -97,6 +98,18 @@ export async function POST(
         if (sectionError) {
           console.error('[Generate] Error updating section:', sectionError.message)
         }
+
+        // Record AI usage for financial backoffice
+        const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + JSON.stringify(conversation.messages))
+        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+        recordAiUsage(supabase, {
+          userId: user.id,
+          projectId,
+          eventType: 'phase00_generate',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens,
+          outputTokens,
+        }).catch(() => {})
 
         console.log(`[Generate] Document saved for ${section} in project ${projectId}`)
       } catch (err) {

@@ -4,6 +4,7 @@ import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildPhase02Context } from '@/lib/ai/context-builder'
 import { buildDocumentGenerationPrompt, SECTION_DOC_NAMES } from '@/lib/ai/prompts/phase-02'
 import { uploadDocument } from '@/lib/storage/documents'
+import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase02Section } from '@/types/conversation'
 
 export async function POST(
@@ -51,7 +52,7 @@ export async function POST(
       },
     ],
     ...AI_CONFIG.documentGeneration,
-    onFinish: async ({ text }) => {
+    onFinish: async ({ text, usage }) => {
       const docName = SECTION_DOC_NAMES[sectionKey]
       const storagePath = `architecture/${docName}`
 
@@ -82,6 +83,18 @@ export async function POST(
         .eq('project_id', projectId)
         .eq('phase_number', 2)
         .eq('section', section)
+
+      // Record AI usage for financial backoffice
+      const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + JSON.stringify(conversation.messages))
+      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+      recordAiUsage(supabase, {
+        userId: user.id,
+        projectId,
+        eventType: 'phase02_generate',
+        model: defaultModel?.toString?.() ?? undefined,
+        inputTokens,
+        outputTokens,
+      }).catch(() => {})
     },
   })
 

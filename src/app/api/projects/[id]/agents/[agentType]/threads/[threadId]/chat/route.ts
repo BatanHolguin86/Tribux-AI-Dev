@@ -264,10 +264,10 @@ export async function POST(
 
         // Record AI usage for financial backoffice (estimated tokens when SDK does not provide usage)
         const inputTokens =
-          response.usage?.promptTokens ??
+          response.usage?.inputTokens ??
           estimateTokensFromText(systemPrompt + allMessages.map((m) => extractTextFromMessage(m)).join(''))
         const outputTokens =
-          response.usage?.completionTokens ?? estimateTokensFromText(response.text ?? '')
+          response.usage?.outputTokens ?? estimateTokensFromText(response.text ?? '')
         recordAiUsage(supabase, {
           userId: user.id,
           projectId,
@@ -279,7 +279,7 @@ export async function POST(
 
         // Auto-generate title on first message
         if (thread.message_count === 0) {
-          const title = await generateThreadTitle(userMessage)
+          const title = await generateThreadTitle(userMessage, { supabase, userId: user.id, projectId })
           await supabase
             .from('conversation_threads')
             .update({ title })

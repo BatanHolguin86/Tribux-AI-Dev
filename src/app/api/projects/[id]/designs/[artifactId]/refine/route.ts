@@ -6,6 +6,7 @@ import { buildDesignRefinePrompt } from '@/lib/ai/prompts/design-generation'
 import { refineDesignSchema } from '@/lib/validations/designs'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 import { DESIGN_RATE_LIMIT } from '@/lib/rate-limit'
+import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 
 export async function POST(
   request: Request,
@@ -99,7 +100,7 @@ export async function POST(
         },
       ],
       ...AI_CONFIG.designPrompts,
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
         try {
           // Overwrite storage with refined content
           const storagePath = artifact.storage_path || `projects/${projectId}/designs/${artifactId}.md`
@@ -120,6 +121,18 @@ export async function POST(
               prompt_used: parsed.data.instruction.slice(0, 2000),
             })
             .eq('id', artifactId)
+
+          // Record AI usage for financial backoffice
+          const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + parsed.data.instruction)
+          const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+          recordAiUsage(supabase, {
+            userId: user.id,
+            projectId,
+            eventType: 'design_refine',
+            model: defaultModel?.toString?.() ?? undefined,
+            inputTokens,
+            outputTokens,
+          }).catch(() => {})
         } catch (error) {
           console.error('[Design refine] Error saving', error)
           await supabase

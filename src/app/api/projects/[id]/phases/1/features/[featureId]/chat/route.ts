@@ -4,6 +4,7 @@ import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext, getApprovedDiscoveryDocs, getApprovedFeatureSpecs } from '@/lib/ai/context-builder'
 import { buildKiroPrompt } from '@/lib/ai/prompts/phase-01'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
+import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
 
 type CoreMessage = {
@@ -119,7 +120,7 @@ export async function POST(
     system: systemPrompt,
     messages: coreMessages,
     ...AI_CONFIG.chat,
-    onFinish: async ({ text }) => {
+    onFinish: async ({ text, usage }) => {
       const allMessages = [
         ...storedBaseMessages,
         {
@@ -140,6 +141,18 @@ export async function POST(
           },
           { onConflict: 'project_id,phase_number,section,agent_type' }
         )
+
+      // Record AI usage for financial backoffice
+      const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
+      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+      recordAiUsage(supabase, {
+        userId: user.id,
+        projectId,
+        eventType: 'phase01_chat',
+        model: defaultModel?.toString?.() ?? undefined,
+        inputTokens,
+        outputTokens,
+      }).catch(() => {})
     },
   })
 

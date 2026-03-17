@@ -7,6 +7,7 @@ import { buildDesignGenerationPrompt } from '@/lib/ai/prompts/design-generation'
 import { generateDesignSchema } from '@/lib/validations/designs'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 import { DESIGN_RATE_LIMIT } from '@/lib/rate-limit'
+import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 
 export async function POST(
   request: Request,
@@ -109,7 +110,7 @@ export async function POST(
         },
       ],
       ...AI_CONFIG.designPrompts,
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
         try {
           // Upload generated content to storage
           const storagePath = `projects/${projectId}/designs/${artifact.id}.md`
@@ -130,6 +131,18 @@ export async function POST(
               status: 'draft',
             })
             .eq('id', artifact.id)
+
+          // Record AI usage for financial backoffice
+          const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
+          const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+          recordAiUsage(supabase, {
+            userId: user.id,
+            projectId,
+            eventType: 'design_generate',
+            model: defaultModel?.toString?.() ?? undefined,
+            inputTokens,
+            outputTokens,
+          }).catch(() => {})
         } catch (error) {
           console.error('[Design generate] Error saving artifact', error)
           await supabase

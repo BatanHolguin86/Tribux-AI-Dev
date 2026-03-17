@@ -6,6 +6,7 @@ import { buildPhase02Prompt } from '@/lib/ai/prompts/phase-02'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { canAccessPhase } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
+import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase02Section } from '@/types/conversation'
 
 type CoreMessage = {
@@ -138,7 +139,7 @@ export async function POST(
       system: systemPrompt,
       messages: coreMessages,
       ...AI_CONFIG.chat,
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
         try {
           const allMessages = [
             ...storedBaseMessages,
@@ -161,6 +162,18 @@ export async function POST(
               },
               { onConflict: 'project_id,phase_number,section,agent_type' }
             )
+
+          // Record AI usage for financial backoffice
+          const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
+          const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+          recordAiUsage(supabase, {
+            userId: user.id,
+            projectId,
+            eventType: 'phase02_chat',
+            model: defaultModel?.toString?.() ?? undefined,
+            inputTokens,
+            outputTokens,
+          }).catch(() => {})
         } catch (error) {
           console.error('[Phase-02 chat] Error persisting conversation', error)
         }

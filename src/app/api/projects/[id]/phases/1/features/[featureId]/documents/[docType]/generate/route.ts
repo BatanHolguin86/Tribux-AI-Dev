@@ -5,6 +5,7 @@ import { buildProjectContext, getApprovedDiscoveryDocs, getApprovedFeatureSpecs 
 import { buildKiroDocGenerationPrompt } from '@/lib/ai/prompts/phase-01'
 import { uploadDocument } from '@/lib/storage/documents'
 import { slugify } from '@/lib/utils'
+import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
 
 export async function POST(
@@ -62,7 +63,7 @@ export async function POST(
       { role: 'user' as const, content: 'Genera el documento completo basado en nuestra conversacion.' },
     ],
     ...AI_CONFIG.documentGeneration,
-    onFinish: async ({ text }) => {
+    onFinish: async ({ text, usage }) => {
       const storagePath = `specs/${featureSlug}/${docTypeKey}.md`
       await uploadDocument(projectId, storagePath, text)
 
@@ -80,6 +81,18 @@ export async function POST(
           },
           { onConflict: 'feature_id,document_type' }
         )
+
+      // Record AI usage for financial backoffice
+      const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + JSON.stringify(conversation.messages))
+      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+      recordAiUsage(supabase, {
+        userId: user.id,
+        projectId,
+        eventType: 'phase01_generate',
+        model: defaultModel?.toString?.() ?? undefined,
+        inputTokens,
+        outputTokens,
+      }).catch(() => {})
     },
   })
 
