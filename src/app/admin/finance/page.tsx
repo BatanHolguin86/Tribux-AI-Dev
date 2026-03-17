@@ -22,22 +22,19 @@ export default async function AdminFinancePage() {
   }
 
   return (
-    <div className="space-y-2">
-      <div className="mb-8">
-        <h1 className="text-[22px] font-bold text-white tracking-tight">
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
           Control financiero
         </h1>
-        <p className="mt-1.5 text-[13px] text-gray-500 leading-relaxed">
-          Costos de IA e infraestructura, ingresos y margen por usuario. Panel de control para pricing y unit economics.
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          Costos de IA e infraestructura, ingresos y margen por usuario.
         </p>
       </div>
       <Suspense
         fallback={
           <div className="flex items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-500" />
-              <p className="text-sm text-gray-500">Cargando...</p>
-            </div>
+            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-500" />
           </div>
         }
       >

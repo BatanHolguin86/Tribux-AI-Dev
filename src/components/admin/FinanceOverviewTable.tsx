@@ -43,32 +43,22 @@ type OverviewResponse = {
   users: UserRow[]
 }
 
-const INFRA_LABELS: Record<keyof InfraCosts, string> = {
-  supabase: 'Supabase',
-  vercel: 'Vercel',
-  anthropicPlatform: 'Anthropic (fija)',
-  domain: 'Dominio',
-  sentry: 'Sentry',
-  resend: 'Resend',
-  other: 'Otros',
+const INFRA_LABELS: Record<keyof InfraCosts, { name: string; desc: string }> = {
+  supabase: { name: 'Supabase', desc: 'DB + Auth + Storage' },
+  vercel: { name: 'Vercel', desc: 'Hosting + Edge' },
+  anthropicPlatform: { name: 'Anthropic', desc: 'Cuota plataforma' },
+  domain: { name: 'Dominio', desc: 'Registro anual' },
+  sentry: { name: 'Sentry', desc: 'Error tracking' },
+  resend: { name: 'Resend', desc: 'Emails' },
+  other: { name: 'Otros', desc: 'Servicios adicionales' },
 }
 
-const INFRA_DESCRIPTIONS: Record<keyof InfraCosts, string> = {
-  supabase: 'DB + Auth + Storage',
-  vercel: 'Hosting + Edge',
-  anthropicPlatform: 'Cuota plataforma',
-  domain: 'Registro anual',
-  sentry: 'Error tracking',
-  resend: 'Emails transaccionales',
-  other: 'Servicios adicionales',
-}
-
-const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string; dot: string }> = {
-  active: { label: 'Activo', bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400' },
-  trialing: { label: 'Trial', bg: 'bg-blue-500/10', text: 'text-blue-400', dot: 'bg-blue-400' },
-  canceled: { label: 'Cancelado', bg: 'bg-red-500/10', text: 'text-red-400', dot: 'bg-red-400' },
-  free: { label: 'Free', bg: 'bg-gray-500/10', text: 'text-gray-400', dot: 'bg-gray-400' },
-  past_due: { label: 'Pago pendiente', bg: 'bg-amber-500/10', text: 'text-amber-400', dot: 'bg-amber-400' },
+const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
+  active: { label: 'Activo', classes: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' },
+  trialing: { label: 'Trial', classes: 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400' },
+  canceled: { label: 'Cancelado', classes: 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' },
+  free: { label: 'Free', classes: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' },
+  past_due: { label: 'Pendiente', classes: 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400' },
 }
 
 function formatUsd(value: number): string {
@@ -84,52 +74,25 @@ function KpiCard({
   label,
   value,
   subtitle,
-  icon,
-  accent = 'default',
+  variant = 'default',
 }: {
   label: string
   value: string
   subtitle?: string
-  icon: React.ReactNode
-  accent?: 'default' | 'green' | 'red' | 'blue'
+  variant?: 'default' | 'revenue' | 'cost' | 'profit'
 }) {
-  const accentStyles = {
-    default: 'from-gray-800/80 to-gray-900/80 border-gray-700/50',
-    green: 'from-emerald-950/40 to-gray-900/80 border-emerald-800/30',
-    red: 'from-red-950/30 to-gray-900/80 border-red-800/20',
-    blue: 'from-blue-950/30 to-gray-900/80 border-blue-800/20',
-  }
-
-  const valueStyles = {
-    default: 'text-white',
-    green: 'text-emerald-400',
-    red: 'text-red-400',
-    blue: 'text-blue-400',
-  }
-
-  const iconBg = {
-    default: 'bg-gray-700/50 text-gray-300',
-    green: 'bg-emerald-500/15 text-emerald-400',
-    red: 'bg-red-500/15 text-red-400',
-    blue: 'bg-blue-500/15 text-blue-400',
+  const valueColor = {
+    default: 'text-gray-900 dark:text-white',
+    revenue: 'text-violet-700 dark:text-violet-400',
+    cost: 'text-red-600 dark:text-red-400',
+    profit: 'text-emerald-600 dark:text-emerald-400',
   }
 
   return (
-    <div className={`rounded-2xl border bg-gradient-to-br p-5 ${accentStyles[accent]}`}>
-      <div className="flex items-start justify-between">
-        <div className="space-y-3">
-          <p className="text-[13px] font-medium text-gray-400 tracking-wide">{label}</p>
-          <p className={`text-[28px] font-bold leading-none tracking-tight ${valueStyles[accent]}`}>
-            {value}
-          </p>
-          {subtitle && (
-            <p className="text-[12px] text-gray-500 leading-relaxed">{subtitle}</p>
-          )}
-        </div>
-        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconBg[accent]}`}>
-          {icon}
-        </div>
-      </div>
+    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-violet-300 dark:hover:border-violet-700">
+      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
+      <p className={`mt-2 text-2xl font-bold ${valueColor[variant]}`}>{value}</p>
+      {subtitle && <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{subtitle}</p>}
     </div>
   )
 }
@@ -145,8 +108,7 @@ export function FinanceOverviewTable() {
     const params = month ? `?month=${encodeURIComponent(month)}` : ''
     fetch(`/api/admin/finance/overview${params}`)
       .then((res) => {
-        if (!res.ok)
-          throw new Error(res.status === 403 ? 'Acceso denegado' : 'Error al cargar')
+        if (!res.ok) throw new Error(res.status === 403 ? 'Acceso denegado' : 'Error al cargar')
         return res.json()
       })
       .then(setData)
@@ -156,7 +118,7 @@ export function FinanceOverviewTable() {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-500/20 bg-red-500/5 px-5 py-4 text-sm text-red-300">
+      <div className="rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30 px-5 py-4 text-sm text-red-700 dark:text-red-300">
         {error}
       </div>
     )
@@ -165,10 +127,7 @@ export function FinanceOverviewTable() {
   if (loading || !data) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-500" />
-          <p className="text-sm text-gray-500">Cargando datos financieros...</p>
-        </div>
+        <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-500" />
       </div>
     )
   }
@@ -187,119 +146,89 @@ export function FinanceOverviewTable() {
     : '0'
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Month selector */}
-      <div>
-        <input
-          type="month"
-          value={month || currentMonthLabel}
-          onChange={(e) => setMonth(e.target.value || '')}
-          className="rounded-xl border border-gray-700/50 bg-gray-800/50 px-4 py-2 text-sm text-gray-200 focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all"
-        />
-      </div>
+      <input
+        type="month"
+        value={month || currentMonthLabel}
+        onChange={(e) => setMonth(e.target.value || '')}
+        className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+      />
 
       {/* KPI cards */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
           label="Ingresos del mes"
           value={formatUsd(summary.totalRevenueCurrentMonthUsd)}
-          subtitle={`${summary.totalUsers} usuario${summary.totalUsers !== 1 ? 's' : ''} registrado${summary.totalUsers !== 1 ? 's' : ''}`}
-          accent="blue"
-          icon={
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
-            </svg>
-          }
+          subtitle={`${summary.totalUsers} usuario${summary.totalUsers !== 1 ? 's' : ''}`}
+          variant="revenue"
         />
         <KpiCard
           label="Costos totales"
           value={formatUsd(summary.totalCostsUsd)}
           subtitle={`IA ${formatUsd(summary.totalCostCurrentMonthUsd)} + Infra ${formatUsd(summary.totalInfraCostUsd)}`}
-          accent="red"
-          icon={
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-            </svg>
-          }
+          variant="cost"
         />
         <KpiCard
           label="Ganancia neta"
           value={formatUsd(summary.netProfitUsd)}
           subtitle={`Margen: ${marginPct}%`}
-          accent="green"
-          icon={
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
-            </svg>
-          }
+          variant="profit"
         />
         <KpiCard
           label="Costo IA mes anterior"
           value={formatUsd(summary.totalCostPreviousMonthUsd)}
           subtitle={
             summary.totalCostPreviousMonthUsd > 0
-              ? `${summary.totalCostCurrentMonthUsd > summary.totalCostPreviousMonthUsd ? '+' : ''}${(((summary.totalCostCurrentMonthUsd - summary.totalCostPreviousMonthUsd) / summary.totalCostPreviousMonthUsd) * 100).toFixed(0)}% vs mes actual`
+              ? `${summary.totalCostCurrentMonthUsd > summary.totalCostPreviousMonthUsd ? '+' : ''}${(((summary.totalCostCurrentMonthUsd - summary.totalCostPreviousMonthUsd) / summary.totalCostPreviousMonthUsd) * 100).toFixed(0)}% vs actual`
               : 'Sin datos previos'
-          }
-          accent="default"
-          icon={
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
           }
         />
       </div>
 
       {/* Infrastructure costs */}
       {infraEntries.length > 0 && (
-        <div className="rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/40 to-gray-900/60 p-6">
-          <div className="flex items-center gap-2 mb-5">
-            <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" />
-            </svg>
-            <h3 className="text-sm font-semibold text-gray-300">
-              Costos de infraestructura
-            </h3>
-            <span className="text-[11px] text-gray-600 ml-1">mensuales fijos</span>
-          </div>
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Costos de infraestructura
+            <span className="ml-2 text-xs font-normal text-gray-400 dark:text-gray-500">mensuales</span>
+          </h3>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {infraEntries.map(([key, value]) => (
               <div
                 key={key}
-                className="group flex items-center justify-between rounded-xl bg-gray-800/60 px-4 py-3.5 border border-gray-700/30 hover:border-gray-600/50 transition-colors"
+                className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-800 px-4 py-3 border border-gray-100 dark:border-gray-700"
               >
                 <div>
-                  <span className="text-sm font-medium text-gray-300">
-                    {INFRA_LABELS[key]}
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {INFRA_LABELS[key].name}
                   </span>
-                  <span className="block text-[11px] text-gray-600 mt-0.5">
-                    {INFRA_DESCRIPTIONS[key]}
+                  <span className="block text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
+                    {INFRA_LABELS[key].desc}
                   </span>
                 </div>
-                <span className="text-sm font-bold text-gray-200 tabular-nums">
+                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 tabular-nums">
                   {formatUsd(value)}
                 </span>
               </div>
             ))}
-            {/* AI variable cost card */}
-            <div className="flex items-center justify-between rounded-xl bg-violet-500/8 px-4 py-3.5 border border-violet-500/15">
+            <div className="flex items-center justify-between rounded-lg bg-violet-50 dark:bg-violet-900/20 px-4 py-3 border border-violet-200 dark:border-violet-800">
               <div>
-                <span className="text-sm font-medium text-violet-300">
+                <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
                   Costo IA
                 </span>
-                <span className="block text-[11px] text-violet-500 mt-0.5">
+                <span className="block text-[11px] text-violet-500 dark:text-violet-400 mt-0.5">
                   Variable por uso
                 </span>
               </div>
-              <span className="text-sm font-bold text-violet-300 tabular-nums">
+              <span className="text-sm font-semibold text-violet-700 dark:text-violet-300 tabular-nums">
                 {formatUsd(summary.totalCostCurrentMonthUsd)}
               </span>
             </div>
           </div>
-          {/* Total bar */}
-          <div className="mt-4 flex items-center justify-between rounded-xl bg-gray-900/80 px-4 py-3 border border-gray-700/30">
-            <span className="text-sm font-semibold text-gray-300">Total costos del mes</span>
-            <span className="text-lg font-bold text-white tabular-nums">
+          <div className="mt-4 flex items-center justify-between rounded-lg bg-gradient-to-r from-violet-50 via-white to-indigo-50 dark:from-violet-950/20 dark:via-gray-900 dark:to-indigo-950/20 px-4 py-3 border border-violet-200 dark:border-violet-800">
+            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">Total costos del mes</span>
+            <span className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">
               {formatUsd(summary.totalCostsUsd)}
             </span>
           </div>
@@ -308,40 +237,32 @@ export function FinanceOverviewTable() {
 
       {/* Users table */}
       <div>
-        <div className="flex items-center gap-2 mb-4">
-          <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-          </svg>
-          <h3 className="text-sm font-semibold text-gray-300">
-            Detalle por usuario
-          </h3>
-          <span className="ml-auto text-[12px] text-gray-600">
-            {users.length} usuario{users.length !== 1 ? 's' : ''}
-          </span>
-        </div>
-        <div className="overflow-x-auto rounded-2xl border border-gray-700/50 bg-gray-900/40">
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+          Detalle por usuario
+        </h3>
+        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           <table className="w-full min-w-[850px] text-left text-sm">
             <thead>
-              <tr className="border-b border-gray-700/50 bg-gray-800/30">
-                <th className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-gray-500">
+              <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Usuario
                 </th>
-                <th className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-gray-500">
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Plan
                 </th>
-                <th className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-gray-500">
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   Estado
                 </th>
-                <th className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-gray-500 text-right">
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-right">
                   Costo IA
                 </th>
-                <th className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-gray-500 text-right">
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-right">
                   Precio plan
                 </th>
-                <th className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-widest text-gray-500 text-center">
+                <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 text-center">
                   Margen
                 </th>
-                <th className="px-5 py-3.5"></th>
+                <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -351,87 +272,84 @@ export function FinanceOverviewTable() {
                 return (
                   <tr
                     key={u.userId}
-                    className={`transition-colors hover:bg-white/[0.02] ${!isLast ? 'border-b border-gray-800/50' : ''}`}
+                    className={`transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 ${!isLast ? 'border-b border-gray-100 dark:border-gray-800' : ''}`}
                   >
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/20 to-indigo-500/20 text-[11px] font-bold text-violet-300 shrink-0">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-[11px] font-bold text-white shadow-sm shrink-0">
                           {(u.fullName || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
                         </div>
                         <div>
-                          <span className="font-medium text-gray-100 text-[13px]">
+                          <span className="font-medium text-gray-900 dark:text-gray-100 text-[13px]">
                             {u.fullName || 'Sin nombre'}
                           </span>
-                          <span className="block text-[11px] text-gray-600 font-mono mt-0.5">
+                          <span className="block text-[11px] text-gray-400 dark:text-gray-500 font-mono mt-0.5">
                             {u.userId.slice(0, 8)}
                           </span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4">
-                      <span className="inline-flex rounded-md bg-gray-800/80 px-2.5 py-1 text-[11px] font-semibold text-gray-300 uppercase tracking-wide border border-gray-700/50">
+                    <td className="px-4 py-3.5">
+                      <span className="inline-flex rounded-full bg-violet-100 dark:bg-violet-900/30 px-2.5 py-0.5 text-[11px] font-bold text-violet-700 dark:text-violet-400 uppercase">
                         {u.plan}
                       </span>
                     </td>
-                    <td className="px-5 py-4">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ${status.bg} ${status.text}`}
-                      >
-                        <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
+                    <td className="px-4 py-3.5">
+                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-medium ${status.classes}`}>
                         {status.label}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-right">
-                      <span className="font-semibold text-gray-100 tabular-nums text-[13px]">
+                    <td className="px-4 py-3.5 text-right">
+                      <span className="font-semibold text-gray-900 dark:text-gray-100 tabular-nums text-[13px]">
                         {formatUsd(u.costCurrentMonthUsd)}
                       </span>
-                      <span className="block text-[11px] text-gray-600 mt-0.5 tabular-nums">
+                      <span className="block text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 tabular-nums">
                         {u.inputTokensCurrentMonth.toLocaleString()} in / {u.outputTokensCurrentMonth.toLocaleString()} out
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-right">
-                      <span className="font-medium text-gray-300 tabular-nums text-[13px]">
+                    <td className="px-4 py-3.5 text-right">
+                      <span className="font-medium text-gray-700 dark:text-gray-300 tabular-nums text-[13px]">
                         {u.planPriceUsd > 0 ? formatUsd(u.planPriceUsd) : 'Custom'}
                       </span>
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3.5">
                       {u.planPriceUsd > 0 ? (
-                        <div className="flex flex-col items-center gap-1.5">
+                        <div className="flex flex-col items-center gap-1">
                           <span
                             className={`text-[13px] font-bold tabular-nums ${
                               u.marginRatio >= 0.6
-                                ? 'text-emerald-400'
+                                ? 'text-emerald-600 dark:text-emerald-400'
                                 : u.marginRatio >= 0.3
-                                  ? 'text-amber-400'
-                                  : 'text-red-400'
+                                  ? 'text-amber-600 dark:text-amber-400'
+                                  : 'text-red-600 dark:text-red-400'
                             }`}
                           >
                             {(u.marginRatio * 100).toFixed(0)}%
                           </span>
-                          <div className="h-1 w-14 rounded-full bg-gray-800 overflow-hidden">
+                          <div className="h-1 w-12 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
                             <div
-                              className={`h-full rounded-full transition-all ${
+                              className={`h-full rounded-full transition-all duration-500 ${
                                 u.marginRatio >= 0.6
-                                  ? 'bg-emerald-500'
+                                  ? 'bg-gradient-to-r from-emerald-500 to-emerald-400'
                                   : u.marginRatio >= 0.3
-                                    ? 'bg-amber-500'
-                                    : 'bg-red-500'
+                                    ? 'bg-gradient-to-r from-amber-500 to-amber-400'
+                                    : 'bg-gradient-to-r from-red-500 to-red-400'
                               }`}
                               style={{ width: `${Math.max(0, Math.min(100, u.marginRatio * 100))}%` }}
                             />
                           </div>
                         </div>
                       ) : (
-                        <span className="text-gray-700 text-center block">—</span>
+                        <span className="text-gray-300 dark:text-gray-600 text-center block">—</span>
                       )}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3.5">
                       <Link
                         href={`/admin/finance/users/${u.userId}`}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-violet-500/10 px-3 py-1.5 text-[12px] font-medium text-violet-400 hover:bg-violet-500/20 hover:text-violet-300 transition-all border border-violet-500/10 hover:border-violet-500/20"
+                        className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-3 py-1.5 text-[12px] font-semibold text-white shadow-sm shadow-violet-500/25 transition-all hover:shadow-md hover:shadow-violet-500/30 hover:brightness-110"
                       >
-                        Ver detalle
-                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        Detalle
+                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                         </svg>
                       </Link>
@@ -441,7 +359,7 @@ export function FinanceOverviewTable() {
               })}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-5 py-16 text-center text-gray-600">
+                  <td colSpan={7} className="px-4 py-16 text-center text-gray-400 dark:text-gray-500">
                     No hay usuarios registrados en este periodo.
                   </td>
                 </tr>

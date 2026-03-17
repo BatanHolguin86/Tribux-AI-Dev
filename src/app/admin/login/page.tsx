@@ -30,7 +30,6 @@ export default function AdminLoginPage() {
         return
       }
 
-      // Verify user has admin role
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         setError('Error de autenticacion.')
@@ -59,69 +58,98 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4">
-      <div className="w-full max-w-sm space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg">
+    <div className="flex min-h-screen">
+      {/* Left panel — brand */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center bg-violet-950 px-12">
+        <div className="max-w-md">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25 mb-8">
             <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <h1 className="mt-4 text-xl font-bold text-white">AI Squad — Backoffice</h1>
-          <p className="mt-1 text-sm text-gray-400">Control financiero del producto</p>
+          <h2 className="text-3xl font-bold text-white tracking-tight">
+            AI Squad
+          </h2>
+          <p className="mt-2 text-lg text-violet-200">
+            Control financiero
+          </p>
+          <p className="mt-6 text-sm text-violet-300/70 leading-relaxed">
+            Panel de administracion para monitorear costos de IA, infraestructura, ingresos y margenes por usuario.
+          </p>
         </div>
+      </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="rounded-lg bg-red-900/20 px-4 py-3 text-sm text-red-400 border border-red-800">
-              {error}
+      {/* Right panel — form */}
+      <div className="flex flex-1 items-center justify-center bg-white dark:bg-gray-950 px-6">
+        <div className="w-full max-w-sm space-y-8">
+          {/* Mobile logo */}
+          <div className="lg:hidden text-center">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25">
+              <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
-          )}
-
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-white placeholder-gray-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-              placeholder="admin@ejemplo.com"
-            />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-              Contrasena
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-white placeholder-gray-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-              placeholder="••••••••"
-            />
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Acceso al backoffice
+            </h1>
+            <p className="mt-1.5 text-sm text-gray-600 dark:text-gray-400">
+              Ingresa con tu cuenta de administrador
+            </p>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-gray-950 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Ingresando...' : 'Ingresar al backoffice'}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="rounded-lg bg-red-50 dark:bg-red-900/20 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+                {error}
+              </div>
+            )}
 
-        <p className="text-center text-xs text-gray-600">
-          Acceso exclusivo para administradores de AI Squad.
-        </p>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                placeholder="admin@aisquad.com"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Contrasena
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Verificando...' : 'Ingresar al backoffice'}
+            </button>
+          </form>
+
+          <p className="text-center text-xs text-gray-400 dark:text-gray-500">
+            Acceso exclusivo para administradores de AI Squad.
+          </p>
+        </div>
       </div>
     </div>
   )
