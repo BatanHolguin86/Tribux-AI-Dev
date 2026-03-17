@@ -65,9 +65,16 @@ export async function POST(
     return NextResponse.json(parsed)
   } catch (err) {
     console.error('[Feature suggest] Error', err)
+    const errMsg = err instanceof Error ? err.message : String(err)
+    const isCredits = errMsg.toLowerCase().includes('credit')
     return NextResponse.json(
-      { error: 'generation_failed', message: 'Error al generar sugerencias. Verifica tu API key e intenta de nuevo.' },
-      { status: 500 },
+      {
+        error: 'generation_failed',
+        message: isCredits
+          ? 'Creditos de Anthropic insuficientes. Agrega creditos en console.anthropic.com.'
+          : `Error al generar sugerencias: ${errMsg.slice(0, 200)}`,
+      },
+      { status: isCredits ? 402 : 500 },
     )
   }
 }
