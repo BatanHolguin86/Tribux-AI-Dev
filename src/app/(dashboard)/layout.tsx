@@ -20,7 +20,7 @@ export default async function DashboardLayout({
 
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('onboarding_completed, full_name, subscription_status, trial_ends_at, role')
+    .select('onboarding_completed, full_name, subscription_status, trial_ends_at')
     .eq('id', user.id)
     .single()
 
@@ -54,14 +54,6 @@ export default async function DashboardLayout({
 
           {/* Right: user menu */}
           <div className="flex items-center gap-3">
-            {(profile?.role === 'financial_admin' || profile?.role === 'super_admin') && (
-              <Link
-                href="/admin/finance"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
-              >
-                Control financiero
-              </Link>
-            )}
             <Link
               href="/settings"
               className="rounded-lg p-2 text-gray-400 dark:text-gray-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-400"
