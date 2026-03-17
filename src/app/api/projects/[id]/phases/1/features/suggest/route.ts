@@ -61,7 +61,9 @@ export async function POST(
       outputTokens,
     }).catch(() => {})
 
-    const parsed = JSON.parse(text)
+    // Strip markdown code fences if present (e.g. ```json ... ```)
+    const cleaned = text.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim()
+    const parsed = JSON.parse(cleaned)
     return NextResponse.json(parsed)
   } catch (err) {
     console.error('[Feature suggest] Error', err)
