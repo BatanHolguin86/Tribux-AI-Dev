@@ -6,6 +6,8 @@ import { getApprovedDiscoveryDocs } from '@/lib/ai/context-builder'
 import { buildFeatureSuggestionsPrompt } from '@/lib/ai/prompts/feature-suggestions'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 
+export const maxDuration = 60
+
 export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }

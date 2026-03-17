@@ -8,6 +8,8 @@ import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-l
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase00Section } from '@/types/conversation'
 
+export const maxDuration = 60
+
 type CoreMessage = {
   role: 'user' | 'assistant'
   content: string

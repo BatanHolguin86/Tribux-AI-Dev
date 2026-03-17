@@ -9,6 +9,8 @@ import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 import { DESIGN_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 
+export const maxDuration = 60
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },

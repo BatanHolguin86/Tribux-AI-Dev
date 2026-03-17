@@ -13,6 +13,8 @@ import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-l
 import { AGENT_MAP } from '@/lib/ai/agents'
 import type { AgentType } from '@/types/agent'
 
+export const maxDuration = 60
+
 function extractTextFromMessage(message: any): string {
   if (!message) return ''
 

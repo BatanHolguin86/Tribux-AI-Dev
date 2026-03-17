@@ -7,6 +7,8 @@ import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
 
+export const maxDuration = 60
+
 type CoreMessage = {
   role: 'user' | 'assistant'
   content: string

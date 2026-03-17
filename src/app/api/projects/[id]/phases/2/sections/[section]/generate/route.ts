@@ -7,6 +7,8 @@ import { uploadDocument } from '@/lib/storage/documents'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase02Section } from '@/types/conversation'
 
+export const maxDuration = 60
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string; section: string }> }

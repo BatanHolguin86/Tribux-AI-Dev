@@ -8,6 +8,8 @@ import { slugify } from '@/lib/utils'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
 
+export const maxDuration = 60
+
 export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string; featureId: string; docType: string }> }

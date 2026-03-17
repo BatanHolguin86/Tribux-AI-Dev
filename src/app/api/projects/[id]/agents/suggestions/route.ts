@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildFullProjectContext } from '@/lib/ai/context-builder'
+
+export const maxDuration = 60
 import { buildSuggestionsPrompt } from '@/lib/ai/agents/prompt-builder'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 
