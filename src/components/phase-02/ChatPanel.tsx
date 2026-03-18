@@ -16,13 +16,13 @@ import { PHASE_02_AGENTS } from '@/lib/ai/agents/phase-agents'
 
 const SECTION_KICKOFF: Record<string, string> = {
   system_architecture:
-    'Como CTO, analiza el Discovery y Feature Specs aprobados y propone la System Architecture: componentes, flujo de datos, stack tecnologico y modelo de seguridad.',
+    'Dame tu vision de alto nivel de la System Architecture: componentes principales, como se conectan y por que. Resumen ejecutivo en 3-4 parrafos, luego profundizamos.',
   database_design:
-    'Como CTO, basandote en los Feature Specs y la arquitectura definida, propone el Database Design: entidades, relaciones, tablas con campos, RLS policies e indices.',
+    'Propone un resumen del Database Design: entidades principales, relaciones clave y estrategia de RLS. Vista general breve, luego detallamos tabla por tabla.',
   api_design:
-    'Como CTO, basandote en los Feature Specs y el modelo de datos, propone el API Design: endpoints, contratos request/response, auth y manejo de errores.',
+    'Dame una vista general del API Design: cuantos endpoints, como los agrupas y cual es el patron de auth. Resumen breve, luego definimos contratos.',
   architecture_decisions:
-    'Como CTO, documenta las Architecture Decision Records (ADRs) clave del proyecto basandote en las secciones de arquitectura ya definidas.',
+    'Identifica las 3-4 decisiones arquitectonicas mas criticas del proyecto. Para cada una, un parrafo breve con la decision y por que. Luego documentamos los ADRs formales.',
 }
 
 function getTextContent(msg: UIMessage): string {

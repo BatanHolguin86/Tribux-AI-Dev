@@ -15,18 +15,30 @@ function renderInline(text: string): React.ReactNode[] {
   let keyIdx = 0
 
   while (remaining.length > 0) {
+    // Match inline code first, then bold, then italic
+    const codeMatch = remaining.match(/`([^`]+)`/)
     const boldMatch = remaining.match(/\*\*(.+?)\*\*/)
-    const italicMatch = remaining.match(/\*(.+?)\*/)
+    const italicMatch = remaining.match(/(?<!\*)\*([^*]+?)\*(?!\*)/)
 
+    const code = codeMatch?.index ?? Infinity
     const bold = boldMatch?.index ?? Infinity
     const italic = italicMatch?.index ?? Infinity
 
-    if (bold === Infinity && italic === Infinity) {
+    const earliest = Math.min(code, bold, italic)
+    if (earliest === Infinity) {
       parts.push(remaining)
       break
     }
 
-    if (bold <= italic && boldMatch) {
+    if (code <= bold && code <= italic && codeMatch) {
+      if (codeMatch.index! > 0) parts.push(remaining.slice(0, codeMatch.index!))
+      parts.push(
+        <code key={keyIdx++} className="rounded bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 text-[12px] font-mono text-violet-700 dark:text-violet-300">
+          {codeMatch[1]}
+        </code>
+      )
+      remaining = remaining.slice(codeMatch.index! + codeMatch[0].length)
+    } else if (bold <= italic && boldMatch) {
       if (boldMatch.index! > 0) parts.push(remaining.slice(0, boldMatch.index!))
       parts.push(<strong key={keyIdx++} className="font-semibold">{boldMatch[1]}</strong>)
       remaining = remaining.slice(boldMatch.index! + boldMatch[0].length)
@@ -41,40 +53,117 @@ function renderInline(text: string): React.ReactNode[] {
 }
 
 function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
-  // Split into paragraphs (double newline) then process each paragraph
-  const paragraphs = text.split(/\n{2,}/)
+  // First, extract code blocks to avoid parsing their content
+  const codeBlockRegex = /```(\w*)\n?([\s\S]*?)```/g
+  const segments: Array<{ type: 'text' | 'code'; content: string; lang?: string }> = []
+  let lastIndex = 0
+  let match
 
-  return paragraphs.map((paragraph, pi) => {
-    const lines = paragraph.split('\n')
+  while ((match = codeBlockRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ type: 'text', content: text.slice(lastIndex, match.index) })
+    }
+    segments.push({ type: 'code', content: match[2].trim(), lang: match[1] || undefined })
+    lastIndex = match.index + match[0].length
+  }
+  if (lastIndex < text.length) {
+    segments.push({ type: 'text', content: text.slice(lastIndex) })
+  }
 
-    // Check if it's a list block
-    const isList = lines.every((l) => l.startsWith('- ') || l.startsWith('* ') || /^\d+\.\s/.test(l) || !l.trim())
-    if (isList && lines.some((l) => l.trim())) {
-      const items = lines.filter((l) => l.trim())
-      const isNumbered = items.some((l) => /^\d+\.\s/.test(l))
-      const Tag = isNumbered ? 'ol' : 'ul'
+  return segments.map((segment, si) => {
+    if (segment.type === 'code') {
       return (
-        <Tag key={pi} className={`my-1.5 space-y-0.5 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${isUser ? 'marker:text-violet-200' : 'marker:text-gray-400 dark:marker:text-gray-500'}`}>
-          {items.map((item, li) => (
-            <li key={li} className="pl-0.5">
-              {renderInline(item.replace(/^[-*]\s|^\d+\.\s/, ''))}
-            </li>
-          ))}
-        </Tag>
+        <pre key={si} className="my-2 overflow-x-auto rounded-lg bg-gray-900 dark:bg-gray-950 p-3 text-[12px] leading-relaxed">
+          <code className="text-gray-100 font-mono">{segment.content}</code>
+        </pre>
       )
     }
 
-    // Regular paragraph — join lines with <br />
-    return (
-      <p key={pi} className={pi > 0 ? 'mt-2' : ''}>
-        {lines.map((line, li) => (
-          <React.Fragment key={li}>
-            {li > 0 && <br />}
-            {renderInline(line)}
-          </React.Fragment>
-        ))}
-      </p>
-    )
+    // Process text segments
+    const paragraphs = segment.content.split(/\n{2,}/)
+
+    return paragraphs.map((paragraph, pi) => {
+      const trimmed = paragraph.trim()
+      if (!trimmed) return null
+
+      // Horizontal rule
+      if (/^-{3,}$/.test(trimmed)) {
+        return <hr key={`${si}-${pi}`} className="my-3 border-gray-200 dark:border-gray-700" />
+      }
+
+      // Headings
+      const h2Match = trimmed.match(/^##\s+(.+)/)
+      if (h2Match) {
+        return (
+          <h3 key={`${si}-${pi}`} className="mt-3 mb-1.5 text-[13px] font-bold text-gray-900 dark:text-gray-100">
+            {renderInline(h2Match[1])}
+          </h3>
+        )
+      }
+
+      const h3Match = trimmed.match(/^###\s+(.+)/)
+      if (h3Match) {
+        return (
+          <h4 key={`${si}-${pi}`} className="mt-2.5 mb-1 text-[13px] font-semibold text-gray-800 dark:text-gray-200">
+            {renderInline(h3Match[1])}
+          </h4>
+        )
+      }
+
+      const h1Match = trimmed.match(/^#\s+(.+)/)
+      if (h1Match) {
+        return (
+          <h2 key={`${si}-${pi}`} className="mt-3 mb-1.5 text-[14px] font-bold text-gray-900 dark:text-gray-100">
+            {renderInline(h1Match[1])}
+          </h2>
+        )
+      }
+
+      const lines = paragraph.split('\n')
+
+      // Check if it's a list block
+      const nonEmptyLines = lines.filter((l) => l.trim())
+      const isList = nonEmptyLines.length > 0 && nonEmptyLines.every(
+        (l) => l.trimStart().startsWith('- ') || l.trimStart().startsWith('* ') || /^\s*\d+\.\s/.test(l) || l.trimStart().startsWith('- [ ]') || l.trimStart().startsWith('- [x]')
+      )
+
+      if (isList) {
+        const items = nonEmptyLines
+        const isNumbered = items.some((l) => /^\s*\d+\.\s/.test(l))
+        const Tag = isNumbered ? 'ol' : 'ul'
+        return (
+          <Tag key={`${si}-${pi}`} className={`my-1.5 space-y-1 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${isUser ? 'marker:text-violet-200' : 'marker:text-violet-400 dark:marker:text-violet-500'}`}>
+            {items.map((item, li) => {
+              const cleaned = item.replace(/^\s*[-*]\s(\[[ x]\]\s?)?|^\s*\d+\.\s/, '')
+              const isChecked = item.includes('[x]')
+              const isCheckbox = item.includes('[ ]') || item.includes('[x]')
+              return (
+                <li key={li} className="pl-0.5 text-[13px]">
+                  {isCheckbox && (
+                    <span className={`mr-1.5 inline-block ${isChecked ? 'text-emerald-500' : 'text-gray-400 dark:text-gray-500'}`}>
+                      {isChecked ? '✓' : '○'}
+                    </span>
+                  )}
+                  {renderInline(cleaned)}
+                </li>
+              )
+            })}
+          </Tag>
+        )
+      }
+
+      // Regular paragraph
+      return (
+        <p key={`${si}-${pi}`} className={pi > 0 ? 'mt-2' : ''}>
+          {lines.map((line, li) => (
+            <React.Fragment key={li}>
+              {li > 0 && <br />}
+              {renderInline(line)}
+            </React.Fragment>
+          ))}
+        </p>
+      )
+    })
   })
 }
 
@@ -85,22 +174,27 @@ export function ChatMessage({ role, content, createdAt }: ChatMessageProps) {
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
       {/* Avatar */}
       <div
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold shadow-sm dark:shadow-gray-900/20 ${
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-sm dark:shadow-gray-900/20 ${
           isUser
-            ? 'bg-violet-600 text-white'
-            : 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-400 ring-1 ring-gray-200 dark:ring-gray-600'
+            ? 'bg-gradient-to-br from-violet-500 to-violet-700 text-white'
+            : 'bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/40 dark:to-indigo-900/40 ring-1 ring-violet-200/50 dark:ring-violet-700/50'
         }`}
       >
-        {isUser ? 'Tu' : 'AI'}
+        {isUser ? 'Tú' : '🧠'}
       </div>
 
       {/* Message bubble */}
-      <div className={`max-w-[80%] min-w-0 ${isUser ? 'text-right' : ''}`}>
+      <div className={`max-w-[85%] min-w-0 ${isUser ? 'text-right' : ''}`}>
+        {!isUser && (
+          <p className="mb-1 text-[11px] font-semibold text-violet-600 dark:text-violet-400">
+            CTO Virtual
+          </p>
+        )}
         <div
-          className={`inline-block rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed ${
+          className={`inline-block rounded-2xl px-4 py-3 text-[13px] leading-relaxed ${
             isUser
-              ? 'rounded-tr-sm bg-violet-600 text-white'
-              : 'rounded-tl-sm bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200 ring-1 ring-gray-100 dark:ring-gray-800'
+              ? 'rounded-tr-md bg-gradient-to-br from-violet-500 to-violet-600 text-white shadow-sm'
+              : 'rounded-tl-md bg-white dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 ring-1 ring-gray-150 dark:ring-gray-700/80 shadow-sm'
           }`}
         >
           {renderMarkdown(content, isUser)}

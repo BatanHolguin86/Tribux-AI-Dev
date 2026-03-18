@@ -15,11 +15,11 @@ import { AgentParticipationHeader } from '@/components/shared/AgentParticipation
 import { PHASE_00_AGENTS } from '@/lib/ai/agents/phase-agents'
 
 const SECTION_KICKOFF: Record<string, string> = {
-  problem_statement: 'Hola, estoy listo para definir el Problem Statement de mi proyecto. Guiame con las preguntas clave.',
-  personas: 'Necesito definir las User Personas de mi proyecto. Hazme las preguntas necesarias para construirlas.',
-  value_proposition: 'Quiero trabajar en la Value Proposition. Guiame paso a paso.',
-  metrics: 'Vamos a definir las Success Metrics del proyecto. Que necesitas saber?',
-  competitive_analysis: 'Es momento del Competitive Analysis. Ayudame a estructurarlo.',
+  problem_statement: 'Arrancamos con el Problem Statement. Dame tu analisis inicial del problema que resolvemos y las 2-3 preguntas clave que necesitas para afinar la definicion.',
+  personas: 'Vamos con User Personas. Propone las personas que identificas del contexto del proyecto y preguntame lo que necesites para refinarlas.',
+  value_proposition: 'Trabajemos la Value Proposition. Dame tu lectura de la propuesta de valor basada en lo que ya sabemos, y que necesitas validar conmigo.',
+  metrics: 'Definamos Success Metrics. Propone las metricas clave que ves para este proyecto y preguntame lo que necesites.',
+  competitive_analysis: 'Hagamos el Competitive Analysis. Dame tu vision del landscape competitivo y las preguntas que necesitas para completar el analisis.',
 }
 
 function getTextContent(msg: UIMessage): string {

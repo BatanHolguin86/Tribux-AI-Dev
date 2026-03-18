@@ -23,11 +23,11 @@ function getTextContent(msg: UIMessage): string {
 
 const KICKOFF_MESSAGES: Record<KiroDocumentType, (name: string) => string> = {
   requirements: (name) =>
-    `Soy el product owner del feature "${name}". Como CTO, analiza este feature basandote en el Discovery aprobado y propone los Requirements iniciales: user stories, acceptance criteria, NFRs y edge cases.`,
+    `Analiza brevemente el feature "${name}" basandote en el Discovery. Dame tu lectura estrategica en 3-4 parrafos cortos: que es critico de este feature, que riesgos ves, y cual es tu enfoque recomendado. NO generes el documento completo aun — primero alineemos la vision.`,
   design: (name) =>
-    `Necesito el Design tecnico del feature "${name}". Como CTO, basandote en los Requirements aprobados y el Discovery, propone el diseno: modelo de datos, API, flujo de UI y decisiones arquitectonicas.`,
+    `Para el Design de "${name}", dame un resumen ejecutivo de la solucion tecnica que propones: stack, patron principal y componentes clave. Maximo 3-4 parrafos. Luego profundizamos juntos.`,
   tasks: (name) =>
-    `Necesito las Tasks de implementacion del feature "${name}". Como CTO, basandote en los Requirements y Design aprobados, genera el checklist de tasks atomicas ordenadas por dependencia.`,
+    `Para las Tasks de "${name}", dame una vista general: cuantas tasks estimas, como las agruparias y cual es la ruta critica. Resumen breve, luego detallamos juntos.`,
 }
 
 type KiroChatProps = {
