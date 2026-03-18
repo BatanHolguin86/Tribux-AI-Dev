@@ -11,9 +11,7 @@ import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
-import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
 import { QuickReplies, extractOptions } from '@/components/shared/chat/QuickReplies'
-import { PHASE_01_AGENTS } from '@/lib/ai/agents/phase-agents'
 
 function getTextContent(msg: UIMessage): string {
   return msg.parts
@@ -172,7 +170,21 @@ export function KiroChat({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <AgentParticipationHeader agents={PHASE_01_AGENTS[docType]} />
+      <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-2 dark:border-gray-800">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">CTO Orquestador</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">· {docLabel}</span>
+        </div>
+        {isApproved ? (
+          <span className="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300">
+            Aprobado
+          </span>
+        ) : (
+          <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] font-medium text-gray-600 dark:bg-gray-800/50 dark:text-gray-300">
+            En progreso
+          </span>
+        )}
+      </div>
       {error && <ChatErrorBanner error={error} />}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !isLoading && (

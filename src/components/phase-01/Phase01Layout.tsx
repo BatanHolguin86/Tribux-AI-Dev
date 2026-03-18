@@ -47,6 +47,9 @@ export function Phase01Layout({
   const activeFeature = features.find((f) => f.id === activeFeatureId)
   const currentDoc = activeFeature?.documents[activeDocType] ?? null
   const currentConversation = activeFeature?.conversations[activeDocType] ?? []
+  const shouldShowDocumentPanel =
+    !!currentDoc &&
+    (currentDoc.status === 'approved' || (!!currentDoc.content && currentDoc.content.trim().length > 0))
 
   const allSpecComplete = features.length > 0 && features.every(
     (f) => f.status === 'spec_complete' || f.status === 'approved',
@@ -100,13 +103,17 @@ export function Phase01Layout({
         )}
       </div>
 
-      {/* Helper text: qué hacer en Phase 01 */}
-      <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
-        En Phase 01 dividimos tu producto en <span className="font-medium">features</span>{' '}
-        (partes como <span className="italic">login, pagos, panel de admin</span>). Para cada
-        feature, el orquestador te guiara para definir{' '}
-        <span className="font-medium">Requirements → Design → Tasks</span> en ese orden.
-      </p>
+      {/* Helper text: compactado para reducir ruido visual */}
+      <details className="mb-4 text-xs text-gray-500 dark:text-gray-400" open={false}>
+        <summary className="cursor-pointer font-medium text-gray-600 dark:text-gray-300">
+          ¿Como avanzar en Phase 01?
+        </summary>
+        <p className="mt-2 max-w-3xl leading-relaxed">
+          En Phase 01 dividimos tu producto en <span className="font-medium">features</span> (login,
+          pagos, panel de admin, etc.). Para cada feature, el orquestador te guía para definir{' '}
+          <span className="font-medium">Requirements → Design → Tasks</span> en ese orden.
+        </p>
+      </details>
 
       {/* Discovery summary */}
       <DiscoverySummary docs={discoverySummary} />
@@ -163,7 +170,9 @@ export function Phase01Layout({
               <>
                 {/* Center: Chat */}
                 <div
-                  className={`flex min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 lg:flex-[6] ${
+                  className={`flex min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 ${
+                    shouldShowDocumentPanel ? 'lg:flex-[6]' : 'lg:flex-1'
+                  } ${
                     mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
                   }`}
                 >
@@ -187,17 +196,19 @@ export function Phase01Layout({
                 </div>
 
                 {/* Right: Document panel */}
-                <div
-                  className={`lg:flex-[4] ${
-                    mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
-                  }`}
-                >
-                  <DocumentPanel
-                    projectId={projectId}
-                    title={KIRO_DOC_LABELS[activeDocType]}
-                    document={currentDoc}
-                  />
-                </div>
+                {shouldShowDocumentPanel && (
+                  <div
+                    className={`lg:flex-[4] ${
+                      mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
+                    }`}
+                  >
+                    <DocumentPanel
+                      projectId={projectId}
+                      title={KIRO_DOC_LABELS[activeDocType]}
+                      document={currentDoc}
+                    />
+                  </div>
+                )}
               </>
             ) : (
               <div className="flex flex-1 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
