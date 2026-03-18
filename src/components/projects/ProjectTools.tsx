@@ -22,7 +22,7 @@ const tools = [
     label: 'Agentes AI',
     description: 'CTO, Architect, QA y mas',
     icon: '🤖',
-    path: 'agents',
+    path: 'experts',
     gradient: 'from-violet-500/10 to-blue-500/10 dark:from-violet-500/5 dark:to-blue-500/5',
     iconBg: 'bg-violet-100 dark:bg-violet-900/30',
   },
