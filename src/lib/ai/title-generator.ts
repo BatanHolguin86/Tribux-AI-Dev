@@ -18,7 +18,7 @@ export async function generateThreadTitle(
     const { text, usage } = await generateText({
       model: defaultModel,
       prompt,
-      maxOutputTokens: AI_CONFIG.threadTitle.maxTokens,
+      maxOutputTokens: AI_CONFIG.threadTitle.maxOutputTokens,
       temperature: AI_CONFIG.threadTitle.temperature,
     })
 

@@ -24,7 +24,7 @@ export async function GET(
     const { text, usage } = await generateText({
       model: defaultModel,
       prompt,
-      maxOutputTokens: AI_CONFIG.featureSuggestions.maxTokens,
+      maxOutputTokens: AI_CONFIG.featureSuggestions.maxOutputTokens,
       temperature: AI_CONFIG.featureSuggestions.temperature,
     })
 

@@ -412,7 +412,7 @@ export async function POST(
       model: defaultModel,
       system: systemPrompt,
       messages: allMessages,
-      maxOutputTokens: AI_CONFIG.chat.maxTokens,
+      maxOutputTokens: AI_CONFIG.chat.maxOutputTokens,
       temperature: AI_CONFIG.chat.temperature,
       onFinish: async (response) => {
         const updatedMessages = [

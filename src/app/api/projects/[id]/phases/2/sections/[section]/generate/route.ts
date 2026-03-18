@@ -9,6 +9,18 @@ import type { Phase02Section } from '@/types/conversation'
 
 export const maxDuration = 60
 
+type CoreMessage = { role: 'user' | 'assistant'; content: string }
+
+function toCoreMessages(raw: unknown): CoreMessage[] {
+  if (!Array.isArray(raw)) return []
+  return raw.map((m: any) => ({
+    role: (m?.role === 'assistant' ? 'assistant' : 'user') as CoreMessage['role'],
+    content: typeof m?.content === 'string'
+      ? m.content.replace(/---OPTIONS---[\s\S]*?---\/OPTIONS---/g, '').trim()
+      : '',
+  }))
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string; section: string }> }
@@ -43,11 +55,13 @@ export async function POST(
   const context = await buildPhase02Context(projectId)
   const systemPrompt = buildDocumentGenerationPrompt(sectionKey, context)
 
+  const coreMessages = toCoreMessages(conversation.messages)
+
   const result = streamText({
     model: defaultModel,
     system: systemPrompt,
     messages: [
-      ...conversation.messages,
+      ...coreMessages,
       {
         role: 'user' as const,
         content: 'Genera el documento completo de arquitectura basado en nuestra conversacion.',
