@@ -128,11 +128,27 @@ export function KiroChat({
         return
       }
 
+      // UX: no nos quedamos “pegados” leyendo el stream si por cualquier motivo tarda en cerrarse.
       const reader = res.body?.getReader()
       if (reader) {
-        while (true) {
-          const { done } = await reader.read()
-          if (done) break
+        const GENERATE_STREAM_TIMEOUT_MS = 30000
+        const timer = setTimeout(() => {
+          try {
+            reader.cancel()
+          } catch {
+            // Best-effort cancel: no bloquea el flujo
+          }
+        }, GENERATE_STREAM_TIMEOUT_MS)
+
+        try {
+          while (true) {
+            const { done } = await reader.read()
+            if (done) break
+          }
+        } catch {
+          // Si el stream no cierra a tiempo, igual recargamos para reflejar el documento (si se guardó en DB).
+        } finally {
+          clearTimeout(timer)
         }
       }
 
