@@ -91,6 +91,8 @@ export async function POST(
 
     const body = await request.json()
     const docType = (body.docType ?? body.document_type) as KiroDocumentType
+    const coreMessages = toCoreMessages(body.messages)
+    const storedBaseMessages = toStoredMessages(body.messages)
 
     const context = await buildProjectContext(projectId)
   const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
@@ -121,9 +123,14 @@ export async function POST(
   })
 
     // CTO orchestration (Option B): consult specialists internally per docType
-    const full = await buildFullProjectContext(projectId)
+    // Optimize latency: only consult on first user turn for this docType thread
+    const isFirstTurn = coreMessages.filter((m) => m.content.trim().length > 0).length <= 1
+    const shouldConsult = isFirstTurn
+
+    const full = shouldConsult ? await buildFullProjectContext(projectId) : null
 
     async function consult(agentType: AgentType, instruction: string) {
+      if (!full) return ''
       const specialistSystem = buildAgentPrompt(agentType, full)
       const { text, usage } = await generateText({
         model: defaultModel,
@@ -154,47 +161,48 @@ export async function POST(
       return text
     }
 
-    const internalNotesParts: string[] = []
-    if (docType === 'requirements') {
-      const pa = await consult(
-        'product_architect',
-        'Propone user stories (3-8) y acceptance criteria (2-5 por story) para este feature. Incluye edge cases y out of scope.',
-      )
-      internalNotesParts.push(`## Product Architect\n${pa}`)
-    } else if (docType === 'design') {
-      const [sa, dba] = await Promise.all([
-        consult(
-          'system_architect',
-          'Propone un diseno tecnico implementable: arquitectura, endpoints /api, flujo UI y decisiones (trade-offs).',
-        ),
-        consult(
-          'db_admin',
-          'Propone el modelo de datos (tablas/campos/tipos/indices) y consideraciones de RLS para este feature.',
-        ),
-      ])
-      internalNotesParts.push(`## System Architect\n${sa}`, `## DB Admin\n${dba}`)
-    } else if (docType === 'tasks') {
-      const [ld, qa] = await Promise.all([
-        consult(
-          'lead_developer',
-          'Descompone la implementacion en tasks atomicas (1-4h) ordenadas por dependencias (setup/db/backend/frontend).',
-        ),
-        consult(
-          'qa_engineer',
-          'Propone tasks de testing (unit/integration/e2e) y casos de prueba criticos para este feature.',
-        ),
-      ])
-      internalNotesParts.push(`## Lead Developer\n${ld}`, `## QA Engineer\n${qa}`)
-    }
+    if (shouldConsult) {
+      const internalNotesParts: string[] = []
+      if (docType === 'requirements') {
+        const pa = await consult(
+          'product_architect',
+          'Propone user stories (3-8) y acceptance criteria (2-5 por story) para este feature. Incluye edge cases y out of scope.',
+        )
+        if (pa) internalNotesParts.push(`## Product Architect\n${pa}`)
+      } else if (docType === 'design') {
+        const [sa, dba] = await Promise.all([
+          consult(
+            'system_architect',
+            'Propone un diseno tecnico implementable: arquitectura, endpoints /api, flujo UI y decisiones (trade-offs).',
+          ),
+          consult(
+            'db_admin',
+            'Propone el modelo de datos (tablas/campos/tipos/indices) y consideraciones de RLS para este feature.',
+          ),
+        ])
+        if (sa) internalNotesParts.push(`## System Architect\n${sa}`)
+        if (dba) internalNotesParts.push(`## DB Admin\n${dba}`)
+      } else if (docType === 'tasks') {
+        const [ld, qa] = await Promise.all([
+          consult(
+            'lead_developer',
+            'Descompone la implementacion en tasks atomicas (1-4h) ordenadas por dependencias (setup/db/backend/frontend).',
+          ),
+          consult(
+            'qa_engineer',
+            'Propone tasks de testing (unit/integration/e2e) y casos de prueba criticos para este feature.',
+          ),
+        ])
+        if (ld) internalNotesParts.push(`## Lead Developer\n${ld}`)
+        if (qa) internalNotesParts.push(`## QA Engineer\n${qa}`)
+      }
 
-    if (internalNotesParts.length > 0) {
-      systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n${internalNotesParts.join('\n\n')}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Puedes decir \"Consulté internamente a X\" pero NO pegues estas notas literalmente.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n`
+      if (internalNotesParts.length > 0) {
+        systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n${internalNotesParts.join('\n\n')}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Puedes decir \"Consulté internamente a X\" pero NO pegues estas notas literalmente.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n`
+      }
     }
 
   const section = `feature_${featureId}_${docType}`
-
-  const coreMessages = toCoreMessages(body.messages)
-  const storedBaseMessages = toStoredMessages(body.messages)
 
   const result = streamText({
     model: defaultModel,
