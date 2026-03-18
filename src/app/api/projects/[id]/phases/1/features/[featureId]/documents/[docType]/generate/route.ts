@@ -96,20 +96,24 @@ export async function POST(
       }
 
       try {
-        await supabase
-          .from('feature_documents')
-          .upsert(
-            {
-              feature_id: featureId,
-              project_id: projectId,
-              document_type: docTypeKey,
-              storage_path: storageFullPath,
-              content: text,
-              version: 1,
-              status: 'draft',
-            },
-            { onConflict: 'feature_id,document_type' }
-          )
+        await withTimeout(
+          supabase
+            .from('feature_documents')
+            .upsert(
+              {
+                feature_id: featureId,
+                project_id: projectId,
+                document_type: docTypeKey,
+                storage_path: storageFullPath,
+                content: text,
+                version: 1,
+                status: 'draft',
+              },
+              { onConflict: 'feature_id,document_type' },
+            ),
+          12000,
+          'feature_documents upsert',
+        )
       } catch (err) {
         console.error('[Phase01 generate] feature_documents upsert failed', err)
       }
@@ -119,14 +123,18 @@ export async function POST(
         const inputTokens =
           usage?.inputTokens ?? estimateTokensFromText(systemPrompt + JSON.stringify(conversation.messages))
         const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-        await recordAiUsage(supabase, {
-          userId: user.id,
-          projectId,
-          eventType: 'phase01_generate',
-          model: defaultModel?.toString?.() ?? undefined,
-          inputTokens,
-          outputTokens,
-        })
+        await withTimeout(
+          recordAiUsage(supabase, {
+            userId: user.id,
+            projectId,
+            eventType: 'phase01_generate',
+            model: defaultModel?.toString?.() ?? undefined,
+            inputTokens,
+            outputTokens,
+          }),
+          8000,
+          'recordAiUsage',
+        )
       } catch (err) {
         console.error('[Phase01 generate] recordAiUsage failed', err)
       }
