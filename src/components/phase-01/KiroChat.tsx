@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { TextStreamChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
@@ -11,6 +11,8 @@ import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
+import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
+import { PHASE_01_AGENTS } from '@/lib/ai/agents/phase-agents'
 
 function getTextContent(msg: UIMessage): string {
   return msg.parts
@@ -19,9 +21,19 @@ function getTextContent(msg: UIMessage): string {
     .join('')
 }
 
+const KICKOFF_MESSAGES: Record<KiroDocumentType, (name: string) => string> = {
+  requirements: (name) =>
+    `Soy el product owner del feature "${name}". Como CTO, analiza este feature basandote en el Discovery aprobado y propone los Requirements iniciales: user stories, acceptance criteria, NFRs y edge cases.`,
+  design: (name) =>
+    `Necesito el Design tecnico del feature "${name}". Como CTO, basandote en los Requirements aprobados y el Discovery, propone el diseno: modelo de datos, API, flujo de UI y decisiones arquitectonicas.`,
+  tasks: (name) =>
+    `Necesito las Tasks de implementacion del feature "${name}". Como CTO, basandote en los Requirements y Design aprobados, genera el checklist de tasks atomicas ordenadas por dependencia.`,
+}
+
 type KiroChatProps = {
   projectId: string
   featureId: string
+  featureName: string
   docType: KiroDocumentType
   docStatus: string | null
   initialMessages: Array<{ role: string; content: string }>
@@ -33,6 +45,7 @@ type KiroChatProps = {
 export function KiroChat({
   projectId,
   featureId,
+  featureName,
   docType,
   docStatus,
   initialMessages,
@@ -41,6 +54,7 @@ export function KiroChat({
   onDocumentApproved,
 }: KiroChatProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const kickoffSent = useRef(false)
   const [input, setInput] = useState('')
   const [generating, setGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
@@ -61,6 +75,20 @@ export function KiroChat({
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+
+  // Auto-kickoff: when chat is empty and doc not approved, CTO starts proactively
+  useEffect(() => {
+    if (
+      initialMessages.length === 0 &&
+      !isApproved &&
+      !hasDocument &&
+      !kickoffSent.current
+    ) {
+      kickoffSent.current = true
+      const kickoffText = KICKOFF_MESSAGES[docType](featureName)
+      sendMessage({ text: kickoffText })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -128,15 +156,26 @@ export function KiroChat({
 
   return (
     <div className="flex flex-1 flex-col">
+      <AgentParticipationHeader agents={PHASE_01_AGENTS[docType]} />
       {error && <ChatErrorBanner error={error} />}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !isLoading && (
-          <div className="flex items-center justify-center py-12 text-sm text-gray-400">
-            Inicia la conversacion para definir {docLabel}.
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
+            <p className="text-sm text-violet-600 font-medium">
+              El CTO esta analizando &quot;{featureName}&quot;...
+            </p>
+            <p className="text-xs text-gray-400">
+              Preparando {docLabel} basado en el Discovery aprobado
+            </p>
           </div>
         )}
 
-        {messages.map((msg) => {
+        {messages.map((msg, idx) => {
+          // Hide the auto-kickoff user message
+          if (idx === 0 && msg.role === 'user' && kickoffSent.current && initialMessages.length === 0) {
+            return null
+          }
           const text = getTextContent(msg)
           return (
             <ChatMessage

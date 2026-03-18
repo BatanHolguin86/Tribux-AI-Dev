@@ -11,6 +11,8 @@ import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
+import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
+import { PHASE_00_AGENTS } from '@/lib/ai/agents/phase-agents'
 
 const SECTION_KICKOFF: Record<string, string> = {
   problem_statement: 'Hola, estoy listo para definir el Problem Statement de mi proyecto. Guiame con las preguntas clave.',
@@ -154,6 +156,7 @@ export function ChatPanel({
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
+      <AgentParticipationHeader agents={PHASE_00_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" role="log" aria-live="polite">

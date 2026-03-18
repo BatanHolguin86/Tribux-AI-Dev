@@ -176,6 +176,7 @@ export function Phase01Layout({
                     key={`${activeFeatureId}-${activeDocType}`}
                     projectId={projectId}
                     featureId={activeFeature.id}
+                    featureName={activeFeature.name}
                     docType={activeDocType}
                     docStatus={currentDoc?.status ?? null}
                     initialMessages={currentConversation}

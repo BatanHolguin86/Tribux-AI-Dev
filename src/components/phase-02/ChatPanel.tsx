@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { TextStreamChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
@@ -11,6 +11,19 @@ import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
+import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
+import { PHASE_02_AGENTS } from '@/lib/ai/agents/phase-agents'
+
+const SECTION_KICKOFF: Record<string, string> = {
+  system_architecture:
+    'Como CTO, analiza el Discovery y Feature Specs aprobados y propone la System Architecture: componentes, flujo de datos, stack tecnologico y modelo de seguridad.',
+  database_design:
+    'Como CTO, basandote en los Feature Specs y la arquitectura definida, propone el Database Design: entidades, relaciones, tablas con campos, RLS policies e indices.',
+  api_design:
+    'Como CTO, basandote en los Feature Specs y el modelo de datos, propone el API Design: endpoints, contratos request/response, auth y manejo de errores.',
+  architecture_decisions:
+    'Como CTO, documenta las Architecture Decision Records (ADRs) clave del proyecto basandote en las secciones de arquitectura ya definidas.',
+}
 
 function getTextContent(msg: UIMessage): string {
   return msg.parts
@@ -39,6 +52,7 @@ export function ChatPanel({
   onDocumentGenerated,
 }: ChatPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const kickoffSent = useRef(false)
   const [input, setInput] = useState('')
   const [generating, setGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
@@ -57,6 +71,25 @@ export function ChatPanel({
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+
+  // Auto-kickoff: when section has no messages and is not approved, CTO starts proactively
+  useEffect(() => {
+    if (
+      initialMessages.length === 0 &&
+      !isApproved &&
+      !hasDocument &&
+      !kickoffSent.current
+    ) {
+      kickoffSent.current = true
+      const kickoff = SECTION_KICKOFF[section] ?? `Como CTO, analiza y propone ${SECTION_LABELS[section]}.`
+      sendMessage({ text: kickoff })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Reset kickoff flag when section changes
+  useEffect(() => {
+    kickoffSent.current = false
+  }, [section])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -123,16 +156,27 @@ export function ChatPanel({
 
   return (
     <div className="flex flex-1 flex-col">
+      <AgentParticipationHeader agents={PHASE_02_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.length === 0 && !isLoading && (
-          <div className="flex items-center justify-center py-12 text-sm text-gray-400">
-            Inicia la conversacion para comenzar con {SECTION_LABELS[section]}.
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
+            <p className="text-sm text-violet-600 font-medium">
+              El CTO esta analizando {SECTION_LABELS[section]}...
+            </p>
+            <p className="text-xs text-gray-400">
+              Preparando propuesta basada en Discovery y Feature Specs
+            </p>
           </div>
         )}
 
-        {messages.map((msg) => {
+        {messages.map((msg, idx) => {
+          // Hide the auto-kickoff user message
+          if (idx === 0 && msg.role === 'user' && kickoffSent.current && initialMessages.length === 0) {
+            return null
+          }
           const text = getTextContent(msg)
           return (
             <ChatMessage
