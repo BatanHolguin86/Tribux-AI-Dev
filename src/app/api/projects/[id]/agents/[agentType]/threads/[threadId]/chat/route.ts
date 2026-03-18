@@ -242,12 +242,13 @@ export async function POST(
       attachmentsSummary,
     })
 
-    // CTO orchestration (Option B) for Phase 03:
-    // On first thread message, consult DevOps/Operator/DB Admin internally and synthesize as CTO.
+    // CTO orchestration (Option B):
+    // On first thread message, consult specialists internally (no UI), then have CTO synthesize.
     const isCto = (agentType as AgentType) === 'cto_virtual'
     const isFirstThreadTurn = thread.message_count === 0
-    if (isCto && isFirstThreadTurn && projectContext.currentPhase === 3) {
-      async function consultInternal(a: AgentType, instruction: string) {
+    const currentPhase = projectContext.currentPhase
+    if (isCto && isFirstThreadTurn && currentPhase >= 3 && currentPhase <= 7) {
+      async function consultInternal(a: AgentType, instruction: string, eventType: string) {
         const specialistSystem = buildAgentPrompt(a, {
           ...projectContext,
           attachmentsSummary,
@@ -258,7 +259,7 @@ export async function POST(
           messages: [
             {
               role: 'user' as const,
-              content: `Fase: Phase 03 — Environment Setup\n\nTarea:\n${instruction}\n\nIMPORTANTE:\n- Responde con bullets concretos y accionables.\n- Incluye comandos/paths cuando aplique.\n- Asume stack Next.js + Supabase + Vercel.\n`,
+              content: `Fase: Phase ${String(currentPhase).padStart(2, '0')} — ${projectContext.phaseName}\n\nTarea:\n${instruction}\n\nIMPORTANTE:\n- Responde con bullets concretos y accionables.\n- Mantén el foco en lo que el usuario necesita para avanzar hoy.\n- Asume stack Next.js + Supabase + Vercel.\n`,
             },
           ],
           maxOutputTokens: 900,
@@ -271,7 +272,7 @@ export async function POST(
         recordAiUsage(supabase, {
           userId,
           projectId,
-          eventType: 'agent_chat',
+          eventType,
           model: defaultModel?.toString?.() ?? undefined,
           inputTokens,
           outputTokens,
@@ -280,22 +281,90 @@ export async function POST(
         return text
       }
 
-      const [devops, operator, dba] = await Promise.all([
-        consultInternal(
-          'devops_engineer',
-          'Dame un plan paso a paso para dejar listo hosting y variables de entorno (Vercel), incluyendo checklist de verificacion.',
-        ),
-        consultInternal(
-          'operator',
-          'Dame una guia operativa reproducible para repo + CI/CD + deploys (staging/prod) y convenciones de ramas/PRs.',
-        ),
-        consultInternal(
-          'db_admin',
-          'Dame checklist para Supabase: proyecto, migraciones, RLS, seeds (si aplica) y verificacion de conexion desde la app.',
-        ),
-      ])
+      const internalNotesParts: string[] = []
 
-      systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n## DevOps Engineer\n${devops}\n\n## Operator\n${operator}\n\n## DB Admin\n${dba}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n- Propón un orden de ejecucion claro para completar Phase 03.\n`
+      if (currentPhase === 3) {
+        const [devops, operator, dba] = await Promise.all([
+          consultInternal(
+            'devops_engineer',
+            'Dame un plan paso a paso para dejar listo hosting y variables de entorno (Vercel), incluyendo checklist de verificacion.',
+            'phase03_chat',
+          ),
+          consultInternal(
+            'operator',
+            'Dame una guia operativa reproducible para repo + CI/CD + deploys (staging/prod) y convenciones de ramas/PRs.',
+            'phase03_chat',
+          ),
+          consultInternal(
+            'db_admin',
+            'Dame checklist para Supabase: proyecto, migraciones, RLS, seeds (si aplica) y verificacion de conexion desde la app.',
+            'phase03_chat',
+          ),
+        ])
+        internalNotesParts.push(`## DevOps Engineer\n${devops}`, `## Operator\n${operator}`, `## DB Admin\n${dba}`)
+      } else if (currentPhase === 4) {
+        const [leadDev, qa] = await Promise.all([
+          consultInternal(
+            'lead_developer',
+            'Dame una estrategia de ejecucion para completar las tasks de Phase 04: orden por categoria, criterios de done, como gestionar PRs y manejo de riesgos tecnicos.',
+            'phase04_chat',
+          ),
+          consultInternal(
+            'qa_engineer',
+            'Dame la estrategia de QA durante Phase 04: que tests crear/ajustar primero y como asegurar calidad progresiva mientras se mueve el kanban.',
+            'phase04_chat',
+          ),
+        ])
+        internalNotesParts.push(`## Lead Developer\n${leadDev}`, `## QA Engineer\n${qa}`)
+      } else if (currentPhase === 5) {
+        const [qa, leadDev] = await Promise.all([
+          consultInternal(
+            'qa_engineer',
+            'Dame un plan de testing y QA para Phase 05: unit/integration/e2e, prioridad, criterios de aprobacion por categoria y como armar el reporte de QA.',
+            'phase05_chat',
+          ),
+          consultInternal(
+            'lead_developer',
+            'Dame recomendaciones para preparar el codigo para QA en Phase 05: practicas para tests estables, fixtures y observabilidad basica.',
+            'phase05_chat',
+          ),
+        ])
+        internalNotesParts.push(`## QA Engineer\n${qa}`, `## Lead Developer\n${leadDev}`)
+      } else if (currentPhase === 6) {
+        const [devops, operator] = await Promise.all([
+          consultInternal(
+            'devops_engineer',
+            'Dame checklist de deploy y monitoreo para Phase 06: pasos en Vercel, configuracion de env vars, logs/alertas, y validaciones previas.',
+            'phase06_chat',
+          ),
+          consultInternal(
+            'operator',
+            'Dame un runbook operativo conciso: como hacer release, rollback, y que evidencias dejar para auditoria antes de marcar completed.',
+            'phase06_chat',
+          ),
+        ])
+        internalNotesParts.push(`## DevOps Engineer\n${devops}`, `## Operator\n${operator}`)
+      } else if (currentPhase === 7) {
+        const [pa, qa] = await Promise.all([
+          consultInternal(
+            'product_architect',
+            'Dame un plan de iteracion (Phase 07): como usar feedback/métricas, priorizar mejoras y definir siguientes features con enfoque en retention y valor.',
+            'phase07_chat',
+          ),
+          consultInternal(
+            'qa_engineer',
+            'Dame estrategia de QA para iteraciones en Phase 07: que suites correr, cómo prevenir regresiones y cómo medir calidad vs impacto.',
+            'phase07_chat',
+          ),
+        ])
+        internalNotesParts.push(`## Product Architect\n${pa}`, `## QA Engineer\n${qa}`)
+      }
+
+      if (internalNotesParts.length > 0) {
+        systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n${internalNotesParts.join(
+          '\n\n',
+        )}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n- Propón un orden claro y accionable para completar Phase ${String(currentPhase).padStart(2, '0')}.`
+      }
     }
 
     const result = streamText({
