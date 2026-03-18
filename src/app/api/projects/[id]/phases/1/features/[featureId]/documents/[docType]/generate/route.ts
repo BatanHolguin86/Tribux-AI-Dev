@@ -10,6 +10,24 @@ import type { KiroDocumentType } from '@/types/feature'
 
 export const maxDuration = 60
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(new Error(`${label} timed out after ${ms}ms`))
+    }, ms)
+
+    promise
+      .then((value) => {
+        clearTimeout(timeout)
+        resolve(value)
+      })
+      .catch((err) => {
+        clearTimeout(timeout)
+        reject(err)
+      })
+  })
+}
+
 export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string; featureId: string; docType: string }> }
@@ -67,34 +85,51 @@ export async function POST(
     ...AI_CONFIG.documentGeneration,
     onFinish: async ({ text, usage }) => {
       const storagePath = `specs/${featureSlug}/${docTypeKey}.md`
-      await uploadDocument(projectId, storagePath, text)
+      const storageFullPath = `projects/${projectId}/${storagePath}`
 
-      await supabase
-        .from('feature_documents')
-        .upsert(
-          {
-            feature_id: featureId,
-            project_id: projectId,
-            document_type: docTypeKey,
-            storage_path: `projects/${projectId}/${storagePath}`,
-            content: text,
-            version: 1,
-            status: 'draft',
-          },
-          { onConflict: 'feature_id,document_type' }
-        )
+      // Nota: DocumentPanel usa `feature_documents.content`, por eso intentamos
+      // guardar contenido en DB incluso si falla el upload a Storage.
+      try {
+        await withTimeout(uploadDocument(projectId, storagePath, text), 15000, 'uploadDocument')
+      } catch (err) {
+        console.error('[Phase01 generate] uploadDocument failed', err)
+      }
 
-      // Record AI usage for financial backoffice
-      const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + JSON.stringify(conversation.messages))
-      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-      recordAiUsage(supabase, {
-        userId: user.id,
-        projectId,
-        eventType: 'phase01_generate',
-        model: defaultModel?.toString?.() ?? undefined,
-        inputTokens,
-        outputTokens,
-      }).catch(() => {})
+      try {
+        await supabase
+          .from('feature_documents')
+          .upsert(
+            {
+              feature_id: featureId,
+              project_id: projectId,
+              document_type: docTypeKey,
+              storage_path: storageFullPath,
+              content: text,
+              version: 1,
+              status: 'draft',
+            },
+            { onConflict: 'feature_id,document_type' }
+          )
+      } catch (err) {
+        console.error('[Phase01 generate] feature_documents upsert failed', err)
+      }
+
+      // Record AI usage for financial backoffice (best effort)
+      try {
+        const inputTokens =
+          usage?.inputTokens ?? estimateTokensFromText(systemPrompt + JSON.stringify(conversation.messages))
+        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+        await recordAiUsage(supabase, {
+          userId: user.id,
+          projectId,
+          eventType: 'phase01_generate',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens,
+          outputTokens,
+        })
+      } catch (err) {
+        console.error('[Phase01 generate] recordAiUsage failed', err)
+      }
     },
   })
 
