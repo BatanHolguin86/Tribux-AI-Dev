@@ -1,13 +1,15 @@
-import { streamText } from 'ai'
+import { generateText, streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
-import { buildPhase02Context } from '@/lib/ai/context-builder'
+import { buildFullProjectContext, buildPhase02Context } from '@/lib/ai/context-builder'
 import { buildPhase02Prompt } from '@/lib/ai/prompts/phase-02'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { canAccessPhase } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase02Section } from '@/types/conversation'
+import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
+import type { AgentType } from '@/types/agent'
 
 export const maxDuration = 60
 
@@ -86,6 +88,7 @@ export async function POST(
     if (!user) {
       return new Response('Unauthorized', { status: 401 })
     }
+    const userId = user.id
 
     // Plan guard: Phase 02 requires trial or paid plan
     const { data: profile } = await supabase
@@ -122,7 +125,7 @@ export async function POST(
 
     // Build project context with discovery docs and feature specs
     const context = await buildPhase02Context(projectId)
-    const systemPrompt = buildPhase02Prompt(sectionKey, context)
+    let systemPrompt = buildPhase02Prompt(sectionKey, context)
 
     // Update section status to in_progress if still pending
     await supabase
@@ -135,6 +138,86 @@ export async function POST(
 
     const coreMessages = toCoreMessages(messages)
     const storedBaseMessages = toStoredMessages(messages)
+
+    // CTO orchestration (Option B): consult specialists internally on first turn per section
+    const isFirstTurn = coreMessages.filter((m) => m.content.trim().length > 0).length <= 1
+    if (isFirstTurn) {
+      const full = await buildFullProjectContext(projectId)
+
+      async function consult(agentType: AgentType, instruction: string) {
+        const specialistSystem = buildAgentPrompt(agentType, full)
+        const { text, usage } = await generateText({
+          model: defaultModel,
+          system: specialistSystem,
+          messages: [
+            {
+              role: 'user' as const,
+              content: `Fase: Phase 02 — Architecture & Design\nSeccion: ${sectionKey}\n\nTarea:\n${instruction}\n\nIMPORTANTE:\n- Responde con bullets concretos y accionables.\n- No hagas preguntas generales; asume que el CTO integrara tu respuesta.\n`,
+            },
+          ],
+          maxOutputTokens: 900,
+          temperature: 0.3,
+        })
+
+        const inputTokens =
+          usage?.inputTokens ??
+          estimateTokensFromText(specialistSystem + instruction + sectionKey)
+        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+        recordAiUsage(supabase, {
+          userId,
+          projectId,
+          eventType: 'phase02_chat',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens,
+          outputTokens,
+        }).catch(() => {})
+
+        return text
+      }
+
+      const internalNotesParts: string[] = []
+      if (sectionKey === 'system_architecture') {
+        const [sa, ux] = await Promise.all([
+          consult(
+            'system_architect',
+            'Propone arquitectura de alto nivel: componentes, flujos, integraciones externas, modelo de seguridad y consideraciones de escalabilidad.',
+          ),
+          consult(
+            'ui_ux_designer',
+            'Propone flujo UI/UX de alto nivel y pantallas principales que se desprenden del discovery y specs (sin wireframes detallados).',
+          ),
+        ])
+        internalNotesParts.push(`## System Architect\n${sa}`, `## UI/UX Designer\n${ux}`)
+      } else if (sectionKey === 'database_design') {
+        const dba = await consult(
+          'db_admin',
+          'Propone el modelo de datos: tablas, campos, relaciones, indices y RLS. Incluye estrategia DB vs Storage.',
+        )
+        internalNotesParts.push(`## DB Admin\n${dba}`)
+      } else if (sectionKey === 'api_design') {
+        const [sa, ld] = await Promise.all([
+          consult(
+            'system_architect',
+            'Propone la API a nivel de recursos/endpoints y contratos (request/response), auth y rate limiting.',
+          ),
+          consult(
+            'lead_developer',
+            'Sugiere patrones de implementacion en Next.js App Router (handlers, Zod, errores consistentes) y consideraciones practicas.',
+          ),
+        ])
+        internalNotesParts.push(`## System Architect\n${sa}`, `## Lead Developer\n${ld}`)
+      } else if (sectionKey === 'architecture_decisions') {
+        const sa = await consult(
+          'system_architect',
+          'Identifica 3-6 ADRs clave a documentar (stack, auth, arquitectura, datos, deploy) con alternativas y consecuencias.',
+        )
+        internalNotesParts.push(`## System Architect\n${sa}`)
+      }
+
+      if (internalNotesParts.length > 0) {
+        systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n${internalNotesParts.join('\n\n')}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Puedes decir \"Consulté internamente a X\" pero NO pegues estas notas literalmente.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n`
+      }
+    }
 
     const result = streamText({
       model: defaultModel,
@@ -169,7 +252,7 @@ export async function POST(
           const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
           const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
           recordAiUsage(supabase, {
-            userId: user.id,
+            userId,
             projectId,
             eventType: 'phase02_chat',
             model: defaultModel?.toString?.() ?? undefined,
