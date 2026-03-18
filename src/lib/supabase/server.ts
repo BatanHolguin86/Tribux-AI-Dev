@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { createClient as createSupabaseJsClient } from '@supabase/supabase-js'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -23,4 +24,17 @@ export async function createClient() {
       },
     },
   )
+}
+
+/**
+ * Admin Supabase client using the service role key.
+ * Use only in server-side routes for privileged writes/reads.
+ */
+export async function createAdminClient() {
+  return createSupabaseJsClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  })
 }

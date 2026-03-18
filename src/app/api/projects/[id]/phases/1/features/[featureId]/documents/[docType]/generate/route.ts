@@ -1,5 +1,5 @@
 import { streamText } from 'ai'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient, createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext, getApprovedDiscoveryDocs, getApprovedFeatureSpecs } from '@/lib/ai/context-builder'
 import { buildKiroDocGenerationPrompt } from '@/lib/ai/prompts/phase-01'
@@ -34,6 +34,7 @@ export async function POST(
 ) {
   const { id: projectId, featureId, docType } = await params
   const supabase = await createClient()
+  const adminSupabase = await createAdminClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new Response('Unauthorized', { status: 401 })
 
@@ -97,7 +98,7 @@ export async function POST(
 
       try {
         await withTimeout(
-          supabase
+          adminSupabase
             .from('feature_documents')
             .upsert(
               {
