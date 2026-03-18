@@ -87,6 +87,7 @@ export async function POST(
       data: { user },
     } = await supabase.auth.getUser()
     if (!user) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+    const userId = user.id
 
     const body = await request.json()
     const docType = (body.docType ?? body.document_type) as KiroDocumentType
@@ -142,7 +143,7 @@ export async function POST(
         estimateTokensFromText(specialistSystem + instruction + (feature?.name ?? '') + (feature?.description ?? ''))
       const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
       recordAiUsage(supabase, {
-        userId: user.id,
+        userId,
         projectId,
         eventType: 'phase01_chat',
         model: defaultModel?.toString?.() ?? undefined,
