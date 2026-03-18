@@ -211,7 +211,7 @@ export function Phase02Layout({
           {/* Desktop: split view */}
           <div className="flex h-[var(--content-height)] gap-4">
             {/* Left: Chat */}
-            <div className={`flex flex-col rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 lg:flex-[6] ${
+            <div className={`flex min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 lg:flex-[6] ${
               mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
             }`}>
               <SectionNav

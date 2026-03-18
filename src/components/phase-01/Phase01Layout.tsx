@@ -163,7 +163,7 @@ export function Phase01Layout({
               <>
                 {/* Center: Chat */}
                 <div
-                  className={`flex flex-col rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 lg:flex-[6] ${
+                  className={`flex min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 lg:flex-[6] ${
                     mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
                   }`}
                 >

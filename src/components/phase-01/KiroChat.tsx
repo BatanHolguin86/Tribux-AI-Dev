@@ -155,7 +155,7 @@ export function KiroChat({
   const docLabel = KIRO_DOC_LABELS[docType]
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <AgentParticipationHeader agents={PHASE_01_AGENTS[docType]} />
       {error && <ChatErrorBanner error={error} />}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
