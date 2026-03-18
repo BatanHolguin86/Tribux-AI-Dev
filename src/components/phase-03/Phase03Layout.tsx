@@ -74,7 +74,7 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
         <>
           <p className="mb-4 text-sm text-gray-500">
             Completa cada categoria marcandola cuando hayas configurado todos los items.
-            Usa el boton de agente para pedir ayuda al DevOps Engineer.
+            Si te atoras, abre el chat del CTO (boton flotante) y pide el plan de Phase 03.
           </p>
 
           <div className="grid gap-4 md:grid-cols-2">
