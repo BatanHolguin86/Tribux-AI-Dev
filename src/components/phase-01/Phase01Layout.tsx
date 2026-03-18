@@ -140,10 +140,10 @@ export function Phase01Layout({
             ))}
           </div>
 
-          <div className="flex h-[var(--content-height)] gap-4">
+          <div className="flex h-[var(--content-height)] gap-3">
             {/* Left sidebar: Feature list */}
             <div
-              className={`w-64 flex-shrink-0 space-y-3 overflow-y-auto ${
+              className={`w-72 flex-shrink-0 space-y-3 overflow-y-auto ${
                 mobileTab !== 'list' ? 'hidden lg:block' : 'block'
               }`}
             >
@@ -171,7 +171,7 @@ export function Phase01Layout({
                 {/* Center: Chat */}
                 <div
                   className={`flex min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 ${
-                    shouldShowDocumentPanel ? 'lg:flex-[6]' : 'lg:flex-1'
+                    shouldShowDocumentPanel ? 'lg:flex-[7]' : 'lg:flex-1'
                   } ${
                     mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
                   }`}
@@ -198,7 +198,7 @@ export function Phase01Layout({
                 {/* Right: Document panel */}
                 {shouldShowDocumentPanel && (
                   <div
-                    className={`lg:flex-[4] ${
+                    className={`lg:flex-[3] ${
                       mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
                     }`}
                   >
