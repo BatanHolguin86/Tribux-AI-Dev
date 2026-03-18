@@ -3,7 +3,6 @@
 import { useState, useCallback } from 'react'
 import type { AgentType } from '@/types/agent'
 import type { Plan } from '@/types/user'
-import { AgentSelector } from './AgentSelector'
 import { AgentHeader } from './AgentHeader'
 import { ThreadSidebar } from './ThreadSidebar'
 import { AgentChat } from './AgentChat'
@@ -39,7 +38,7 @@ export function AgentsLayout({
   agents,
   initialThreads,
 }: AgentsLayoutProps) {
-  const [activeAgent, setActiveAgent] = useState<AgentType>('cto_virtual')
+  const activeAgent: AgentType = 'cto_virtual'
   const [threads, setThreads] = useState<ThreadPreview[]>(initialThreads)
   const [activeThreadId, setActiveThreadId] = useState<string | null>(
     initialThreads[0]?.id ?? null,
@@ -49,30 +48,11 @@ export function AgentsLayout({
     return {}
   })
   const [isCreatingThread, setIsCreatingThread] = useState(false)
-  const [mobileTab, setMobileTab] = useState<'agents' | 'chat'>('agents')
 
   // Artifact modal state
   const [artifactContent, setArtifactContent] = useState<string | null>(null)
 
-  const activeAgentInfo = agents.find((a) => a.id === activeAgent)!
-
-  const handleAgentSelect = useCallback(async (agentType: AgentType) => {
-    setActiveAgent(agentType)
-    setActiveThreadId(null)
-    setMobileTab('chat')
-
-    // Fetch threads for this agent
-    const res = await fetch(`/api/projects/${projectId}/agents/${agentType}/threads`)
-    if (res.ok) {
-      const data = await res.json()
-      setThreads(data.threads)
-      if (data.threads.length > 0) {
-        const firstThread = data.threads[0]
-        setActiveThreadId(firstThread.id)
-        await loadThreadMessages(firstThread.id, agentType)
-      }
-    }
-  }, [projectId])
+  const activeAgentInfo = agents.find((a) => a.id === activeAgent) ?? agents[0]
 
   async function loadThreadMessages(threadId: string, agentType: AgentType) {
     // Fetch full thread with messages
@@ -143,45 +123,10 @@ export function AgentsLayout({
 
   return (
     <div>
-      {/* Mobile tabs */}
-      <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 dark:bg-gray-800 p-1 lg:hidden">
-        <button
-          onClick={() => setMobileTab('agents')}
-          className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-            mobileTab === 'agents' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
-          }`}
-        >
-          Agentes
-        </button>
-        <button
-          onClick={() => setMobileTab('chat')}
-          className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-            mobileTab === 'chat' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
-          }`}
-        >
-          Chat
-        </button>
-      </div>
-
       <div className="flex h-[var(--content-height)] gap-4">
-        {/* Agent Selector sidebar */}
-        <div
-          className={`w-64 flex-shrink-0 overflow-y-auto ${
-            mobileTab !== 'agents' ? 'hidden lg:block' : 'block'
-          }`}
-        >
-          <AgentSelector
-            agents={agents}
-            activeAgent={activeAgent}
-            onSelect={handleAgentSelect}
-          />
-        </div>
-
         {/* Chat area */}
         <div
-          className={`flex flex-1 flex-col rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 ${
-            mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
-          }`}
+          className="flex flex-1 flex-col rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
         >
           <AgentHeader
             icon={activeAgentInfo.icon}

@@ -63,10 +63,23 @@ export default async function AgentsPage({
     }
   })
 
+  const cto = AGENTS.find((a) => a.id === 'cto_virtual')!
+
   return (
     <AgentsLayout
       projectId={projectId}
-      agents={agents}
+      agents={[
+        {
+          id: cto.id,
+          name: cto.name,
+          icon: cto.icon,
+          specialty: cto.specialty,
+          description: cto.description,
+          planRequired: cto.planRequired,
+          accessible: isAgentAccessible(cto.planRequired, userPlan),
+          threadCount: threadCounts[cto.id] ?? 0,
+        },
+      ]}
       initialThreads={initialThreads}
     />
   )

@@ -1,11 +1,18 @@
-import { streamText } from 'ai'
+import { generateText, streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
-import { buildProjectContext, getApprovedDiscoveryDocs, getApprovedFeatureSpecs } from '@/lib/ai/context-builder'
+import {
+  buildFullProjectContext,
+  buildProjectContext,
+  getApprovedDiscoveryDocs,
+  getApprovedFeatureSpecs,
+} from '@/lib/ai/context-builder'
 import { buildKiroPrompt } from '@/lib/ai/prompts/phase-01'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
+import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
+import type { AgentType } from '@/types/agent'
 
 export const maxDuration = 60
 
@@ -101,7 +108,7 @@ export async function POST(
     .eq('id', featureId)
     .eq('status', 'pending')
 
-  const systemPrompt = buildKiroPrompt(docType, {
+    let systemPrompt = buildKiroPrompt(docType, {
     projectName: context.name,
     description: context.description,
     industry: context.industry,
@@ -111,6 +118,77 @@ export async function POST(
     featureName: feature?.name ?? '',
     featureDescription: feature?.description ?? null,
   })
+
+    // CTO orchestration (Option B): consult specialists internally per docType
+    const full = await buildFullProjectContext(projectId)
+
+    async function consult(agentType: AgentType, instruction: string) {
+      const specialistSystem = buildAgentPrompt(agentType, full)
+      const { text, usage } = await generateText({
+        model: defaultModel,
+        system: specialistSystem,
+        messages: [
+          {
+            role: 'user' as const,
+            content: `Contexto del feature:\n- Feature: ${feature?.name ?? featureId}\n- Descripcion: ${feature?.description ?? '—'}\n\nTarea:\n${instruction}\n\nIMPORTANTE:\n- Responde con bullets concretos y accionables.\n- No hagas preguntas generales; asume que el CTO integrara tu respuesta.\n`,
+          },
+        ],
+        maxOutputTokens: 800,
+        temperature: 0.3,
+      })
+
+      const inputTokens =
+        usage?.inputTokens ??
+        estimateTokensFromText(specialistSystem + instruction + (feature?.name ?? '') + (feature?.description ?? ''))
+      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+      recordAiUsage(supabase, {
+        userId: user.id,
+        projectId,
+        eventType: 'phase01_chat',
+        model: defaultModel?.toString?.() ?? undefined,
+        inputTokens,
+        outputTokens,
+      }).catch(() => {})
+
+      return text
+    }
+
+    const internalNotesParts: string[] = []
+    if (docType === 'requirements') {
+      const pa = await consult(
+        'product_architect',
+        'Propone user stories (3-8) y acceptance criteria (2-5 por story) para este feature. Incluye edge cases y out of scope.',
+      )
+      internalNotesParts.push(`## Product Architect\n${pa}`)
+    } else if (docType === 'design') {
+      const [sa, dba] = await Promise.all([
+        consult(
+          'system_architect',
+          'Propone un diseno tecnico implementable: arquitectura, endpoints /api, flujo UI y decisiones (trade-offs).',
+        ),
+        consult(
+          'db_admin',
+          'Propone el modelo de datos (tablas/campos/tipos/indices) y consideraciones de RLS para este feature.',
+        ),
+      ])
+      internalNotesParts.push(`## System Architect\n${sa}`, `## DB Admin\n${dba}`)
+    } else if (docType === 'tasks') {
+      const [ld, qa] = await Promise.all([
+        consult(
+          'lead_developer',
+          'Descompone la implementacion en tasks atomicas (1-4h) ordenadas por dependencias (setup/db/backend/frontend).',
+        ),
+        consult(
+          'qa_engineer',
+          'Propone tasks de testing (unit/integration/e2e) y casos de prueba criticos para este feature.',
+        ),
+      ])
+      internalNotesParts.push(`## Lead Developer\n${ld}`, `## QA Engineer\n${qa}`)
+    }
+
+    if (internalNotesParts.length > 0) {
+      systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n${internalNotesParts.join('\n\n')}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Puedes decir \"Consulté internamente a X\" pero NO pegues estas notas literalmente.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n`
+    }
 
   const section = `feature_${featureId}_${docType}`
 
