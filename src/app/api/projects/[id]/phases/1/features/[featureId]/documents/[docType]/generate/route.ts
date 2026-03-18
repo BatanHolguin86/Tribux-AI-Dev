@@ -1,4 +1,4 @@
-import { streamText } from 'ai'
+import { generateText } from 'ai'
 import { createAdminClient, createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext, getApprovedDiscoveryDocs, getApprovedFeatureSpecs } from '@/lib/ai/context-builder'
@@ -8,7 +8,7 @@ import { slugify } from '@/lib/utils'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
 
-export const maxDuration = 60
+export const maxDuration = 120
 
 type CoreMessage = { role: 'user' | 'assistant'; content: string }
 
@@ -20,24 +20,6 @@ function toCoreMessages(raw: unknown): CoreMessage[] {
       ? m.content.replace(/---OPTIONS---[\s\S]*?---\/OPTIONS---/g, '').trim()
       : '',
   }))
-}
-
-function withTimeout<T>(promise: PromiseLike<T>, ms: number, label: string): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject(new Error(`${label} timed out after ${ms}ms`))
-    }, ms)
-
-    Promise.resolve(promise)
-      .then((value) => {
-        clearTimeout(timeout)
-        resolve(value)
-      })
-      .catch((err) => {
-        clearTimeout(timeout)
-        reject(err)
-      })
-  })
 }
 
 export async function POST(
@@ -87,11 +69,10 @@ export async function POST(
   })
 
   const featureSlug = slugify(feature?.name ?? featureId)
-
   const coreMessages = toCoreMessages(conversation.messages)
 
   try {
-    const result = streamText({
+    const { text, usage } = await generateText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
@@ -99,67 +80,56 @@ export async function POST(
         { role: 'user' as const, content: 'Genera el documento completo basado en nuestra conversacion.' },
       ],
       ...AI_CONFIG.documentGeneration,
-      onFinish: async ({ text, usage }) => {
-        const storagePath = `specs/${featureSlug}/${docTypeKey}.md`
-        const storageFullPath = `projects/${projectId}/${storagePath}`
-
-        try {
-          await withTimeout(uploadDocument(projectId, storagePath, text), 15000, 'uploadDocument')
-        } catch (err) {
-          console.error('[Phase01 generate] uploadDocument failed', err)
-        }
-
-        try {
-          await withTimeout(
-            adminSupabase
-              .from('feature_documents')
-              .upsert(
-                {
-                  feature_id: featureId,
-                  project_id: projectId,
-                  document_type: docTypeKey,
-                  storage_path: storageFullPath,
-                  content: text,
-                  version: 1,
-                  status: 'draft',
-                },
-                { onConflict: 'feature_id,document_type' },
-              ),
-            12000,
-            'feature_documents upsert',
-          )
-        } catch (err) {
-          console.error('[Phase01 generate] feature_documents upsert failed', err)
-        }
-
-        // Record AI usage for financial backoffice (best effort)
-        try {
-          const inputTokens =
-            usage?.inputTokens ?? estimateTokensFromText(systemPrompt + JSON.stringify(conversation.messages))
-          const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-          await withTimeout(
-            recordAiUsage(supabase, {
-              userId: user.id,
-              projectId,
-              eventType: 'phase01_generate',
-              model: defaultModel?.toString?.() ?? undefined,
-              inputTokens,
-              outputTokens,
-            }),
-            8000,
-            'recordAiUsage',
-          )
-        } catch (err) {
-          console.error('[Phase01 generate] recordAiUsage failed', err)
-        }
-      },
     })
 
-    return result.toTextStreamResponse()
+    const storagePath = `specs/${featureSlug}/${docTypeKey}.md`
+    const storageFullPath = `projects/${projectId}/${storagePath}`
+
+    // Upload to storage (best effort)
+    try {
+      await uploadDocument(projectId, storagePath, text)
+    } catch (err) {
+      console.error('[Phase01 generate] uploadDocument failed', err)
+    }
+
+    // Save to DB (critical)
+    const { error: upsertError } = await adminSupabase
+      .from('feature_documents')
+      .upsert(
+        {
+          feature_id: featureId,
+          project_id: projectId,
+          document_type: docTypeKey,
+          storage_path: storageFullPath,
+          content: text,
+          version: 1,
+          status: 'draft',
+        },
+        { onConflict: 'feature_id,document_type' },
+      )
+
+    if (upsertError) {
+      console.error('[Phase01 generate] feature_documents upsert failed', upsertError)
+      return Response.json({ error: 'Failed to save document' }, { status: 500 })
+    }
+
+    // Record AI usage (best effort)
+    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
+    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+    recordAiUsage(supabase, {
+      userId: user.id,
+      projectId,
+      eventType: 'phase01_generate',
+      model: defaultModel?.toString?.() ?? undefined,
+      inputTokens,
+      outputTokens,
+    }).catch(() => {})
+
+    return Response.json({ success: true })
   } catch (error) {
-    console.error('[Phase01 generate] streamText error', error)
-    return new Response(
-      error instanceof Error ? error.message : 'Error generating document',
+    console.error('[Phase01 generate] error', error)
+    return Response.json(
+      { error: error instanceof Error ? error.message : 'Error generating document' },
       { status: 500 },
     )
   }

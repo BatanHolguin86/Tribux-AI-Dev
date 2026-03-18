@@ -1,4 +1,4 @@
-import { streamText } from 'ai'
+import { generateText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext } from '@/lib/ai/context-builder'
@@ -7,7 +7,7 @@ import { uploadDocument } from '@/lib/storage/documents'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase00Section } from '@/types/conversation'
 
-export const maxDuration = 60
+export const maxDuration = 120
 
 type CoreMessage = { role: 'user' | 'assistant'; content: string }
 
@@ -38,7 +38,6 @@ export async function POST(
 
   const sectionKey = section as Phase00Section
 
-  // Get conversation history for context
   const { data: conversation } = await supabase
     .from('agent_conversations')
     .select('messages')
@@ -54,85 +53,83 @@ export async function POST(
 
   const context = await buildProjectContext(projectId)
   const systemPrompt = buildDocumentGenerationPrompt(sectionKey, context)
-
   const coreMessages = toCoreMessages(conversation.messages)
 
-  const result = streamText({
-    model: defaultModel,
-    system: systemPrompt,
-    messages: [
-      ...coreMessages,
-      {
-        role: 'user' as const,
-        content: 'Genera el documento completo basado en nuestra conversacion.',
-      },
-    ],
-    ...AI_CONFIG.documentGeneration,
-    onFinish: async ({ text, usage }) => {
-      try {
-        const docName = SECTION_DOC_NAMES[sectionKey]
-        const storagePath = `discovery/${docName}`
+  try {
+    const { text, usage } = await generateText({
+      model: defaultModel,
+      system: systemPrompt,
+      messages: [
+        ...coreMessages,
+        { role: 'user' as const, content: 'Genera el documento completo basado en nuestra conversacion.' },
+      ],
+      ...AI_CONFIG.documentGeneration,
+    })
 
-        // Upload to storage
-        await uploadDocument(projectId, storagePath, text)
+    const docName = SECTION_DOC_NAMES[sectionKey]
+    const storagePath = `discovery/${docName}`
 
-        // Save document record (delete existing + insert to avoid unique constraint issues)
-        const docType = section === 'problem_statement' ? 'brief' : section
-        await supabase
-          .from('project_documents')
-          .delete()
-          .eq('project_id', projectId)
-          .eq('phase_number', 0)
-          .eq('section', section)
-          .eq('document_type', docType)
+    // Upload to storage (best effort)
+    try {
+      await uploadDocument(projectId, storagePath, text)
+    } catch (err) {
+      console.error('[Phase00 generate] uploadDocument failed', err)
+    }
 
-        const { error: insertError } = await supabase
-          .from('project_documents')
-          .insert({
-            project_id: projectId,
-            phase_number: 0,
-            section,
-            document_type: docType,
-            storage_path: `projects/${projectId}/${storagePath}`,
-            content: text,
-            version: 1,
-            status: 'draft',
-          })
+    // Save document record
+    const docType = section === 'problem_statement' ? 'brief' : section
+    await supabase
+      .from('project_documents')
+      .delete()
+      .eq('project_id', projectId)
+      .eq('phase_number', 0)
+      .eq('section', section)
+      .eq('document_type', docType)
 
-        if (insertError) {
-          console.error('[Generate] Error saving document:', insertError.message)
-        }
+    const { error: insertError } = await supabase
+      .from('project_documents')
+      .insert({
+        project_id: projectId,
+        phase_number: 0,
+        section,
+        document_type: docType,
+        storage_path: `projects/${projectId}/${storagePath}`,
+        content: text,
+        version: 1,
+        status: 'draft',
+      })
 
-        // Update section to completed
-        const { error: sectionError } = await supabase
-          .from('phase_sections')
-          .update({ status: 'completed' })
-          .eq('project_id', projectId)
-          .eq('phase_number', 0)
-          .eq('section', section)
+    if (insertError) {
+      console.error('[Phase00 generate] insert failed', insertError.message)
+      return Response.json({ error: 'Failed to save document' }, { status: 500 })
+    }
 
-        if (sectionError) {
-          console.error('[Generate] Error updating section:', sectionError.message)
-        }
+    // Update section to completed
+    await supabase
+      .from('phase_sections')
+      .update({ status: 'completed' })
+      .eq('project_id', projectId)
+      .eq('phase_number', 0)
+      .eq('section', section)
 
-        // Record AI usage for financial backoffice
-        const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + JSON.stringify(conversation.messages))
-        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-        recordAiUsage(supabase, {
-          userId: user.id,
-          projectId,
-          eventType: 'phase00_generate',
-          model: defaultModel?.toString?.() ?? undefined,
-          inputTokens,
-          outputTokens,
-        }).catch(() => {})
+    // Record AI usage (best effort)
+    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
+    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+    recordAiUsage(supabase, {
+      userId: user.id,
+      projectId,
+      eventType: 'phase00_generate',
+      model: defaultModel?.toString?.() ?? undefined,
+      inputTokens,
+      outputTokens,
+    }).catch(() => {})
 
-        console.log(`[Generate] Document saved for ${section} in project ${projectId}`)
-      } catch (err) {
-        console.error('[Generate] onFinish error:', err)
-      }
-    },
-  })
-
-  return result.toTextStreamResponse()
+    return Response.json({ success: true })
+  } catch (error) {
+    console.error('[Phase00 generate] error', error)
+    return Response.json(
+      { error: error instanceof Error ? error.message : 'Error generating document' },
+      { status: 500 },
+    )
+  }
 }

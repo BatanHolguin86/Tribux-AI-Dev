@@ -127,18 +127,9 @@ export function ChatPanel({
       })
 
       if (!res.ok) {
-        const text = await res.text()
-        setGenerateError(text || `Error ${res.status}`)
+        const body = await res.json().catch(() => null)
+        setGenerateError(body?.error || `Error ${res.status}`)
         return
-      }
-
-      // Consume the stream fully so the server's onFinish callback executes
-      const reader = res.body?.getReader()
-      if (reader) {
-        while (true) {
-          const { done } = await reader.read()
-          if (done) break
-        }
       }
 
       onDocumentGenerated()
