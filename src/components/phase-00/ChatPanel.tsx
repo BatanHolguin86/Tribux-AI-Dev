@@ -14,6 +14,12 @@ import { ApprovalGate } from '@/components/shared/ApprovalGate'
 import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
 import { PHASE_00_AGENTS } from '@/lib/ai/agents/phase-agents'
 
+const KICKOFF_PREFIXES_P00 = ['Arrancamos con', 'Vamos con', 'Trabajemos la', 'Definamos Success', 'Hagamos el', 'Hola, estoy listo', 'Necesito definir', 'Quiero trabajar', 'Vamos a definir', 'Es momento del']
+
+function isKickoffMessage(content: string): boolean {
+  return KICKOFF_PREFIXES_P00.some((prefix) => content.startsWith(prefix))
+}
+
 const SECTION_KICKOFF: Record<string, string> = {
   problem_statement: 'Arrancamos con el Problem Statement. Dame tu analisis inicial del problema que resolvemos y las 2-3 preguntas clave que necesitas para afinar la definicion.',
   personas: 'Vamos con User Personas. Propone las personas que identificas del contexto del proyecto y preguntame lo que necesites para refinarlas.',
@@ -173,12 +179,12 @@ export function ChatPanel({
           </div>
         )}
 
-        {messages.map((msg, idx) => {
-          // Hide the auto-kickoff user message (first msg when auto-started)
-          if (idx === 0 && msg.role === 'user' && autoStartedRef.current && initialMessages.length === 0) {
+        {messages.map((msg) => {
+          const text = getTextContent(msg)
+          // Hide auto-kickoff user messages (both fresh and returning sessions)
+          if (msg.role === 'user' && isKickoffMessage(text)) {
             return null
           }
-          const text = getTextContent(msg)
           return (
             <ChatMessage
               key={msg.id}

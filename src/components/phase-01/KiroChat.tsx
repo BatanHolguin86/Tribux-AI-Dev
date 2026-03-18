@@ -21,6 +21,12 @@ function getTextContent(msg: UIMessage): string {
     .join('')
 }
 
+const KICKOFF_PREFIXES = ['Analiza brevemente el feature', 'Para el Design de', 'Para las Tasks de']
+
+function isKickoffMessage(content: string): boolean {
+  return KICKOFF_PREFIXES.some((prefix) => content.startsWith(prefix))
+}
+
 const KICKOFF_MESSAGES: Record<KiroDocumentType, (name: string) => string> = {
   requirements: (name) =>
     `Analiza brevemente el feature "${name}" basandote en el Discovery. Dame tu lectura estrategica en 3-4 parrafos cortos: que es critico de este feature, que riesgos ves, y cual es tu enfoque recomendado. NO generes el documento completo aun — primero alineemos la vision.`,
@@ -171,12 +177,12 @@ export function KiroChat({
           </div>
         )}
 
-        {messages.map((msg, idx) => {
-          // Hide the auto-kickoff user message
-          if (idx === 0 && msg.role === 'user' && kickoffSent.current && initialMessages.length === 0) {
+        {messages.map((msg) => {
+          const text = getTextContent(msg)
+          // Hide auto-kickoff user messages (both fresh and returning sessions)
+          if (msg.role === 'user' && isKickoffMessage(text)) {
             return null
           }
-          const text = getTextContent(msg)
           return (
             <ChatMessage
               key={msg.id}

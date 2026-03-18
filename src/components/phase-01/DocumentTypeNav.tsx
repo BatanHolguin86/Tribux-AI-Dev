@@ -57,11 +57,6 @@ export function DocumentTypeNav({ documents, activeDocType, onSelect }: Document
           )
         })}
       </div>
-      <p className="px-3 pb-2 text-[11px] text-gray-500">
-        <span className="font-medium">Requirements</span>: qué debe hacer el feature.{' '}
-        <span className="font-medium">Design</span>: cómo se ve y se organiza.{' '}
-        <span className="font-medium">Tasks</span>: lista de tareas de desarrollo.
-      </p>
     </div>
   )
 }

@@ -171,30 +171,25 @@ export function ChatMessage({ role, content, createdAt }: ChatMessageProps) {
   const isUser = role === 'user'
 
   return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
+    <div className={`flex gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`}>
       {/* Avatar */}
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-sm dark:shadow-gray-900/20 ${
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
           isUser
-            ? 'bg-gradient-to-br from-violet-500 to-violet-700 text-white'
-            : 'bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/40 dark:to-indigo-900/40 ring-1 ring-violet-200/50 dark:ring-violet-700/50'
+            ? 'bg-violet-600 text-white'
+            : 'bg-violet-50 dark:bg-violet-900/30 ring-1 ring-violet-100 dark:ring-violet-800/50'
         }`}
       >
         {isUser ? 'Tú' : '🧠'}
       </div>
 
       {/* Message bubble */}
-      <div className={`max-w-[85%] min-w-0 ${isUser ? 'text-right' : ''}`}>
-        {!isUser && (
-          <p className="mb-1 text-[11px] font-semibold text-violet-600 dark:text-violet-400">
-            CTO Virtual
-          </p>
-        )}
+      <div className={`max-w-[80%] min-w-0 ${isUser ? 'text-right' : ''}`}>
         <div
-          className={`inline-block rounded-2xl px-4 py-3 text-[13px] leading-relaxed ${
+          className={`inline-block rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
             isUser
-              ? 'rounded-tr-md bg-gradient-to-br from-violet-500 to-violet-600 text-white shadow-sm'
-              : 'rounded-tl-md bg-white dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 ring-1 ring-gray-150 dark:ring-gray-700/80 shadow-sm'
+              ? 'rounded-tr-sm bg-violet-600 text-white'
+              : 'rounded-tl-sm bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 ring-1 ring-gray-100 dark:ring-gray-700'
           }`}
         >
           {renderMarkdown(content, isUser)}

@@ -14,6 +14,12 @@ import { ApprovalGate } from '@/components/shared/ApprovalGate'
 import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
 import { PHASE_02_AGENTS } from '@/lib/ai/agents/phase-agents'
 
+const KICKOFF_PREFIXES_P02 = ['Dame tu vision', 'Propone un resumen', 'Dame una vista', 'Identifica las', 'Como CTO, analiza', 'Como CTO, basandote', 'Como CTO, documenta']
+
+function isKickoffMessage(content: string): boolean {
+  return KICKOFF_PREFIXES_P02.some((prefix) => content.startsWith(prefix))
+}
+
 const SECTION_KICKOFF: Record<string, string> = {
   system_architecture:
     'Dame tu vision de alto nivel de la System Architecture: componentes principales, como se conectan y por que. Resumen ejecutivo en 3-4 parrafos, luego profundizamos.',
@@ -172,12 +178,12 @@ export function ChatPanel({
           </div>
         )}
 
-        {messages.map((msg, idx) => {
-          // Hide the auto-kickoff user message
-          if (idx === 0 && msg.role === 'user' && kickoffSent.current && initialMessages.length === 0) {
+        {messages.map((msg) => {
+          const text = getTextContent(msg)
+          // Hide auto-kickoff user messages (both fresh and returning sessions)
+          if (msg.role === 'user' && isKickoffMessage(text)) {
             return null
           }
-          const text = getTextContent(msg)
           return (
             <ChatMessage
               key={msg.id}
