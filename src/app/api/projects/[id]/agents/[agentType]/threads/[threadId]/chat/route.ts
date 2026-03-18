@@ -284,6 +284,11 @@ export async function POST(
 
       const internalNotesParts: string[] = []
 
+      const userMsgLower = userMessage.toLowerCase()
+      const needsDevOps = /deploy|deployment|vercel|ci\b|cd\b|pipeline|github actions?|cicd|rollback|staging|production|observab|monitoring|logs|alerts/.test(userMsgLower)
+      const needsOperator = /runbook|operaci(on)?|on-?call|incident|rollback|sre/.test(userMsgLower)
+      const needsQA = /test|qa|quality|e2e|integration|unit|regression/.test(userMsgLower)
+
       if (currentPhase === 3) {
         const [devops, operator, dba] = await Promise.all([
           consultInternal(
@@ -317,6 +322,22 @@ export async function POST(
           ),
         ])
         internalNotesParts.push(`## Lead Developer\n${leadDev}`, `## QA Engineer\n${qa}`)
+
+        if (needsDevOps) {
+          const devops = await consultInternal(
+            'devops_engineer',
+            'Incluye la estrategia de CI/CD para Phase 04: cómo definir pipeline, criterios de PR, manejo de builds y recomendaciones para acelerar feedback sin perder calidad.',
+            'phase04_chat',
+          )
+          internalNotesParts.push(`## DevOps Engineer\n${devops}`)
+        } else if (needsOperator) {
+          const operator = await consultInternal(
+            'operator',
+            'Incluye guías operativas de Phase 04: convenios para release frecuente, checklists operacionales y comunicación interna (como asegurar que desarrollo sea “operable”).',
+            'phase04_chat',
+          )
+          internalNotesParts.push(`## Operator\n${operator}`)
+        }
       } else if (currentPhase === 5) {
         const [qa, leadDev] = await Promise.all([
           consultInternal(
@@ -331,6 +352,15 @@ export async function POST(
           ),
         ])
         internalNotesParts.push(`## QA Engineer\n${qa}`, `## Lead Developer\n${leadDev}`)
+
+        if (needsDevOps) {
+          const devops = await consultInternal(
+            'devops_engineer',
+            'Añade cómo ejecutar/automatizar QA en CI para Phase 05: orden de ejecución, paralelización básica, manejo de flakiness y reporte de resultados para el gate de aprobación.',
+            'phase05_chat',
+          )
+          internalNotesParts.push(`## DevOps Engineer\n${devops}`)
+        }
       } else if (currentPhase === 6) {
         const [devops, operator] = await Promise.all([
           consultInternal(
@@ -345,6 +375,16 @@ export async function POST(
           ),
         ])
         internalNotesParts.push(`## DevOps Engineer\n${devops}`, `## Operator\n${operator}`)
+
+        // Si el usuario pregunta explícitamente por tests/calidad durante Phase 06, añadimos QA.
+        if (needsQA) {
+          const qa = await consultInternal(
+            'qa_engineer',
+            'Si durante Phase 06 necesitas asegurar calidad antes de marcar completed: qué pruebas de smoke/e2e priorizar, cómo validar regresiones y cómo documentar evidencias.',
+            'phase06_chat',
+          )
+          internalNotesParts.push(`## QA Engineer\n${qa}`)
+        }
       } else if (currentPhase === 7) {
         const [pa, qa] = await Promise.all([
           consultInternal(
