@@ -1,12 +1,13 @@
-import { streamText } from 'ai'
+import { generateText, streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
-import { buildProjectContext } from '@/lib/ai/context-builder'
+import { buildFullProjectContext, buildProjectContext } from '@/lib/ai/context-builder'
 import { buildPhase00Prompt } from '@/lib/ai/prompts/phase-00'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase00Section } from '@/types/conversation'
+import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 
 export const maxDuration = 60
 
@@ -100,6 +101,7 @@ export async function POST(
     if (!user) {
       return new Response('Unauthorized', { status: 401 })
     }
+    const userId = user.id
 
     // Rate limit
     const ip = getClientIp(request)
@@ -122,9 +124,52 @@ export async function POST(
       hasAnthropicKey: !!process.env.ANTHROPIC_API_KEY,
     })
 
+    const coreMessages = toCoreMessages(messages)
+    const storedBaseMessages = toStoredMessages(messages)
+
     // Build project context and system prompt
     const context = await buildProjectContext(projectId)
-    const systemPrompt = buildPhase00Prompt(sectionKey, context)
+    let systemPrompt = buildPhase00Prompt(sectionKey, context)
+
+    // CTO orchestration (Option B): consult Product Architect selectively on first turn
+    const isFirstTurn = coreMessages.filter((m) => m.content.trim().length > 0).length <= 1
+    const shouldConsult =
+      isFirstTurn && (sectionKey === 'value_proposition' || sectionKey === 'competitive_analysis')
+
+    if (shouldConsult) {
+      const full = await buildFullProjectContext(projectId)
+      const specialistSystem = buildAgentPrompt('product_architect', full)
+
+      const { text, usage } = await generateText({
+        model: defaultModel,
+        system: specialistSystem,
+        messages: [
+          {
+            role: 'user' as const,
+            content:
+              sectionKey === 'value_proposition'
+                ? 'Ayuda al CTO a completar Value Proposition: redacta una propuesta de valor en 1 frase, 3 diferenciadores, momento \"aha\" y 3 features core del MVP. Usa el discovery existente; si falta algo, sugiere supuestos razonables y señalalos.'
+                : 'Ayuda al CTO a completar Competitive Analysis: lista 3 competidores (directos/indirectos), fortalezas/debilidades, pricing aproximado si es razonable inferir, matriz de posicionamiento con 2 criterios relevantes, y una ventaja sostenible probable. Usa el discovery existente; evita preguntas basicas.',
+          },
+        ],
+        maxOutputTokens: 900,
+        temperature: 0.3,
+      })
+
+      const inputTokens =
+        usage?.inputTokens ?? estimateTokensFromText(specialistSystem + sectionKey)
+      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+      recordAiUsage(supabase, {
+        userId,
+        projectId,
+        eventType: 'phase00_chat',
+        model: defaultModel?.toString?.() ?? undefined,
+        inputTokens,
+        outputTokens,
+      }).catch(() => {})
+
+      systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n## Product Architect\n${text}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Puedes decir \"Consulté internamente al Product Architect\" pero NO pegues estas notas literalmente.\n- Mantén el estilo CTO y guía a cerrar esta sección.\n`
+    }
 
     // Update section status to in_progress if still pending
     await supabase
@@ -134,9 +179,6 @@ export async function POST(
       .eq('phase_number', 0)
       .eq('section', section)
       .eq('status', 'pending')
-
-    const coreMessages = toCoreMessages(messages)
-    const storedBaseMessages = toStoredMessages(messages)
 
     const result = streamText({
       model: defaultModel,
@@ -172,7 +214,7 @@ export async function POST(
           const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
           const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
           recordAiUsage(supabase, {
-            userId: user.id,
+            userId,
             projectId,
             eventType: 'phase00_chat',
             model: defaultModel?.toString?.() ?? undefined,
