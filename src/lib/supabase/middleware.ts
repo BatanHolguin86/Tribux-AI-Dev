@@ -44,20 +44,31 @@ export async function updateSession(request: NextRequest) {
       url.pathname = '/login'
       url.searchParams.set('redirect', request.nextUrl.pathname)
     }
-    return NextResponse.redirect(url)
+    return createRedirectWithCookies(url, supabaseResponse)
   }
 
   if (user && isPublicPath) {
+    const url = request.nextUrl.clone()
     // Don't redirect admin login to product dashboard
     if (request.nextUrl.pathname === '/admin/login') {
-      const url = request.nextUrl.clone()
       url.pathname = '/admin/finance'
-      return NextResponse.redirect(url)
+    } else {
+      url.pathname = '/dashboard'
     }
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
+    return createRedirectWithCookies(url, supabaseResponse)
   }
 
   return supabaseResponse
+}
+
+/**
+ * Creates a redirect response that preserves the Supabase session cookies.
+ * Without this, redirects lose the refreshed auth cookies causing redirect loops.
+ */
+function createRedirectWithCookies(url: URL, sourceResponse: NextResponse): NextResponse {
+  const redirect = NextResponse.redirect(url)
+  sourceResponse.cookies.getAll().forEach((cookie) => {
+    redirect.cookies.set(cookie.name, cookie.value)
+  })
+  return redirect
 }
