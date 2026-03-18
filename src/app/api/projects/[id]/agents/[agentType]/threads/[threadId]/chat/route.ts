@@ -1,4 +1,4 @@
-import { streamText } from 'ai'
+import { generateText, streamText } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
@@ -105,6 +105,7 @@ export async function POST(
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+    const userId = user.id
 
     // Plan guard: check agent access
     const agentMeta = AGENT_MAP[agentType as AgentType]
@@ -236,10 +237,66 @@ export async function POST(
     // Build context and prompt (including summary of recent attachments)
     const projectContext = await buildFullProjectContext(projectId)
     const attachmentsSummary = buildAttachmentsSummary(allAttachments)
-    const systemPrompt = buildAgentPrompt(agentType as AgentType, {
+    let systemPrompt = buildAgentPrompt(agentType as AgentType, {
       ...projectContext,
       attachmentsSummary,
     })
+
+    // CTO orchestration (Option B) for Phase 03:
+    // On first thread message, consult DevOps/Operator/DB Admin internally and synthesize as CTO.
+    const isCto = (agentType as AgentType) === 'cto_virtual'
+    const isFirstThreadTurn = thread.message_count === 0
+    if (isCto && isFirstThreadTurn && projectContext.currentPhase === 3) {
+      async function consultInternal(a: AgentType, instruction: string) {
+        const specialistSystem = buildAgentPrompt(a, {
+          ...projectContext,
+          attachmentsSummary,
+        })
+        const { text, usage } = await generateText({
+          model: defaultModel,
+          system: specialistSystem,
+          messages: [
+            {
+              role: 'user' as const,
+              content: `Fase: Phase 03 — Environment Setup\n\nTarea:\n${instruction}\n\nIMPORTANTE:\n- Responde con bullets concretos y accionables.\n- Incluye comandos/paths cuando aplique.\n- Asume stack Next.js + Supabase + Vercel.\n`,
+            },
+          ],
+          maxOutputTokens: 900,
+          temperature: 0.3,
+        })
+
+        const inputTokens =
+          usage?.inputTokens ?? estimateTokensFromText(specialistSystem + instruction)
+        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+        recordAiUsage(supabase, {
+          userId,
+          projectId,
+          eventType: 'agent_chat',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens,
+          outputTokens,
+        }).catch(() => {})
+
+        return text
+      }
+
+      const [devops, operator, dba] = await Promise.all([
+        consultInternal(
+          'devops_engineer',
+          'Dame un plan paso a paso para dejar listo hosting y variables de entorno (Vercel), incluyendo checklist de verificacion.',
+        ),
+        consultInternal(
+          'operator',
+          'Dame una guia operativa reproducible para repo + CI/CD + deploys (staging/prod) y convenciones de ramas/PRs.',
+        ),
+        consultInternal(
+          'db_admin',
+          'Dame checklist para Supabase: proyecto, migraciones, RLS, seeds (si aplica) y verificacion de conexion desde la app.',
+        ),
+      ])
+
+      systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n## DevOps Engineer\n${devops}\n\n## Operator\n${operator}\n\n## DB Admin\n${dba}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n- Propón un orden de ejecucion claro para completar Phase 03.\n`
+    }
 
     const result = streamText({
       model: defaultModel,
@@ -271,7 +328,7 @@ export async function POST(
         const outputTokens =
           response.usage?.outputTokens ?? estimateTokensFromText(response.text ?? '')
         recordAiUsage(supabase, {
-          userId: user.id,
+          userId,
           projectId,
           eventType: 'agent_chat',
           model: defaultModel?.toString?.() ?? undefined,
@@ -281,7 +338,7 @@ export async function POST(
 
         // Auto-generate title on first message
         if (thread.message_count === 0) {
-          const title = await generateThreadTitle(userMessage, { supabase, userId: user.id, projectId })
+          const title = await generateThreadTitle(userMessage, { supabase, userId, projectId })
           await supabase
             .from('conversation_threads')
             .update({ title })
