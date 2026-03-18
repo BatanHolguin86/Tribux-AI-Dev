@@ -12,6 +12,7 @@ import { canUseAgent } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
 import { AGENT_MAP } from '@/lib/ai/agents'
 import type { AgentType } from '@/types/agent'
+import type { AiUsageEventType } from '@/lib/ai/usage'
 
 export const maxDuration = 60
 
@@ -248,7 +249,7 @@ export async function POST(
     const isFirstThreadTurn = thread.message_count === 0
     const currentPhase = projectContext.currentPhase
     if (isCto && isFirstThreadTurn && currentPhase >= 3 && currentPhase <= 7) {
-      async function consultInternal(a: AgentType, instruction: string, eventType: string) {
+      async function consultInternal(a: AgentType, instruction: string, eventType: AiUsageEventType) {
         const specialistSystem = buildAgentPrompt(a, {
           ...projectContext,
           attachmentsSummary,
