@@ -12,6 +12,7 @@ import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
 import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
+import { QuickReplies, extractOptions } from '@/components/shared/chat/QuickReplies'
 import { PHASE_02_AGENTS } from '@/lib/ai/agents/phase-agents'
 
 const KICKOFF_PREFIXES_P02 = ['Dame tu vision', 'Propone un resumen', 'Dame una vista', 'Identifica las', 'Como CTO, analiza', 'Como CTO, basandote', 'Como CTO, documenta']
@@ -111,6 +112,11 @@ export function ChatPanel({
     hasDocument ||
     (lastMessage?.role === 'assistant' && lastText.includes('[SECTION_READY]'))
 
+  // Extract quick-reply options from the last assistant message
+  const lastAssistantText = lastMessage?.role === 'assistant' ? lastText : ''
+  const { options: quickOptions } = extractOptions(lastAssistantText)
+  const showQuickReplies = quickOptions.length > 0 && !isLoading && !isApproved && !sectionReady
+
   async function handleGenerate() {
     setGenerating(true)
     setGenerateError(null)
@@ -154,6 +160,10 @@ export function ChatPanel({
     sendMessage({ text: feedback })
   }
 
+  function handleQuickReply(option: string) {
+    sendMessage({ text: option })
+  }
+
   function onSubmit() {
     if (!input.trim()) return
     sendMessage({ text: input })
@@ -184,11 +194,12 @@ export function ChatPanel({
           if (msg.role === 'user' && isKickoffMessage(text)) {
             return null
           }
+          const { cleanText } = extractOptions(text.replace('[SECTION_READY]', ''))
           return (
             <ChatMessage
               key={msg.id}
               role={msg.role as 'user' | 'assistant'}
-              content={text.replace('[SECTION_READY]', '')}
+              content={cleanText}
             />
           )
         })}
@@ -227,6 +238,11 @@ export function ChatPanel({
         <div className="mx-4 mb-3 rounded-lg bg-green-50 p-3 text-center text-sm font-medium text-green-700">
           Seccion aprobada
         </div>
+      )}
+
+      {/* Quick replies */}
+      {showQuickReplies && (
+        <QuickReplies options={quickOptions} onSelect={handleQuickReply} />
       )}
 
       {/* Input */}
