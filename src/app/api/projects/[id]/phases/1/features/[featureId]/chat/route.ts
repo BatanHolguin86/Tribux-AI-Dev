@@ -81,8 +81,8 @@ export async function POST(
     } = await supabase.auth.getUser()
     if (!user) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
 
-    const { document_type, messages } = await request.json()
-    const docType = document_type as KiroDocumentType
+    const body = await request.json()
+    const docType = (body.docType ?? body.document_type) as KiroDocumentType
 
     const context = await buildProjectContext(projectId)
   const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
@@ -114,8 +114,8 @@ export async function POST(
 
   const section = `feature_${featureId}_${docType}`
 
-  const coreMessages = toCoreMessages(messages)
-  const storedBaseMessages = toStoredMessages(messages)
+  const coreMessages = toCoreMessages(body.messages)
+  const storedBaseMessages = toStoredMessages(body.messages)
 
   const result = streamText({
     model: defaultModel,
