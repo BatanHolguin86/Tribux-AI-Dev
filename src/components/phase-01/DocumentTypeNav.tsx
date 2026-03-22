@@ -30,9 +30,19 @@ export function DocumentTypeNav({ documents, activeDocType, onSelect }: Document
           const isApproved = doc?.status === 'approved'
           const isLocked = !accessible
 
+          const lockHint =
+            isLocked && dt === 'design'
+              ? 'Aprueba Requirements para abrir Design.'
+              : isLocked && dt === 'tasks'
+                ? 'Aprueba Design (Generar documento y Aprobar) para abrir Tasks — el backlog KIRO va en esa pestana, no en Design.'
+                : undefined
+
           return (
             <button
               key={dt}
+              type="button"
+              title={lockHint}
+              aria-label={lockHint ? `${KIRO_DOC_LABELS[dt]}: ${lockHint}` : KIRO_DOC_LABELS[dt]}
               onClick={() => accessible && onSelect(dt)}
               disabled={isLocked}
               className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${

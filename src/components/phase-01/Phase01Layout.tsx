@@ -183,6 +183,13 @@ export function Phase01Layout({
                     activeDocType={activeDocType}
                     onSelect={handleDocTypeSelect}
                   />
+                  <p className="border-b border-gray-100 bg-gray-50/80 px-3 py-1.5 text-[11px] leading-snug text-gray-600 dark:border-gray-800 dark:bg-gray-900/40 dark:text-gray-400">
+                    <span className="font-medium text-gray-700 dark:text-gray-300">KIRO:</span> orden{' '}
+                    <span className="font-medium">Requirements → Design → Tasks</span>. La pestaña{' '}
+                    <span className="font-medium">Tasks</span> se desbloquea solo cuando{' '}
+                    <span className="font-medium">Design</span> está <span className="font-medium">aprobado</span>{' '}
+                    (generar documento y confirmar). En Design se alinea el contorno técnico; el desglose TASK-001… va en Tasks.
+                  </p>
                   <KiroChat
                     key={`${activeFeatureId}-${activeDocType}`}
                     projectId={projectId}

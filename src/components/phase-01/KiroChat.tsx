@@ -30,7 +30,7 @@ const KICKOFF_MESSAGES: Record<KiroDocumentType, (name: string) => string> = {
   requirements: (name) =>
     `Analiza brevemente el feature "${name}" basandote en el Discovery. Dame tu lectura estrategica en 3-4 parrafos cortos: que es critico de este feature, que riesgos ves, y cual es tu enfoque recomendado. NO generes el documento completo aun — primero alineemos la vision.`,
   design: (name) =>
-    `Para el Design de "${name}", dame un resumen ejecutivo de la solucion tecnica que propones: stack, patron principal y componentes clave. Maximo 3-4 parrafos. Luego profundizamos juntos.`,
+    `Para el Design KIRO de "${name}" (solo esta pestana, no tasks): en 2-3 parrafos cortos propone overview, piezas clave de datos/API/UI y 2 riesgos. Objetivo: alinear contorno y cerrar con documento formal — evitemos bucle de detalle infinito en el chat.`,
   tasks: (name) =>
     `Para las Tasks de "${name}", dame una vista general: cuantas tasks estimas, como las agruparias y cual es la ruta critica. Resumen breve, luego detallamos juntos.`,
 }

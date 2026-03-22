@@ -52,15 +52,14 @@ const DOC_CONFIGS: Record<
   design: {
     title: 'Design',
     objective:
-      'Disenar la solucion tecnica: modelo de datos, API, flujo de UI y decisiones arquitectonicas.',
-    approach: `COMO LIDERAR ESTA SECCION:
-- Ya tienes los requirements aprobados. PROPONE un diseno tecnico basado en el stack del proyecto (Next.js, Supabase, Tailwind).
-- Para el modelo de datos, propone las tablas con campos, tipos y constraints. Piensa en RLS desde el inicio.
-- Para la API, propone los endpoints (Next.js App Router format: /api/...) con request/response schemas.
-- Para la UI, describe los componentes principales y el flujo de usuario. Si es complejo, sugiere al usuario abrir un hilo con el UI/UX Designer para wireframes detallados.
-- Documenta decisiones arquitectonicas: por que elegiste cierto patron, que alternativas descartaste.
-- Mantene coherencia con features anteriores: reutiliza tablas existentes, sigue convenciones de naming, no dupliques endpoints.
-- Piensa en la implementacion: cada pieza del diseno debe ser implementable por el Lead Developer sin ambiguedad.`,
+      'Cerrar el documento KIRO Design del feature: vision tecnica alineada a requirements, sin sustituir Phase 02 ni el backlog de implementacion.',
+    approach: `METODOLOGIA KIRO (ESTA PESTANA = SOLO "DESIGN", NO TASKS NI ARQUITECTURA INFINITA):
+- Ya tienes **requirements aprobados**. Tu trabajo aqui es producir el **contorno** del Design KIRO: overview, modelo de datos (tablas/campos clave), APIs principales, flujo de pantallas y decisiones breves — al nivel de **spec de feature**, no un RFC interminable.
+- **Evita el bucle tecnico infinito**: si el usuario pide mas y mas detalle en el chat, **sintetiza en 1 mensaje**, toma decisiones razonables con el stack (Next.js, Supabase, Tailwind) y empuja a cerrar. La profundidad extrema va en **Phase 02 (Arquitectura)** y en el **documento generado**, no en 20 turnos de chat.
+- **PROHIBIDO en esta pestana**: listas TASK-001/TASK-XXX, checklist de implementacion, sprints o "desglose de tareas". Eso es **exclusivo de la pestaña Tasks** y solo despues de **aprobar** este Design. Si el usuario pide tasks aqui, explica en una linea el orden KIRO (Design → aprobar → pestaña Tasks) y redirige; no escribas el backlog aqui.
+- No escribas el Markdown completo del documento en el chat: resume decisiones y usa el boton **Generar documento** para el artefacto formal.
+- Coherencia con features anteriores: reutiliza convenciones y tablas ya definidas cuando aplique.
+- Cuando el contorno este alineado con el usuario, termina con **[SECTION_READY]** en ese mismo mensaje (resumen de lo que entrara al doc + si quiere ajustar algo antes de generar).`,
     outputStructure: `# Design: {Nombre del Feature}
 
 ## Overview
@@ -85,13 +84,12 @@ Librerias, servicios externos, features previas necesarias.`,
     title: 'Tasks',
     objective:
       'Descomponer el feature en tasks atomicas y accionables basadas en requirements y design aprobados.',
-    approach: `COMO LIDERAR ESTA SECCION:
-- Este documento se genera semi-automaticamente basado en requirements y design aprobados.
-- Cada task debe ser atomica: un desarrollador debe poder completarla en 1-4 horas.
-- Ordena por dependencias: primero setup/DB, luego backend/API, luego frontend, luego tests.
-- Numeracion secuencial: TASK-001, TASK-002, etc.
-- Incluye tasks de testing desde el principio (no como afterthought).
-- Si el feature requiere migraciones de DB, incluye tanto la migracion como el rollback.`,
+    approach: `COMO LIDERAR ESTA SECCION (SOLO EN LA PESTANA TASKS):
+- El usuario ya paso **Requirements aprobados** y **Design aprobado**; esta pestana es el unico lugar del KIRO para **TASK-XXX** y checklist de implementacion.
+- No repitas un diseno largo ni modelo de datos completo aqui: asume el Design aprobado y el Requirements como fuente de verdad; enfocate en **descomponer** trabajo.
+- Cada task atomica (1-4 h), orden por dependencias: setup/DB → API → frontend → tests → deploy.
+- Numeracion TASK-001, TASK-002; incluye tests desde el inicio; migraciones con rollback si aplica.
+- Si piden "mas detalle de arquitectura", recuerda que Phase 02 es el lugar de arquitectura global; aqui solo lo necesario para ejecutar.`,
     outputStructure: `# Tasks: {Nombre del Feature}
 
 ## Checklist de Implementacion
@@ -183,7 +181,15 @@ INSTRUCCIONES:
 - Se especifico — no uses placeholders
 - Sigue la estructura KIRO exacta
 - Formato Markdown
-
+${
+  docType === 'design'
+    ? '- No incluyas checklist TASK-001/TASK-XXX ni plan de implementacion por tareas: eso pertenece al documento Tasks.\n'
+    : ''
+}${
+  docType === 'tasks'
+    ? '- Este documento es solo Tasks; no dupliques el Design completo ni una arquitectura extensa.\n'
+    : ''
+}
 ESTRUCTURA:
 ${config.outputStructure}`
 }
