@@ -166,7 +166,7 @@ export function ChatPanel({
       <AgentParticipationHeader agents={PHASE_00_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" role="log" aria-live="polite">
+      <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3" role="log" aria-live="polite">
         {messages.length === 0 && !isLoading && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/30">

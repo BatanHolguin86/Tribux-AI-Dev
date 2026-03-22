@@ -45,7 +45,7 @@ export function ChatInput({
   }
 
   return (
-    <div className="flex items-end gap-2 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3">
+    <div className="flex items-end gap-2 border-t border-gray-100 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-900">
       {onFilesChange && (
         <>
           <input
@@ -76,7 +76,7 @@ export function ChatInput({
         placeholder={placeholder ?? "Escribe tu respuesta..."}
         disabled={disabled || isLoading}
         rows={1}
-        className="flex-1 resize-none rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3.5 py-2.5 text-sm transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-violet-400 focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-violet-400 disabled:opacity-50"
+        className="flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm transition-colors placeholder:text-gray-400 focus:border-violet-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-violet-400 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
       />
       {hasAttachments && (
         <div className="text-xs text-gray-500 dark:text-gray-400">

@@ -189,19 +189,23 @@ export function Phase02Layout({
       ) : (
         <>
           {/* Mobile tabs */}
-          <div className="mb-3 flex gap-1 rounded-lg bg-gray-100 dark:bg-gray-800 p-1 lg:hidden">
+          <div className="mb-3 flex border-b border-gray-200 dark:border-gray-700 lg:hidden">
             <button
               onClick={() => setMobileTab('chat')}
-              className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-                mobileTab === 'chat' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
+              className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                mobileTab === 'chat'
+                  ? 'border-b-2 border-violet-600 text-violet-700 dark:text-violet-300'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
               Conversacion
             </button>
             <button
               onClick={() => setMobileTab('document')}
-              className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
-                mobileTab === 'document' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm dark:shadow-gray-900/20' : 'text-gray-500 dark:text-gray-400'
+              className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                mobileTab === 'document'
+                  ? 'border-b-2 border-violet-600 text-violet-700 dark:text-violet-300'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
               Documento

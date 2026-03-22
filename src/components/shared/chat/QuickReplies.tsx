@@ -10,7 +10,7 @@ export function QuickReplies({ options, onSelect, disabled }: QuickRepliesProps)
   if (options.length === 0) return null
 
   return (
-    <div className="flex flex-wrap gap-2 px-4 py-3 border-t border-gray-100 dark:border-gray-800">
+    <div className="flex flex-wrap gap-2 border-t border-gray-100 px-3 py-2 dark:border-gray-800">
       {options.map((option, i) => {
         const isOpen = i === options.length - 1
         return (
@@ -18,10 +18,10 @@ export function QuickReplies({ options, onSelect, disabled }: QuickRepliesProps)
             key={i}
             onClick={() => onSelect(option)}
             disabled={disabled}
-            className={`rounded-xl px-3.5 py-2 text-[12px] font-medium leading-snug text-left transition-all disabled:opacity-40 ${
+            className={`rounded-xl px-3 py-2 text-xs font-medium leading-snug text-left transition-all disabled:opacity-40 ${
               isOpen
-                ? 'bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 ring-1 ring-gray-200 dark:ring-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
-                : 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-300 ring-1 ring-violet-200 dark:ring-violet-800/50 hover:bg-violet-100 dark:hover:bg-violet-900/30'
+                ? 'bg-gray-50 text-gray-500 ring-1 ring-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-gray-700'
+                : 'bg-violet-50 text-violet-700 ring-1 ring-violet-200 hover:bg-violet-100 dark:bg-violet-900/20 dark:text-violet-300 dark:ring-violet-800/50 dark:hover:bg-violet-900/30'
             }`}
           >
             {option}

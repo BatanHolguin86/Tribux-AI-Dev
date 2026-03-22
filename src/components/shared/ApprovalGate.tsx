@@ -19,34 +19,30 @@ export function ApprovalGate({
   const [showRevision, setShowRevision] = useState(false)
 
   return (
-    <div className="mx-4 mb-3 rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 dark:from-emerald-900/20 to-green-50 dark:to-green-900/20 p-4">
-      <div className="flex items-start gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-          <svg className="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            Documento listo para revision
-          </p>
-          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-            Revisa {sectionLabel} en el panel derecho y aprueba cuando estes conforme.
-          </p>
-        </div>
+    <div className="mx-3 mb-2 rounded-lg border-l-4 border-emerald-600 bg-emerald-50 p-3 dark:bg-emerald-900/20">
+      <div className="flex items-center gap-2">
+        <svg className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          Documento listo para revision
+        </p>
       </div>
+      <p className="mt-1 ml-6 text-xs text-gray-500 dark:text-gray-400">
+        Revisa {sectionLabel} en el panel derecho y aprueba cuando estes conforme.
+      </p>
 
-      <div className="mt-3 flex gap-2">
+      <div className="mt-3 flex gap-3">
         <button
           onClick={onApprove}
           disabled={isApproving}
-          className="flex-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:opacity-50"
+          className="flex-1 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
         >
           {isApproving ? 'Aprobando...' : 'Aprobar seccion'}
         </button>
         <button
           onClick={() => setShowRevision(!showRevision)}
-          className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
         >
           Pedir cambios
         </button>
@@ -59,7 +55,7 @@ export function ApprovalGate({
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="Describe los cambios que necesitas..."
-            className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-400"
+            className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400 dark:border-gray-700 dark:bg-gray-900 dark:placeholder:text-gray-500"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && feedback.trim()) {
                 onRevisionRequest(feedback)
@@ -77,7 +73,7 @@ export function ApprovalGate({
               }
             }}
             disabled={!feedback.trim()}
-            className="rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700 disabled:opacity-40"
+            className="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-40"
           >
             Enviar
           </button>

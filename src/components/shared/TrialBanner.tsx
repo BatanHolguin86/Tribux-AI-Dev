@@ -36,23 +36,14 @@ export function TrialBanner({ daysRemaining, subscriptionStatus }: TrialBannerPr
 
   return (
     <div
-      className={`flex items-center justify-between gap-4 rounded-xl px-4 py-2.5 ${
+      className={`flex items-center justify-between gap-3 rounded-lg border-l-4 px-3 py-2 ${
         urgency
-          ? 'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200 dark:border-amber-800'
-          : 'bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20 border border-violet-200 dark:border-violet-800'
+          ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
+          : 'border-violet-500 bg-violet-50 dark:bg-violet-900/20'
       }`}
     >
-      {/* Icon + message */}
-      <div className="flex items-center gap-3">
-        <div
-          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm ${
-            urgency
-              ? 'bg-amber-100 dark:bg-amber-900/30'
-              : 'bg-violet-100 dark:bg-violet-900/30'
-          }`}
-        >
-          {urgency ? '⏳' : '✨'}
-        </div>
+      <div className="flex items-center gap-2">
+        <span className="text-sm">{urgency ? '⏳' : '✨'}</span>
         <p className={`text-sm font-medium ${
           urgency ? 'text-amber-800 dark:text-amber-300' : 'text-violet-700 dark:text-violet-300'
         }`}>
@@ -62,26 +53,17 @@ export function TrialBanner({ daysRemaining, subscriptionStatus }: TrialBannerPr
         </p>
       </div>
 
-      {/* Actions */}
       <div className="flex items-center gap-2">
         <button
           onClick={handleUpgrade}
           disabled={loading}
-          className={`shrink-0 rounded-lg px-3.5 py-1.5 text-xs font-semibold shadow-sm transition-all disabled:opacity-50 ${
-            urgency
-              ? 'bg-amber-600 text-white hover:bg-amber-700'
-              : 'bg-violet-600 text-white hover:bg-violet-700'
-          }`}
+          className="shrink-0 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
         >
-          {loading ? 'Redirigiendo...' : 'Upgrade ahora'}
+          {loading ? 'Redirigiendo...' : 'Upgrade'}
         </button>
         <button
           onClick={() => setDismissed(true)}
-          className={`shrink-0 rounded-lg p-1.5 transition-colors ${
-            urgency
-              ? 'text-amber-400 hover:text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-900/30'
-              : 'text-violet-400 hover:text-violet-600 hover:bg-violet-100 dark:hover:bg-violet-900/30'
-          }`}
+          className="shrink-0 rounded p-1 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
           aria-label="Cerrar banner"
         >
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

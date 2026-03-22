@@ -15,7 +15,6 @@ function renderInline(text: string): React.ReactNode[] {
   let keyIdx = 0
 
   while (remaining.length > 0) {
-    // Match inline code first, then bold, then italic
     const codeMatch = remaining.match(/`([^`]+)`/)
     const boldMatch = remaining.match(/\*\*(.+?)\*\*/)
     const italicMatch = remaining.match(/(?<!\*)\*([^*]+?)\*(?!\*)/)
@@ -33,7 +32,7 @@ function renderInline(text: string): React.ReactNode[] {
     if (code <= bold && code <= italic && codeMatch) {
       if (codeMatch.index! > 0) parts.push(remaining.slice(0, codeMatch.index!))
       parts.push(
-        <code key={keyIdx++} className="rounded bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 text-[12px] font-mono text-violet-700 dark:text-violet-300">
+        <code key={keyIdx++} className="rounded bg-violet-50 px-2 py-0.5 font-mono text-xs text-violet-700 dark:bg-violet-900/20 dark:text-violet-300">
           {codeMatch[1]}
         </code>
       )
@@ -53,7 +52,6 @@ function renderInline(text: string): React.ReactNode[] {
 }
 
 function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
-  // First, extract code blocks to avoid parsing their content
   const codeBlockRegex = /```(\w*)\n?([\s\S]*?)```/g
   const segments: Array<{ type: 'text' | 'code'; content: string; lang?: string }> = []
   let lastIndex = 0
@@ -73,29 +71,36 @@ function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
   return segments.map((segment, si) => {
     if (segment.type === 'code') {
       return (
-        <pre key={si} className="my-2 overflow-x-auto rounded-lg bg-gray-900 dark:bg-gray-950 p-3 text-[12px] leading-relaxed">
-          <code className="text-gray-100 font-mono">{segment.content}</code>
+        <pre key={si} className="my-2 overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs leading-relaxed dark:bg-gray-950">
+          <code className="font-mono text-gray-100">{segment.content}</code>
         </pre>
       )
     }
 
-    // Process text segments
     const paragraphs = segment.content.split(/\n{2,}/)
 
     return paragraphs.map((paragraph, pi) => {
       const trimmed = paragraph.trim()
       if (!trimmed) return null
 
-      // Horizontal rule
       if (/^-{3,}$/.test(trimmed)) {
         return <hr key={`${si}-${pi}`} className="my-3 border-gray-200 dark:border-gray-700" />
       }
 
-      // Headings
+      // Headings — standardized margins
+      const h1Match = trimmed.match(/^#\s+(.+)/)
+      if (h1Match) {
+        return (
+          <h2 key={`${si}-${pi}`} className="mt-4 mb-2 text-sm font-bold text-gray-900 dark:text-gray-100">
+            {renderInline(h1Match[1])}
+          </h2>
+        )
+      }
+
       const h2Match = trimmed.match(/^##\s+(.+)/)
       if (h2Match) {
         return (
-          <h3 key={`${si}-${pi}`} className="mt-3 mb-1.5 text-[13px] font-bold text-gray-900 dark:text-gray-100">
+          <h3 key={`${si}-${pi}`} className="mt-4 mb-2 text-sm font-bold text-gray-900 dark:text-gray-100">
             {renderInline(h2Match[1])}
           </h3>
         )
@@ -104,24 +109,23 @@ function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
       const h3Match = trimmed.match(/^###\s+(.+)/)
       if (h3Match) {
         return (
-          <h4 key={`${si}-${pi}`} className="mt-2.5 mb-1 text-[13px] font-semibold text-gray-800 dark:text-gray-200">
+          <h4 key={`${si}-${pi}`} className="mt-3 mb-1.5 text-sm font-semibold text-gray-800 dark:text-gray-200">
             {renderInline(h3Match[1])}
           </h4>
         )
       }
 
-      const h1Match = trimmed.match(/^#\s+(.+)/)
-      if (h1Match) {
+      const h4Match = trimmed.match(/^####\s+(.+)/)
+      if (h4Match) {
         return (
-          <h2 key={`${si}-${pi}`} className="mt-3 mb-1.5 text-[14px] font-bold text-gray-900 dark:text-gray-100">
-            {renderInline(h1Match[1])}
-          </h2>
+          <h5 key={`${si}-${pi}`} className="mt-2 mb-1 text-xs font-semibold text-gray-700 dark:text-gray-300">
+            {renderInline(h4Match[1])}
+          </h5>
         )
       }
 
       const lines = paragraph.split('\n')
 
-      // Check if it's a list block
       const nonEmptyLines = lines.filter((l) => l.trim())
       const isList = nonEmptyLines.length > 0 && nonEmptyLines.every(
         (l) => l.trimStart().startsWith('- ') || l.trimStart().startsWith('* ') || /^\s*\d+\.\s/.test(l) || l.trimStart().startsWith('- [ ]') || l.trimStart().startsWith('- [x]')
@@ -132,13 +136,18 @@ function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
         const isNumbered = items.some((l) => /^\s*\d+\.\s/.test(l))
         const Tag = isNumbered ? 'ol' : 'ul'
         return (
-          <Tag key={`${si}-${pi}`} className={`my-1.5 space-y-1 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${isUser ? 'marker:text-violet-200' : 'marker:text-violet-400 dark:marker:text-violet-500'}`}>
+          <Tag
+            key={`${si}-${pi}`}
+            className={`my-1.5 space-y-1 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${
+              isUser ? 'marker:text-violet-300' : 'marker:text-violet-500 dark:marker:text-violet-400'
+            }`}
+          >
             {items.map((item, li) => {
               const cleaned = item.replace(/^\s*[-*]\s(\[[ x]\]\s?)?|^\s*\d+\.\s/, '')
               const isChecked = item.includes('[x]')
               const isCheckbox = item.includes('[ ]') || item.includes('[x]')
               return (
-                <li key={li} className="pl-0.5 text-[13px]">
+                <li key={li} className="pl-0.5 text-sm">
                   {isCheckbox && (
                     <span className={`mr-1.5 inline-block ${isChecked ? 'text-emerald-500' : 'text-gray-400 dark:text-gray-500'}`}>
                       {isChecked ? '✓' : '○'}
@@ -152,7 +161,6 @@ function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
         )
       }
 
-      // Regular paragraph
       return (
         <p key={`${si}-${pi}`} className={pi > 0 ? 'mt-2' : ''}>
           {lines.map((line, li) => (
@@ -172,24 +180,22 @@ export function ChatMessage({ role, content, createdAt }: ChatMessageProps) {
 
   return (
     <div className={`flex gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`}>
-      {/* Avatar */}
       <div
         className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
           isUser
             ? 'bg-violet-600 text-white'
-            : 'bg-violet-50 dark:bg-violet-900/30 ring-1 ring-violet-100 dark:ring-violet-800/50'
+            : 'bg-violet-50 ring-1 ring-violet-100 dark:bg-violet-900/30 dark:ring-violet-800/50'
         }`}
       >
         {isUser ? 'Tú' : '🧠'}
       </div>
 
-      {/* Message bubble */}
       <div className={`max-w-[80%] min-w-0 ${isUser ? 'text-right' : ''}`}>
         <div
-          className={`inline-block rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
+          className={`inline-block rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
             isUser
               ? 'rounded-tr-sm bg-violet-600 text-white'
-              : 'rounded-tl-sm bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 ring-1 ring-gray-100 dark:ring-gray-700'
+              : 'rounded-tl-sm bg-gray-50 text-gray-700 ring-1 ring-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700'
           }`}
         >
           {renderMarkdown(content, isUser)}

@@ -167,7 +167,7 @@ export function ChatPanel({
       <AgentParticipationHeader agents={PHASE_02_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+      <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
         {messages.length === 0 && !isLoading && (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
@@ -201,14 +201,14 @@ export function ChatPanel({
 
       {/* Generate button */}
       {sectionReady && !hasDocument && !isApproved && (
-        <div className="mx-4 mb-3">
+        <div className="mx-3 mb-2">
           {generateError && (
-            <p className="mb-2 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">{generateError}</p>
+            <p className="mb-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700 dark:bg-red-900/20 dark:text-red-300">{generateError}</p>
           )}
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
             {generating ? 'Generando documento...' : `Generar documento de ${SECTION_LABELS[section]}`}
           </button>
@@ -227,7 +227,7 @@ export function ChatPanel({
 
       {/* Approved banner */}
       {isApproved && (
-        <div className="mx-4 mb-3 rounded-lg bg-green-50 p-3 text-center text-sm font-medium text-green-700">
+        <div className="mx-3 mb-2 rounded-lg bg-emerald-50 p-3 text-center text-sm font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300">
           Seccion aprobada
         </div>
       )}
