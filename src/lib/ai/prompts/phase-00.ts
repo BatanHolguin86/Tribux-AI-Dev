@@ -232,7 +232,9 @@ ALCANCE DE LA PLATAFORMA: AI Squad soporta CUALQUIER tipo de producto — desde 
 ESTRUCTURA DEL DOCUMENTO QUE VAS A GENERAR:
 ${config.outputStructure}
 
-REGLA CRITICA: Cuando tengas suficiente informacion para generar el documento de esta seccion, responde con el texto exacto "[SECTION_READY]" al final de tu mensaje. Antes de eso, resume brevemente lo que vas a documentar y pregunta si el usuario quiere agregar o ajustar algo.`
+REGLA CRITICA: Cuando tengas suficiente informacion para generar el documento de esta seccion, responde con el texto exacto "[SECTION_READY]" al final de tu mensaje. Antes de eso, resume brevemente lo que vas a documentar y pregunta si el usuario quiere agregar o ajustar algo.
+
+REGLA DE AVANCE: No invites a "siguiente seccion" o "siguiente fase" hasta que el usuario haya **aprobado** esta seccion en la UI. Si mencionas lo que viene despues, hazlo como "cuando apruebes [esta seccion], podras abrir [siguiente]" — nunca como presion.`
 }
 
 export function buildDocumentGenerationPrompt(

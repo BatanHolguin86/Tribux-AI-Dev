@@ -65,25 +65,28 @@ function generateSuggestions(
     priority: 'medium',
   })
 
-  // Tertiary: progress-based suggestions
-  if (completedCount >= 4 && currentPhase < 5) {
+  const phase04Completed = phases.find((p) => p.phase_number === 4)?.status === 'completed'
+  const phase05Completed = phases.find((p) => p.phase_number === 5)?.status === 'completed'
+
+  // Tertiary: solo sugerencias alineadas a gates (no saltar fases)
+  if (phase04Completed && !phase05Completed) {
     suggestions.push({
       icon: '🧪',
-      text: 'Tu proyecto esta listo para empezar testing',
+      text: 'Phase 04 completada: cuando quieras, revisa Testing y QA (Phase 05)',
       href: `/projects/${projectId}/phase/05`,
       priority: 'low',
     })
   } else if (completedCount === 0) {
     suggestions.push({
       icon: '💡',
-      text: 'Empieza definiendo el problema que resuelves',
+      text: 'Primer paso: definir el problema en Discovery (Phase 00)',
       href: `/projects/${projectId}/phase/00`,
       priority: 'low',
     })
-  } else if (completedCount >= 6) {
+  } else if (phase05Completed) {
     suggestions.push({
       icon: '🎯',
-      text: 'Estas cerca del lanzamiento — revisa el checklist',
+      text: 'QA listo: revisa el checklist de lanzamiento (Phase 06) cuando toque',
       href: `/projects/${projectId}/phase/06`,
       priority: 'low',
     })
@@ -100,7 +103,7 @@ export function ProactiveSuggestions({ projectId, phases, currentPhase }: Proact
   return (
     <div>
       <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-        Siguiente paso
+        Sugerencias
       </h3>
       <div className="space-y-2">
         {suggestions.map((s, i) => {
@@ -137,7 +140,7 @@ export function ProactiveSuggestions({ projectId, phases, currentPhase }: Proact
                 </span>
                 {isHigh && (
                   <span className="mt-0.5 block text-[10px] text-violet-500 dark:text-violet-500">
-                    Accion recomendada
+                    Donde sigue tu proceso
                   </span>
                 )}
               </div>

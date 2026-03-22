@@ -20,11 +20,16 @@ const PROMPTS = [
 ] as const
 
 describe('Agent base prompts', () => {
-  it.each(PROMPTS)('$name incluye ROL, ESPECIALIDAD e INSTRUCCIONES', ({ prompt }) => {
+  it.each(PROMPTS)('$name incluye ROL y estructura minima del prompt', ({ name, prompt }) => {
     expect(prompt).toMatch(/ROL:/i)
-    expect(prompt).toMatch(/ESPECIALIDAD:/i)
-    expect(prompt).toMatch(/INSTRUCCIONES:/i)
     expect(prompt.length).toBeGreaterThan(200)
+    if (name === 'CTO Virtual') {
+      expect(prompt).toMatch(/IDENTIDAD Y PERSONALIDAD|GATES Y APROBACION/i)
+      expect(prompt).toMatch(/FORMATO DE RESPUESTA|---OPTIONS---/i)
+    } else {
+      expect(prompt).toMatch(/ESPECIALIDAD:/i)
+      expect(prompt).toMatch(/INSTRUCCIONES:/i)
+    }
   })
 
   it('cada prompt incluye STACK TECNICO o referencia al stack', () => {

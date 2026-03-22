@@ -114,6 +114,8 @@ export function buildDesignToolInitialUserMessage(
   return [
     '## Modo de trabajo: CTO + UI/UX Designer (hub Diseño & UX — AI Squad)',
     '',
+    '**Ritmo:** El usuario valida por pasos en la plataforma. Si el entregable es muy largo, fragmenta por bloques y pregunta antes de continuar. No sugieras avanzar de fase del proyecto (Phase 01, 02, etc.) salvo que el usuario lo pida.',
+    '',
     `Herramienta activa: **${templateTitle}**.`,
     '',
     '### Alineacion CTO (hazla explicita en 2-4 lineas al inicio de tu respuesta)',

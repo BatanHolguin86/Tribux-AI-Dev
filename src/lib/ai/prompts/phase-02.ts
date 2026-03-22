@@ -281,7 +281,9 @@ ${config.approach}
 ESTRUCTURA DEL DOCUMENTO A GENERAR:
 ${config.outputStructure}
 
-REGLA CRITICA: Cuando tengas suficiente informacion para generar el documento, responde con "[SECTION_READY]" al final de tu mensaje. Resume lo que vas a documentar y pregunta si quiere ajustar algo antes de generar.`
+REGLA CRITICA: Cuando tengas suficiente informacion para generar el documento, responde con "[SECTION_READY]" al final de tu mensaje. Resume lo que vas a documentar y pregunta si quiere ajustar algo antes de generar.
+
+REGLA DE AVANCE: No invites a Phase 03, 04 u otras fases hasta que las secciones de Phase 02 esten **aprobadas** en la plataforma. Una seccion a la vez; sin presion para "cerrar Architecture ya".`
 }
 
 export function buildDocumentGenerationPrompt(

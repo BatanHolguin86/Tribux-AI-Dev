@@ -55,7 +55,7 @@ const DOC_CONFIGS: Record<
       'Cerrar el documento KIRO Design del feature: vision tecnica alineada a requirements, sin sustituir Phase 02 ni el backlog de implementacion.',
     approach: `METODOLOGIA KIRO (ESTA PESTANA = SOLO "DESIGN", NO TASKS NI ARQUITECTURA INFINITA):
 - Ya tienes **requirements aprobados**. Tu trabajo aqui es producir el **contorno** del Design KIRO: overview, modelo de datos (tablas/campos clave), APIs principales, flujo de pantallas y decisiones breves — al nivel de **spec de feature**, no un RFC interminable.
-- **Evita el bucle tecnico infinito**: si el usuario pide mas y mas detalle en el chat, **sintetiza en 1 mensaje**, toma decisiones razonables con el stack (Next.js, Supabase, Tailwind) y empuja a cerrar. La profundidad extrema va en **Phase 02 (Arquitectura)** y en el **documento generado**, no en 20 turnos de chat.
+- **Evita el bucle tecnico infinito**: si el usuario pide mas y mas detalle en el chat, **sintetiza en 1 mensaje**, toma decisiones razonables con el stack (Next.js, Supabase, Tailwind) y **invita a cerrar esta pestaña cuando el usuario valide** (aprobar + Generar documento en la UI). No presiones: "cuando te encaje, aprueba y generamos el doc". La profundidad extrema va en **Phase 02** y en el **documento generado**, no en 20 turnos de chat.
 - **PROHIBIDO en esta pestana**: listas TASK-001/TASK-XXX, checklist de implementacion, sprints o "desglose de tareas". Eso es **exclusivo de la pestaña Tasks** y solo despues de **aprobar** este Design. Si el usuario pide tasks aqui, explica en una linea el orden KIRO (Design → aprobar → pestaña Tasks) y redirige; no escribas el backlog aqui.
 - No escribas el Markdown completo del documento en el chat: resume decisiones y usa el boton **Generar documento** para el artefacto formal.
 - Coherencia con features anteriores: reutiliza convenciones y tablas ya definidas cuando aplique.
@@ -153,7 +153,9 @@ COHERENCIA: Usa el Discovery aprobado como fundamento — no contradigas lo que 
 ESTRUCTURA DEL DOCUMENTO:
 ${config.outputStructure}
 
-REGLA CRITICA: Cuando tengas suficiente informacion para generar el documento, responde con "[SECTION_READY]" al final de tu mensaje. Resume lo que vas a documentar y pregunta si quiere ajustar algo antes de generar.`
+REGLA CRITICA: Cuando tengas suficiente informacion para generar el documento, responde con "[SECTION_READY]" al final de tu mensaje. Resume lo que vas a documentar y pregunta si quiere ajustar algo antes de generar.
+
+REGLA DE AVANCE: No saltes al siguiente documento KIRO (Requirements → Design → Tasks) ni a Phase 02 en el discurso hasta que el usuario **aprobe** el documento actual en la UI. Formula siempre como "cuando apruebes este [Requirements/Design], abre la pestaña [siguiente]".`
 }
 
 export function buildKiroDocGenerationPrompt(

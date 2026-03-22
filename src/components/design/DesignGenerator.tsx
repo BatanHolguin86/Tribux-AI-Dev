@@ -183,8 +183,9 @@ export function DesignGenerator({
             </div>
           </div>
           <div className="rounded-lg border border-emerald-200 bg-emerald-50/80 px-3 py-2 text-xs text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
-            <strong className="font-semibold">Qué hacer:</strong> espera la respuesta abajo. Primero verás una breve
-            síntesis tipo CTO, luego el entregable. Usa el campo inferior para iterar.
+            <strong className="font-semibold">Qué hacer:</strong> espera la respuesta abajo (síntesis CTO + entregable).
+            Valida o pide ajustes en el chat; el agente va por partes si el resultado es largo. Avanzar de fase del
+            proyecto solo cuando tú apruebes en la UI de cada fase.
           </div>
         </div>
 
