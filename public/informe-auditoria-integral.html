@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Informe de Auditoria Integral — AI Squad Command Center</title>
+<style>
+  @page { size: A4; margin: 2cm; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1a1a2e; line-height: 1.6; font-size: 11px; max-width: 800px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 24px; color: #7c3aed; border-bottom: 3px solid #7c3aed; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 18px; color: #4f46e5; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin-top: 32px; page-break-after: avoid; }
+  h3 { font-size: 14px; color: #6d28d9; margin-top: 20px; page-break-after: avoid; }
+  h4 { font-size: 12px; color: #374151; margin-top: 14px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10px; page-break-inside: avoid; }
+  th { background: #f3f0ff; color: #4f46e5; text-align: left; padding: 6px 8px; border: 1px solid #e5e7eb; font-weight: 600; }
+  td { padding: 5px 8px; border: 1px solid #e5e7eb; vertical-align: top; }
+  tr:nth-child(even) { background: #fafafa; }
+  code { background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 10px; font-family: 'SF Mono', Monaco, monospace; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 600; }
+  .badge-ok { background: #d1fae5; color: #065f46; }
+  .badge-warn { background: #fef3c7; color: #92400e; }
+  .badge-error { background: #fee2e2; color: #991b1b; }
+  .badge-info { background: #ede9fe; color: #5b21b6; }
+  .cover { text-align: center; padding: 80px 0; page-break-after: always; }
+  .cover h1 { font-size: 32px; border: none; }
+  .cover .subtitle { font-size: 16px; color: #6b7280; margin-top: 8px; }
+  .cover .date { font-size: 14px; color: #9ca3af; margin-top: 40px; }
+  .cover .logo { font-size: 48px; margin-bottom: 20px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0; }
+  .metric-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; text-align: center; }
+  .metric-card .value { font-size: 22px; font-weight: 700; color: #7c3aed; }
+  .metric-card .label { font-size: 9px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .section-break { page-break-before: always; }
+  .status-list { list-style: none; padding: 0; }
+  .status-list li { padding: 4px 0; border-bottom: 1px solid #f3f4f6; }
+  .status-list li:before { content: "✓ "; color: #10b981; font-weight: bold; }
+  .status-list li.warn:before { content: "⚠ "; color: #f59e0b; }
+  .status-list li.error:before { content: "✗ "; color: #ef4444; }
+  .toc { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 24px; margin: 20px 0; }
+  .toc ol { padding-left: 20px; }
+  .toc li { padding: 3px 0; font-size: 12px; }
+  .toc a { color: #4f46e5; text-decoration: none; }
+  .footer { text-align: center; font-size: 9px; color: #9ca3af; margin-top: 40px; border-top: 1px solid #e5e7eb; padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="logo">⚡</div>
+  <h1>Informe de Auditoria Integral</h1>
+  <div class="subtitle">AI Squad Command Center</div>
+  <div class="subtitle" style="font-size:13px; margin-top: 4px;">Revision de Arquitectura, Infraestructura, Componentes y Avances</div>
+  <div class="date">16 de Marzo, 2026</div>
+  <div style="margin-top: 12px; font-size: 12px; color: #6b7280;">
+    Addendum / PDF actualizado: <strong>8 de Marzo, 2026</strong> — v0.2.0
+  </div>
+  <div style="margin-top: 60px; font-size: 11px; color: #6b7280;">
+    Version: 0.2.0 (base auditoria 0.1.0 + actualizacion marzo 2026)<br>
+    Repositorio: github.com/BatanHolguin86/ai-squad-command-center<br>
+    Plataforma: Vercel + Supabase
+  </div>
+</div>
+
+<!-- TOC -->
+<h2>Tabla de Contenido</h2>
+<div class="toc">
+<ol>
+  <li><a href="#actualizacion">Actualizacion Marzo 2026 (v0.2.0)</a></li>
+  <li><a href="#resumen">Resumen Ejecutivo</a></li>
+  <li><a href="#metricas">Metricas del Proyecto</a></li>
+  <li><a href="#stack">Stack Tecnologico</a></li>
+  <li><a href="#arquitectura">Arquitectura del Sistema</a></li>
+  <li><a href="#db">Base de Datos (18 migraciones)</a></li>
+  <li><a href="#api">API Routes (32+ endpoints)</a></li>
+  <li><a href="#componentes">Inventario de Componentes (97)</a></li>
+  <li><a href="#agentes">Sistema de Agentes IA (9)</a></li>
+  <li><a href="#fases">Sistema de 8 Fases (IA DLC)</a></li>
+  <li><a href="#planes">Sistema de Planes y Billing</a></li>
+  <li><a href="#seguridad">Seguridad y Rate Limiting</a></li>
+  <li><a href="#tests">Cobertura de Tests (48 archivos)</a></li>
+  <li><a href="#docs">Documentacion (43+ archivos)</a></li>
+  <li><a href="#avances">Estado de Avance por Sprint</a></li>
+  <li><a href="#gaps">Gaps y Recomendaciones</a></li>
+</ol>
+</div>
+
+<!-- ACTUALIZACION MARZO 2026 -->
+<h2 id="actualizacion" class="section-break">Actualizacion — Marzo 2026 (v0.2.0)</h2>
+<p>Este addendum complementa el cuerpo del informe fechado el <strong>16 de marzo de 2026</strong> (v0.1.0). Consolida cambios en codigo y documentacion hasta el <strong>8 de marzo de 2026</strong>. El detalle en Markdown: <code>docs/00-discovery/08-informe-auditoria-integral-estatus-actualizado.md</code>.</p>
+
+<h3>Resumen del delta</h3>
+<table>
+  <tr><th>Area</th><th>Informe original</th><th>Estado actualizado</th></tr>
+  <tr><td>Migraciones SQL</td><td>16</td><td><span class="badge badge-ok">18</span> (017 uso IA + admin; 018 RLS <code>feature_documents</code>)</td></tr>
+  <tr><td>Control financiero / costos IA</td><td>No detallado</td><td><span class="badge badge-ok">Nuevo</span> <code>ai_usage_events</code>, rol <code>financial_admin</code>, APIs <code>/api/admin/finance/*</code>, UI <code>/admin/finance</code></td></tr>
+  <tr><td>Orquestacion agentes</td><td>9 agentes + chat</td><td>CTO como interfaz principal en flujo por fases; consultas internas (fases 00–07); <code>/projects/[id]/experts</code> para especialistas</td></tr>
+  <tr><td>Phase 01 / KIRO</td><td>UI + API</td><td>Generacion mas robusta (timeouts, <code>upsert</code> con service-role en servidor); UX chat/panel; aplicar migraciones 017–018 en Supabase + <code>SUPABASE_SERVICE_ROLE_KEY</code> en Vercel</td></tr>
+  <tr><td>Unit economics</td><td>No</td><td>Doc <code>docs/00-discovery/06-plan-financiero-unit-economics.md</code></td></tr>
+  <tr><td>Stripe / billing endurecido</td><td>Parcial / gaps</td><td><span class="badge badge-warn">Pendiente</span> (sin SDK en <code>package.json</code>; revisar firma webhook)</td></tr>
+  <tr><td>Seed demo / Resend / CI en <code>.github/</code></td><td>Pendiente</td><td><span class="badge badge-warn">Pendiente</span></td></tr>
+</table>
+
+<h3>Gaps del informe — estado rapido</h3>
+<table>
+  <tr><th>Gap</th><th>Estado marzo 2026</th></tr>
+  <tr><td>Stripe SDK + productos + env Vercel</td><td><span class="badge badge-warn">Abierto</span></td></tr>
+  <tr><td>Firma webhook Stripe</td><td><span class="badge badge-warn">Revisar / prioridad alta</span></td></tr>
+  <tr><td>Seed data / demo project</td><td><span class="badge badge-warn">Abierto</span></td></tr>
+  <tr><td>Emails Resend</td><td><span class="badge badge-warn">Abierto</span></td></tr>
+  <tr><td>Workflow CI en raiz <code>.github/workflows/</code></td><td><span class="badge badge-warn">Abierto</span> (existe bajo <code>infrastructure/github/workflows/</code>)</td></tr>
+</table>
+
+<!-- 1. RESUMEN EJECUTIVO -->
+<h2 id="resumen" class="section-break">1. Resumen Ejecutivo</h2>
+<p>AI Squad Command Center es una plataforma SaaS que provee un equipo de 9 agentes IA especializados para guiar a usuarios a traves de un ciclo de desarrollo de productos tecnologicos en 8 fases (IA DLC: AI-Driven Development Lifecycle). El usuario actua como CEO/PM mientras los agentes cubren los roles de CTO, Arquitecto, Disenador UI/UX, Desarrollador, DBA, QA, DevOps y Operador.</p>
+
+<p>El proyecto se encuentra en estado de <span class="badge badge-info">MVP funcional</span> con la mayoria de funcionalidades core implementadas. Dos sprints completados han entregado: autenticacion, dashboard, 8 fases interactivas, 9 agentes IA con chat streaming, generador de disenos, sistema de planes/trial, y landing page publica.</p>
+
+<h3>Fortalezas Principales</h3>
+<ul class="status-list">
+  <li>Arquitectura bien estructurada con Next.js 16 App Router + TypeScript strict</li>
+  <li>8 fases completamente implementadas con UI, API y flujos de aprobacion</li>
+  <li>9 agentes IA funcionales con streaming via AI SDK + Anthropic Claude</li>
+  <li>Sistema de autenticacion completo con Supabase Auth</li>
+  <li>Dark mode consistente en toda la aplicacion</li>
+  <li>48 archivos de test (unit, integration, E2E)</li>
+  <li>Documentacion extensiva (43+ archivos, 6 ADRs)</li>
+  <li>Seguridad: RLS, rate limiting, headers de seguridad, OWASP compliance</li>
+</ul>
+
+<h3>Gaps Criticos</h3>
+<ul class="status-list">
+  <li class="warn">Stripe SDK no instalado — checkout usa HTTP crudo sin verificacion de webhook</li>
+  <li class="warn">Variables de Stripe no configuradas — billing no funcional en produccion</li>
+  <li class="warn">Seed data vacio — usuarios nuevos no ven demo project</li>
+  <li class="warn">Emails transaccionales (Resend) no configurados</li>
+</ul>
+
+<!-- 2. METRICAS -->
+<h2 id="metricas">2. Metricas del Proyecto</h2>
+<div class="metric-grid">
+  <div class="metric-card"><div class="value">19,199</div><div class="label">Lineas de Codigo</div></div>
+  <div class="metric-card"><div class="value">240</div><div class="label">Archivos .ts/.tsx</div></div>
+  <div class="metric-card"><div class="value">97</div><div class="label">Componentes React</div></div>
+  <div class="metric-card"><div class="value">32+</div><div class="label">API Endpoints</div></div>
+</div>
+<div class="metric-grid">
+  <div class="metric-card"><div class="value">18</div><div class="label">Migraciones SQL</div></div>
+  <div class="metric-card"><div class="value">48</div><div class="label">Archivos de Test</div></div>
+  <div class="metric-card"><div class="value">9</div><div class="label">Agentes IA</div></div>
+  <div class="metric-card"><div class="value">8</div><div class="label">Fases IA DLC</div></div>
+</div>
+<div class="metric-grid">
+  <div class="metric-card"><div class="value">18</div><div class="label">Paginas App Router</div></div>
+  <div class="metric-card"><div class="value">5</div><div class="label">Zustand Stores</div></div>
+  <div class="metric-card"><div class="value">11</div><div class="label">Loading Skeletons</div></div>
+  <div class="metric-card"><div class="value">43+</div><div class="label">Docs Markdown</div></div>
+</div>
+
+<!-- 3. STACK -->
+<h2 id="stack" class="section-break">3. Stack Tecnologico</h2>
+<table>
+  <tr><th>Capa</th><th>Tecnologia</th><th>Version</th><th>Proposito</th></tr>
+  <tr><td>Framework</td><td><code>next</code></td><td>16.1.6</td><td>App Router, SSR, API Routes</td></tr>
+  <tr><td>UI</td><td><code>react</code></td><td>19.2.3</td><td>Componentes, Server/Client Components</td></tr>
+  <tr><td>Lenguaje</td><td><code>typescript</code></td><td>5.x</td><td>Tipado estricto (strict: true)</td></tr>
+  <tr><td>Estilos</td><td><code>tailwindcss</code></td><td>4.x</td><td>Utility-first CSS, dark mode</td></tr>
+  <tr><td>Base de Datos</td><td><code>@supabase/supabase-js</code></td><td>2.98.0</td><td>PostgreSQL + Auth + Storage + RLS</td></tr>
+  <tr><td>AI/LLM</td><td><code>@ai-sdk/anthropic</code> + <code>ai</code></td><td>3.0.58 / 6.0.116</td><td>Claude API, streaming, chat</td></tr>
+  <tr><td>State</td><td><code>zustand</code></td><td>5.0.11</td><td>Estado global del cliente</td></tr>
+  <tr><td>Server State</td><td><code>@tanstack/react-query</code></td><td>5.90.21</td><td>Cache, fetching, mutations</td></tr>
+  <tr><td>Forms</td><td><code>react-hook-form</code> + <code>zod</code></td><td>7.71.2 / 4.3.6</td><td>Validacion + formularios</td></tr>
+  <tr><td>Drag & Drop</td><td><code>@dnd-kit</code></td><td>6.3.1</td><td>Kanban board (Phase 04)</td></tr>
+  <tr><td>Markdown</td><td><code>react-markdown</code> + <code>remark-gfm</code></td><td>10.1.0</td><td>Render documentos KIRO</td></tr>
+  <tr><td>Notificaciones</td><td><code>sonner</code></td><td>2.0.7</td><td>Toast notifications</td></tr>
+  <tr><td>Error Tracking</td><td><code>@sentry/nextjs</code></td><td>10.42.0</td><td>Errores en produccion</td></tr>
+  <tr><td>Analytics</td><td><code>@vercel/analytics</code></td><td>2.0.0</td><td>Web analytics</td></tr>
+  <tr><td>Testing Unit</td><td><code>vitest</code></td><td>4.0.18</td><td>Unit + integration tests</td></tr>
+  <tr><td>Testing E2E</td><td><code>@playwright/test</code></td><td>1.58.2</td><td>End-to-end browser tests</td></tr>
+  <tr><td>Linting</td><td><code>eslint</code> + <code>prettier</code></td><td>9.x / 3.8.1</td><td>Calidad de codigo</td></tr>
+  <tr><td>Git Hooks</td><td><code>husky</code> + <code>lint-staged</code></td><td>9.1.7 / 16.3.2</td><td>Pre-commit checks</td></tr>
+  <tr><td>Deploy</td><td>Vercel</td><td>—</td><td>Auto-deploy desde main</td></tr>
+  <tr><td>Hosting DB</td><td>Supabase Cloud</td><td>—</td><td>PostgreSQL managed</td></tr>
+</table>
+
+<!-- 4. ARQUITECTURA -->
+<h2 id="arquitectura" class="section-break">4. Arquitectura del Sistema</h2>
+<h3>Estructura de Carpetas</h3>
+<table>
+  <tr><th>Directorio</th><th>Contenido</th><th>Archivos</th></tr>
+  <tr><td><code>src/app/</code></td><td>Next.js App Router: pages, layouts, API routes</td><td>~60</td></tr>
+  <tr><td><code>src/components/</code></td><td>Componentes React organizados por feature</td><td>97</td></tr>
+  <tr><td><code>src/lib/</code></td><td>Utilidades, Supabase clients, AI prompts, validaciones</td><td>~30</td></tr>
+  <tr><td><code>src/hooks/</code></td><td>Custom React hooks</td><td>1</td></tr>
+  <tr><td><code>src/stores/</code></td><td>Zustand stores por feature</td><td>5</td></tr>
+  <tr><td><code>src/types/</code></td><td>Definiciones TypeScript globales</td><td>10</td></tr>
+  <tr><td><code>tests/</code></td><td>Unit, Integration, E2E tests</td><td>48</td></tr>
+  <tr><td><code>infrastructure/</code></td><td>Migraciones SQL, CI/CD, scripts</td><td>~20</td></tr>
+  <tr><td><code>docs/</code></td><td>Discovery, specs, arquitectura, QA, ops</td><td>43+</td></tr>
+</table>
+
+<h3>Patrones Arquitectonicos</h3>
+<table>
+  <tr><th>Patron</th><th>Implementacion</th></tr>
+  <tr><td>Server Components by default</td><td>Pages y layouts son Server Components; <code>'use client'</code> solo donde se necesita interactividad</td></tr>
+  <tr><td>Route Groups</td><td><code>(auth)</code> y <code>(dashboard)</code> para layouts separados</td></tr>
+  <tr><td>Middleware Auth</td><td>Supabase session refresh en cada request; redirect automatico a login/dashboard</td></tr>
+  <tr><td>API Validation</td><td>Zod schemas en todos los endpoints</td></tr>
+  <tr><td>AI Streaming</td><td><code>streamText()</code> del AI SDK con <code>onFinish</code> para persistencia</td></tr>
+  <tr><td>State Management</td><td>Zustand stores por dominio (projects, phases, agents)</td></tr>
+  <tr><td>Focus Trap</td><td>Custom hook <code>useFocusTrap</code> para modales accesibles</td></tr>
+</table>
+
+<h3>Configuracion de Seguridad (next.config.ts)</h3>
+<ul class="status-list">
+  <li>X-Frame-Options: DENY (previene clickjacking)</li>
+  <li>X-Content-Type-Options: nosniff</li>
+  <li>Referrer-Policy: strict-origin-when-cross-origin</li>
+  <li>Permissions-Policy: camera=(), microphone=(), geolocation=()</li>
+  <li>poweredByHeader: false</li>
+  <li>React Strict Mode: enabled</li>
+  <li>Source maps: eliminados despues de upload a Sentry</li>
+</ul>
+
+<!-- 5. BASE DE DATOS -->
+<h2 id="db" class="section-break">5. Base de Datos — 18 Migraciones</h2>
+<table>
+  <tr><th>#</th><th>Tabla</th><th>Columnas Principales</th><th>RLS</th></tr>
+  <tr><td>001</td><td><code>user_profiles</code></td><td>id, full_name, persona, plan, trial_ends_at, subscription_status, onboarding_completed/step</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>002</td><td><code>projects</code></td><td>id, user_id, name, description, industry, current_phase, status, last_activity</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>003</td><td><code>project_phases</code></td><td>id, project_id, phase_number (0-7), status, started_at, completed_at, approved_at</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>004</td><td><code>phase_sections</code></td><td>id, project_id, phase_number, section, status, approved_at</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>005</td><td><code>agent_conversations</code></td><td>id, project_id, phase_number, section, agent_type, messages (JSONB)</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>006</td><td><code>project_documents</code></td><td>id, project_id, phase_number, section, document_type, storage_path, content, version, status</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>007</td><td><code>project_features</code></td><td>id, project_id, name, description, display_order, status, suggested_by</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>008</td><td><code>feature_documents</code></td><td>id, feature_id, project_id, document_type (requirements/design/tasks), content, version, status</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>009</td><td><code>conversation_threads</code></td><td>id, project_id, agent_type, title, messages (JSONB), message_count, attachments</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>010</td><td><code>design_artifacts</code></td><td>id, project_id, type, screen_name, flow_name, storage_path, status, prompt_used</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>013</td><td><code>project_tasks</code></td><td>id, project_id, feature_id, task_key, title, category, status (todo/in_progress/review/done)</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>016</td><td colspan="2"><em>Agrega trial_ends_at y subscription_status a user_profiles + actualiza trigger</em></td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>017</td><td><code>ai_usage_events</code> + <code>user_profiles.role</code></td><td>Registro de uso/costos IA; roles user / financial_admin / super_admin</td><td><span class="badge badge-ok">Si</span></td></tr>
+  <tr><td>018</td><td colspan="2"><em>RLS: policy <code>feature_documents</code> con <code>WITH CHECK</code> para INSERT/UPSERT</em></td><td><span class="badge badge-ok">Si</span></td></tr>
+</table>
+<p><strong>Triggers automaticos:</strong> auto-creacion de user_profile en signup, inicializacion de 8 fases al crear proyecto, updated_at en todas las tablas.</p>
+<p><strong>Storage Buckets:</strong> <code>project-designs</code>, <code>project-documents</code></p>
+
+<!-- 6. API ROUTES -->
+<h2 id="api" class="section-break">6. API Routes — 32+ Endpoints</h2>
+
+<h3>Autenticacion (4 endpoints)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th><th>Rate Limit</th></tr>
+  <tr><td>POST</td><td><code>/api/auth/login</code></td><td>Login con email/password</td><td>5/15min</td></tr>
+  <tr><td>POST</td><td><code>/api/auth/register</code></td><td>Registro con validacion Zod</td><td>5/15min</td></tr>
+  <tr><td>POST</td><td><code>/api/auth/forgot-password</code></td><td>Reset password (no enumera emails)</td><td>3/15min</td></tr>
+  <tr><td>POST</td><td><code>/api/auth/signout</code></td><td>Cierre de sesion</td><td>—</td></tr>
+</table>
+
+<h3>Usuario y Onboarding (3 endpoints)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
+  <tr><td>PATCH</td><td><code>/api/user/profile</code></td><td>Actualizar nombre de usuario</td></tr>
+  <tr><td>PATCH</td><td><code>/api/onboarding/step</code></td><td>Persistir paso de onboarding</td></tr>
+  <tr><td>POST</td><td><code>/api/onboarding/complete</code></td><td>Completar onboarding, crear proyecto, redirect a Phase 00</td></tr>
+</table>
+
+<h3>Proyectos (3 endpoints)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
+  <tr><td>GET</td><td><code>/api/projects</code></td><td>Listar proyectos con progreso y resumen</td></tr>
+  <tr><td>POST</td><td><code>/api/projects</code></td><td>Crear proyecto (con guard de plan)</td></tr>
+  <tr><td>PATCH</td><td><code>/api/projects/[id]</code></td><td>Editar/archivar proyecto</td></tr>
+</table>
+
+<h3>Fases (16+ endpoints)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
+  <tr><td>GET</td><td><code>/api/projects/[id]/phases</code></td><td>Listar 8 fases del proyecto</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/0/chat</code></td><td>Chat streaming Phase 00 (5 secciones)</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/0/approve</code></td><td>Aprobar Phase 00, desbloquear Phase 01</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/1/approve</code></td><td>Aprobar Phase 01, desbloquear Phase 02</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/2/chat</code></td><td>Chat streaming Phase 02 (arquitectura)</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/2/approve</code></td><td>Aprobar Phase 02</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/[3-7]/approve</code></td><td>Aprobar fases 03-07</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/[3,5,6,7]/sections/[section]/toggle</code></td><td>Toggle checklist items</td></tr>
+</table>
+
+<h3>Features y KIRO (3 endpoints)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
+  <tr><td>GET/POST</td><td><code>/api/projects/[id]/phases/1/features</code></td><td>CRUD features (con plan guard)</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/1/features/suggest</code></td><td>AI sugiere 3-6 features</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/phases/1/features/[fId]/documents/generate</code></td><td>Generar doc KIRO (requirements/design/tasks)</td></tr>
+</table>
+
+<h3>Agentes (3 endpoints)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
+  <tr><td>GET</td><td><code>/api/projects/[id]/agents</code></td><td>Listar agentes con plan requirements</td></tr>
+  <tr><td>GET/POST</td><td><code>/api/projects/[id]/agents/[type]/threads</code></td><td>CRUD conversation threads</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/agents/[type]/threads/[id]/chat</code></td><td>Chat streaming con agente</td></tr>
+</table>
+
+<h3>Disenos (3 endpoints)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
+  <tr><td>GET</td><td><code>/api/projects/[id]/designs</code></td><td>Listar artefactos de diseno</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/designs/generate</code></td><td>Generar wireframes/mockups (10/hr rate limit)</td></tr>
+  <tr><td>POST</td><td><code>/api/projects/[id]/designs/[id]/refine</code></td><td>Refinar diseno existente</td></tr>
+</table>
+
+<h3>Billing (2 endpoints)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th><th>Estado</th></tr>
+  <tr><td>POST</td><td><code>/api/billing/checkout</code></td><td>Crear sesion Stripe checkout</td><td><span class="badge badge-warn">Parcial</span></td></tr>
+  <tr><td>POST</td><td><code>/api/billing/webhook</code></td><td>Webhook Stripe (checkout, cancel, payment failed)</td><td><span class="badge badge-warn">Parcial</span></td></tr>
+</table>
+
+<h3>Admin financiero (v0.2.0)</h3>
+<table>
+  <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr>
+  <tr><td>GET</td><td><code>/api/admin/finance/overview</code></td><td>Resumen de costes IA por usuario/mes (rol financial_admin)</td></tr>
+  <tr><td>GET</td><td><code>/api/admin/finance/users/[userId]</code></td><td>Detalle de uso y costes por cliente</td></tr>
+</table>
+
+<!-- 7. COMPONENTES -->
+<h2 id="componentes" class="section-break">7. Inventario de Componentes — 97 Total</h2>
+<table>
+  <tr><th>Directorio</th><th>Componentes</th><th>Proposito</th></tr>
+  <tr><td><code>phase-00/</code></td><td>12</td><td>Discovery: chat, docs, approval gates, streaming</td></tr>
+  <tr><td><code>phase-01/</code></td><td>9</td><td>KIRO specs: features list, document generation, chat</td></tr>
+  <tr><td><code>phase-02/</code></td><td>5</td><td>Arquitectura: sections, chat, document viewer</td></tr>
+  <tr><td><code>phase-03/</code></td><td>3</td><td>Environment: checklist categories</td></tr>
+  <tr><td><code>phase-04/</code></td><td>5</td><td>Development: Kanban board, columns, task cards</td></tr>
+  <tr><td><code>phase-05/</code></td><td>2</td><td>Testing: layout + approval gate</td></tr>
+  <tr><td><code>phase-06/</code></td><td>2</td><td>Launch: layout + approval gate</td></tr>
+  <tr><td><code>phase-07/</code></td><td>2</td><td>Iteration: layout + approval gate</td></tr>
+  <tr><td><code>agents/</code></td><td>12</td><td>Agent selector, chat, threads, floating button, drawer</td></tr>
+  <tr><td><code>shared/</code></td><td>12</td><td>Chat, documents, paywall, plan guard, trial banner, toast</td></tr>
+  <tr><td><code>dashboard/</code></td><td>11</td><td>Project cards, grid, modals, progress, timeline</td></tr>
+  <tr><td><code>design/</code></td><td>3</td><td>Design generator, chat, artifact detail</td></tr>
+  <tr><td><code>projects/</code></td><td>4</td><td>Phases stepper, tools, suggestions, mobile drawer</td></tr>
+  <tr><td><code>settings/</code></td><td>2</td><td>Profile + billing sections</td></tr>
+  <tr><td><code>onboarding/</code></td><td>4</td><td>Welcome, persona, project, phases overview</td></tr>
+  <tr><td><code>auth/</code></td><td>1</td><td>OAuth button (Google)</td></tr>
+</table>
+
+<h3>Zustand Stores (5)</h3>
+<table>
+  <tr><th>Store</th><th>Dominio</th></tr>
+  <tr><td><code>useProjectsStore</code></td><td>Lista de proyectos, add/update/archive</td></tr>
+  <tr><td><code>usePhase00Store</code></td><td>Secciones Phase 00, documentos, estados</td></tr>
+  <tr><td><code>usePhase01Store</code></td><td>Features, documentos KIRO, conversaciones</td></tr>
+  <tr><td><code>usePhase02Store</code></td><td>Secciones arquitectura, documentos</td></tr>
+  <tr><td><code>useAgentsStore</code></td><td>Seleccion de agente, threads, streaming</td></tr>
+</table>
+
+<!-- 8. AGENTES -->
+<h2 id="agentes" class="section-break">8. Sistema de Agentes IA — 9 Agentes</h2>
+<table>
+  <tr><th>Agente</th><th>Icon</th><th>Especialidad</th><th>Plan Minimo</th></tr>
+  <tr><td><strong>CTO Virtual</strong></td><td>🧠</td><td>Vision holistica, delegacion, metodologia IA DLC</td><td><span class="badge badge-ok">Starter</span></td></tr>
+  <tr><td><strong>Product Architect</strong></td><td>📐</td><td>Producto, priorizacion, scope, user stories</td><td><span class="badge badge-info">Builder</span></td></tr>
+  <tr><td><strong>System Architect</strong></td><td>🏗️</td><td>Arquitectura, patrones, tecnologias, diagramas</td><td><span class="badge badge-info">Builder</span></td></tr>
+  <tr><td><strong>UI/UX Designer</strong></td><td>🎨</td><td>Wireframes, mockups, guias de estilo, flujos</td><td><span class="badge badge-info">Builder</span></td></tr>
+  <tr><td><strong>Lead Developer</strong></td><td>💻</td><td>Implementacion, codigo, debugging, best practices</td><td><span class="badge badge-info">Builder</span></td></tr>
+  <tr><td><strong>DB Admin</strong></td><td>🗄️</td><td>Esquemas, queries, RLS, migraciones, performance</td><td><span class="badge badge-info">Builder</span></td></tr>
+  <tr><td><strong>QA Engineer</strong></td><td>🧪</td><td>Test cases, estrategia de testing, checklists</td><td><span class="badge badge-info">Builder</span></td></tr>
+  <tr><td><strong>DevOps Engineer</strong></td><td>🚀</td><td>CI/CD, deploy, monitoring, infraestructura</td><td><span class="badge badge-info">Builder</span></td></tr>
+  <tr><td><strong>Operator</strong></td><td>🛠️</td><td>Repos, pipelines, deploys end-to-end</td><td><span class="badge badge-warn">Agency</span></td></tr>
+</table>
+<p><strong>AI Model:</strong> Anthropic Claude via <code>@ai-sdk/anthropic</code> + <code>ai</code> SDK. Streaming con <code>streamText()</code>, persistencia en <code>agent_conversations</code> y <code>conversation_threads</code>.</p>
+
+<!-- 9. FASES -->
+<h2 id="fases">9. Sistema de 8 Fases (IA DLC)</h2>
+<table>
+  <tr><th>Fase</th><th>Nombre</th><th>Entregables</th><th>UI</th><th>API</th><th>Tests</th></tr>
+  <tr><td>00</td><td>Discovery & Ideation</td><td>Brief, personas, value prop, metrics, competitive</td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>01</td><td>Requirements & Spec</td><td>KIRO specs: requirements, design, tasks por feature</td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>02</td><td>Architecture & Design</td><td>System arch, DB schema, API design, ADRs, wireframes</td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>03</td><td>Environment Setup</td><td>Checklist: repo, CI/CD, DB, env vars</td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>04</td><td>Core Development</td><td>Kanban board con tasks de KIRO specs</td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>05</td><td>Testing & QA</td><td>Checklist de QA y testing</td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>06</td><td>Launch & Deployment</td><td>Checklist de lanzamiento</td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>07</td><td>Iteration & Growth</td><td>Checklist de feedback y mejora</td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td><td><span class="badge badge-ok">OK</span></td></tr>
+</table>
+
+<!-- 10. PLANES -->
+<h2 id="planes" class="section-break">10. Sistema de Planes y Billing</h2>
+<h3>Planes</h3>
+<table>
+  <tr><th>Plan</th><th>Precio</th><th>Proyectos</th><th>Fases</th><th>Agentes</th></tr>
+  <tr><td>Free (post-trial)</td><td>$0</td><td>1</td><td>00-01</td><td>CTO Virtual</td></tr>
+  <tr><td>Starter</td><td>$149/mes</td><td>1</td><td>00-04</td><td>CTO + 3</td></tr>
+  <tr><td>Builder</td><td>$299/mes</td><td>3</td><td>00-07</td><td>8 agentes</td></tr>
+  <tr><td>Agency</td><td>$699/mes</td><td>10</td><td>00-07</td><td>9 agentes + Operator</td></tr>
+  <tr><td>Enterprise</td><td>Contactar</td><td>Ilimitados</td><td>00-07</td><td>Dedicados</td></tr>
+</table>
+
+<h3>Guards de Acceso</h3>
+<table>
+  <tr><th>Funcion</th><th>Regla</th><th>Estado</th></tr>
+  <tr><td><code>canAccessPhase()</code></td><td>Phase 0-1 siempre gratis; 2+ requiere trial o pago</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+  <tr><td><code>canCreateProject()</code></td><td>Limite por plan (1/1/3/10/∞)</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+  <tr><td><code>canUseAgent()</code></td><td>Free: solo CTO; paid: segun plan hierarchy</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+  <tr><td><code>canCreateFeatureInPhase01()</code></td><td>Free: max 1; trial/paid: ilimitado</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+</table>
+
+<h3>Componentes UI de Billing</h3>
+<table>
+  <tr><th>Componente</th><th>Estado</th></tr>
+  <tr><td>TrialBanner (countdown + CTA)</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+  <tr><td>PaywallModal (plan comparison)</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+  <tr><td>PlanGuard (wrapper component)</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+  <tr><td>PlanLimitModal (project limits)</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+  <tr><td>BillingSection (settings page)</td><td><span class="badge badge-ok">Implementado</span></td></tr>
+</table>
+
+<h3>Stripe Integration</h3>
+<table>
+  <tr><th>Item</th><th>Estado</th></tr>
+  <tr><td>Checkout API route</td><td><span class="badge badge-warn">Parcial — usa HTTP crudo, no SDK</span></td></tr>
+  <tr><td>Webhook handler</td><td><span class="badge badge-warn">Parcial — sin verificacion de firma</span></td></tr>
+  <tr><td>Stripe SDK instalado</td><td><span class="badge badge-error">No</span></td></tr>
+  <tr><td>Variables de entorno</td><td><span class="badge badge-error">No configuradas</span></td></tr>
+  <tr><td>Productos/Precios en Stripe</td><td><span class="badge badge-error">No creados</span></td></tr>
+  <tr><td>Customer Portal</td><td><span class="badge badge-error">No implementado</span></td></tr>
+</table>
+
+<!-- 11. SEGURIDAD -->
+<h2 id="seguridad">11. Seguridad y Rate Limiting</h2>
+<table>
+  <tr><th>Control</th><th>Implementacion</th><th>Estado</th></tr>
+  <tr><td>Row Level Security</td><td>Habilitado en TODAS las tablas con politicas per-user</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Auth Middleware</td><td>Session refresh + redirect en cada request</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Input Validation</td><td>Zod schemas en todos los endpoints</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Rate Limiting — Auth</td><td>5 intentos / 15 min per IP</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Rate Limiting — Forgot Pass</td><td>3 intentos / 15 min per IP</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Rate Limiting — Agent Chat</td><td>30 mensajes / hora per user</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Rate Limiting — Design Gen</td><td>10 generaciones / hora per user</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Security Headers</td><td>X-Frame-Options, CSP, Referrer-Policy</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Email Enumeration</td><td>forgot-password siempre retorna success</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Error Tracking</td><td>Sentry (10% trace, 100% error replay)</td><td><span class="badge badge-ok">OK</span></td></tr>
+  <tr><td>Webhook Signature</td><td>Stripe webhook sin verificacion criptografica</td><td><span class="badge badge-warn">Parcial</span></td></tr>
+</table>
+
+<!-- 12. TESTS -->
+<h2 id="tests" class="section-break">12. Cobertura de Tests — 48 Archivos</h2>
+<table>
+  <tr><th>Tipo</th><th>Cantidad</th><th>Framework</th><th>Cobertura</th></tr>
+  <tr><td>Unit Tests</td><td>14 archivos</td><td>Vitest + jsdom</td><td>Agents, prompts, validations, rate-limit, plans</td></tr>
+  <tr><td>Integration Tests</td><td>12 archivos</td><td>Vitest</td><td>Phase 00-07 approve, chat, features, designs, threads</td></tr>
+  <tr><td>E2E Tests</td><td>20 archivos</td><td>Playwright</td><td>Auth, phases, agents, billing, paywall, smoke</td></tr>
+  <tr><td>Auth Setup</td><td>1 archivo</td><td>Playwright</td><td>Session persistence para tests autenticados</td></tr>
+</table>
+
+<h3>Configuracion</h3>
+<ul>
+  <li><strong>Vitest:</strong> jsdom environment, globals, @vitejs/plugin-react, path alias <code>@/</code></li>
+  <li><strong>Playwright:</strong> Chromium, parallel, 2 retries en CI, auto-start dev server, authenticated + unauthenticated projects</li>
+</ul>
+
+<!-- 13. DOCS -->
+<h2 id="docs">13. Documentacion — 43+ Archivos</h2>
+<table>
+  <tr><th>Fase</th><th>Archivos</th><th>Contenido</th></tr>
+  <tr><td>00-Discovery</td><td>5</td><td>Brief, personas, value prop, metrics, competitive analysis</td></tr>
+  <tr><td>01-Specs</td><td>18+</td><td>PRD, requirements, MoSCoW, constraints, pricing + 6 feature specs (3 docs c/u) + 5 phase tasks</td></tr>
+  <tr><td>02-Architecture</td><td>10</td><td>System arch, DB schema, folder structure, design tokens + 6 ADRs</td></tr>
+  <tr><td>03-Environment</td><td>1</td><td>Setup instructions</td></tr>
+  <tr><td>04-Development</td><td>1</td><td>Development guidelines</td></tr>
+  <tr><td>05-QA</td><td>4</td><td>E2E tests, persona evaluation, RLS audit, smoke results</td></tr>
+  <tr><td>06-Ops</td><td>2</td><td>Sentry setup, migration procedures</td></tr>
+  <tr><td>Root</td><td>2</td><td>CLAUDE.md (instrucciones CTO), docs README</td></tr>
+</table>
+
+<h3>Architecture Decision Records (ADRs)</h3>
+<table>
+  <tr><th>ADR</th><th>Decision</th></tr>
+  <tr><td>001</td><td>Stack Selection: Next.js + TypeScript + Tailwind + Supabase</td></tr>
+  <tr><td>002</td><td>Supabase Auth (vs NextAuth, Clerk)</td></tr>
+  <tr><td>003</td><td>Vercel AI SDK para integracion con Claude</td></tr>
+  <tr><td>004</td><td>Document Storage en Supabase Storage</td></tr>
+  <tr><td>005</td><td>Agent Architecture: multi-agent con prompts especializados</td></tr>
+  <tr><td>006</td><td>Provider Abstraction: AI SDK como capa de abstraccion</td></tr>
+</table>
+
+<!-- 14. AVANCES -->
+<h2 id="avances" class="section-break">14. Estado de Avance</h2>
+
+<h3>Sprint 1 — Fundacion</h3>
+<table>
+  <tr><th>Entregable</th><th>Estado</th></tr>
+  <tr><td>Auth completo (login, register, forgot, OAuth)</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Dashboard con CRUD de proyectos</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Phase 00 — Discovery interactivo</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Phase 01 — KIRO Spec Generator</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Phase 02 — Architecture & Design</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Phases 03-07 — UI + API + checklists + Kanban</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Orchestrator + 9 agentes IA</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Onboarding flow (4 pasos)</td><td><span class="badge badge-ok">Completado</span></td></tr>
+</table>
+
+<h3>Sprint 2 — Monetizacion + Polish</h3>
+<table>
+  <tr><th>Entregable</th><th>Estado</th></tr>
+  <tr><td>Sistema de planes y guards</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>TrialBanner + PaywallModal + PlanGuard</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Design Generator API routes</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Test coverage (48 archivos)</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>UX Polish: dashboard, sidebar, dark mode, mobile</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>SEO metadata (OpenGraph, Twitter cards)</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Landing page publica</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Sentry error tracking configurado</td><td><span class="badge badge-ok">Completado</span></td></tr>
+  <tr><td>Stripe checkout + webhook</td><td><span class="badge badge-warn">Parcial</span></td></tr>
+  <tr><td>Seed data / demo project</td><td><span class="badge badge-error">Pendiente</span></td></tr>
+  <tr><td>Emails transaccionales (Resend)</td><td><span class="badge badge-error">Pendiente</span></td></tr>
+</table>
+
+<!-- 15. GAPS -->
+<h2 id="gaps" class="section-break">15. Gaps y Recomendaciones</h2>
+
+<h3>Criticos (bloquean monetizacion)</h3>
+<table>
+  <tr><th>#</th><th>Gap</th><th>Impacto</th><th>Esfuerzo</th></tr>
+  <tr><td>1</td><td>Instalar Stripe SDK y reemplazar HTTP crudo</td><td>Alto</td><td>2-3h</td></tr>
+  <tr><td>2</td><td>Configurar productos/precios en Stripe Dashboard</td><td>Alto</td><td>30min</td></tr>
+  <tr><td>3</td><td>Agregar verificacion de firma en webhook</td><td>Alto (seguridad)</td><td>1h</td></tr>
+  <tr><td>4</td><td>Configurar variables Stripe en Vercel + .env.local</td><td>Alto</td><td>15min</td></tr>
+</table>
+
+<h3>Importantes (mejoran UX)</h3>
+<table>
+  <tr><th>#</th><th>Gap</th><th>Impacto</th><th>Esfuerzo</th></tr>
+  <tr><td>5</td><td>Seed data / demo project para usuarios nuevos</td><td>Medio</td><td>2h</td></tr>
+  <tr><td>6</td><td>Stripe Customer Portal (gestionar suscripcion)</td><td>Medio</td><td>2h</td></tr>
+  <tr><td>7</td><td>Emails transaccionales via Resend (welcome, trial ending, payment failed)</td><td>Medio</td><td>3h</td></tr>
+  <tr><td>8</td><td>CI/CD: copiar ci.yml a .github/workflows/</td><td>Medio</td><td>15min</td></tr>
+</table>
+
+<h3>Nice-to-have</h3>
+<table>
+  <tr><th>#</th><th>Gap</th><th>Impacto</th><th>Esfuerzo</th></tr>
+  <tr><td>9</td><td>Historial de facturas (Stripe invoices)</td><td>Bajo</td><td>2h</td></tr>
+  <tr><td>10</td><td>Notificaciones push/email por eventos de billing</td><td>Bajo</td><td>3h</td></tr>
+  <tr><td>11</td><td>Mas custom hooks (useMediaQuery, useDebounce)</td><td>Bajo</td><td>1h</td></tr>
+  <tr><td>12</td><td>Lighthouse audit y optimizacion de performance</td><td>Bajo</td><td>2h</td></tr>
+</table>
+
+<div class="footer">
+  <p>Informe generado automaticamente — AI Squad Command Center Audit<br>
+  Base: 16 de Marzo, 2026 (v0.1.0) · Actualizado: 8 de Marzo, 2026 (v0.2.0)</p>
+</div>
+
+</body>
+</html>
