@@ -1,9 +1,23 @@
 # Tasks: Generador de diseños UI/UX
 
-**Feature:** Generador de diseños UI/UX (wireframes y mockups)
+**Feature:** Generador de diseños UI/UX (wireframes y mockups) + hub Diseño & UX
 **Fase IA DLC:** Phase 02 — Architecture & Design
-**Fecha:** 2026-03-08
-**Status:** Pendiente aprobacion CEO/CPO
+**Fecha:** 2026-03-08 · sincronizado con código marzo 2026
+**Status:** Checklist histórico; ver **Estado en código** abajo para lo ya entregado
+
+---
+
+## Estado en código (marzo 2026) — sincronizar con este checklist
+
+Entregado en aplicación (puede no cubrir todos los ítems numerados inferiores):
+
+- [x] **HUB:** Vista `/projects/[id]/designs` como hub **Diseño & UX** — Camino A (generate + lista + detalle) y Camino B (6 herramientas + chat con contexto Discovery y `design-tool-workflow`).
+- [x] **API:** `POST .../designs/generate`, `GET .../designs`, `GET/PATCH .../designs/[id]`, `POST .../refine` (ver `src/app/api/projects/[id]/designs/`).
+- [x] **Tipos:** `src/types/design.ts` y validaciones en `src/lib/validations/designs.ts` (si existen).
+- [x] **UX:** `ProjectBreadcrumb`, `ProjectTools` («Diseño & UX»), `ArtifactDetail` con CTA al hub.
+- [x] **ADR-007** en `docs/02-architecture/decisions/ADR-007-design-hub-two-path-ux.md`.
+
+Pendiente típico respecto al spec original: bloque explícito en Phase 02 (TASK-016), thumbnails en lista, job asíncrono dedicado si se separa del flujo actual, TASK-020 detección en chat, E2E dedicado.
 
 ---
 

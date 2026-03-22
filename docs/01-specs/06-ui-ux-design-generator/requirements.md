@@ -1,13 +1,19 @@
 # Requirements: Generador de diseños UI/UX
 
-**Feature:** Generador de diseños UI/UX (wireframes y mockups)
+**Feature:** Generador de diseños UI/UX (wireframes y mockups) + hub Diseño & UX
 **Fase IA DLC:** Phase 02 — Architecture & Design (integrado)
-**Fecha:** 2026-03-08
-**Status:** Pendiente aprobacion CEO/CPO
+**Fecha:** 2026-03-08 · revisión hub: marzo 2026
+**Status:** En evolución — ver `design.md` y ADR-007
 
 ---
 
 ## User Stories
+
+### Hub Diseño & UX (dos caminos)
+
+- Como usuario, quiero ver **dos caminos claros** en `/projects/[id]/designs` (pantallas guardadas vs. conversaciones con el agente para kit de diseño), para saber qué acción tomar en cada momento.
+- Como usuario, quiero que el **breadcrumb** refleje si estoy en una fase, en Diseño & UX o viendo un artefacto, para no perder el contexto de navegación.
+- Como usuario, quiero que el agente UI/UX reciba **personas y propuesta de valor** del Discovery aprobado al abrir una herramienta del kit, para que los entregables estén alineados al negocio.
 
 ### Generación de diseños
 
@@ -46,6 +52,12 @@
 - Cada ítem muestra: nombre de pantalla/flujo, tipo (wireframe / mockup), fecha de generación y miniatura o preview.
 - Al hacer clic en un diseño se abre una vista de detalle (imagen o visualización a tamaño completo) con opción de descarga.
 - Los diseños se almacenan de forma persistente (base de datos + archivos en Storage o equivalente) y sobreviven a recargas y sesiones.
+
+### Hub y navegación
+
+- La vista de diseños presenta al menos dos bloques diferenciados (Camino A y Camino B) con copy orientado a resultado (qué se guarda vs. qué ocurre en el chat).
+- Las herramientas del kit muestran orden sugerido y el resultado esperado en lenguaje no técnico.
+- El detalle de un artefacto del Camino A enlaza de vuelta al hub para continuar con el Camino B cuando corresponda.
 
 ### Integración
 

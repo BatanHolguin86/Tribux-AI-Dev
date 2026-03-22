@@ -17,7 +17,11 @@ const AGENTS = [
   { name: 'CTO Virtual', desc: 'Tu punto de contacto principal. Guia cada decision.', icon: '🧠' },
   { name: 'Product Architect', desc: 'Define alcance, prioriza features y valida product-market fit.', icon: '📐' },
   { name: 'System Architect', desc: 'Elige tecnologias, define patrones y crea diagramas.', icon: '🏛️' },
-  { name: 'UI/UX Designer', desc: 'Wireframes, mockups, guias de estilo y flujos de usuario.', icon: '🎨' },
+  {
+    name: 'UI/UX Designer',
+    desc: 'Hub Diseño & UX: pantallas guardadas + kit (style guide, componentes, flujos, responsive) con contexto Discovery.',
+    icon: '🎨',
+  },
   { name: 'Lead Developer', desc: 'Escribe codigo, resuelve bugs y aplica best practices.', icon: '👨‍💻' },
   { name: 'DB Admin', desc: 'Esquemas, queries, RLS y migraciones.', icon: '🗄️' },
   { name: 'QA Engineer', desc: 'Test cases, estrategia de testing y checklists.', icon: '✅' },

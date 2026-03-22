@@ -251,7 +251,7 @@ export async function buildFullProjectContext(projectId: string): Promise<{
   }
 }
 
-/** Context for Design Generator: personas, value prop, project — used in UI + enriched chat prompts */
+/** Context for hub Diseño & UX (Camino B): personas, value prop, project — UI + enriched UI/UX Designer prompts */
 export type DesignWorkflowContext = {
   projectName: string
   description: string | null

@@ -112,7 +112,7 @@ export function buildDesignToolInitialUserMessage(
   const stepsBlock = flow.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')
 
   return [
-    '## Modo de trabajo: CTO + UI/UX Designer (Design Generator)',
+    '## Modo de trabajo: CTO + UI/UX Designer (hub Diseño & UX — AI Squad)',
     '',
     `Herramienta activa: **${templateTitle}**.`,
     '',

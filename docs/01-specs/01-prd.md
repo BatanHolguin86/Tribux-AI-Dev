@@ -80,7 +80,7 @@ La plataforma no restringe el tipo de producto. El orquestador y los agentes esp
 | M3 | Phase 00 Interactivo | Flujo guiado de discovery con orquestador IA |
 | M4 | Generador KIRO | Phase 01 interactivo — genera requirements, design y tasks |
 | M5 | Orquestador + Agentes | Interfaz de chat con CTO Virtual y 8 agentes especializados (incl. UI/UX Designer y Operator) |
-| M6 | Phase 02 Interactivo | Guia interactiva para arquitectura, ADRs y generacion de diseños UI/UX (wireframes, mockups) |
+| M6 | Phase 02 Interactivo | Guia interactiva para arquitectura, ADRs y hub **Diseño & UX** (pantallas guardadas + kit con agente; wireframes/mockups) |
 | M7 | Phase 03 Interactivo | Checklist guiado de environment setup (Supabase, Vercel, GitHub) |
 | M8 | Phase 04 Interactivo | Kanban de tasks generadas en KIRO + integracion con chat de agentes |
 | M9 | Phase 05 Interactivo | Generador de test cases y reporte de QA |
@@ -228,7 +228,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 ### M6 — Phase 02 Interactivo
 - Conversacion guiada para definir arquitectura del sistema
 - Generacion de ADRs y diagramas
-- Generacion de diseños UI/UX (wireframes y mockups) a partir de specs — agente UI/UX Designer y vista de diseños en el proyecto
+- Hub **Diseño & UX** en el proyecto: generación de pantallas (wireframes/mockups) + conversaciones guiadas con UI/UX Designer (style guide, componentes, flujos, responsive), con contexto Discovery — ver spec `06-ui-ux-design-generator` y ADR-007
 - Gate de aprobacion y desbloqueo de Phase 03
 
 ### M7 — Phase 03 Interactivo

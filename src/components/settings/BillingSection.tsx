@@ -11,7 +11,7 @@ const PLAN_DETAILS: Record<string, { name: string; price: string; features: stri
   builder: {
     name: 'Builder',
     price: '$299/mes',
-    features: ['3 proyectos', '8 agentes', 'Phases 02-07', 'Design Generator'],
+    features: ['3 proyectos', '8 agentes', 'Phases 02-07', 'Diseño & UX (hub)'],
   },
   agency: {
     name: 'Agency',

@@ -31,8 +31,8 @@ El desarrollo de cualquier producto o solucion tecnologica sigue estas 8 fases s
 - Disenar la arquitectura del sistema (diagramas, flujos, modelos de datos)
 - Seleccionar stack tecnologico justificado
 - Definir APIs, esquemas de base de datos, estructura de carpetas
-- **Diseño UI/UX:** generar wireframes y mockups a partir de design.md y user flows (delegar al agente UI/UX Designer)
-- Output: `docs/02-architecture/` con diagramas y ADRs; `docs/design/` con wireframes y mockups
+- **Diseño UI/UX (hub en app):** ruta `/projects/[id]/designs` como **Diseño & UX** con **Camino A** (pantallas visuales guardadas vía API generate) y **Camino B** (kit con agente: wireframes en chat, style guide, component library, user flows, responsive, custom), con contexto Discovery inyectado y guion CTO+UX (`src/lib/design/design-tool-workflow.ts`). Ver ADR-007.
+- Output: `docs/02-architecture/` con diagramas y ADRs; artefactos visuales en proyecto + entregables de conversación con UI/UX Designer
 
 ### Phase 03 — Environment Setup
 - Configurar repositorio, CI/CD, variables de entorno, infraestructura base
@@ -217,6 +217,8 @@ Librerias, servicios externos, features previas necesarias.
 │   │   └── page.tsx
 │   ├── components/              # Componentes React reutilizables
 │   │   ├── ui/                  # Componentes base (shadcn/ui)
+│   │   ├── design/              # Hub Diseño & UX (DesignGenerator, DesignChat, ArtifactDetail)
+│   │   ├── projects/            # PhasesStepper, ProjectTools, ProjectBreadcrumb, etc.
 │   │   └── {feature}/           # Componentes por feature
 │   ├── lib/                     # Utilidades y configuraciones
 │   │   ├── supabase/            # Cliente Supabase (server y client)
@@ -297,7 +299,7 @@ El orquestador puede delegar a estos agentes segun la tarea. En v1.0, al abrir e
 | Agente | Responsabilidad |
 |--------|----------------|
 | **Architect** | Disenar sistemas, elegir tecnologias, revisar ADRs |
-| **UI/UX Designer** | Generar wireframes y mockups a partir de specs y user flows; guias de estilo; mantener consistencia visual antes del desarrollo |
+| **UI/UX Designer** | Camino B del hub Diseño & UX: wireframes en conversación, style guide, component library, flows, responsive; Camino A complementa con generate guardado en `design_artifacts`; modo CTO+UX en primer mensaje |
 | **Frontend Dev** | Implementar UI/UX siguiendo diseños generados, componentes, integraciones de API |
 | **Backend Dev** | API routes, logica de negocio, integraciones de servicios |
 | **DB Admin** | Esquemas Supabase, migraciones, RLS, optimizacion de queries |

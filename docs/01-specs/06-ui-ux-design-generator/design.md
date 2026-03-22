@@ -1,15 +1,28 @@
 # Design: Generador de diseños UI/UX
 
-**Feature:** Generador de diseños UI/UX (wireframes y mockups)
+**Feature:** Generador de diseños UI/UX (wireframes y mockups) + hub **Diseño & UX**
 **Fase IA DLC:** Phase 02 — Architecture & Design
-**Fecha:** 2026-03-08
-**Status:** Pendiente aprobacion CEO/CPO
+**Fecha:** 2026-03-08 · revisión hub dos caminos: marzo 2026
+**Status:** En evolución — hub y APIs base implementados en código; revisar checklist `tasks.md`
 
 ---
 
 ## Overview
 
 El generador de diseños UI/UX permite, tras completar Phase 01 (KIRO), producir wireframes y mockups a partir de `design.md` y user flows. Un agente IA dedicado (UI/UX Designer) recibe el contexto del proyecto y de los specs, y genera artefactos visuales que se almacenan en el proyecto y se muestran en una vista dedicada. El usuario puede solicitar generación por pantalla/flujo, refinar con instrucciones en lenguaje natural y marcar diseños como aprobados para desarrollo. Los artefactos se guardan en Supabase Storage; los metadatos y el estado (aprobado, borrador) en PostgreSQL con RLS.
+
+### Hub «Diseño & UX» en la aplicación (marzo 2026)
+
+La vista `/projects/[id]/designs` actúa como **hub** con **dos caminos** explícitos (decisión documentada en **ADR-007**):
+
+| Camino | Nombre en UI | Objetivo | Implementación resumida |
+|--------|----------------|----------|-------------------------|
+| **A** | Pantallas visuales | Wireframes/mockups **persistidos** en el proyecto | Formulario (pantallas por coma, tipo, refinamiento) → `POST /api/projects/[id]/designs/generate` → lista **Diseños generados** y detalle `/designs/[artifactId]` |
+| **B** | Kit de diseño con agente | Style guide, component library, user flows, responsive, petición custom | Tarjetas con orden sugerido 1→6: crean hilo `ui_ux_designer`; primer mensaje compuesto con `getDesignWorkflowContext` (personas, value proposition, proyecto) + guion por herramienta (`src/lib/design/design-tool-workflow.ts`) |
+
+**Navegación:** `ProjectBreadcrumb` refleja si el usuario está en una fase, en Diseño & UX, en detalle de artefacto o en Agentes IA (`/experts`), evitando breadcrumbs engañosos.
+
+**Archivos clave:** `DesignGenerator.tsx`, `DesignChat.tsx`, `ArtifactDetail.tsx`, `design-tool-workflow.ts`, `context-builder.ts`, `ProjectBreadcrumb.tsx`, `ProjectTools.tsx`.
 
 ---
 
@@ -163,15 +176,18 @@ Pide al agente UI/UX Designer que refine el diseño con una nueva instrucción. 
 ### Rutas
 
 ```
-/projects/[id]/phase/02          → Phase 02 incluye bloque "Diseño UI/UX"
-/projects/[id]/designs           → Vista lista de diseños (wireframes + mockups)
-/projects/[id]/designs/[artifactId] → Detalle + preview + descarga + "Aprobar para desarrollo"
+/projects/[id]/phase/02          → Phase 02 (bloque dedicado "Diseño UI/UX" pendiente de integración según tasks)
+/projects/[id]/designs           → Hub "Diseño & UX": Camino A (formulario generate) + Camino B (6 herramientas + chat)
+/projects/[id]/designs/[artifactId] → Detalle artefacto Camino A + CTA al hub Camino B
+/projects/[id]/experts           → Agentes IA (breadcrumb "Agentes IA")
 ```
 
-La generación se puede invocar desde:
+La generación **Camino A** se invoca desde el **formulario en la parte superior del hub** (equivalente al flujo “Nuevo diseño” del spec original). Pendiente: modal desde Phase 02 (TASK-016) y disparo automático desde chat (TASK-020).
+
+Invocación prevista adicional:
 1. **Vista Phase 02:** botón “Generar wireframes para este proyecto” que abre modal o in-line form (selección de pantallas, tipo, refinamiento opcional).
 2. **Chat del agente UI/UX Designer:** el usuario escribe “genera wireframes para Login y Dashboard”; el agente llama al backend (o el backend expone una acción que el orquestador puede invocar) y luego muestra enlaces a los diseños generados.
-3. **Vista /designs:** botón “Nuevo diseño” que lleva al mismo flujo (selección de pantallas y tipo).
+3. **Hub /designs — Camino B:** abrir una herramienta; no sustituye a Camino A para artefactos guardados en lista.
 
 ### Flujo de generación
 
