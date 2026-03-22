@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "plan:enterprise": "node scripts/set-user-plan-enterprise.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
