@@ -119,26 +119,32 @@ export async function POST(
     }
 
     // Generate design using generateText (not streamText) to ensure completion
-    const { text, usage } = await generateText({
+    const { text: rawText, usage } = await generateText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
         {
           role: 'user',
-          content: `Genera los wireframes/disenos para las pantallas: ${parsed.data.screens.join(', ')}`,
+          content: `Genera el HTML visual para las pantallas: ${parsed.data.screens.join(', ')}. Recuerda: responde SOLO con HTML, sin markdown.`,
         },
       ],
       ...AI_CONFIG.designPrompts,
     })
 
+    // Clean up: strip markdown code fences if AI wrapped the HTML
+    let text = rawText.trim()
+    if (text.startsWith('```')) {
+      text = text.replace(/^```(?:html)?\s*\n?/, '').replace(/\n?```\s*$/, '')
+    }
+
     // Upload to storage (best effort — bucket may not exist)
-    const storagePath = `projects/${projectId}/designs/${artifact.id}.md`
+    const storagePath = `projects/${projectId}/designs/${artifact.id}.html`
     try {
-      const blob = new Blob([text], { type: 'text/markdown' })
+      const blob = new Blob([text], { type: 'text/html' })
       await supabase.storage
         .from('project-designs')
         .upload(storagePath, blob, {
-          contentType: 'text/markdown',
+          contentType: 'text/html',
           upsert: true,
         })
     } catch (err) {

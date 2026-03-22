@@ -93,7 +93,7 @@ export async function POST(
       .eq('id', artifactId)
 
     // Generate refined design using generateText (not streamText)
-    const { text, usage } = await generateText({
+    const { text: rawText, usage } = await generateText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
@@ -105,14 +105,20 @@ export async function POST(
       ...AI_CONFIG.designPrompts,
     })
 
+    // Clean up markdown fences if AI wrapped the HTML
+    let text = rawText.trim()
+    if (text.startsWith('```')) {
+      text = text.replace(/^```(?:html)?\s*\n?/, '').replace(/\n?```\s*$/, '')
+    }
+
     // Upload to storage (best effort)
-    const storagePath = artifact.storage_path || `projects/${projectId}/designs/${artifactId}.md`
+    const storagePath = artifact.storage_path || `projects/${projectId}/designs/${artifactId}.html`
     try {
-      const blob = new Blob([text], { type: 'text/markdown' })
+      const blob = new Blob([text], { type: 'text/html' })
       await supabase.storage
         .from('project-designs')
         .upload(storagePath, blob, {
-          contentType: 'text/markdown',
+          contentType: 'text/html',
           upsert: true,
         })
     } catch (err) {

@@ -1,4 +1,3 @@
-import { UI_UX_DESIGNER_PROMPT } from '@/lib/ai/agents/ui-ux-designer'
 import type { DesignType } from '@/types/design'
 
 type DesignGenerationContext = {
@@ -11,49 +10,58 @@ type DesignGenerationContext = {
 }
 
 const TYPE_INSTRUCTIONS: Record<DesignType, string> = {
-  wireframe: `ESTILO: Wireframe — usa colores neutros (grays), bordes punteados para placeholders de imagenes,
-sin sombras pesadas. Enfocate en estructura y layout. Usa bg-gray-100/200 para areas, border-dashed para imagenes placeholder.`,
-  mockup_lowfi: `ESTILO: Mockup Low-Fidelity — agrega contenido placeholder realista (textos, iconos),
-usa una paleta de colores limitada (1 color primario + neutrals). Incluye iconos SVG inline simples.`,
-  mockup_highfi: `ESTILO: Mockup High-Fidelity — diseno completo con colores de marca, sombras,
-bordes redondeados, tipografia refinada, iconos detallados. Debe verse como un producto terminado.`,
+  wireframe: `ESTILO VISUAL: Wireframe
+- Colores neutros: bg-gray-50, bg-gray-100, bg-white, bordes gray-200/300
+- Bordes punteados (border-dashed) para placeholders de imagenes
+- Sin sombras pesadas, sin gradientes
+- Texto en gray-600/700/900
+- Enfocate en ESTRUCTURA y LAYOUT`,
+  mockup_lowfi: `ESTILO VISUAL: Mockup Low-Fidelity
+- Un color primario (sky-500/600) + escala de grays
+- Contenido placeholder realista (nombres, emails, textos)
+- Iconos SVG inline simples
+- Bordes suaves (rounded-lg), sombras sutiles (shadow-sm)`,
+  mockup_highfi: `ESTILO VISUAL: Mockup High-Fidelity
+- Paleta de colores completa y profesional
+- Sombras, gradientes sutiles, bordes redondeados
+- Tipografia refinada con pesos variados
+- Iconos detallados SVG inline
+- Debe verse como un producto TERMINADO y profesional`,
 }
+
+const HTML_DESIGN_PROMPT = `ROL: Eres un disenador UI/UX experto. Tu tarea es generar disenos VISUALES como HTML renderizable.
+
+REGLA ABSOLUTA: Tu respuesta debe ser UNICAMENTE codigo HTML valido.
+- NUNCA uses markdown
+- NUNCA uses ASCII art
+- NUNCA uses bloques de codigo (\`\`\`)
+- NUNCA escribas explicaciones fuera del HTML
+- La primera linea de tu respuesta DEBE ser: <!DOCTYPE html>
+- La ultima linea DEBE ser: </html>
+
+STACK VISUAL: HTML5 + Tailwind CSS (via CDN) + Google Fonts (Inter).
+ENFOQUE: Mobile-first, accesible, profesional.`
 
 export function buildDesignGenerationPrompt(ctx: DesignGenerationContext): string {
   const screensList = ctx.screens.map((s, i) => `${i + 1}. ${s}`).join('\n')
 
-  return `${UI_UX_DESIGNER_PROMPT}
+  return `${HTML_DESIGN_PROMPT}
 
 ---
 
-TAREA DE GENERACION:
-Genera wireframes/disenos VISUALES para el proyecto "${ctx.projectName}".
+PROYECTO: "${ctx.projectName}"
 
 PANTALLAS A DISENAR:
 ${screensList}
 
-${ctx.refinement ? `INSTRUCCIONES ADICIONALES:\n${ctx.refinement}\n` : ''}
-${ctx.discoveryDocs ? `CONTEXTO DEL PROYECTO (Discovery):\n${ctx.discoveryDocs}\n` : ''}
-${ctx.featureSpecs ? `SPECS DE FEATURES:\n${ctx.featureSpecs}\n` : ''}
-
 ${TYPE_INSTRUCTIONS[ctx.type]}
 
-FORMATO DE RESPUESTA — HTML VISUAL:
-Genera UN SOLO documento HTML autocontenido que se pueda renderizar directamente en un iframe.
+${ctx.refinement ? `INSTRUCCIONES ADICIONALES DEL USUARIO:\n${ctx.refinement}\n` : ''}
+${ctx.discoveryDocs ? `CONTEXTO DEL PROYECTO:\n${ctx.discoveryDocs.slice(0, 4000)}\n` : ''}
+${ctx.featureSpecs ? `SPECS DE FEATURES:\n${ctx.featureSpecs.slice(0, 4000)}\n` : ''}
 
-REGLAS ESTRICTAS:
-1. Responde UNICAMENTE con el HTML. Sin markdown, sin explicaciones, sin bloques de codigo. La respuesta completa debe ser HTML valido que empiece con <!DOCTYPE html>.
-2. Usa Tailwind CSS via CDN: <script src="https://cdn.tailwindcss.com"></script>
-3. Cada pantalla va en una <section> con un header visual que diga el nombre
-4. Usa contenido placeholder REALISTA (nombres, emails, textos que parezcan reales)
-5. Mobile-first: el diseno principal debe verse bien en 375px de ancho
-6. Incluye iconos como SVG inline simples (no dependencias externas)
-7. Usa Inter font via Google Fonts
-8. Fondo del body: bg-gray-50
-9. Cada seccion/pantalla separada visualmente con padding y un divisor
-10. Si hay multiples estados (default, error, success, loading), muestralos uno debajo del otro con un label
+GENERA el HTML con esta estructura exacta:
 
-ESTRUCTURA HTML:
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -62,11 +70,24 @@ ESTRUCTURA HTML:
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>* { font-family: 'Inter', sans-serif; }</style>
+  <title>${ctx.projectName} — Disenos</title>
 </head>
-<body class="bg-gray-50 p-4">
-  <!-- Pantallas aqui -->
+<body class="bg-gray-50">
+  <!-- Para CADA pantalla, una <section> con:
+       - Header con nombre de la pantalla
+       - El diseno visual completo con componentes reales
+       - Contenido placeholder REALISTA
+       - Todos los estados relevantes (default, error, success, empty)
+  -->
 </body>
-</html>`
+</html>
+
+IMPORTANTE:
+- Usa contenido REALISTA (no "Lorem ipsum"): nombres como "Maria Garcia", emails como "maria@email.com"
+- Cada pantalla en una <section class="max-w-sm mx-auto mb-12 bg-white rounded-2xl shadow-lg overflow-hidden">
+- Incluye navegacion, formularios, botones, cards — elementos REALES de UI
+- Los iconos deben ser SVG inline simples (flechas, check, user, etc.)
+- Disena para mobile (375px) como layout principal`
 }
 
 type DesignRefineContext = {
@@ -76,22 +97,19 @@ type DesignRefineContext = {
 }
 
 export function buildDesignRefinePrompt(ctx: DesignRefineContext): string {
-  return `${UI_UX_DESIGNER_PROMPT}
+  return `${HTML_DESIGN_PROMPT}
 
 ---
 
-TAREA DE REFINAMIENTO:
-Refina el siguiente diseno HTML del proyecto "${ctx.projectName}" segun las instrucciones del usuario.
+TAREA: Refina el diseno HTML del proyecto "${ctx.projectName}".
 
-DISENO ACTUAL (HTML):
+DISENO HTML ACTUAL:
 ${ctx.existingContent}
 
-INSTRUCCION DE REFINAMIENTO:
+CAMBIOS PEDIDOS POR EL USUARIO:
 ${ctx.instruction}
 
-REGLAS:
-1. Responde UNICAMENTE con el HTML completo actualizado. Sin markdown, sin explicaciones, sin bloques de codigo.
-2. Mantene la misma estructura (<!DOCTYPE html> con Tailwind CDN)
-3. Aplica los cambios pedidos manteniendo consistencia visual
-4. La respuesta completa debe ser HTML valido que empiece con <!DOCTYPE html>.`
+Genera el HTML COMPLETO actualizado con los cambios aplicados.
+Tu respuesta debe empezar con <!DOCTYPE html> y terminar con </html>.
+No incluyas explicaciones — solo el HTML.`
 }
