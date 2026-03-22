@@ -5,7 +5,7 @@ import { useChat } from '@ai-sdk/react'
 import { TextStreamChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 import type { KiroDocumentType } from '@/types/feature'
-import { KIRO_DOC_LABELS } from '@/lib/ai/prompts/phase-01'
+import { KIRO_DOC_LABELS, KIRO_DOC_TYPES } from '@/lib/ai/prompts/phase-01'
 import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
@@ -167,24 +167,28 @@ export function KiroChat({
   }
 
   const docLabel = KIRO_DOC_LABELS[docType]
+  const stepIndex = KIRO_DOC_TYPES.indexOf(docType) + 1
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2 dark:border-gray-800">
-        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">CTO Orquestador</span>
-        <span className="text-xs text-gray-400 dark:text-gray-500">· {docLabel}</span>
+      <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-3 py-2 dark:border-gray-800">
+        <div className="min-w-0">
+          <span className="text-[10px] font-bold uppercase tracking-wide text-violet-600 dark:text-violet-400">
+            CTO
+          </span>
+          <span className="ml-2 text-sm font-semibold text-gray-900 dark:text-gray-100">{docLabel}</span>
+        </div>
+        <span className="shrink-0 rounded-md bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+          Paso {stepIndex}/3
+        </span>
       </div>
       {error && <ChatErrorBanner error={error} />}
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
         {messages.length === 0 && !isLoading && (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
-            <p className="text-sm text-violet-600 font-medium">
-              El CTO esta analizando &quot;{featureName}&quot;...
-            </p>
-            <p className="text-xs text-gray-400">
-              Preparando {docLabel} basado en el Discovery aprobado
-            </p>
+            <p className="text-sm font-medium text-violet-600">Preparando tu primer mensaje del CTO…</p>
+            <p className="text-xs text-gray-400">Feature: {featureName}</p>
           </div>
         )}
 

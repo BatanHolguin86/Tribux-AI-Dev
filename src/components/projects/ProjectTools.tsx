@@ -72,6 +72,11 @@ export function ProjectTools({ projectId }: ProjectToolsProps) {
           )
         })}
       </div>
+      <p className="mt-3 text-[10px] leading-snug text-gray-400 dark:text-gray-500">
+        <span className="font-medium text-gray-500 dark:text-gray-400">Diseño &amp; UX:</span> pantallas y kit
+        visual. <span className="font-medium text-gray-500 dark:text-gray-400">Agentes:</span> mismo proyecto,
+        conversaciones por rol (Arquitecto, QA…). La fase actual sigue en el stepper.
+      </p>
     </div>
   )
 }

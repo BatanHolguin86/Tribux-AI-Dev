@@ -32,9 +32,9 @@ export function DocumentTypeNav({ documents, activeDocType, onSelect }: Document
 
           const lockHint =
             isLocked && dt === 'design'
-              ? 'Aprueba Requirements para abrir Design.'
+              ? 'Aprueba Requisitos primero.'
               : isLocked && dt === 'tasks'
-                ? 'Aprueba Design (Generar documento y Aprobar) para abrir Tasks — el backlog KIRO va en esa pestana, no en Design.'
+                ? 'Aprueba Diseño (documento + botón Aprobar) para abrir Tasks.'
                 : undefined
 
           return (

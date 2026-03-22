@@ -24,12 +24,10 @@ export function ApprovalGate({
         <svg className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-          Documento listo para revision
-        </p>
+        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Listo para revisar</p>
       </div>
       <p className="mt-1 ml-6 text-xs text-gray-500 dark:text-gray-400">
-        Revisa {sectionLabel} en el panel derecho y aprueba cuando estes conforme.
+        Mira el panel derecho. ¿Encaja? Aprueba. Si no, pide cambios abajo.
       </p>
 
       <div className="mt-3 flex gap-3">

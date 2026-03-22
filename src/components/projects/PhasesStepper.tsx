@@ -38,12 +38,20 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
       </div>
 
       {/* Progress bar */}
-      <div className="mb-4 h-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+      <div className="mb-3 h-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
         <div
           className="h-1 rounded-full bg-gradient-to-r from-violet-500 to-violet-600 transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
+
+      {activePathPhase !== null && (
+        <p className="mb-3 rounded-lg bg-gray-50 px-2.5 py-2 text-[11px] leading-snug text-gray-600 dark:bg-gray-800/60 dark:text-gray-400">
+          <span className="font-semibold text-gray-700 dark:text-gray-300">Ahora:</span>{' '}
+          {PHASES_META.find((m) => m.number === activePathPhase)?.description}. Avanza solo cuando apruebes cada
+          bloque en la pantalla.
+        </p>
+      )}
 
       {/* Phases list with vertical line */}
       <div className="relative space-y-0.5">

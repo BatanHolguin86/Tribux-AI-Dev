@@ -8,6 +8,7 @@ import { FeatureList } from './FeatureList'
 import { FeatureSuggestions } from './FeatureSuggestions'
 import { DiscoverySummary } from './DiscoverySummary'
 import { DocumentTypeNav } from './DocumentTypeNav'
+import { KiroWorkflowRail } from './KiroWorkflowRail'
 import { KiroChat } from './KiroChat'
 import { Phase01FinalGate } from './Phase01FinalGate'
 
@@ -103,15 +104,14 @@ export function Phase01Layout({
         )}
       </div>
 
-      {/* Helper text: compactado para reducir ruido visual */}
-      <details className="mb-4 text-xs text-gray-500 dark:text-gray-400" open={false}>
-        <summary className="cursor-pointer font-medium text-gray-600 dark:text-gray-300">
-          ¿Como avanzar en Phase 01?
+      <details className="mb-4 rounded-lg border border-gray-100 bg-gray-50/50 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900/30 dark:text-gray-400">
+        <summary className="cursor-pointer px-3 py-2 font-medium text-gray-600 dark:text-gray-300">
+          ¿Qué es Phase 01? (una frase)
         </summary>
-        <p className="mt-2 max-w-3xl leading-relaxed">
-          En Phase 01 dividimos tu producto en <span className="font-medium">features</span> (login,
-          pagos, panel de admin, etc.). Para cada feature, el orquestador te guía para definir{' '}
-          <span className="font-medium">Requirements → Design → Tasks</span> en ese orden.
+        <p className="border-t border-gray-100 px-3 py-2 leading-relaxed dark:border-gray-800">
+          Un feature a la vez: <span className="font-medium text-gray-700 dark:text-gray-300">3 pestañas</span>{' '}
+          (Requisitos → Diseño → Tasks), siempre con <span className="font-medium">aprobar</span> antes de la
+          siguiente. El CTO te acompaña en el chat del centro.
         </p>
       </details>
 
@@ -183,13 +183,7 @@ export function Phase01Layout({
                     activeDocType={activeDocType}
                     onSelect={handleDocTypeSelect}
                   />
-                  <p className="border-b border-gray-100 bg-gray-50/80 px-3 py-1.5 text-[11px] leading-snug text-gray-600 dark:border-gray-800 dark:bg-gray-900/40 dark:text-gray-400">
-                    <span className="font-medium text-gray-700 dark:text-gray-300">KIRO:</span> orden{' '}
-                    <span className="font-medium">Requirements → Design → Tasks</span>. La pestaña{' '}
-                    <span className="font-medium">Tasks</span> se desbloquea solo cuando{' '}
-                    <span className="font-medium">Design</span> está <span className="font-medium">aprobado</span>{' '}
-                    (generar documento y confirmar). En Design se alinea el contorno técnico; el desglose TASK-001… va en Tasks.
-                  </p>
+                  <KiroWorkflowRail documents={activeFeature.documents} activeDocType={activeDocType} />
                   <KiroChat
                     key={`${activeFeatureId}-${activeDocType}`}
                     projectId={projectId}
