@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import type { DesignStatus, DesignType } from '@/types/design'
+import { DESIGN_KIT_NEXT_STEPS } from '@/lib/design/design-tool-workflow'
 
 type ArtifactDetailProps = {
   projectId: string
@@ -165,6 +166,35 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
           <span className="text-xs text-gray-400 dark:text-gray-500">
             {DEVICE_SIZES[device].width}px
           </span>
+        </div>
+      )}
+
+      {/* CTA: align generated visual with the 6 design-kit tools */}
+      {displayContent && status !== 'generating' && (
+        <div className="mb-4 rounded-lg border border-violet-200 bg-violet-50/60 p-4 dark:border-violet-900/40 dark:bg-violet-950/20">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Siguiente paso: sistema de diseño (CTO + UI/UX)
+          </h3>
+          <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+            Este artefacto es wireframe/mockup generado. Para alinear <strong>Component Library</strong>,{' '}
+            <strong>Style Guide</strong>, <strong>User Flows</strong> y <strong>Responsive Specs</strong> con tus{' '}
+            <strong>personas</strong> y <strong>propuesta de valor</strong>, usa el Design Generator: cada herramienta
+            abre un flujo guiado (sintesis CTO + entrega UI/UX).
+          </p>
+          <ul className="mt-2 grid gap-1 text-xs text-gray-700 dark:text-gray-300 sm:grid-cols-2">
+            {DESIGN_KIT_NEXT_STEPS.map((step) => (
+              <li key={step.id} className="flex items-center gap-1.5">
+                <span className="text-violet-600 dark:text-violet-400">→</span>
+                {step.label}
+              </li>
+            ))}
+          </ul>
+          <Link
+            href={`/projects/${projectId}/designs`}
+            className="mt-3 inline-flex text-sm font-medium text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
+          >
+            Ir al Design Generator →
+          </Link>
         </div>
       )}
 

@@ -1,8 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import type { DesignWorkflowContext } from '@/lib/ai/context-builder'
 import { DESIGN_TEMPLATES } from '@/lib/ai/agents/ui-ux-designer'
+import {
+  buildDesignToolInitialUserMessage,
+  getDesignToolFlowForUi,
+} from '@/lib/design/design-tool-workflow'
 import { DesignChat } from './DesignChat'
 
 type Artifact = {
@@ -22,9 +27,14 @@ const TYPE_LABELS: Record<string, string> = {
 type DesignGeneratorProps = {
   projectId: string
   existingArtifacts: Artifact[]
+  workflowContext: DesignWorkflowContext
 }
 
-export function DesignGenerator({ projectId, existingArtifacts }: DesignGeneratorProps) {
+export function DesignGenerator({
+  projectId,
+  existingArtifacts,
+  workflowContext,
+}: DesignGeneratorProps) {
   const [activeTemplate, setActiveTemplate] = useState<string | null>(null)
   const [threadId, setThreadId] = useState<string | null>(null)
   const [artifacts, setArtifacts] = useState<Artifact[]>(existingArtifacts)
@@ -64,8 +74,30 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
   }
 
   const template = DESIGN_TEMPLATES.find((t) => t.id === activeTemplate)
-  const customTemplate = { id: 'custom', title: 'Diseno Custom', description: 'Describe lo que necesitas.', icon: '✏️', prompt: '' }
+  const customTemplate = {
+    id: 'custom',
+    title: 'Diseno Custom',
+    description: 'Describe lo que necesitas al UI/UX Designer con contexto de producto.',
+    icon: '✏️',
+    prompt: '',
+  }
   const resolvedTemplate = template ?? (activeTemplate === 'custom' ? customTemplate : null)
+
+  const composedInitialPrompt = useMemo(() => {
+    if (!activeTemplate) return ''
+    const tmpl =
+      DESIGN_TEMPLATES.find((t) => t.id === activeTemplate) ??
+      (activeTemplate === 'custom'
+        ? { id: 'custom' as const, title: 'Diseno Custom', prompt: '', description: '', icon: '✏️' }
+        : null)
+    if (!tmpl) return ''
+    const base =
+      tmpl.prompt?.trim() ||
+      (activeTemplate === 'custom'
+        ? 'Con una sola pregunta clara, pide al usuario que describa el entregable de diseno/UX que necesita (alcance, pantallas, estilo), usando el contexto de producto ya incluido arriba.'
+        : '')
+    return buildDesignToolInitialUserMessage(workflowContext, activeTemplate, tmpl.title, base)
+  }, [activeTemplate, workflowContext])
 
   async function handleGenerateFromSpecs() {
     const screens = screensInput
@@ -117,6 +149,7 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
 
   // Active chat view
   if (activeTemplate && threadId && resolvedTemplate) {
+    const flow = getDesignToolFlowForUi(activeTemplate)
     return (
       <div>
         <button
@@ -127,7 +160,7 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Volver a templates
+          Volver a herramientas
         </button>
 
         <div className="mb-4">
@@ -136,18 +169,84 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
               {resolvedTemplate.icon}
             </span>
             <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">
+                CTO + UI/UX Designer
+              </p>
               <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{resolvedTemplate.title}</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">{resolvedTemplate.description}</p>
             </div>
           </div>
         </div>
 
+        <div className="mb-4 space-y-3 rounded-lg border border-violet-200/80 bg-violet-50/40 p-4 dark:border-violet-900/40 dark:bg-violet-950/20">
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-violet-800 shadow-sm ring-1 ring-violet-200 dark:bg-gray-900 dark:text-violet-200 dark:ring-violet-800">
+              1 · Alineacion CTO
+            </span>
+            <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-fuchsia-800 shadow-sm ring-1 ring-fuchsia-200 dark:bg-gray-900 dark:text-fuchsia-200 dark:ring-fuchsia-800">
+              2 · Entrega UI/UX
+            </span>
+          </div>
+          <p className="text-xs leading-relaxed text-gray-700 dark:text-gray-300">{flow.ctoAlignment}</p>
+          <div>
+            <p className="text-[10px] font-semibold uppercase text-gray-500 dark:text-gray-400">
+              Flujo de uso
+            </p>
+            <ol className="mt-1 list-decimal space-y-0.5 pl-4 text-xs text-gray-600 dark:text-gray-400">
+              {flow.steps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+          </div>
+          <p className="text-[11px] text-gray-600 dark:text-gray-400">
+            <span className="font-medium text-gray-800 dark:text-gray-200">Entregable:</span> {flow.uxDeliverable}
+          </p>
+          <details className="rounded-md border border-gray-200 bg-white/80 p-3 text-xs dark:border-gray-700 dark:bg-gray-900/60">
+            <summary className="cursor-pointer font-medium text-gray-800 dark:text-gray-200">
+              Contexto Discovery / producto (inyectado al agente)
+            </summary>
+            <ul className="mt-2 space-y-1 text-gray-600 dark:text-gray-400">
+              <li>
+                <span className="font-medium text-gray-700 dark:text-gray-300">Proyecto:</span>{' '}
+                {workflowContext.projectName}
+              </li>
+              {workflowContext.industry && (
+                <li>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Industria:</span>{' '}
+                  {workflowContext.industry}
+                </li>
+              )}
+              {workflowContext.businessPersona && (
+                <li>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Persona (perfil):</span>{' '}
+                  <span className="line-clamp-3">{workflowContext.businessPersona}</span>
+                </li>
+              )}
+              {workflowContext.discoveryPersonas && (
+                <li>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Personas Discovery:</span>{' '}
+                  <span className="line-clamp-4 whitespace-pre-wrap">{workflowContext.discoveryPersonas}</span>
+                </li>
+              )}
+              {workflowContext.valueProposition && (
+                <li>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Propuesta de valor:</span>{' '}
+                  <span className="line-clamp-4 whitespace-pre-wrap">{workflowContext.valueProposition}</span>
+                </li>
+              )}
+              {!workflowContext.discoveryPersonas && !workflowContext.valueProposition && (
+                <li className="text-amber-700 dark:text-amber-400">
+                  Aun no hay secciones <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">personas</code> o{' '}
+                  <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">value_proposition</code> aprobadas en
+                  Phase 00. Completa Discovery para mejores resultados.
+                </li>
+              )}
+            </ul>
+          </details>
+        </div>
+
         <div className="h-[var(--content-height)] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-          <DesignChat
-            projectId={projectId}
-            threadId={threadId}
-            initialPrompt={resolvedTemplate.prompt}
-          />
+          <DesignChat projectId={projectId} threadId={threadId} initialPrompt={composedInitialPrompt} />
         </div>
       </div>
     )
@@ -159,8 +258,16 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">UI/UX Design Generator</h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Genera wireframes, componentes y guias de estilo basados en los specs KIRO de tu proyecto.
+          Genera wireframes y mockups desde specs KIRO, y usa las <strong>6 herramientas</strong> con flujo explícito{' '}
+          <strong>CTO + UI/UX</strong> (alineación de valor y personas → entregable de diseño). Cada tarjeta abre un
+          hilo guiado; el contexto de Discovery (personas y propuesta de valor) se inyecta automáticamente.
         </p>
+      </div>
+
+      <div className="mb-6 rounded-lg border border-gray-200 bg-gray-50/80 p-3 text-xs leading-relaxed text-gray-600 dark:border-gray-700 dark:bg-gray-900/40 dark:text-gray-400">
+        <span className="font-semibold text-gray-800 dark:text-gray-200">Orden recomendado:</span> Wireframes → Style
+        Guide / Component Library → User Flows → Responsive Specs. Puedes alternar según necesidad; dentro de cada
+        herramienta el agente primero sintetiza la alineación CTO y luego produce el artefacto UI/UX.
       </div>
 
       {/* Simple form to generate designs from specs */}
@@ -255,6 +362,8 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
         {DESIGN_TEMPLATES.map((tmpl) => (
           <button
             key={tmpl.id}
+            type="button"
+            title={`Abrir flujo CTO + UI/UX: ${tmpl.title}`}
             onClick={() => handleSelectTemplate(tmpl.id)}
             className="rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 text-left transition-all hover:border-violet-300 hover:shadow-md"
           >
@@ -268,6 +377,8 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
 
         {/* Custom design card */}
         <button
+          type="button"
+          title="Flujo CTO + UI/UX con peticion libre"
           onClick={() => handleSelectTemplate('custom')}
           className="rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-5 text-left transition-all hover:border-violet-300 hover:bg-white dark:hover:bg-gray-900"
         >

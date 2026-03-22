@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getDesignWorkflowContext } from '@/lib/ai/context-builder'
 import { DesignGenerator } from '@/components/design/DesignGenerator'
 
 export default async function DesignsPage({
@@ -8,6 +9,7 @@ export default async function DesignsPage({
 }) {
   const { id: projectId } = await params
   const supabase = await createClient()
+  const workflowContext = await getDesignWorkflowContext(projectId)
 
   // Load existing design artifacts from dedicated table
   const { data: artifacts } = await supabase
@@ -25,5 +27,11 @@ export default async function DesignsPage({
       created_at: a.created_at as string,
     })) ?? []
 
-  return <DesignGenerator projectId={projectId} existingArtifacts={mappedArtifacts} />
+  return (
+    <DesignGenerator
+      projectId={projectId}
+      existingArtifacts={mappedArtifacts}
+      workflowContext={workflowContext}
+    />
+  )
 }

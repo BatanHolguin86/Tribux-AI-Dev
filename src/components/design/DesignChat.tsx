@@ -100,7 +100,7 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
           onSubmit={onSubmit}
           onStop={stop}
           isLoading={isLoading}
-          placeholder="Pide ajustes al diseno..."
+          placeholder="Itera con UI/UX (el primer mensaje ya incluyo alineacion CTO + contexto Discovery)..."
         />
       </div>
     </div>

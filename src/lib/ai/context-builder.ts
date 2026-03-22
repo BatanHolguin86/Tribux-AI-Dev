@@ -250,3 +250,45 @@ export async function buildFullProjectContext(projectId: string): Promise<{
     artifacts: finalArtifacts,
   }
 }
+
+/** Context for Design Generator: personas, value prop, project — used in UI + enriched chat prompts */
+export type DesignWorkflowContext = {
+  projectName: string
+  description: string | null
+  industry: string | null
+  businessPersona: string | null
+  discoveryPersonas: string | null
+  valueProposition: string | null
+}
+
+export async function getDesignWorkflowContext(projectId: string): Promise<DesignWorkflowContext> {
+  const supabase = await createClient()
+  const projectCtx = await buildProjectContext(projectId)
+
+  const { data: docs } = await supabase
+    .from('project_documents')
+    .select('section, content')
+    .eq('project_id', projectId)
+    .eq('phase_number', 0)
+    .eq('status', 'approved')
+
+  let discoveryPersonas: string | null = null
+  let valueProposition: string | null = null
+  for (const d of docs ?? []) {
+    if (d.section === 'personas') {
+      discoveryPersonas = truncateText(d.content ?? '', 2000)
+    }
+    if (d.section === 'value_proposition') {
+      valueProposition = truncateText(d.content ?? '', 2000)
+    }
+  }
+
+  return {
+    projectName: projectCtx.name,
+    description: projectCtx.description,
+    industry: projectCtx.industry,
+    businessPersona: projectCtx.persona ? truncateText(projectCtx.persona, 1200) : null,
+    discoveryPersonas,
+    valueProposition,
+  }
+}
