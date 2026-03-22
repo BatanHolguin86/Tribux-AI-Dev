@@ -55,9 +55,24 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full min-h-0 flex-col">
       {error && <ChatErrorBanner error={error} />}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" role="log" aria-live="polite">
+        {messages.length === 0 && isLoading && (
+          <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-dashed border-violet-200 bg-violet-50/40 px-6 py-10 text-center dark:border-violet-900/40 dark:bg-violet-950/20">
+            <div
+              className="h-11 w-11 animate-pulse rounded-full bg-gradient-to-br from-violet-400 to-indigo-500 opacity-80"
+              aria-hidden
+            />
+            <p className="mt-4 text-sm font-semibold text-gray-900 dark:text-gray-100">
+              Generando la primera respuesta…
+            </p>
+            <p className="mt-2 max-w-sm text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+              El UI/UX Designer está leyendo el contexto del proyecto (personas, propuesta de valor y pasos de esta
+              herramienta). En unos segundos verás la síntesis CTO y el entregable.
+            </p>
+          </div>
+        )}
         {messages.map((msg) => {
           const text = getTextContent(msg)
           const isAssistant = msg.role === 'assistant'
@@ -70,7 +85,7 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
                     : 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-400 ring-1 ring-gray-200 dark:ring-gray-600'
                 }`}
               >
-                {!isAssistant ? 'Tu' : '🎨'}
+                {!isAssistant ? 'Tú' : 'UX'}
               </div>
               <div className={`max-w-[85%] min-w-0 ${!isAssistant ? 'text-right' : ''}`}>
                 <div
@@ -100,7 +115,7 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
           onSubmit={onSubmit}
           onStop={stop}
           isLoading={isLoading}
-          placeholder="Itera con UI/UX (el primer mensaje ya incluyo alineacion CTO + contexto Discovery)..."
+          placeholder="Pide cambios al entregable o aclara dudas…"
         />
       </div>
     </div>

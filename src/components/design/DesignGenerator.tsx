@@ -6,9 +6,15 @@ import type { DesignWorkflowContext } from '@/lib/ai/context-builder'
 import { DESIGN_TEMPLATES } from '@/lib/ai/agents/ui-ux-designer'
 import {
   buildDesignToolInitialUserMessage,
+  DESIGN_KIT_TOOL_SEQUENCE,
+  getDesignToolCardMeta,
   getDesignToolFlowForUi,
 } from '@/lib/design/design-tool-workflow'
 import { DesignChat } from './DesignChat'
+
+const ORDERED_KIT_TEMPLATES = DESIGN_KIT_TOOL_SEQUENCE.filter((id) => id !== 'custom')
+  .map((id) => DESIGN_TEMPLATES.find((t) => t.id === id))
+  .filter((t): t is (typeof DESIGN_TEMPLATES)[number] => Boolean(t))
 
 type Artifact = {
   id: string
@@ -155,128 +161,172 @@ export function DesignGenerator({
         <button
           onClick={handleBack}
           className="mb-4 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400"
-          aria-label="Volver a plantillas"
+          aria-label="Volver al hub de Diseño y UX"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Volver a herramientas
+          Volver al hub de Diseño &amp; UX
         </button>
 
-        <div className="mb-4">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30 text-lg">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/30 text-xl shadow-sm">
               {resolvedTemplate.icon}
             </span>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">
-                CTO + UI/UX Designer
+              <p className="text-[10px] font-bold uppercase tracking-wide text-violet-600 dark:text-violet-400">
+                Camino B · Agente UI/UX
               </p>
               <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{resolvedTemplate.title}</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{resolvedTemplate.description}</p>
+              <p className="mt-0.5 text-sm text-gray-600 dark:text-gray-400">{flow.uxDeliverable}</p>
             </div>
           </div>
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50/80 px-3 py-2 text-xs text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
+            <strong className="font-semibold">Qué hacer:</strong> espera la respuesta abajo. Primero verás una breve
+            síntesis tipo CTO, luego el entregable. Usa el campo inferior para iterar.
+          </div>
         </div>
 
-        <div className="mb-4 space-y-3 rounded-lg border border-violet-200/80 bg-violet-50/40 p-4 dark:border-violet-900/40 dark:bg-violet-950/20">
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-violet-800 shadow-sm ring-1 ring-violet-200 dark:bg-gray-900 dark:text-violet-200 dark:ring-violet-800">
-              1 · Alineacion CTO
-            </span>
-            <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-fuchsia-800 shadow-sm ring-1 ring-fuchsia-200 dark:bg-gray-900 dark:text-fuchsia-200 dark:ring-fuchsia-800">
-              2 · Entrega UI/UX
-            </span>
+        <details className="mb-4 rounded-xl border border-gray-200 bg-gray-50/90 text-sm dark:border-gray-700 dark:bg-gray-900/50">
+          <summary className="cursor-pointer select-none px-4 py-3 font-semibold text-gray-800 dark:text-gray-200">
+            Ver guía: alineación CTO, pasos y contexto Discovery
+          </summary>
+          <div className="space-y-3 border-t border-gray-200 px-4 py-3 text-xs dark:border-gray-700">
+            <div className="flex flex-wrap gap-2">
+              <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-violet-800 shadow-sm ring-1 ring-violet-200 dark:bg-gray-900 dark:text-violet-200 dark:ring-violet-800">
+                1 · Alineación CTO
+              </span>
+              <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-fuchsia-800 shadow-sm ring-1 ring-fuchsia-200 dark:bg-gray-900 dark:text-fuchsia-200 dark:ring-fuchsia-800">
+                2 · Entrega UI/UX
+              </span>
+            </div>
+            <p className="leading-relaxed text-gray-700 dark:text-gray-300">{flow.ctoAlignment}</p>
+            <div>
+              <p className="text-[10px] font-bold uppercase text-gray-500 dark:text-gray-400">Pasos del agente</p>
+              <ol className="mt-1 list-decimal space-y-0.5 pl-4 text-gray-600 dark:text-gray-400">
+                {flow.steps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+            </div>
+            <div className="rounded-md border border-gray-200 bg-white/90 p-3 dark:border-gray-700 dark:bg-gray-900/70">
+              <p className="mb-2 text-[10px] font-bold uppercase text-gray-500 dark:text-gray-400">
+                Ya enviado al agente (Discovery)
+              </p>
+              <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                <li>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Proyecto:</span>{' '}
+                  {workflowContext.projectName}
+                </li>
+                {workflowContext.industry && (
+                  <li>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Industria:</span>{' '}
+                    {workflowContext.industry}
+                  </li>
+                )}
+                {workflowContext.businessPersona && (
+                  <li>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Persona (perfil):</span>{' '}
+                    <span className="line-clamp-3">{workflowContext.businessPersona}</span>
+                  </li>
+                )}
+                {workflowContext.discoveryPersonas && (
+                  <li>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Personas Discovery:</span>{' '}
+                    <span className="line-clamp-4 whitespace-pre-wrap">{workflowContext.discoveryPersonas}</span>
+                  </li>
+                )}
+                {workflowContext.valueProposition && (
+                  <li>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Propuesta de valor:</span>{' '}
+                    <span className="line-clamp-4 whitespace-pre-wrap">{workflowContext.valueProposition}</span>
+                  </li>
+                )}
+                {!workflowContext.discoveryPersonas && !workflowContext.valueProposition && (
+                  <li className="text-amber-700 dark:text-amber-400">
+                    Aún no hay secciones <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">personas</code> o{' '}
+                    <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">value_proposition</code> aprobadas en
+                    Phase 00. Completa Discovery para mejores resultados.
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
-          <p className="text-xs leading-relaxed text-gray-700 dark:text-gray-300">{flow.ctoAlignment}</p>
-          <div>
-            <p className="text-[10px] font-semibold uppercase text-gray-500 dark:text-gray-400">
-              Flujo de uso
+        </details>
+
+        <div className="flex flex-col rounded-xl border-2 border-violet-200/80 bg-white shadow-sm dark:border-violet-900/50 dark:bg-gray-900">
+          <div className="border-b border-gray-100 px-3 py-2 dark:border-gray-800">
+            <p className="text-center text-[11px] font-medium text-gray-500 dark:text-gray-400">
+              Conversación · UI/UX Designer
             </p>
-            <ol className="mt-1 list-decimal space-y-0.5 pl-4 text-xs text-gray-600 dark:text-gray-400">
-              {flow.steps.map((step) => (
-                <li key={step}>{step}</li>
-              ))}
-            </ol>
           </div>
-          <p className="text-[11px] text-gray-600 dark:text-gray-400">
-            <span className="font-medium text-gray-800 dark:text-gray-200">Entregable:</span> {flow.uxDeliverable}
-          </p>
-          <details className="rounded-md border border-gray-200 bg-white/80 p-3 text-xs dark:border-gray-700 dark:bg-gray-900/60">
-            <summary className="cursor-pointer font-medium text-gray-800 dark:text-gray-200">
-              Contexto Discovery / producto (inyectado al agente)
-            </summary>
-            <ul className="mt-2 space-y-1 text-gray-600 dark:text-gray-400">
-              <li>
-                <span className="font-medium text-gray-700 dark:text-gray-300">Proyecto:</span>{' '}
-                {workflowContext.projectName}
-              </li>
-              {workflowContext.industry && (
-                <li>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">Industria:</span>{' '}
-                  {workflowContext.industry}
-                </li>
-              )}
-              {workflowContext.businessPersona && (
-                <li>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">Persona (perfil):</span>{' '}
-                  <span className="line-clamp-3">{workflowContext.businessPersona}</span>
-                </li>
-              )}
-              {workflowContext.discoveryPersonas && (
-                <li>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">Personas Discovery:</span>{' '}
-                  <span className="line-clamp-4 whitespace-pre-wrap">{workflowContext.discoveryPersonas}</span>
-                </li>
-              )}
-              {workflowContext.valueProposition && (
-                <li>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">Propuesta de valor:</span>{' '}
-                  <span className="line-clamp-4 whitespace-pre-wrap">{workflowContext.valueProposition}</span>
-                </li>
-              )}
-              {!workflowContext.discoveryPersonas && !workflowContext.valueProposition && (
-                <li className="text-amber-700 dark:text-amber-400">
-                  Aun no hay secciones <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">personas</code> o{' '}
-                  <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">value_proposition</code> aprobadas en
-                  Phase 00. Completa Discovery para mejores resultados.
-                </li>
-              )}
-            </ul>
-          </details>
-        </div>
-
-        <div className="h-[var(--content-height)] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-          <DesignChat projectId={projectId} threadId={threadId} initialPrompt={composedInitialPrompt} />
+          <div className="h-[min(70vh,560px)] min-h-[300px]">
+            <DesignChat projectId={projectId} threadId={threadId} initialPrompt={composedInitialPrompt} />
+          </div>
         </div>
       </div>
     )
   }
 
-  // Template selection view
+  // Hub: two clear product paths (visual artifacts vs. agent-led design kit)
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">UI/UX Design Generator</h2>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Genera wireframes y mockups desde specs KIRO, y usa las <strong>6 herramientas</strong> con flujo explícito{' '}
-          <strong>CTO + UI/UX</strong> (alineación de valor y personas → entregable de diseño). Cada tarjeta abre un
-          hilo guiado; el contexto de Discovery (personas y propuesta de valor) se inyecta automáticamente.
+      <header className="mb-8">
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Diseño &amp; UX</h1>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+          Dos caminos complementarios, alineados a la metodología IA DLC:{' '}
+          <strong className="text-gray-800 dark:text-gray-200">salidas visuales</strong> que quedan guardadas en el
+          proyecto, y <strong className="text-gray-800 dark:text-gray-200">conversaciones guiadas</strong> con el agente
+          UI/UX para sistema de diseño (tokens, componentes, flujos, responsive), usando personas y propuesta de valor
+          del Discovery.
         </p>
-      </div>
 
-      <div className="mb-6 rounded-lg border border-gray-200 bg-gray-50/80 p-3 text-xs leading-relaxed text-gray-600 dark:border-gray-700 dark:bg-gray-900/40 dark:text-gray-400">
-        <span className="font-semibold text-gray-800 dark:text-gray-200">Orden recomendado:</span> Wireframes → Style
-        Guide / Component Library → User Flows → Responsive Specs. Puedes alternar según necesidad; dentro de cada
-        herramienta el agente primero sintetiza la alineación CTO y luego produce el artefacto UI/UX.
-      </div>
+        <ol className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="Resumen del flujo">
+          <li className="flex gap-3 rounded-xl border border-violet-200 bg-violet-50/50 p-4 dark:border-violet-900/40 dark:bg-violet-950/20">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-600 text-sm font-bold text-white">
+              A
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Pantallas visuales</p>
+              <p className="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+                Genera wireframes o mockups por lista de pantallas. Ideal cuando ya tienes specs KIRO o una lista clara
+                de vistas. El resultado aparece abajo y puedes abrirlo, aprobarlo o refinarlo.
+              </p>
+            </div>
+          </li>
+          <li className="flex gap-3 rounded-xl border border-indigo-200 bg-indigo-50/50 p-4 dark:border-indigo-900/40 dark:bg-indigo-950/20">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
+              B
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Kit de diseño con agente</p>
+              <p className="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+                Elige una herramienta (pasos 1–6). Se abre un chat: el primer mensaje ya incluye contexto del proyecto y
+                el flujo CTO + UX. Tu trabajo es leer la respuesta y pedir ajustes en el mismo hilo.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </header>
 
-      {/* Simple form to generate designs from specs */}
-      <div className="mb-8 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Generar diseños desde specs KIRO</h3>
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Escribe los nombres de las pantallas o flujos separados por coma (por ejemplo:
-          &quot;Login, Dashboard principal, Detalle de presupuesto&quot;), elige el tipo de diseño y
-          opcionalmente añade instrucciones de refinamiento.
+      {/* Camino A */}
+      <section
+        className="mb-10 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900 md:p-6"
+        aria-labelledby="camino-a-title"
+      >
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-violet-800 dark:bg-violet-900/40 dark:text-violet-200">
+            Camino A
+          </span>
+          <h2 id="camino-a-title" className="text-base font-bold text-gray-900 dark:text-gray-100">
+            Pantallas visuales (wireframe / mockup)
+          </h2>
+        </div>
+        <p className="mb-4 text-xs text-gray-600 dark:text-gray-400">
+          Escribe pantallas separadas por coma, elige tipo y opcionalmente refina. Tras generar, revisa la lista{' '}
+          <strong className="text-gray-800 dark:text-gray-200">Diseños generados</strong> y abre cada artefacto para
+          vista previa y aprobación.
         </p>
         <div className="mt-3 space-y-3">
           <div>
@@ -342,13 +392,13 @@ export function DesignGenerator({
               type="button"
               onClick={handleGenerateFromSpecs}
               disabled={!screensInput.trim() || isGenerating}
-              className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm dark:shadow-gray-900/20 transition-colors hover:bg-violet-700 disabled:opacity-50"
+              className="rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm dark:shadow-gray-900/20 transition-colors hover:bg-violet-700 disabled:opacity-50"
             >
-              {isGenerating ? 'Generando...' : 'Generar diseños'}
+              {isGenerating ? 'Generando…' : 'Generar y guardar en el proyecto'}
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Error display for template actions */}
       {generateError && !screensInput.trim() && (
@@ -357,45 +407,97 @@ export function DesignGenerator({
         </div>
       )}
 
-      {/* Templates grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {DESIGN_TEMPLATES.map((tmpl) => (
-          <button
-            key={tmpl.id}
-            type="button"
-            title={`Abrir flujo CTO + UI/UX: ${tmpl.title}`}
-            onClick={() => handleSelectTemplate(tmpl.id)}
-            className="rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 text-left transition-all hover:border-violet-300 hover:shadow-md"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/20 text-lg">
-              {tmpl.icon}
-            </span>
-            <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">{tmpl.title}</h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{tmpl.description}</p>
-          </button>
-        ))}
-
-        {/* Custom design card */}
-        <button
-          type="button"
-          title="Flujo CTO + UI/UX con peticion libre"
-          onClick={() => handleSelectTemplate('custom')}
-          className="rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-5 text-left transition-all hover:border-violet-300 hover:bg-white dark:hover:bg-gray-900"
-        >
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-lg">
-            ✏️
+      {/* Camino B */}
+      <section
+        className="mb-10 rounded-2xl border-2 border-indigo-200/80 bg-gradient-to-b from-indigo-50/40 to-white p-5 dark:border-indigo-900/50 dark:from-indigo-950/20 dark:to-gray-900 md:p-6"
+        aria-labelledby="camino-b-title"
+      >
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-indigo-600 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
+            Camino B
           </span>
-          <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">Diseno Custom</h3>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Describe lo que necesitas al UI/UX Designer.</p>
-        </button>
-      </div>
+          <h2 id="camino-b-title" className="text-base font-bold text-gray-900 dark:text-gray-100">
+            Kit de diseño con agente (orden sugerido 1 → 6)
+          </h2>
+        </div>
+        <p className="mb-5 max-w-3xl text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+          Cada tarjeta <strong className="text-gray-800 dark:text-gray-200">crea un hilo nuevo</strong> con el UI/UX
+          Designer. No hace falta copiar prompts: el sistema envía personas, propuesta de valor y el guion de la
+          herramienta. Los tiempos son orientativos (IA).
+        </p>
 
-      {/* Existing artifacts */}
-      {artifacts.length > 0 && (
-        <div className="mt-8">
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-            Disenos generados
-          </h3>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {ORDERED_KIT_TEMPLATES.map((tmpl) => {
+            const meta = getDesignToolCardMeta(tmpl.id)
+            return (
+              <button
+                key={tmpl.id}
+                type="button"
+                onClick={() => handleSelectTemplate(tmpl.id)}
+                className="group flex flex-col rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-indigo-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-indigo-600"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-lg dark:bg-indigo-900/30">
+                    {tmpl.icon}
+                  </span>
+                  <span className="rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-bold text-white dark:bg-gray-100 dark:text-gray-900">
+                    Paso {meta.step}
+                  </span>
+                </div>
+                <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">{tmpl.title}</h3>
+                <p className="mt-1 flex-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+                  {meta.outcomeLine}
+                </p>
+                <p className="mt-3 text-[11px] font-medium text-indigo-600 dark:text-indigo-400">
+                  Abrir conversación guiada · {meta.durationHint}
+                </p>
+              </button>
+            )
+          })}
+
+          <button
+            type="button"
+            onClick={() => handleSelectTemplate('custom')}
+            className="flex flex-col rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/80 p-4 text-left transition-all hover:border-indigo-400 hover:bg-white dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-900"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 text-lg dark:bg-gray-700">
+                ✏️
+              </span>
+              <span className="rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-bold text-white dark:bg-gray-100 dark:text-gray-900">
+                Paso {getDesignToolCardMeta('custom').step}
+              </span>
+            </div>
+            <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">Diseño custom</h3>
+            <p className="mt-1 flex-1 text-xs text-gray-600 dark:text-gray-400">
+              {getDesignToolCardMeta('custom').outcomeLine}
+            </p>
+            <p className="mt-3 text-[11px] font-medium text-indigo-600 dark:text-indigo-400">
+              Abrir conversación guiada · {getDesignToolCardMeta('custom').durationHint}
+            </p>
+          </button>
+        </div>
+      </section>
+
+      {/* Artefactos Camino A */}
+      <div className="mt-8">
+        <h3 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+          Diseños generados
+        </h3>
+        <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          Artefactos del <span className="font-medium text-gray-700 dark:text-gray-300">Camino A</span>. Después de
+          revisarlos, usa el <span className="font-medium text-gray-700 dark:text-gray-300">Camino B</span> para alinear
+          sistema de diseño y flujos.
+        </p>
+        {artifacts.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50/70 px-4 py-8 text-center dark:border-gray-600 dark:bg-gray-900/40">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Aún no hay pantallas generadas. Completa el formulario del{' '}
+              <span className="font-medium text-gray-800 dark:text-gray-200">Camino A</span> para crear wireframes o
+              mockups guardados en este proyecto.
+            </p>
+          </div>
+        ) : (
           <div className="space-y-2">
             {artifacts.map((artifact) => (
               <Link
@@ -431,8 +533,8 @@ export function DesignGenerator({
               </Link>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

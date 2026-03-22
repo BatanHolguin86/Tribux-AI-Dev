@@ -36,7 +36,7 @@ export function MobileSidebarDrawer({ projectId, phases, currentPhase }: MobileS
       <button
         onClick={() => setOpen(true)}
         className="fixed bottom-20 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25 transition-transform hover:scale-105 lg:hidden"
-        aria-label="Abrir menu de fases"
+        aria-label="Abrir menu de fases y herramientas"
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />

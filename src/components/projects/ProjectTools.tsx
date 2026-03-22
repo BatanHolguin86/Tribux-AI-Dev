@@ -10,8 +10,8 @@ type ProjectToolsProps = {
 const tools = [
   {
     id: 'designs',
-    label: 'Design Generator',
-    description: 'Wireframes y mockups desde specs',
+    label: 'Diseño & UX',
+    description: 'Pantallas guardadas + kit con agente',
     icon: '🎨',
     path: 'designs',
     gradient: 'from-pink-500/10 to-violet-500/10 dark:from-pink-500/5 dark:to-violet-500/5',
@@ -34,7 +34,7 @@ export function ProjectTools({ projectId }: ProjectToolsProps) {
   return (
     <div>
       <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-        Herramientas
+        Accesos rápidos
       </h3>
       <div className="grid grid-cols-2 gap-2">
         {tools.map((tool) => {

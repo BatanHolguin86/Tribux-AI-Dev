@@ -115,7 +115,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
             href={`/projects/${projectId}/designs`}
             className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           >
-            &larr; Disenos
+            &larr; Diseño &amp; UX
           </Link>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{artifact.screen_name}</h1>
           <span className="rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-400">
@@ -176,10 +176,11 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
             Siguiente paso: sistema de diseño (CTO + UI/UX)
           </h3>
           <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-            Este artefacto es wireframe/mockup generado. Para alinear <strong>Component Library</strong>,{' '}
-            <strong>Style Guide</strong>, <strong>User Flows</strong> y <strong>Responsive Specs</strong> con tus{' '}
-            <strong>personas</strong> y <strong>propuesta de valor</strong>, usa el Design Generator: cada herramienta
-            abre un flujo guiado (sintesis CTO + entrega UI/UX).
+            Este artefacto viene del <strong>Camino A</strong> (pantallas visuales). Para alinear{' '}
+            <strong>Component Library</strong>, <strong>Style Guide</strong>, <strong>User Flows</strong> y{' '}
+            <strong>Responsive Specs</strong> con tus <strong>personas</strong> y <strong>propuesta de valor</strong>,
+            vuelve al hub y usa el <strong>Camino B</strong>: cada herramienta abre una conversación guiada (síntesis CTO
+            + entrega UI/UX).
           </p>
           <ul className="mt-2 grid gap-1 text-xs text-gray-700 dark:text-gray-300 sm:grid-cols-2">
             {DESIGN_KIT_NEXT_STEPS.map((step) => (
@@ -193,7 +194,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
             href={`/projects/${projectId}/designs`}
             className="mt-3 inline-flex text-sm font-medium text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
           >
-            Ir al Design Generator →
+            Ir a Diseño &amp; UX (hub) →
           </Link>
         </div>
       )}

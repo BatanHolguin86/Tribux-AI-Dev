@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { PHASE_NAMES } from '@/types/project'
 import type { PhaseStatus } from '@/types/project'
@@ -7,6 +6,7 @@ import { PhasesStepper } from '@/components/projects/PhasesStepper'
 import { ProactiveSuggestions } from '@/components/projects/ProactiveSuggestions'
 import { ProjectTools } from '@/components/projects/ProjectTools'
 import { MobileSidebarDrawer } from '@/components/projects/MobileSidebarDrawer'
+import { ProjectBreadcrumb } from '@/components/projects/ProjectBreadcrumb'
 
 export default async function ProjectLayout({
   children,
@@ -41,24 +41,12 @@ export default async function ProjectLayout({
 
   return (
     <div>
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-        <Link href="/dashboard" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-          Proyectos
-        </Link>
-        <svg className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        <Link href={`/projects/${id}/phase/${String(currentPhase).padStart(2, '0')}`} className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-          {projectName}
-        </Link>
-        <svg className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        <span className="font-medium text-gray-900 dark:text-gray-100">
-          Phase {String(currentPhase).padStart(2, '0')}: {phaseName}
-        </span>
-      </nav>
+      <ProjectBreadcrumb
+        projectId={id}
+        projectName={projectName}
+        currentPhase={currentPhase}
+        phaseName={phaseName}
+      />
 
       {/* Main layout: sidebar + content */}
       <div className="flex gap-6">

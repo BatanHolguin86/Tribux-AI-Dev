@@ -132,11 +132,70 @@ export function buildDesignToolInitialUserMessage(
   ].join('\n')
 }
 
+/** Recommended order in UI (value first: screens → visual system → flows → breakpoints). */
+export const DESIGN_KIT_TOOL_SEQUENCE = [
+  'wireframes',
+  'style-guide',
+  'component-library',
+  'user-flows',
+  'responsive-specs',
+  'custom',
+] as const
+
+export type DesignKitTemplateId = (typeof DESIGN_KIT_TOOL_SEQUENCE)[number]
+
+/** Short line on each tool card — what the user gets (functional clarity). */
+export const DESIGN_TOOL_CARD_META: Record<
+  string,
+  { step: number; outcomeLine: string; durationHint: string }
+> = {
+  wireframes: {
+    step: 1,
+    outcomeLine: 'Wireframes ASCII de pantallas + jerarquía y estados',
+    durationHint: '~2–5 min',
+  },
+  'style-guide': {
+    step: 2,
+    outcomeLine: 'Paleta, tipografía y tokens listos para Tailwind / shadcn',
+    durationHint: '~2–5 min',
+  },
+  'component-library': {
+    step: 3,
+    outcomeLine: 'Inventario de componentes reutilizables y variantes',
+    durationHint: '~3–6 min',
+  },
+  'user-flows': {
+    step: 4,
+    outcomeLine: 'Flujos con happy path, errores y puntos de feedback',
+    durationHint: '~3–6 min',
+  },
+  'responsive-specs': {
+    step: 5,
+    outcomeLine: 'Comportamiento mobile / tablet / desktop por vista',
+    durationHint: '~3–5 min',
+  },
+  custom: {
+    step: 6,
+    outcomeLine: 'Lo que definas con el agente, anclado a Discovery',
+    durationHint: 'Variable',
+  },
+}
+
+export function getDesignToolCardMeta(templateId: string) {
+  return (
+    DESIGN_TOOL_CARD_META[templateId] ?? {
+      step: 0,
+      outcomeLine: 'Respuesta en el chat',
+      durationHint: '—',
+    }
+  )
+}
+
 export const DESIGN_KIT_NEXT_STEPS = [
   { id: 'wireframes', label: 'Wireframes de pantallas' },
-  { id: 'component-library', label: 'Component Library' },
   { id: 'style-guide', label: 'Style Guide' },
+  { id: 'component-library', label: 'Component Library' },
   { id: 'user-flows', label: 'User Flows' },
   { id: 'responsive-specs', label: 'Responsive Specs' },
-  { id: 'custom', label: 'Diseno custom (UI/UX)' },
+  { id: 'custom', label: 'Diseño custom (UI/UX)' },
 ] as const
