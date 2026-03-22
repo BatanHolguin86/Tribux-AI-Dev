@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { DESIGN_TEMPLATES } from '@/lib/ai/agents/ui-ux-designer'
 import { DesignChat } from './DesignChat'
 
@@ -10,6 +11,12 @@ type Artifact = {
   document_type: string
   status: string
   created_at: string
+}
+
+const TYPE_LABELS: Record<string, string> = {
+  wireframe: 'Wireframe',
+  mockup_lowfi: 'Mockup Low-Fi',
+  mockup_highfi: 'Mockup High-Fi',
 }
 
 type DesignGeneratorProps = {
@@ -78,12 +85,18 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
         return
       }
 
-      // Refresh artifact list
+      // Refresh artifact list (map API fields to component fields)
       const listRes = await fetch(`/api/projects/${projectId}/designs`)
       if (listRes.ok) {
-        const json = (await listRes.json()) as { artifacts?: Artifact[] }
+        const json = await listRes.json()
         if (Array.isArray(json.artifacts)) {
-          setArtifacts(json.artifacts)
+          setArtifacts(json.artifacts.map((a: Record<string, string>) => ({
+            id: a.id,
+            title: a.screen_name || a.title || '',
+            document_type: a.type || a.document_type || '',
+            status: a.status,
+            created_at: a.created_at,
+          })))
         }
       }
     } catch (err) {
@@ -254,31 +267,41 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
       {artifacts.length > 0 && (
         <div className="mt-8">
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-            Artifacts guardados
+            Disenos generados
           </h3>
           <div className="space-y-2">
             {artifacts.map((artifact) => (
-              <div
+              <Link
                 key={artifact.id}
-                className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3"
+                href={`/projects/${projectId}/designs/${artifact.id}`}
+                className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 transition-colors hover:border-violet-300 hover:bg-gray-50 dark:hover:bg-gray-800"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-base">🎨</span>
                   <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{artifact.title}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {artifact.title || 'Sin nombre'}
+                    </p>
                     <p className="text-xs text-gray-400 dark:text-gray-500">
-                      {new Date(artifact.created_at).toLocaleDateString('es-ES')}
+                      {TYPE_LABELS[artifact.document_type] || artifact.document_type} · {new Date(artifact.created_at).toLocaleDateString('es-ES')}
                     </p>
                   </div>
                 </div>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  artifact.status === 'approved'
-                    ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
-                }`}>
-                  {artifact.status === 'approved' ? 'Aprobado' : 'Draft'}
-                </span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    artifact.status === 'approved'
+                      ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'
+                      : artifact.status === 'generating'
+                        ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                  }`}>
+                    {artifact.status === 'approved' ? 'Aprobado' : artifact.status === 'generating' ? 'Generando...' : 'Draft'}
+                  </span>
+                  <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
