@@ -108,6 +108,13 @@ Este archivo **no sustituye** el PDF/HTML del informe; es un **delta estructurad
 | Informe original (PDF) | `docs/informe-auditoria-integral.pdf` |
 | Este estatus | `docs/00-discovery/08-informe-auditoria-integral-estatus-actualizado.md` |
 
+**Regenerar el PDF desde el HTML** (tras editar el informe):
+
+```bash
+pnpm exec playwright install chromium   # una vez por máquina
+pnpm run docs:informe-pdf
+```
+
 ---
 
 *Documento de seguimiento generado para alinear stakeholders con el estado real del repositorio respecto al informe de auditoría del 16 de marzo de 2026.*
