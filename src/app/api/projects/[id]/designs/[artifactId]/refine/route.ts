@@ -1,4 +1,4 @@
-import { streamText } from 'ai'
+import { generateText } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
@@ -8,7 +8,7 @@ import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 import { DESIGN_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 
-export const maxDuration = 60
+export const maxDuration = 120
 
 export async function POST(
   request: Request,
@@ -92,7 +92,8 @@ export async function POST(
       .update({ status: 'generating' })
       .eq('id', artifactId)
 
-    const result = streamText({
+    // Generate refined design using generateText (not streamText)
+    const { text, usage } = await generateText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
@@ -102,50 +103,41 @@ export async function POST(
         },
       ],
       ...AI_CONFIG.designPrompts,
-      onFinish: async ({ text, usage }) => {
-        try {
-          // Overwrite storage with refined content
-          const storagePath = artifact.storage_path || `projects/${projectId}/designs/${artifactId}.md`
-          const blob = new Blob([text], { type: 'text/markdown' })
-
-          await supabase.storage
-            .from('project-designs')
-            .upload(storagePath, blob, {
-              contentType: 'text/markdown',
-              upsert: true,
-            })
-
-          await supabase
-            .from('design_artifacts')
-            .update({
-              storage_path: storagePath,
-              status: 'draft',
-              prompt_used: parsed.data.instruction.slice(0, 2000),
-            })
-            .eq('id', artifactId)
-
-          // Record AI usage for financial backoffice
-          const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + parsed.data.instruction)
-          const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-          recordAiUsage(supabase, {
-            userId: user.id,
-            projectId,
-            eventType: 'design_refine',
-            model: defaultModel?.toString?.() ?? undefined,
-            inputTokens,
-            outputTokens,
-          }).catch(() => {})
-        } catch (error) {
-          console.error('[Design refine] Error saving', error)
-          await supabase
-            .from('design_artifacts')
-            .update({ status: 'draft' })
-            .eq('id', artifactId)
-        }
-      },
     })
 
-    return result.toTextStreamResponse()
+    // Overwrite storage with refined content
+    const storagePath = artifact.storage_path || `projects/${projectId}/designs/${artifactId}.md`
+    const blob = new Blob([text], { type: 'text/markdown' })
+
+    await supabase.storage
+      .from('project-designs')
+      .upload(storagePath, blob, {
+        contentType: 'text/markdown',
+        upsert: true,
+      })
+
+    await supabase
+      .from('design_artifacts')
+      .update({
+        storage_path: storagePath,
+        status: 'draft',
+        prompt_used: parsed.data.instruction.slice(0, 2000),
+      })
+      .eq('id', artifactId)
+
+    // Record AI usage
+    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + parsed.data.instruction)
+    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+    recordAiUsage(supabase, {
+      userId: user.id,
+      projectId,
+      eventType: 'design_refine',
+      model: defaultModel?.toString?.() ?? undefined,
+      inputTokens,
+      outputTokens,
+    }).catch(() => {})
+
+    return Response.json({ success: true, artifactId })
   } catch (error) {
     console.error('[Design refine] Error', error)
     return NextResponse.json({ error: 'Error al refinar diseno' }, { status: 500 })

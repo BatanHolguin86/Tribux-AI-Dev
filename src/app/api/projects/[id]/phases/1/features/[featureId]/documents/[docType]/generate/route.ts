@@ -12,12 +12,18 @@ export const maxDuration = 120
 
 type CoreMessage = { role: 'user' | 'assistant'; content: string }
 
-function toCoreMessages(raw: unknown): CoreMessage[] {
+function toCoreMessages(raw: unknown, maxMessages = 10): CoreMessage[] {
   if (!Array.isArray(raw)) return []
-  return raw.map((m: any) => ({
+  // Keep only the last N messages to avoid oversized context
+  const recent = raw.length > maxMessages ? raw.slice(-maxMessages) : raw
+  return recent.map((m: any) => ({
     role: (m?.role === 'assistant' ? 'assistant' : 'user') as CoreMessage['role'],
     content: typeof m?.content === 'string'
-      ? m.content.replace(/---OPTIONS---[\s\S]*?---\/OPTIONS---/g, '').trim()
+      ? m.content
+          .replace(/---OPTIONS---[\s\S]*?---\/OPTIONS---/g, '')
+          .replace(/\[SECTION_READY\]/g, '')
+          .trim()
+          .slice(0, 3000)
       : '',
   }))
 }
@@ -55,15 +61,29 @@ export async function POST(
 
   const context = await buildProjectContext(projectId)
   const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
-  const previousSpecs = await getApprovedFeatureSpecs(projectId, featureId)
+  const otherFeatureSpecs = await getApprovedFeatureSpecs(projectId, featureId)
+
+  // Include THIS feature's earlier approved docs (e.g., Requirements when generating Design)
+  const { data: ownDocs } = await supabase
+    .from('feature_documents')
+    .select('document_type, content')
+    .eq('feature_id', featureId)
+    .eq('status', 'approved')
+    .neq('document_type', docTypeKey)
+
+  const ownDocsContext = (ownDocs ?? [])
+    .map((d) => `### ${d.document_type} (aprobado)\n${(d.content ?? '').slice(0, 4000)}`)
+    .join('\n\n')
+
+  const previousSpecs = [ownDocsContext, otherFeatureSpecs].filter(Boolean).join('\n\n')
 
   const systemPrompt = buildKiroDocGenerationPrompt(docTypeKey, {
     projectName: context.name,
     description: context.description,
     industry: context.industry,
     persona: context.persona,
-    discoveryDocs,
-    previousSpecs,
+    discoveryDocs: discoveryDocs.slice(0, 8000),
+    previousSpecs: previousSpecs.slice(0, 12000),
     featureName: feature?.name ?? '',
     featureDescription: feature?.description ?? null,
   })

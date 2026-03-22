@@ -116,10 +116,13 @@ export function KiroChat({
     setGenerating(true)
     setGenerateError(null)
 
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 90_000)
+
     try {
       const res = await fetch(
         `/api/projects/${projectId}/phases/1/features/${featureId}/documents/${docType}/generate`,
-        { method: 'POST' },
+        { method: 'POST', signal: controller.signal },
       )
 
       if (!res.ok) {
@@ -130,8 +133,13 @@ export function KiroChat({
 
       onDocumentGenerated()
     } catch (err) {
-      setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setGenerateError('La generacion tardo demasiado. Intenta de nuevo — si persiste, simplifica la conversacion.')
+      } else {
+        setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
+      }
     } finally {
+      clearTimeout(timeout)
       setGenerating(false)
     }
   }

@@ -11,12 +11,17 @@ export const maxDuration = 120
 
 type CoreMessage = { role: 'user' | 'assistant'; content: string }
 
-function toCoreMessages(raw: unknown): CoreMessage[] {
+function toCoreMessages(raw: unknown, maxMessages = 10): CoreMessage[] {
   if (!Array.isArray(raw)) return []
-  return raw.map((m: any) => ({
+  const recent = raw.length > maxMessages ? raw.slice(-maxMessages) : raw
+  return recent.map((m: any) => ({
     role: (m?.role === 'assistant' ? 'assistant' : 'user') as CoreMessage['role'],
     content: typeof m?.content === 'string'
-      ? m.content.replace(/---OPTIONS---[\s\S]*?---\/OPTIONS---/g, '').trim()
+      ? m.content
+          .replace(/---OPTIONS---[\s\S]*?---\/OPTIONS---/g, '')
+          .replace(/\[SECTION_READY\]/g, '')
+          .trim()
+          .slice(0, 3000)
       : '',
   }))
 }

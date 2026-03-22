@@ -25,6 +25,7 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
   const [type, setType] = useState<'wireframe' | 'mockup_lowfi' | 'mockup_highfi'>('wireframe')
   const [refinement, setRefinement] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState<string | null>(null)
 
   async function handleSelectTemplate(templateId: string) {
     // Create a new thread with the UI/UX Designer agent
@@ -59,6 +60,7 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
     if (screens.length === 0) return
 
     setIsGenerating(true)
+    setGenerateError(null)
     try {
       const res = await fetch(`/api/projects/${projectId}/designs/generate`, {
         method: 'POST',
@@ -71,20 +73,21 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
       })
 
       if (!res.ok) {
-        // En v1.0 mantenemos el manejo simple; se podria mostrar toast
-        console.error('[DesignGenerator] Error generating designs', await res.text())
-      } else {
-        // Refrescar lista de artifacts
-        const listRes = await fetch(`/api/projects/${projectId}/designs`)
-        if (listRes.ok) {
-          const json = (await listRes.json()) as { artifacts?: Artifact[] }
-          if (Array.isArray(json.artifacts)) {
-            setArtifacts(json.artifacts)
-          }
+        const body = await res.json().catch(() => null)
+        setGenerateError(body?.message || body?.error || `Error ${res.status}`)
+        return
+      }
+
+      // Refresh artifact list
+      const listRes = await fetch(`/api/projects/${projectId}/designs`)
+      if (listRes.ok) {
+        const json = (await listRes.json()) as { artifacts?: Artifact[] }
+        if (Array.isArray(json.artifacts)) {
+          setArtifacts(json.artifacts)
         }
       }
-    } catch (error) {
-      console.error('[DesignGenerator] Unexpected error', error)
+    } catch (err) {
+      setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
     } finally {
       setIsGenerating(false)
     }
@@ -200,6 +203,11 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
               className="mt-1 w-full resize-none rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
           </div>
+          {generateError && (
+            <div className="rounded-md border-l-4 border-red-500 bg-red-50 dark:bg-red-900/10 px-3 py-2 text-sm text-red-700 dark:text-red-400">
+              {generateError}
+            </div>
+          )}
           <div className="flex justify-end">
             <button
               type="button"

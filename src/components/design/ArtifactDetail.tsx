@@ -64,22 +64,10 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
 
       if (!res.ok) return
 
-      // Read streaming response
-      const reader = res.body?.getReader()
-      if (!reader) return
-
-      let refinedContent = ''
-      const decoder = new TextDecoder()
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        refinedContent += decoder.decode(value, { stream: true })
-        setDisplayContent(refinedContent)
-      }
-
+      // Reload page to get the updated content from storage
       setStatus('draft')
       setRefineInput('')
+      window.location.reload()
     } finally {
       setIsRefining(false)
     }

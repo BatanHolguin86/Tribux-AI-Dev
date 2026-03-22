@@ -1,4 +1,4 @@
-import { streamText } from 'ai'
+import { generateText } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
@@ -9,7 +9,7 @@ import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 import { DESIGN_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 
-export const maxDuration = 60
+export const maxDuration = 120
 
 export async function POST(
   request: Request,
@@ -43,7 +43,7 @@ export async function POST(
       )
     }
 
-    // Verify Phase 01 is completed before allowing generation
+    // Verify Phase 01 has progress — either completed or active with at least one feature spec
     const { data: phase01 } = await supabase
       .from('project_phases')
       .select('status')
@@ -51,11 +51,27 @@ export async function POST(
       .eq('phase_number', 1)
       .single()
 
-    if (!phase01 || phase01.status !== 'completed') {
+    if (!phase01 || phase01.status === 'locked') {
       return NextResponse.json(
         { error: 'phase_incomplete', message: 'Completa Phase 01 (Requirements & Spec) antes de generar disenos.' },
         { status: 400 },
       )
+    }
+
+    // If Phase 01 is active (not yet formally approved), require at least one feature with specs
+    if (phase01.status === 'active') {
+      const { count } = await supabase
+        .from('project_features')
+        .select('id', { count: 'exact', head: true })
+        .eq('project_id', projectId)
+        .in('status', ['spec_complete', 'approved', 'in_progress'])
+
+      if (!count || count === 0) {
+        return NextResponse.json(
+          { error: 'phase_incomplete', message: 'Define al menos un feature en Phase 01 antes de generar disenos.' },
+          { status: 400 },
+        )
+      }
     }
 
     // Get project info for context
@@ -102,7 +118,8 @@ export async function POST(
       return NextResponse.json({ error: 'Error al crear artefacto' }, { status: 500 })
     }
 
-    const result = streamText({
+    // Generate design using generateText (not streamText) to ensure completion
+    const { text, usage } = await generateText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
@@ -112,53 +129,41 @@ export async function POST(
         },
       ],
       ...AI_CONFIG.designPrompts,
-      onFinish: async ({ text, usage }) => {
-        try {
-          // Upload generated content to storage
-          const storagePath = `projects/${projectId}/designs/${artifact.id}.md`
-          const blob = new Blob([text], { type: 'text/markdown' })
-
-          await supabase.storage
-            .from('project-designs')
-            .upload(storagePath, blob, {
-              contentType: 'text/markdown',
-              upsert: true,
-            })
-
-          // Update artifact with content and status
-          await supabase
-            .from('design_artifacts')
-            .update({
-              storage_path: storagePath,
-              status: 'draft',
-            })
-            .eq('id', artifact.id)
-
-          // Record AI usage for financial backoffice
-          const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
-          const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-          recordAiUsage(supabase, {
-            userId: user.id,
-            projectId,
-            eventType: 'design_generate',
-            model: defaultModel?.toString?.() ?? undefined,
-            inputTokens,
-            outputTokens,
-          }).catch(() => {})
-        } catch (error) {
-          console.error('[Design generate] Error saving artifact', error)
-          await supabase
-            .from('design_artifacts')
-            .update({ status: 'draft', storage_path: '' })
-            .eq('id', artifact.id)
-        }
-      },
     })
 
-    // Return streaming response with artifact ID in header
-    const response = result.toTextStreamResponse()
-    response.headers.set('X-Artifact-Id', artifact.id)
-    return response
+    // Upload generated content to storage
+    const storagePath = `projects/${projectId}/designs/${artifact.id}.md`
+    const blob = new Blob([text], { type: 'text/markdown' })
+
+    await supabase.storage
+      .from('project-designs')
+      .upload(storagePath, blob, {
+        contentType: 'text/markdown',
+        upsert: true,
+      })
+
+    // Update artifact with content and status
+    await supabase
+      .from('design_artifacts')
+      .update({
+        storage_path: storagePath,
+        status: 'draft',
+      })
+      .eq('id', artifact.id)
+
+    // Record AI usage for financial backoffice
+    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
+    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+    recordAiUsage(supabase, {
+      userId: user.id,
+      projectId,
+      eventType: 'design_generate',
+      model: defaultModel?.toString?.() ?? undefined,
+      inputTokens,
+      outputTokens,
+    }).catch(() => {})
+
+    return Response.json({ success: true, artifactId: artifact.id })
   } catch (error) {
     console.error('[Design generate] Error', error)
     return NextResponse.json(

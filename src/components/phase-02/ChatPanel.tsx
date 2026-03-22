@@ -121,10 +121,14 @@ export function ChatPanel({
     setGenerating(true)
     setGenerateError(null)
 
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 90_000)
+
     try {
       const res = await fetch(`/api/projects/${projectId}/phases/2/sections/${section}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
       })
 
       if (!res.ok) {
@@ -135,8 +139,13 @@ export function ChatPanel({
 
       onDocumentGenerated()
     } catch (err) {
-      setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setGenerateError('La generacion tardo demasiado. Intenta de nuevo.')
+      } else {
+        setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
+      }
     } finally {
+      clearTimeout(timeout)
       setGenerating(false)
     }
   }
