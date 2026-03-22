@@ -22,6 +22,7 @@ const AGENTS = [
   { name: 'DB Admin', desc: 'Esquemas, queries, RLS y migraciones.', icon: '🗄️' },
   { name: 'QA Engineer', desc: 'Test cases, estrategia de testing y checklists.', icon: '✅' },
   { name: 'DevOps Engineer', desc: 'CI/CD, deploy, monitoring e infraestructura.', icon: '⚡' },
+  { name: 'Operator', desc: 'Repos, pipelines y planes de deploy listos para ejecutar.', icon: '🛠️' },
 ]
 
 const PLANS = [
