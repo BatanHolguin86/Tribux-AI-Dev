@@ -21,15 +21,18 @@ export default async function ArtifactDetailPage({
     notFound()
   }
 
-  // Fetch content from storage
-  let content: string | null = null
-  if (artifact.storage_path) {
-    const { data: fileData } = await supabase.storage
-      .from('project-designs')
-      .download(artifact.storage_path)
-
-    if (fileData) {
-      content = await fileData.text()
+  // Read content from DB first (reliable), fallback to storage
+  let content: string | null = artifact.content ?? null
+  if (!content && artifact.storage_path) {
+    try {
+      const { data: fileData } = await supabase.storage
+        .from('project-designs')
+        .download(artifact.storage_path)
+      if (fileData) {
+        content = await fileData.text()
+      }
+    } catch {
+      // Storage bucket may not exist
     }
   }
 

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { AGENT_MAP, isAgentAccessible } from '@/lib/ai/agents'
+import { AGENT_MAP } from '@/lib/ai/agents'
+import { canUseAgent } from '@/lib/plans/guards'
 import type { AgentType } from '@/types/agent'
-import type { Plan } from '@/types/user'
 
 export async function GET(
   _request: Request,
@@ -50,13 +50,13 @@ export async function POST(
 
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('plan')
+    .select('plan, subscription_status, trial_ends_at')
     .eq('id', user.id)
     .single()
 
-  if (!isAgentAccessible(agent.planRequired, (profile?.plan ?? 'starter') as Plan)) {
+  if (!profile || !canUseAgent(agentType, agent.planRequired, profile)) {
     return NextResponse.json(
-      { error: 'Agente no disponible en tu plan actual' },
+      { error: 'plan_required', message: 'Tu plan no incluye acceso a este agente. Upgrade para continuar.' },
       { status: 403 },
     )
   }

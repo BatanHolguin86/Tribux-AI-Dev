@@ -131,23 +131,27 @@ export async function POST(
       ...AI_CONFIG.designPrompts,
     })
 
-    // Upload generated content to storage
+    // Upload to storage (best effort — bucket may not exist)
     const storagePath = `projects/${projectId}/designs/${artifact.id}.md`
-    const blob = new Blob([text], { type: 'text/markdown' })
+    try {
+      const blob = new Blob([text], { type: 'text/markdown' })
+      await supabase.storage
+        .from('project-designs')
+        .upload(storagePath, blob, {
+          contentType: 'text/markdown',
+          upsert: true,
+        })
+    } catch (err) {
+      console.error('[Design generate] Storage upload failed (bucket may not exist)', err)
+    }
 
-    await supabase.storage
-      .from('project-designs')
-      .upload(storagePath, blob, {
-        contentType: 'text/markdown',
-        upsert: true,
-      })
-
-    // Update artifact with content and status
+    // Save content in DB (reliable) and update status
     await supabase
       .from('design_artifacts')
       .update({
         storage_path: storagePath,
         status: 'draft',
+        content: text,
       })
       .eq('id', artifact.id)
 

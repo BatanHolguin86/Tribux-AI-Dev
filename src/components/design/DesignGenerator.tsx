@@ -35,18 +35,27 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
   const [generateError, setGenerateError] = useState<string | null>(null)
 
   async function handleSelectTemplate(templateId: string) {
-    // Create a new thread with the UI/UX Designer agent
-    const res = await fetch(`/api/projects/${projectId}/agents/ui_ux_designer/threads`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: `Design: ${templateId}` }),
-    })
+    setGenerateError(null)
+    try {
+      // Create a new thread with the UI/UX Designer agent
+      const res = await fetch(`/api/projects/${projectId}/agents/ui_ux_designer/threads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: `Design: ${templateId}` }),
+      })
 
-    if (!res.ok) return
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        setGenerateError(body?.message || body?.error || `Error ${res.status} al crear hilo con el agente`)
+        return
+      }
 
-    const data = await res.json()
-    setThreadId(data.id)
-    setActiveTemplate(templateId)
+      const data = await res.json()
+      setThreadId(data.id)
+      setActiveTemplate(templateId)
+    } catch (err) {
+      setGenerateError(err instanceof Error ? err.message : 'Error de conexion al crear hilo')
+    }
   }
 
   function handleBack() {
@@ -233,6 +242,13 @@ export function DesignGenerator({ projectId, existingArtifacts }: DesignGenerato
           </div>
         </div>
       </div>
+
+      {/* Error display for template actions */}
+      {generateError && !screensInput.trim() && (
+        <div className="mb-4 rounded-md border-l-4 border-red-500 bg-red-50 dark:bg-red-900/10 px-3 py-2 text-sm text-red-700 dark:text-red-400">
+          {generateError}
+        </div>
+      )}
 
       {/* Templates grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

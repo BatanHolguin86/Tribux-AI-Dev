@@ -105,22 +105,27 @@ export async function POST(
       ...AI_CONFIG.designPrompts,
     })
 
-    // Overwrite storage with refined content
+    // Upload to storage (best effort)
     const storagePath = artifact.storage_path || `projects/${projectId}/designs/${artifactId}.md`
-    const blob = new Blob([text], { type: 'text/markdown' })
+    try {
+      const blob = new Blob([text], { type: 'text/markdown' })
+      await supabase.storage
+        .from('project-designs')
+        .upload(storagePath, blob, {
+          contentType: 'text/markdown',
+          upsert: true,
+        })
+    } catch (err) {
+      console.error('[Design refine] Storage upload failed', err)
+    }
 
-    await supabase.storage
-      .from('project-designs')
-      .upload(storagePath, blob, {
-        contentType: 'text/markdown',
-        upsert: true,
-      })
-
+    // Save content in DB (reliable)
     await supabase
       .from('design_artifacts')
       .update({
         storage_path: storagePath,
         status: 'draft',
+        content: text,
         prompt_used: parsed.data.instruction.slice(0, 2000),
       })
       .eq('id', artifactId)
