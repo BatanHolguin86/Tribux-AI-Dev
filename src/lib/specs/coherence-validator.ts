@@ -12,7 +12,6 @@ export type CoherenceIssue = {
 
 const SNAKE_CASE = /^[a-z][a-z0-9_]*(_[a-z0-9]+)*$/
 const TABLE_NAME_IN_SQL = /create\s+table\s+(?:if\s+not\s+exists\s+)?[`"]?(\w+)[`"]?/gi
-const TABLE_IN_BACKTICKS = /`([a-z_][a-z0-9_]*)`/g
 
 function extractTableNames(content: string, normalizeCase = false): string[] {
   const names = new Set<string>()
@@ -20,11 +19,6 @@ function extractTableNames(content: string, normalizeCase = false): string[] {
   const sqlRegex = new RegExp(TABLE_NAME_IN_SQL.source, 'gi')
   while ((m = sqlRegex.exec(content)) !== null) {
     names.add(normalizeCase ? m[1].toLowerCase() : m[1])
-  }
-  const backtickRegex = new RegExp(TABLE_IN_BACKTICKS.source, 'g')
-  while ((m = backtickRegex.exec(content)) !== null) {
-    const name = m[1]
-    if (name.length > 2) names.add(normalizeCase ? name.toLowerCase() : name)
   }
   return Array.from(names)
 }

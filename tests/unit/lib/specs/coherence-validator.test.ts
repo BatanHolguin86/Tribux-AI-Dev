@@ -45,6 +45,20 @@ describe('coherence-validator', () => {
       const issues = validateDesignCoherence(current, previous)
       expect(issues.some((i) => i.type === 'duplicate_table')).toBe(true)
     })
+
+    it('no trata nombres en backticks como tablas (columnas, referencias)', () => {
+      const current = 'Usa `patient_profiles` y columna `updated_at` como dependencia.'
+      const previous = 'create table patient_profiles (id uuid, updated_at timestamptz)'
+      const issues = validateDesignCoherence(current, previous)
+      expect(issues).toHaveLength(0)
+    })
+
+    it('no reporta duplicado cuando tabla referenciada en texto pero no creada', () => {
+      const current = '## Dependencies\n- `patient_profiles` — tabla base\n\ncreate table glucose_readings (id uuid)'
+      const previous = 'create table patient_profiles (id uuid)'
+      const issues = validateDesignCoherence(current, previous)
+      expect(issues.some((i) => i.type === 'duplicate_table')).toBe(false)
+    })
   })
 
   describe('validateSpecCoherence', () => {
