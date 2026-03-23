@@ -4,7 +4,6 @@ import type { PhaseStatus } from '@/types/project'
 import { FloatingAgentButton } from '@/components/agents/FloatingAgentButton'
 import { PhasesStepper } from '@/components/projects/PhasesStepper'
 import { ProactiveSuggestions } from '@/components/projects/ProactiveSuggestions'
-import { ProjectTools } from '@/components/projects/ProjectTools'
 import { MobileSidebarDrawer } from '@/components/projects/MobileSidebarDrawer'
 import { ProjectBreadcrumb } from '@/components/projects/ProjectBreadcrumb'
 
@@ -54,7 +53,6 @@ export default async function ProjectLayout({
         <aside className="hidden w-64 shrink-0 lg:block">
           <div className="sticky top-6 max-h-[calc(100vh-5rem)] space-y-5 overflow-y-auto scrollbar-hide pb-6">
             <PhasesStepper projectId={id} phases={phases} />
-            <ProjectTools projectId={id} />
             <ProactiveSuggestions projectId={id} phases={phases} currentPhase={currentPhase} />
           </div>
         </aside>

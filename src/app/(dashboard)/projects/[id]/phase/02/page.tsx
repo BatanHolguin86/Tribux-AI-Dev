@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Phase02Layout } from '@/components/phase-02/Phase02Layout'
 import { PlanGuard } from '@/components/shared/PlanGuard'
 import { canAccessPhase } from '@/lib/plans/guards'
+import { getDesignWorkflowContext } from '@/lib/ai/context-builder'
 import { PHASE02_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-02'
 import type { Phase02Section, SectionStatus } from '@/types/conversation'
 
@@ -54,8 +55,8 @@ export default async function Phase02Page({
     )
   }
 
-  // Fetch sections, conversations, documents and approved designs
-  const [sectionsRes, conversationsRes, documentsRes, designsRes] = await Promise.all([
+  // Fetch sections, conversations, documents, approved designs, all artifacts, and workflow context
+  const [sectionsRes, conversationsRes, documentsRes, designsRes, allArtifactsRes, workflowContext] = await Promise.all([
     supabase
       .from('phase_sections')
       .select('*')
@@ -76,13 +77,27 @@ export default async function Phase02Page({
       .select('id, screen_name, type, status, created_at')
       .eq('project_id', projectId)
       .eq('status', 'approved')
-      .order('created_at', { ascending: false })
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('design_artifacts')
+      .select('id, screen_name, type, status, created_at')
+      .eq('project_id', projectId)
+      .order('created_at', { ascending: false }),
+    getDesignWorkflowContext(projectId),
   ])
 
   const sections = sectionsRes.data ?? []
   const conversations = conversationsRes.data ?? []
   const documents = documentsRes.data ?? []
   const approvedDesigns: ApprovedDesign[] = (designsRes.data as ApprovedDesign[]) ?? []
+
+  const allArtifacts = (allArtifactsRes.data ?? []).map((a) => ({
+    id: a.id as string,
+    title: a.screen_name as string,
+    document_type: a.type as string,
+    status: a.status as string,
+    created_at: a.created_at as string,
+  }))
 
   const sectionData: SectionData[] = PHASE02_SECTIONS.map((key) => {
     const sectionRow = sections.find((s) => s.section === key)
@@ -109,6 +124,8 @@ export default async function Phase02Page({
       sections={sectionData}
       initialActiveSection={activeSection}
       approvedDesigns={approvedDesigns}
+      designArtifacts={allArtifacts}
+      workflowContext={workflowContext}
     />
   )
 }

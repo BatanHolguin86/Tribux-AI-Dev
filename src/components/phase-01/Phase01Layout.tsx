@@ -2,6 +2,9 @@
 
 import { useState, useCallback } from 'react'
 import type { KiroDocumentType } from '@/types/feature'
+import { getPhaseAgents } from '@/lib/phase-workspace-config'
+import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
+import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { FeatureList } from './FeatureList'
 import { FeatureSuggestions } from './FeatureSuggestions'
 import { DiscoverySummary } from './DiscoverySummary'
@@ -28,6 +31,8 @@ type Phase01LayoutProps = {
   features: FeatureData[]
   discoverySummary: Array<{ section: string; content: string }>
 }
+
+const phaseAgents = getPhaseAgents(1)
 
 export function Phase01Layout({
   projectId,
@@ -59,7 +64,7 @@ export function Phase01Layout({
     window.location.reload()
   }, [])
 
-  // ── Feature workspace (selected feature) ──
+  // Feature workspace (selected feature) — full screen, bypasses tabs
   if (activeFeature) {
     return (
       <div className="h-[var(--content-height)]">
@@ -74,8 +79,7 @@ export function Phase01Layout({
     )
   }
 
-  // ── Feature list (default view) ──
-  return (
+  const sectionsContent = (
     <div className="space-y-4">
       {/* Header with progress */}
       <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
@@ -138,5 +142,24 @@ export function Phase01Layout({
         </div>
       )}
     </div>
+  )
+
+  const teamContent = (
+    <PhaseTeamPanel
+      projectId={projectId}
+      phaseNumber={1}
+      agentTypes={phaseAgents}
+    />
+  )
+
+  return (
+    <PhaseWorkspaceTabs
+      phaseNumber={1}
+      projectId={projectId}
+      phaseAgents={phaseAgents}
+      teamContent={teamContent}
+    >
+      {sectionsContent}
+    </PhaseWorkspaceTabs>
   )
 }

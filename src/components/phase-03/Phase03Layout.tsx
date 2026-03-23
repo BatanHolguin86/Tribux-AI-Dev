@@ -3,6 +3,9 @@
 import { useState, useCallback } from 'react'
 import type { SectionStatus } from '@/types/conversation'
 import { PHASE03_SECTIONS } from '@/lib/ai/prompts/phase-03'
+import { getPhaseAgents } from '@/lib/phase-workspace-config'
+import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
+import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCategory } from './ChecklistCategory'
 import { Phase03FinalGate } from './Phase03FinalGate'
@@ -21,6 +24,8 @@ type Phase03LayoutProps = {
   categories: CategoryData[]
 }
 
+const phaseAgents = getPhaseAgents(3)
+
 export function Phase03Layout({ projectId, categories: initialCategories }: Phase03LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
 
@@ -38,7 +43,6 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
           ? 'pending'
           : 'completed'
 
-      // Optimistic update
       setCategories((prev) =>
         prev.map((c) => (c.key === sectionKey ? { ...c, status: newStatus } : c))
       )
@@ -50,7 +54,6 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
       })
 
       if (!res.ok) {
-        // Revert on error
         setCategories((prev) =>
           prev.map((c) => (c.key === sectionKey ? { ...c, status: category.status } : c))
         )
@@ -59,7 +62,7 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
     [categories, projectId]
   )
 
-  return (
+  const sectionsContent = (
     <div>
       <PhaseProgressHeader
         title="Environment Setup"
@@ -72,9 +75,9 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
         <Phase03FinalGate projectId={projectId} />
       ) : (
         <>
-          <p className="mb-4 text-sm text-gray-500">
+          <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
             Completa cada categoria marcandola cuando hayas configurado todos los items.
-            Si te atoras, abre el chat del CTO (boton flotante) y pide el plan de Phase 03.
+            Si te atoras, usa el tab <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para consultar al CTO o DevOps.
           </p>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -93,5 +96,24 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
         </>
       )}
     </div>
+  )
+
+  const teamContent = (
+    <PhaseTeamPanel
+      projectId={projectId}
+      phaseNumber={3}
+      agentTypes={phaseAgents}
+    />
+  )
+
+  return (
+    <PhaseWorkspaceTabs
+      phaseNumber={3}
+      projectId={projectId}
+      phaseAgents={phaseAgents}
+      teamContent={teamContent}
+    >
+      {sectionsContent}
+    </PhaseWorkspaceTabs>
   )
 }

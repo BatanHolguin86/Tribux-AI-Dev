@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import Link from 'next/link'
 import { toast } from 'sonner'
 import type { SectionStatus } from '@/types/conversation'
 import { PHASE07_SECTIONS, CATEGORY_CONFIGS } from '@/lib/ai/prompts/phase-07'
+import { getPhaseAgents } from '@/lib/phase-workspace-config'
+import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
+import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCard } from '@/components/shared/ChecklistCard'
 import { Phase07FinalGate } from './Phase07FinalGate'
@@ -22,6 +24,8 @@ type Phase07LayoutProps = {
   projectId: string
   categories: CategoryData[]
 }
+
+const phaseAgents = getPhaseAgents(7)
 
 export function Phase07Layout({ projectId, categories: initialCategories }: Phase07LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
@@ -60,7 +64,7 @@ export function Phase07Layout({ projectId, categories: initialCategories }: Phas
     [categories, projectId]
   )
 
-  return (
+  const sectionsContent = (
     <div>
       <PhaseProgressHeader
         title="Iteration & Growth"
@@ -73,20 +77,9 @@ export function Phase07Layout({ projectId, categories: initialCategories }: Phas
         <Phase07FinalGate projectId={projectId} />
       ) : (
         <>
-          <p className="mb-4 text-sm text-gray-500">
-            Completa cada categoria de iteracion. Recopila feedback, analiza metricas y planifica el siguiente ciclo.
+          <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+            Completa cada categoria de iteracion. Usa el tab <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para consultar al Product Architect.
           </p>
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
-            <span>
-              Si necesitas definir el siguiente ciclo con claridad, abre el chat del <span className="font-medium">CTO Virtual</span> y pide el plan de Phase 07.
-            </span>
-            <Link
-              href={`/projects/${projectId}/agents`}
-              className="rounded-lg bg-violet-600 px-3 py-2 text-xs font-medium text-white hover:bg-violet-700"
-            >
-              Abrir chat del CTO
-            </Link>
-          </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             {PHASE07_SECTIONS.map((sectionKey) => {
@@ -104,5 +97,24 @@ export function Phase07Layout({ projectId, categories: initialCategories }: Phas
         </>
       )}
     </div>
+  )
+
+  const teamContent = (
+    <PhaseTeamPanel
+      projectId={projectId}
+      phaseNumber={7}
+      agentTypes={phaseAgents}
+    />
+  )
+
+  return (
+    <PhaseWorkspaceTabs
+      phaseNumber={7}
+      projectId={projectId}
+      phaseAgents={phaseAgents}
+      teamContent={teamContent}
+    >
+      {sectionsContent}
+    </PhaseWorkspaceTabs>
   )
 }

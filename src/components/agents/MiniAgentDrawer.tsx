@@ -75,10 +75,10 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
         </div>
         <div className="flex items-center gap-1">
           <button
-            onClick={() => router.push(`/projects/${projectId}/agents`)}
+            onClick={() => router.push(`/projects/${projectId}/phase/00`)}
             className="rounded p-1.5 text-xs text-violet-600 hover:bg-violet-50"
           >
-            Abrir completo
+            Ver en fase
           </button>
           <button
             onClick={onClose}

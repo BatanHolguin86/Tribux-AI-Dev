@@ -2,6 +2,9 @@
 
 import { useState, useCallback } from 'react'
 import type { Phase00Section, SectionStatus } from '@/types/conversation'
+import { getPhaseAgents } from '@/lib/phase-workspace-config'
+import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
+import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { SectionNav } from './SectionNav'
 import { ChatPanel } from './ChatPanel'
 import { DocumentPanel } from './DocumentPanel'
@@ -26,6 +29,8 @@ type Phase00LayoutProps = {
   initialActiveSection: Phase00Section
 }
 
+const phaseAgents = getPhaseAgents(0)
+
 export function Phase00Layout({
   projectId,
   sections: initialSections,
@@ -47,14 +52,12 @@ export function Phase00Layout({
   }, [activeSection])
 
   const handleDocumentGenerated = useCallback(() => {
-    // Trigger a reload to get the generated document
     window.location.reload()
   }, [])
 
-  // Completed count for progress
   const approvedCount = sections.filter((s) => s.status === 'approved').length
 
-  return (
+  const sectionsContent = (
     <div className="flex flex-col gap-4">
       {/* Progress bar */}
       <div className="flex items-center gap-4">
@@ -109,7 +112,6 @@ export function Phase00Layout({
 
           {/* Desktop: split view */}
           <div className="flex h-[var(--content-height)] gap-4">
-            {/* Left: Chat */}
             <div className={`flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-900/20 lg:flex-[3] ${
               mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
             }`}>
@@ -130,7 +132,6 @@ export function Phase00Layout({
               />
             </div>
 
-            {/* Right: Document */}
             <div className={`lg:flex-[2] ${
               mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
             }`}>
@@ -144,5 +145,24 @@ export function Phase00Layout({
         </>
       )}
     </div>
+  )
+
+  const teamContent = (
+    <PhaseTeamPanel
+      projectId={projectId}
+      phaseNumber={0}
+      agentTypes={phaseAgents}
+    />
+  )
+
+  return (
+    <PhaseWorkspaceTabs
+      phaseNumber={0}
+      projectId={projectId}
+      phaseAgents={phaseAgents}
+      teamContent={teamContent}
+    >
+      {sectionsContent}
+    </PhaseWorkspaceTabs>
   )
 }

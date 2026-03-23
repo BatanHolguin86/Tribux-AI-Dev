@@ -57,13 +57,15 @@ function generateSuggestions(
     })
   }
 
-  // Secondary: talk to CTO Virtual
-  suggestions.push({
-    icon: '🤖',
-    text: 'Consulta al CTO Virtual sobre tu proyecto',
-    href: `/projects/${projectId}/agents`,
-    priority: 'medium',
-  })
+  // Secondary: talk to CTO Virtual (in the Equipo tab of the active phase)
+  if (activePhase) {
+    suggestions.push({
+      icon: '🤖',
+      text: 'Consulta al CTO en el tab Equipo de tu fase activa',
+      href: `/projects/${projectId}/phase/${phaseNum(activePhase.phase_number)}`,
+      priority: 'medium',
+    })
+  }
 
   const phase04Completed = phases.find((p) => p.phase_number === 4)?.status === 'completed'
   const phase05Completed = phases.find((p) => p.phase_number === 5)?.status === 'completed'

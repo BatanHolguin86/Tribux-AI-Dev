@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { useFocusTrap } from '@/hooks/use-focus-trap'
 import type { PhaseStatus } from '@/types/project'
 import { PhasesStepper } from './PhasesStepper'
-import { ProjectTools } from './ProjectTools'
 import { ProactiveSuggestions } from './ProactiveSuggestions'
 
 type MobileSidebarDrawerProps = {
@@ -69,9 +68,6 @@ export function MobileSidebarDrawer({ projectId, phases, currentPhase }: MobileS
             {/* Sidebar content — same as desktop */}
             <div onClick={() => setOpen(false)}>
               <PhasesStepper projectId={projectId} phases={phases} />
-            </div>
-            <div onClick={() => setOpen(false)}>
-              <ProjectTools projectId={projectId} />
             </div>
             <div onClick={() => setOpen(false)}>
               <ProactiveSuggestions projectId={projectId} phases={phases} currentPhase={currentPhase} />
