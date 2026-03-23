@@ -4,7 +4,7 @@ import { getDefaultModel } from './models'
 export const defaultModel = getDefaultModel()
 
 export const AI_CONFIG = {
-  chat: { maxOutputTokens: 4096, temperature: 0.7 },
+  chat: { maxOutputTokens: 8192, temperature: 0.7 },
   documentGeneration: { maxOutputTokens: 8192, temperature: 0.5 },
   threadTitle: { maxOutputTokens: 50, temperature: 0.3 },
   featureSuggestions: { maxOutputTokens: 2048, temperature: 0.6 },
