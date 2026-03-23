@@ -18,15 +18,30 @@ describe('coherence-validator', () => {
       expect(issues.some((i) => i.type === 'naming_convention' && i.message.includes('snake_case'))).toBe(true)
     })
 
-    it('acepta tablas en snake_case y plural', () => {
+    it('acepta tablas en snake_case', () => {
       const content = '```sql\ncreate table user_profiles (\n  id uuid primary key\n);\n```'
       const issues = validateDesignCoherence(content, '')
-      expect(issues.filter((i) => i.type === 'naming_convention')).toHaveLength(0)
+      expect(issues).toHaveLength(0)
     })
 
-    it('detecta posible duplicado entre current y previous', () => {
+    it('no reporta falso positivo en tablas con nombres similares pero distintos', () => {
       const current = 'create table users (id uuid)'
-      const previous = 'create table user (id uuid)'
+      const previous = 'create table user_profiles (id uuid)'
+      const issues = validateDesignCoherence(current, previous)
+      expect(issues.some((i) => i.type === 'duplicate_table')).toBe(false)
+    })
+
+    it('detecta tabla duplicada exacta entre current y previous', () => {
+      const current = 'create table users (id uuid)'
+      const previous = 'create table users (id uuid, name text)'
+      const issues = validateDesignCoherence(current, previous)
+      expect(issues.some((i) => i.type === 'duplicate_table')).toBe(true)
+    })
+
+    it('detecta tabla duplicada case-insensitive', () => {
+      const current = 'CREATE TABLE Users (id uuid)'
+      const previous = 'create table users (id uuid)'
+      // Users violates snake_case AND is a duplicate
       const issues = validateDesignCoherence(current, previous)
       expect(issues.some((i) => i.type === 'duplicate_table')).toBe(true)
     })

@@ -68,6 +68,7 @@ export function KiroChat({
   const [input, setInput] = useState('')
   const [generating, setGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
+  const [approving, setApproving] = useState(false)
   const [autoDrafting, setAutoDrafting] = useState(false)
   const isApproved = docStatus === 'approved'
 
@@ -190,11 +191,30 @@ export function KiroChat({
   }
 
   async function handleApprove() {
-    await fetch(
-      `/api/projects/${projectId}/phases/1/features/${featureId}/documents/${docType}/approve`,
-      { method: 'POST' },
-    )
-    onDocumentApproved()
+    setApproving(true)
+    setGenerateError(null)
+    try {
+      const res = await fetch(
+        `/api/projects/${projectId}/phases/1/features/${featureId}/documents/${docType}/approve`,
+        { method: 'POST' },
+      )
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        if (body?.inconsistencies?.length) {
+          setGenerateError(
+            `Coherencia: ${body.inconsistencies.map((i: { message: string }) => i.message).join('; ')}`,
+          )
+        } else {
+          setGenerateError(body?.error || `Error ${res.status}`)
+        }
+        setApproving(false)
+        return
+      }
+      onDocumentApproved()
+    } catch (err) {
+      setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
+      setApproving(false)
+    }
   }
 
   function handleRevision(feedback: string) {
@@ -315,7 +335,7 @@ export function KiroChat({
           sectionLabel={docLabel}
           onApprove={handleApprove}
           onRevisionRequest={handleRevision}
-          isApproving={false}
+          isApproving={approving}
           onRegenerate={handleGenerate}
           isRegenerating={generating}
         />

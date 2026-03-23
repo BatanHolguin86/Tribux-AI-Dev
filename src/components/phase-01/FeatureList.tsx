@@ -29,18 +29,9 @@ export function FeatureList({
 }: FeatureListProps) {
   const [showAdd, setShowAdd] = useState(false)
 
-  const completed = features.filter((f) => f.status === 'approved' || f.status === 'spec_complete').length
-
   return (
-    <div className="flex flex-col rounded-lg border border-gray-200 bg-white">
-      <div className="border-b border-gray-100 px-3 py-2">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold uppercase text-gray-500">Features</h3>
-          <span className="text-xs text-gray-400">{completed}/{features.length}</span>
-        </div>
-      </div>
-
-      <div className="flex-1 space-y-1 overflow-y-auto p-2">
+    <div className="space-y-3">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {features.map((f) => (
           <FeatureItem
             key={f.id}
@@ -51,25 +42,28 @@ export function FeatureList({
             onClick={() => onSelect(f.id)}
           />
         ))}
-
-        {showAdd ? (
-          <AddFeatureForm
-            projectId={projectId}
-            onCreated={() => {
-              setShowAdd(false)
-              onFeatureAdded()
-            }}
-            onCancel={() => setShowAdd(false)}
-          />
-        ) : (
-          <button
-            onClick={() => setShowAdd(true)}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-violet-600 transition-colors hover:bg-violet-50"
-          >
-            <span>+</span> Agregar feature
-          </button>
-        )}
       </div>
+
+      {showAdd ? (
+        <AddFeatureForm
+          projectId={projectId}
+          onCreated={() => {
+            setShowAdd(false)
+            onFeatureAdded()
+          }}
+          onCancel={() => setShowAdd(false)}
+        />
+      ) : (
+        <button
+          onClick={() => setShowAdd(true)}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 px-4 py-3 text-sm font-medium text-violet-600 transition-colors hover:border-violet-300 hover:bg-violet-50/50 dark:border-gray-700 dark:text-violet-400 dark:hover:border-violet-800 dark:hover:bg-violet-950/20"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Agregar feature
+        </button>
+      )}
     </div>
   )
 }

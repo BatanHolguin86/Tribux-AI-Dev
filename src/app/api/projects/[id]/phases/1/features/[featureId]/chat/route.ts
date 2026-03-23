@@ -2,10 +2,9 @@ import { generateText, streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import {
-  buildFullProjectContext,
-  buildProjectContext,
   getApprovedDiscoveryDocs,
   getApprovedFeatureSpecs,
+  truncateText,
 } from '@/lib/ai/context-builder'
 import { buildKiroPrompt } from '@/lib/ai/prompts/phase-01'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
@@ -14,7 +13,7 @@ import type { KiroDocumentType } from '@/types/feature'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import type { AgentType } from '@/types/agent'
 
-export const maxDuration = 60
+export const maxDuration = 120
 
 type CoreMessage = {
   role: 'user' | 'assistant'
@@ -94,86 +93,118 @@ export async function POST(
     const coreMessages = toCoreMessages(body.messages)
     const storedBaseMessages = toStoredMessages(body.messages)
 
-    const context = await buildProjectContext(projectId)
-  const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
-  const previousSpecs = await getApprovedFeatureSpecs(projectId, featureId)
+    const isFirstTurn = coreMessages.filter((m) => m.content.trim().length > 0).length <= 1
 
-  const { data: feature } = await supabase
-    .from('project_features')
-    .select('name, description')
-    .eq('id', featureId)
-    .single()
+    // --- Parallelize ALL DB queries upfront ---
+    const [
+      featureResult,
+      projectResult,
+      profileResult,
+      discoveryDocs,
+      previousSpecs,
+      existingDocResult,
+    ] = await Promise.all([
+      supabase
+        .from('project_features')
+        .select('name, description')
+        .eq('id', featureId)
+        .single(),
+      supabase
+        .from('projects')
+        .select('name, description, industry, current_phase, user_id')
+        .eq('id', projectId)
+        .single(),
+      supabase
+        .from('user_profiles')
+        .select('persona')
+        .eq('id', user.id)
+        .single(),
+      getApprovedDiscoveryDocs(projectId),
+      getApprovedFeatureSpecs(projectId, featureId),
+      supabase
+        .from('feature_documents')
+        .select('content')
+        .eq('feature_id', featureId)
+        .eq('document_type', docType)
+        .single(),
+    ])
 
-  // Update feature status to in_progress
-  await supabase
-    .from('project_features')
-    .update({ status: 'in_progress' })
-    .eq('id', featureId)
-    .eq('status', 'pending')
+    const feature = featureResult.data
+    const project = projectResult.data
+
+    if (!project) {
+      return new Response(JSON.stringify({ error: 'Project not found' }), { status: 404 })
+    }
+
+    // Update feature status (fire and forget)
+    supabase
+      .from('project_features')
+      .update({ status: 'in_progress' })
+      .eq('id', featureId)
+      .eq('status', 'pending')
+      .then(() => {})
 
     let systemPrompt = buildKiroPrompt(docType, {
-    projectName: context.name,
-    description: context.description,
-    industry: context.industry,
-    persona: context.persona,
-    discoveryDocs,
-    previousSpecs,
-    featureName: feature?.name ?? '',
-    featureDescription: feature?.description ?? null,
-  })
+      projectName: project.name,
+      description: project.description,
+      industry: project.industry,
+      persona: profileResult.data?.persona ?? null,
+      discoveryDocs: truncateText(discoveryDocs, 8000),
+      previousSpecs: truncateText(previousSpecs, 12000),
+      featureName: feature?.name ?? '',
+      featureDescription: feature?.description ?? null,
+    })
 
-    // If a document already exists (auto-drafted or previously generated), inject for refinement context
-    const { data: existingDoc } = await supabase
-      .from('feature_documents')
-      .select('content')
-      .eq('feature_id', featureId)
-      .eq('document_type', docType)
-      .single()
-
-    if (existingDoc?.content) {
-      systemPrompt += `\n\n---\nDOCUMENTO ACTUAL (ya generado — el usuario puede estar pidiendo ajustes):\n${existingDoc.content.slice(0, 6000)}\n---\nSi el usuario pide cambios, responde SOLO con los cambios especificos. Cierra con: "Cambie X e Y. Apruebas o ajustamos algo mas?"\nSi el usuario aprueba los cambios, responde con [SECTION_READY] para que pueda regenerar el documento.`
+    // If a document already exists, inject for refinement context
+    if (existingDocResult.data?.content) {
+      systemPrompt += `\n\n---\nDOCUMENTO ACTUAL (ya generado — el usuario puede estar pidiendo ajustes):\n${existingDocResult.data.content.slice(0, 6000)}\n---\nSi el usuario pide cambios, responde SOLO con los cambios especificos. Cierra con: "Cambie X e Y. Apruebas o ajustamos algo mas?"\nSi el usuario aprueba los cambios, responde con [SECTION_READY] para que pueda regenerar el documento.`
     }
 
-    // CTO orchestration (Option B): consult specialists internally per docType
-    // Optimize latency: only consult on first user turn for this docType thread
-    const isFirstTurn = coreMessages.filter((m) => m.content.trim().length > 0).length <= 1
-    const shouldConsult = isFirstTurn
+    // CTO orchestration: consult specialists on first turn
+    if (isFirstTurn) {
+      const agentContext = {
+        name: project.name,
+        description: project.description,
+        industry: project.industry,
+        persona: profileResult.data?.persona ?? null,
+        currentPhase: project.current_phase,
+        phaseName: 'Requirements & Spec',
+        discoveryDocs: truncateText(discoveryDocs, 6000),
+        featureSpecs: truncateText(previousSpecs, 8000),
+        artifacts: '',
+      }
 
-    const full = shouldConsult ? await buildFullProjectContext(projectId) : null
+      async function consult(agentType: AgentType, instruction: string) {
+        const specialistSystem = buildAgentPrompt(agentType, agentContext)
+        const { text, usage } = await generateText({
+          model: defaultModel,
+          system: specialistSystem,
+          messages: [
+            {
+              role: 'user' as const,
+              content: `Feature: ${feature?.name ?? featureId}\nDescripcion: ${feature?.description ?? '—'}\n\n${instruction}\n\nResponde con bullets concretos. Max 600 tokens.`,
+            },
+          ],
+          maxOutputTokens: 600,
+          temperature: 0.3,
+        })
 
-    async function consult(agentType: AgentType, instruction: string) {
-      if (!full) return ''
-      const specialistSystem = buildAgentPrompt(agentType, full)
-      const { text, usage } = await generateText({
-        model: defaultModel,
-        system: specialistSystem,
-        messages: [
-          {
-            role: 'user' as const,
-            content: `Contexto del feature:\n- Feature: ${feature?.name ?? featureId}\n- Descripcion: ${feature?.description ?? '—'}\n\nTarea:\n${instruction}\n\nIMPORTANTE:\n- Responde con bullets concretos y accionables.\n- No hagas preguntas generales; asume que el CTO integrara tu respuesta.\n`,
-          },
-        ],
-        maxOutputTokens: 800,
-        temperature: 0.3,
-      })
+        const inputTokens =
+          usage?.inputTokens ??
+          estimateTokensFromText(specialistSystem + instruction)
+        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+        recordAiUsage(supabase, {
+          userId,
+          projectId,
+          eventType: 'phase01_chat',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens,
+          outputTokens,
+        }).catch(() => {})
 
-      const inputTokens =
-        usage?.inputTokens ??
-        estimateTokensFromText(specialistSystem + instruction + (feature?.name ?? '') + (feature?.description ?? ''))
-      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-      recordAiUsage(supabase, {
-        userId,
-        projectId,
-        eventType: 'phase01_chat',
-        model: defaultModel?.toString?.() ?? undefined,
-        inputTokens,
-        outputTokens,
-      }).catch(() => {})
+        return text
+      }
 
-      return text
-    }
-
-    if (shouldConsult) {
       const internalNotesParts: string[] = []
       if (docType === 'requirements') {
         const pa = await consult(
@@ -210,52 +241,52 @@ export async function POST(
       }
 
       if (internalNotesParts.length > 0) {
-        systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n${internalNotesParts.join('\n\n')}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Puedes decir \"Consulté internamente a X\" pero NO pegues estas notas literalmente.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n`
+        systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n${internalNotesParts.join('\n\n')}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Puedes decir "Consulté internamente a X" pero NO pegues estas notas literalmente.\n- Mantén el estilo CTO: decision + justificacion + siguiente paso.\n`
       }
     }
 
-  const section = `feature_${featureId}_${docType}`
+    const section = `feature_${featureId}_${docType}`
 
-  const result = streamText({
-    model: defaultModel,
-    system: systemPrompt,
-    messages: coreMessages,
-    ...AI_CONFIG.chat,
-    onFinish: async ({ text, usage }) => {
-      const allMessages = [
-        ...storedBaseMessages,
-        {
-          role: 'assistant',
-          content: text,
-          created_at: new Date().toISOString(),
-        },
-      ]
-      await supabase
-        .from('agent_conversations')
-        .upsert(
+    const result = streamText({
+      model: defaultModel,
+      system: systemPrompt,
+      messages: coreMessages,
+      ...AI_CONFIG.chat,
+      onFinish: async ({ text, usage }) => {
+        const allMessages = [
+          ...storedBaseMessages,
           {
-            project_id: projectId,
-            phase_number: 1,
-            section,
-            agent_type: 'orchestrator',
-            messages: allMessages,
+            role: 'assistant',
+            content: text,
+            created_at: new Date().toISOString(),
           },
-          { onConflict: 'project_id,phase_number,section,agent_type' }
-        )
+        ]
+        await supabase
+          .from('agent_conversations')
+          .upsert(
+            {
+              project_id: projectId,
+              phase_number: 1,
+              section,
+              agent_type: 'orchestrator',
+              messages: allMessages,
+            },
+            { onConflict: 'project_id,phase_number,section,agent_type' }
+          )
 
-      // Record AI usage for financial backoffice
-      const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
-      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-      recordAiUsage(supabase, {
-        userId: user.id,
-        projectId,
-        eventType: 'phase01_chat',
-        model: defaultModel?.toString?.() ?? undefined,
-        inputTokens,
-        outputTokens,
-      }).catch(() => {})
-    },
-  })
+        // Record AI usage (fire and forget)
+        const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
+        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+        recordAiUsage(supabase, {
+          userId: user.id,
+          projectId,
+          eventType: 'phase01_chat',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens,
+          outputTokens,
+        }).catch(() => {})
+      },
+    })
 
     return result.toTextStreamResponse()
   } catch (error: unknown) {

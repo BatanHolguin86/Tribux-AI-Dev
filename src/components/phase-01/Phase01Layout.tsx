@@ -2,14 +2,10 @@
 
 import { useState, useCallback } from 'react'
 import type { KiroDocumentType } from '@/types/feature'
-import { KIRO_DOC_LABELS } from '@/lib/ai/prompts/phase-01'
-import { DocumentPanel } from '@/components/shared/document/DocumentPanel'
 import { FeatureList } from './FeatureList'
 import { FeatureSuggestions } from './FeatureSuggestions'
 import { DiscoverySummary } from './DiscoverySummary'
-import { DocumentTypeNav } from './DocumentTypeNav'
-import { KiroWorkflowRail } from './KiroWorkflowRail'
-import { KiroChat } from './KiroChat'
+import { FeatureWorkspace } from './FeatureWorkspace'
 import { Phase01FinalGate } from './Phase01FinalGate'
 
 type FeatureData = {
@@ -38,19 +34,10 @@ export function Phase01Layout({
   features: initialFeatures,
   discoverySummary,
 }: Phase01LayoutProps) {
-  const [features, setFeatures] = useState(initialFeatures)
-  const [activeFeatureId, setActiveFeatureId] = useState<string | null>(
-    initialFeatures[0]?.id ?? null,
-  )
-  const [activeDocType, setActiveDocType] = useState<KiroDocumentType>('requirements')
-  const [mobileTab, setMobileTab] = useState<'list' | 'chat' | 'document'>('list')
+  const [features] = useState(initialFeatures)
+  const [activeFeatureId, setActiveFeatureId] = useState<string | null>(null)
 
   const activeFeature = features.find((f) => f.id === activeFeatureId)
-  const currentDoc = activeFeature?.documents[activeDocType] ?? null
-  const currentConversation = activeFeature?.conversations[activeDocType] ?? []
-  const shouldShowDocumentPanel =
-    !!currentDoc &&
-    (currentDoc.status === 'approved' || (!!currentDoc.content && currentDoc.content.trim().length > 0))
 
   const allSpecComplete = features.length > 0 && features.every(
     (f) => f.status === 'spec_complete' || f.status === 'approved',
@@ -62,12 +49,10 @@ export function Phase01Layout({
 
   const handleFeatureSelect = useCallback((featureId: string) => {
     setActiveFeatureId(featureId)
-    setActiveDocType('requirements')
-    setMobileTab('chat')
   }, [])
 
-  const handleDocTypeSelect = useCallback((docType: KiroDocumentType) => {
-    setActiveDocType(docType)
+  const handleBack = useCallback(() => {
+    setActiveFeatureId(null)
   }, [])
 
   const handleFeaturesRefresh = useCallback(() => {
@@ -82,6 +67,22 @@ export function Phase01Layout({
     window.location.reload()
   }, [])
 
+  // --- Feature Workspace view ---
+  if (activeFeature) {
+    return (
+      <div className="h-[var(--content-height)]">
+        <FeatureWorkspace
+          projectId={projectId}
+          feature={activeFeature}
+          onBack={handleBack}
+          onDocumentGenerated={handleDocumentGenerated}
+          onDocumentApproved={handleDocumentApproved}
+        />
+      </div>
+    )
+  }
+
+  // --- Feature list view (default) ---
   return (
     <div>
       {/* Progress bar */}
@@ -124,108 +125,31 @@ export function Phase01Layout({
           features={features.map((f) => ({ name: f.name, status: f.status }))}
         />
       ) : (
-        <>
-          {/* Mobile tabs */}
-          <div className="mb-3 flex border-b border-gray-200 dark:border-gray-700 lg:hidden">
-            {(['list', 'chat', 'document'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setMobileTab(tab)}
-                className={`flex-1 py-2 text-sm font-medium transition-colors ${
-                  mobileTab === tab
-                    ? 'border-b-2 border-violet-600 text-violet-700 dark:text-violet-300'
-                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-                }`}
-              >
-                {tab === 'list' ? 'Features' : tab === 'chat' ? 'Chat' : 'Documento'}
-              </button>
-            ))}
+        <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+          {/* Feature cards */}
+          <div>
+            <FeatureList
+              projectId={projectId}
+              features={features.map((f) => ({
+                id: f.id,
+                name: f.name,
+                status: f.status,
+                documents: f.documents,
+              }))}
+              activeFeatureId={null}
+              onSelect={handleFeatureSelect}
+              onFeatureAdded={handleFeaturesRefresh}
+            />
           </div>
 
-          <div className="flex h-[var(--content-height)] gap-3">
-            {/* Left sidebar: Feature list */}
-            <div
-              className={`w-72 flex-shrink-0 space-y-3 overflow-y-auto ${
-                mobileTab !== 'list' ? 'hidden lg:block' : 'block'
-              }`}
-            >
-              <FeatureList
-                projectId={projectId}
-                features={features.map((f) => ({
-                  id: f.id,
-                  name: f.name,
-                  status: f.status,
-                  documents: f.documents,
-                }))}
-                activeFeatureId={activeFeatureId}
-                onSelect={handleFeatureSelect}
-                onFeatureAdded={handleFeaturesRefresh}
-              />
-
-              <FeatureSuggestions
-                projectId={projectId}
-                onAccepted={handleFeaturesRefresh}
-              />
-            </div>
-
-            {activeFeature ? (
-              <>
-                {/* Center: Chat */}
-                <div
-                  className={`flex min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 ${
-                    shouldShowDocumentPanel ? 'lg:flex-[7]' : 'lg:flex-1'
-                  } ${
-                    mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
-                  }`}
-                >
-                  <DocumentTypeNav
-                    documents={activeFeature.documents}
-                    activeDocType={activeDocType}
-                    onSelect={handleDocTypeSelect}
-                  />
-                  <KiroWorkflowRail documents={activeFeature.documents} activeDocType={activeDocType} />
-                  <KiroChat
-                    key={`${activeFeatureId}-${activeDocType}`}
-                    projectId={projectId}
-                    featureId={activeFeature.id}
-                    featureName={activeFeature.name}
-                    docType={activeDocType}
-                    docStatus={currentDoc?.status ?? null}
-                    initialMessages={currentConversation}
-                    hasDocument={currentDoc !== null}
-                    onDocumentGenerated={handleDocumentGenerated}
-                    onDocumentApproved={handleDocumentApproved}
-                  />
-                </div>
-
-                {/* Right: Document panel */}
-                {shouldShowDocumentPanel && (
-                  <div
-                    className={`lg:flex-[3] ${
-                      mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
-                    }`}
-                  >
-                    <DocumentPanel
-                      projectId={projectId}
-                      title={KIRO_DOC_LABELS[activeDocType]}
-                      document={currentDoc}
-                    />
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="flex flex-1 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-                <div className="text-center">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {features.length === 0
-                      ? 'Agrega o pide sugerencias de features para comenzar.'
-                      : 'Selecciona un feature para comenzar su spec KIRO.'}
-                  </p>
-                </div>
-              </div>
-            )}
+          {/* Suggestions sidebar */}
+          <div>
+            <FeatureSuggestions
+              projectId={projectId}
+              onAccepted={handleFeaturesRefresh}
+            />
           </div>
-        </>
+        </div>
       )}
     </div>
   )

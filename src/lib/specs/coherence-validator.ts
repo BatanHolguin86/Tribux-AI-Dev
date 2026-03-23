@@ -1,6 +1,6 @@
 /**
  * Validates coherence between KIRO specs (design.md, requirements.md) across features.
- * Detects: duplicate/similar table names, naming convention violations (snake_case, plural).
+ * Detects: duplicate/similar table names, naming convention violations (snake_case).
  */
 
 export type CoherenceIssue = {
@@ -29,10 +29,6 @@ function extractTableNames(content: string, normalizeCase = false): string[] {
   return Array.from(names)
 }
 
-function normalizeForSimilarity(name: string): string {
-  return name.replace(/_/g, '').toLowerCase()
-}
-
 export function validateDesignCoherence(
   currentContent: string,
   previousSpecsContent: string,
@@ -42,6 +38,7 @@ export function validateDesignCoherence(
   const previousTables = extractTableNames(previousSpecsContent, true)
 
   for (const table of currentTables) {
+    // Only flag clear snake_case violations (camelCase, PascalCase, spaces)
     if (!SNAKE_CASE.test(table)) {
       issues.push({
         type: 'naming_convention',
@@ -50,23 +47,15 @@ export function validateDesignCoherence(
         location: table,
       })
     }
-    const lastPart = table.split('_').pop() ?? ''
-    if (lastPart.length > 2 && !lastPart.endsWith('s') && !['auth', 'config', 'metadata'].includes(lastPart)) {
-      issues.push({
-        type: 'naming_convention',
-        message: `La tabla "${table}" podría estar en plural (convención del proyecto).`,
-        suggestion: `Ej: user_profiles, project_tasks.`,
-        location: table,
-      })
-    }
-    const norm = normalizeForSimilarity(table)
+
+    // Only flag exact duplicate table names across specs (not substring similarity)
+    const norm = table.toLowerCase()
     for (const prev of previousTables) {
-      const prevNorm = normalizeForSimilarity(prev.toLowerCase())
-      if (norm !== prevNorm && (norm.includes(prevNorm) || prevNorm.includes(norm))) {
+      if (norm === prev.toLowerCase()) {
         issues.push({
           type: 'duplicate_table',
-          message: `Posible duplicado: "${table}" vs "${prev}" en specs anteriores.`,
-          suggestion: 'Usa el mismo nombre de tabla en todo el proyecto para evitar inconsistencia.',
+          message: `Tabla duplicada: "${table}" ya existe en specs anteriores.`,
+          suggestion: 'Reutiliza la tabla existente o usa un nombre diferente.',
           location: table,
         })
       }
