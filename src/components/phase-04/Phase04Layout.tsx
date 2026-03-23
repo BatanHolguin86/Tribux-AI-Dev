@@ -78,20 +78,19 @@ export function Phase04Layout({ projectId, initialTasks }: Phase04LayoutProps) {
     </div>
   )
 
-  const teamContent = (
-    <PhaseTeamPanel
-      projectId={projectId}
-      phaseNumber={4}
-      agentTypes={phaseAgents}
-    />
-  )
-
   return (
     <PhaseWorkspaceTabs
       phaseNumber={4}
       projectId={projectId}
       phaseAgents={phaseAgents}
-      teamContent={teamContent}
+      teamContent={(goToSecciones) => (
+        <PhaseTeamPanel
+          projectId={projectId}
+          phaseNumber={4}
+          agentTypes={phaseAgents}
+          onGoToSecciones={goToSecciones}
+        />
+      )}
     >
       {sectionsContent}
     </PhaseWorkspaceTabs>

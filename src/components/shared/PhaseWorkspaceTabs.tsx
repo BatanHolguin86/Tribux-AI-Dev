@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import type { AgentType } from '@/types/agent'
 
 export type PhaseTab = 'secciones' | 'equipo' | 'herramientas'
@@ -13,8 +13,8 @@ type PhaseWorkspaceTabsProps = {
   phaseAgents: AgentType[]
   /** Content for the main Secciones tab */
   children: React.ReactNode
-  /** Content for the Equipo tab — rendered by parent */
-  teamContent: React.ReactNode
+  /** Content for the Equipo tab — rendered by parent (receives goToSecciones) */
+  teamContent: React.ReactNode | ((goToSecciones: () => void) => React.ReactNode)
   /** Content for the Herramientas tab — rendered by parent */
   toolsContent?: React.ReactNode
   /** Optional: initial tab override */
@@ -36,7 +36,12 @@ export function PhaseWorkspaceTabs({
 }: PhaseWorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<PhaseTab>(initialTab)
 
+  const goToSecciones = useCallback(() => setActiveTab('secciones'), [])
+
   const tabs = hasTools ? TAB_CONFIG : TAB_CONFIG.filter((t) => t.key !== 'herramientas')
+
+  const resolvedTeamContent =
+    typeof teamContent === 'function' ? teamContent(goToSecciones) : teamContent
 
   return (
     <div>
@@ -63,7 +68,7 @@ export function PhaseWorkspaceTabs({
 
       {/* Tab content */}
       {activeTab === 'secciones' && children}
-      {activeTab === 'equipo' && teamContent}
+      {activeTab === 'equipo' && resolvedTeamContent}
       {activeTab === 'herramientas' && hasTools && toolsContent}
     </div>
   )

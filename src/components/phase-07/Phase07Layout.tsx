@@ -99,20 +99,19 @@ export function Phase07Layout({ projectId, categories: initialCategories }: Phas
     </div>
   )
 
-  const teamContent = (
-    <PhaseTeamPanel
-      projectId={projectId}
-      phaseNumber={7}
-      agentTypes={phaseAgents}
-    />
-  )
-
   return (
     <PhaseWorkspaceTabs
       phaseNumber={7}
       projectId={projectId}
       phaseAgents={phaseAgents}
-      teamContent={teamContent}
+      teamContent={(goToSecciones) => (
+        <PhaseTeamPanel
+          projectId={projectId}
+          phaseNumber={7}
+          agentTypes={phaseAgents}
+          onGoToSecciones={goToSecciones}
+        />
+      )}
     >
       {sectionsContent}
     </PhaseWorkspaceTabs>

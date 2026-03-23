@@ -174,15 +174,6 @@ export function Phase02Layout({
     </div>
   )
 
-  // Equipo tab content
-  const teamContent = (
-    <PhaseTeamPanel
-      projectId={projectId}
-      phaseNumber={2}
-      agentTypes={phaseAgents}
-    />
-  )
-
   // Herramientas tab content — unified Design Hub
   const toolsContent = workflowContext ? (
     <DesignGenerator
@@ -204,7 +195,14 @@ export function Phase02Layout({
       projectId={projectId}
       hasTools={true}
       phaseAgents={phaseAgents}
-      teamContent={teamContent}
+      teamContent={(goToSecciones) => (
+        <PhaseTeamPanel
+          projectId={projectId}
+          phaseNumber={2}
+          agentTypes={phaseAgents}
+          onGoToSecciones={goToSecciones}
+        />
+      )}
       toolsContent={toolsContent}
     >
       {sectionsContent}
