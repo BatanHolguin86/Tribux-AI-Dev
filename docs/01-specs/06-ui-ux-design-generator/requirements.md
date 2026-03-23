@@ -50,7 +50,7 @@
 
 - Existe una sección “Diseño” o “Design” en el proyecto (sidebar o ruta dedicada) donde se listan wireframes y mockups del proyecto.
 - Cada ítem muestra: nombre de pantalla/flujo, tipo (wireframe / mockup), fecha de generación y miniatura o preview.
-- Al hacer clic en un diseño se abre una vista de detalle (imagen o visualización a tamaño completo) con opción de descarga.
+- Al hacer clic en un diseño se abre una vista de detalle con el HTML renderizado en iframe (controles de dispositivo: mobile 375px, tablet 768px, desktop 1280px).
 - Los diseños se almacenan de forma persistente (base de datos + archivos en Storage o equivalente) y sobreviven a recargas y sesiones.
 
 ### Hub y navegación
@@ -68,8 +68,9 @@
 
 ### Calidad y límites
 
-- Wireframes son legibles y representan layout, componentes principales y flujo (no se exige alta fidelidad gráfica).
-- Mockups low-fi son suficientes para validar estructura y jerarquía; high-fi es opcional o v1.1.
+- Wireframes son HTML visual renderizable (Tailwind CSS + Google Fonts) con layout, componentes reales e iconos SVG; representan estructura y jerarquía con colores neutros.
+- Mockups low-fi incluyen un color primario, componentes con specs detallados (nav, cards, buttons, inputs, tables), iconos SVG y contenido placeholder realista.
+- Mockups high-fi son diseños de producto terminado con paleta completa, micro-interacciones, tipografía refinada y aspecto tipo Figma export.
 - Si no hay design.md o UI flow definido, el sistema muestra un mensaje claro indicando que debe completar Phase 01 primero.
 - Rate limiting o cuota por proyecto para generación (evitar abuso de APIs de generación de imágenes) según constraints del producto.
 

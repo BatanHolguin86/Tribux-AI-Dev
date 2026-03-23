@@ -22,7 +22,7 @@ const FLOWS: Record<string, DesignToolFlowUi> = {
     ctoAlignment:
       'Validar que cada pantalla refleja la propuesta de valor y los jobs-to-be-done de las personas del Discovery; priorizar claridad sobre densidad tecnica.',
     uxDeliverable:
-      'Wireframes ASCII (mobile + desktop cuando aplique), anotaciones de jerarquia, estados clave y enlaces a pantallas del spec KIRO.',
+      'Wireframes visuales en HTML + Tailwind CSS (mobile + desktop cuando aplique), anotaciones de jerarquia, estados clave y enlaces a pantallas del spec KIRO.',
     steps: [
       'Revisar contexto de producto, personas y value proposition.',
       'Listar pantallas/flujos del spec y priorizar por impacto al valor.',
@@ -153,7 +153,7 @@ export const DESIGN_TOOL_CARD_META: Record<
 > = {
   wireframes: {
     step: 1,
-    outcomeLine: 'Wireframes ASCII de pantallas + jerarquía y estados',
+    outcomeLine: 'Wireframes visuales HTML de pantallas + jerarquía y estados',
     durationHint: '~2–5 min',
   },
   'style-guide': {

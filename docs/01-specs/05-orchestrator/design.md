@@ -147,9 +147,9 @@ FORMATO DE RESPUESTA: {especifico por agente}
 - Formato: YAML configs, scripts shell, checklists de deploy
 
 **UI/UX Designer:**
-- Enfocado en diseño: wireframes, mockups, guías de estilo a partir de design.md y user flows
-- Puede invocar la API de generación de diseños cuando el usuario pide "genera wireframes para…"
-- Formato: descripciones de layout, referencias a pantallas, enlaces a diseños generados
+- Enfocado en diseño: wireframes, mockups y guías de estilo visuales en HTML + Tailwind CSS a partir de design.md y user flows
+- Camino A: genera diseños HTML persistidos via API (`POST /designs/generate`); Camino B: entregables en conversación (style guide, component library, user flows, responsive)
+- Formato: bloques HTML renderizables con Tailwind CSS, especificaciones de componentes, iconos SVG inline. Nunca ASCII art
 
 ---
 

@@ -13,9 +13,16 @@ Entregado en aplicación (puede no cubrir todos los ítems numerados inferiores)
 
 - [x] **HUB:** Vista `/projects/[id]/designs` como hub **Diseño & UX** — Camino A (generate + lista + detalle) y Camino B (6 herramientas + chat con contexto Discovery y `design-tool-workflow`).
 - [x] **API:** `POST .../designs/generate`, `GET .../designs`, `GET/PATCH .../designs/[id]`, `POST .../refine` (ver `src/app/api/projects/[id]/designs/`).
-- [x] **Tipos:** `src/types/design.ts` y validaciones en `src/lib/validations/designs.ts` (si existen).
-- [x] **UX:** `ProjectBreadcrumb`, `ProjectTools` («Diseño & UX»), `ArtifactDetail` con CTA al hub.
+- [x] **Tipos:** `src/types/design.ts` y validaciones en `src/lib/validations/designs.ts`.
+- [x] **UX:** `ProjectBreadcrumb`, `ProjectTools` («Diseño & UX»), `ArtifactDetail` con iframe + controles de dispositivo (mobile/tablet/desktop).
 - [x] **ADR-007** en `docs/02-architecture/decisions/ADR-007-design-hub-two-path-ux.md`.
+- [x] **HTML visual:** Wireframes, mockups low-fi y high-fi generan HTML + Tailwind CSS renderizable (nunca ASCII art). Prompts dedicados en `src/lib/ai/prompts/design-generation.ts` con `TYPE_INSTRUCTIONS` detallados por nivel.
+- [x] **Almacenamiento dual:** Contenido HTML en columna `content` de DB (primaria) + Storage bucket best-effort.
+- [x] **`generateText`:** Generación síncrona (no streaming) para garantizar completitud del HTML.
+- [x] **Rate limiting:** `DESIGN_RATE_LIMIT` aplicado a generate y refine.
+- [x] **Gate Phase 01 relajado:** Permite generar con Phase 01 `active` + al menos un feature con specs.
+- [x] **Agente UI/UX Designer:** Prompt actualizado — genera HTML visual con Tailwind en chat (nunca ASCII art). Templates actualizados con descripciones HTML.
+- [x] **`maxOutputTokens: 8192`** para soportar HTML rico en mockups multi-pantalla.
 
 Pendiente típico respecto al spec original: bloque explícito en Phase 02 (TASK-016), thumbnails en lista, job asíncrono dedicado si se separa del flujo actual, TASK-020 detección en chat, E2E dedicado.
 

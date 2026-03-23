@@ -95,7 +95,7 @@ La experiencia debe sentirse como una sesion de planificacion con un CTO experto
 
 ### Contenido de design.md Generado
 
-- Incluye: overview, data model (SQL con tablas, RLS, constraints), UI/UX layout (ASCII/descripcion), API design (endpoints con request/response JSON), architecture decisions, dependencies
+- Incluye: overview, data model (SQL con tablas, RLS, constraints), UI/UX layout (descripcion visual de pantallas y componentes), API design (endpoints con request/response JSON), architecture decisions, dependencies
 - El data model es coherente con tablas de features anteriores
 - Los endpoints siguen convenciones RESTful del proyecto (Next.js Route Handlers)
 

@@ -17,9 +17,14 @@ Los usuarios confundían la vista de diseños: mezclaban **generación de pantal
 3. **Breadcrumb contextual:** `ProjectBreadcrumb` distingue fase actual vs. Diseño & UX vs. detalle de artefacto vs. Agentes IA, evitando mostrar «Phase XX» cuando la vista no es la fase.
 4. **Vista de chat activa:** la guía larga (alineación CTO, pasos, Discovery) va en `<details>` **cerrado por defecto**; se prioriza el área de conversación y un callout «Qué hacer ahora».
 
+## Formato de salida (actualizado marzo 2026)
+
+- **Camino A:** El LLM genera HTML autocontenido con Tailwind CSS (via CDN) + Google Fonts (Inter). Tres niveles: wireframe (neutro), mockup low-fi (un color primario + componentes detallados), mockup high-fi (paleta completa, micro-interacciones, aspecto Figma). Se renderiza en iframe con sandbox y controles de dispositivo (375px/768px/1280px).
+- **Camino B:** El agente UI/UX Designer genera bloques HTML con Tailwind en la conversación (nunca ASCII art). Entregables: wireframes visuales, style guide con muestras de color, component library con ejemplos renderizables, user flows con diagramas, responsive specs con layouts por breakpoint.
+
 ## Consecuencias
 
-- **Positivas:** claridad funcional, alineación con value proposition (metodología + personas + value prop), menos abandono en el hub.
+- **Positivas:** claridad funcional, alineación con value proposition (metodología + personas + value prop), menos abandono en el hub. Diseños visuales tipo Figma en lugar de ASCII art.
 - **Negativas:** más superficie de UI que mantener; copy debe mantenerse sincronizado con `design-tool-workflow.ts` y specs en `docs/01-specs/06-ui-ux-design-generator/`.
 
 ## Referencias

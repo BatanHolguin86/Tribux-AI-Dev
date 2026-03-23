@@ -30,7 +30,7 @@ La vista `/projects/[id]/designs` actúa como **hub** con **dos caminos** explí
 
 ### Tabla: `design_artifacts` (Supabase)
 
-Almacena metadatos de cada wireframe o mockup generado. El archivo binario (PNG/SVG) vive en Storage.
+Almacena metadatos de cada wireframe o mockup generado. El contenido HTML se guarda en la columna `content` (acceso rápido) y opcionalmente en Storage como respaldo.
 
 ```sql
 create table design_artifacts (
@@ -39,9 +39,10 @@ create table design_artifacts (
   type          text not null check (type in ('wireframe', 'mockup_lowfi', 'mockup_highfi')),
   screen_name   text not null,           -- e.g. "Login", "Dashboard principal"
   flow_name     text,                    -- optional, e.g. "Auth flow", "Onboarding"
-  storage_path  text not null,           -- path in bucket: projects/{project_id}/designs/{id}.png
-  mime_type     text default 'image/png',
-  status        text default 'draft' check (status in ('draft', 'approved')),
+  storage_path  text not null,           -- path in bucket: projects/{project_id}/designs/{id}.html
+  mime_type     text default 'text/html',
+  content       text,                    -- HTML content for fast reads (primary source)
+  status        text default 'draft' check (status in ('generating', 'draft', 'approved')),
   prompt_used   text,                    -- last prompt/refinement for audit
   created_at    timestamptz default now(),
   updated_at    timestamptz default now()
@@ -64,8 +65,9 @@ create policy "Users can manage design artifacts of own projects"
 
 ### Storage (Supabase Storage)
 
-- **Bucket:** `project-designs` (privado).
-- **Path:** `{project_id}/{artifact_id}.{ext}` (ej. `abc-123/def-456.png`).
+- **Bucket:** `project-designs` (privado, best-effort — puede no existir en todos los entornos).
+- **Path:** `projects/{project_id}/designs/{artifact_id}.html`.
+- **Estrategia dual:** El contenido HTML se guarda primero en la columna `content` de la DB (fuente primaria, siempre disponible); el upload a Storage es best-effort como respaldo.
 - **Policies:** Solo el `user_id` propietario del proyecto puede leer/escribir en la carpeta de su proyecto.
 
 ---
@@ -164,7 +166,7 @@ Actualiza metadatos; principalmente `status` a `approved` o de vuelta a `draft`.
 
 ### `POST /api/projects/[projectId]/designs/[artifactId]/refine`
 
-Pide al agente UI/UX Designer que refine el diseño con una nueva instrucción. Regenera la imagen y actualiza `storage_path` y `prompt_used`.
+Pide al agente UI/UX Designer que refine el diseño con una nueva instrucción. Regenera el HTML y actualiza `content`, `storage_path` y `prompt_used`.
 
 **Request:** `{ "instruction": "Añadir más espacio entre el formulario y el botón" }`  
 **Response 202:** `{ "id": "uuid", "status": "generating" }` (mismo flujo asíncrono que generate).
@@ -208,30 +210,35 @@ Invocación prevista adicional:
 
 ### Componentes UI
 
-- **Lista de diseños:** cards o tabla con miniatura, nombre de pantalla, tipo, estado (draft/approved), fecha. Acciones: ver, refinar, aprobar, descargar.
-- **Detalle:** imagen a tamaño completo, metadatos, botones Refinar, Aprobar, Descargar.
-- **Modal/Form de generación:** selector de pantallas (checkboxes o multi-select basado en design.md), tipo (wireframe / mockup low-fi / high-fi), campo opcional de refinamiento. Botón “Generar”.
-- **Estado “Generando”:** spinner o skeleton en la fila/card del artefacto; cuando el job termina, se actualiza la miniatura y el enlace al archivo.
+- **Lista de diseños (`DesignGenerator.tsx`):** cards clickeables con nombre de pantalla, tipo (badge), estado (draft/approved/generating), fecha. Enlace directo a detalle.
+- **Detalle (`ArtifactDetail.tsx`):** iframe con sandbox (`allow-scripts`) que renderiza el HTML, controles de dispositivo (Mobile 375px / Tablet 768px / Desktop 1280px), auto-resize de altura, botones Refinar y Aprobar. Input de refinamiento inline.
+- **Formulario de generación (inline en hub):** input de pantallas separadas por coma, radio buttons para tipo (wireframe / mockup low-fi / high-fi), textarea opcional de refinamiento. Botón “Generar diseños”.
+- **Estado “Generando”:** `status: 'generating'` mientras el LLM procesa; al completar, `status: 'draft'` con contenido HTML visible.
 
 ---
 
 ## Architecture Decisions
 
-### Generación de imágenes
-- **Opción A (recomendada para MVP):** LLM genera descripción estructurada o HTML/SVG del wireframe; un servicio (Edge/Serverless) renderiza a PNG (p. ej. Puppeteer/Playwright en headless o librería SVG-to-PNG). Evita coste por imagen de DALL·E/Ideogram y control total del layout.
-- **Opción B:** LLM + API de generación de imágenes (DALL·E, Ideogram, etc.) para mockups. Mayor calidad visual pero coste y cuota por uso; aplicar rate limiting por proyecto.
-- En v1 se puede implementar solo wireframes vía LLM + SVG/HTML → PNG; mockups low-fi como siguiente paso o con Opción B limitada.
+### Generación de diseños — HTML visual (implementado en v1.0)
+- **Enfoque:** El LLM genera HTML autocontenido con Tailwind CSS (via CDN) + Google Fonts (Inter). El resultado se renderiza directamente en un iframe con sandbox en la vista de detalle.
+- **Tres niveles de fidelidad:** `wireframe` (colores neutros, estructura), `mockup_lowfi` (un color primario + grays, componentes con specs detallados), `mockup_highfi` (paleta completa, micro-interacciones, tipografía refinada — aspecto de producto terminado tipo Figma).
+- **Prompts dedicados:** `src/lib/ai/prompts/design-generation.ts` con `TYPE_INSTRUCTIONS` por nivel y regla absoluta de HTML-only (nunca ASCII art, nunca markdown).
+- **Token budget:** `maxOutputTokens: 8192` para soportar HTML rico multi-pantalla.
+- No se usan APIs de generación de imágenes (DALL·E, Ideogram) — todo es HTML renderizable.
 
-### Almacenamiento
+### Almacenamiento — estrategia dual
+- **Columna `content` en PostgreSQL** (fuente primaria): acceso rápido, siempre disponible, sin dependencia de bucket.
+- **Supabase Storage** (best-effort): upload como respaldo; el bucket `project-designs` puede no existir en todos los entornos.
 - **Metadatos en PostgreSQL** con RLS: listado, filtros y permisos coherentes con el resto del producto.
-- **Archivos en Supabase Storage** en bucket privado; signed URLs para vista y descarga con expiración corta (ej. 1 hora).
 
 ### Agente UI/UX Designer
-- Mismo patrón que el resto de agentes: tipo de agente en la tabla de conversaciones, system prompt que incluye “eres un diseñador UI/UX; genera wireframes/mockups a partir de design.md y user flows”. Puede invocar la API interna de generación (POST /designs/generate) cuando el usuario pide “genera wireframes para…”.
+- **Camino A (generate):** Prompt dedicado HTML-only (`design-generation.ts`). Usa `generateText` (no `streamText`) para garantizar completitud. Guarda contenido en DB + Storage.
+- **Camino B (chat/kit):** El agente usa su system prompt (`ui-ux-designer.ts`) que ahora genera HTML visual con Tailwind en bloques de código, nunca ASCII art. Entregables en conversación (style guide, component library, user flows, responsive specs).
 - El orquestador delega al UI/UX Designer cuando detecta intención de diseño (keywords: wireframe, mockup, diseño, pantalla, layout).
 
 ### Integración con Phase 01
-- Para saber “qué pantallas existen”, el backend lee el `design.md` del proyecto (o los specs en `docs/01-specs/`) y extrae la sección “UI flow” / lista de pantallas. Si no existe, no se muestra el botón de generación y se muestra mensaje “Completa Phase 01 para generar diseños”.
+- **Gate relajado:** La generación se permite cuando Phase 01 está `completed` o `active` con al menos un feature en estado `spec_complete`, `approved` o `in_progress`. Si Phase 01 está `locked`, se muestra mensaje “Completa Phase 01 para generar diseños”.
+- El usuario introduce pantallas manualmente (separadas por coma), no se parsean automáticamente de `design.md`.
 
 ---
 
@@ -239,5 +246,5 @@ Invocación prevista adicional:
 
 - **Features previas:** Phase 01 (KIRO) completada; proyectos con al menos un `design.md` con UI flow definido. Orquestador y chat con agentes (incl. UI/UX Designer) operativos.
 - **Backend:** Supabase (PostgreSQL + Storage), Next.js API Routes.
-- **Generación:** SDK del LLM ya usado en el producto (OpenAI/Anthropic/etc.) para el agente; opcionalmente API de generación de imágenes o librería de renderizado SVG/HTML a PNG.
-- **Frontend:** Componentes de lista, detalle, modal y formulario ya usados en el proyecto; posible uso de componente de galería o grid de imágenes.
+- **Generación:** SDK del LLM (Anthropic/OpenAI via Vercel AI SDK) con `generateText` para diseños HTML. Sin APIs de generación de imágenes — el HTML se renderiza directamente en iframe.
+- **Frontend:** Componentes de lista, detalle con iframe (sandbox, controles de dispositivo mobile/tablet/desktop) y formulario de generación/refinamiento.

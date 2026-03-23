@@ -19,7 +19,7 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 | Auth + Onboarding | ✅ Implementado | Flujo registro/login/onboarding y primer proyecto |
 | Phase 00 + Phase 01 | ✅ Implementado | Discovery guiado, KIRO (features, docs, coherencia, gates) |
 | Agentes (CTO + 8) + adjuntos | ✅ Implementado | Threads, streaming, paywall, adjuntos en chat, contexto de adjuntos en prompt |
-| Diseño & UX (hub) | ⚠️ Avanzado | Hub con Camino A/B, generate + lista + detalle + chat kit + breadcrumb; revisar backlog en `06-ui-ux-design-generator/tasks.md` |
+| Diseño & UX (hub) | ✅ Implementado | Hub con Camino A/B, generate HTML visual (wireframe/lowfi/highfi) + lista + detalle con iframe + chat kit HTML (nunca ASCII); revisar backlog menor en `06-ui-ux-design-generator/tasks.md` |
 | Fases 03–07 | ⚠️ Esqueleto | Tasks.md y checklists definidos; UI mínima por fase |
 | QA / E2E | ✅ Cubierto | Specs para auth, Phase 00/01, agentes, paywall, adjuntos, smoke staging |
 
@@ -55,7 +55,7 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 - **Phase 01 (KIRO):** Features, documentos requirements/design/tasks, validación de coherencia entre specs, aprobaciones y gate final.
 - **Agentes:** Listado CTO + 8 especializados, threads por agente, streaming, sugerencias proactivas, paywall por plan (Starter vs Builder/Agency).
 - **Adjuntos en chat de agentes:** Subida a Storage (`project-chat`), metadatos en `conversation_threads.attachments`, UI (botón +, “Adjuntos listos”, listado “Archivos adjuntos en esta conversación”), resumen de adjuntos en el prompt del agente.
-- **Vista Diseño & UX:** `/projects/[id]/designs` — hub con **Camino A** (formulario → `POST .../designs/generate` → diseños guardados) y **Camino B** (herramientas numeradas → hilo UI/UX con `getDesignWorkflowContext` + `design-tool-workflow`). Breadcrumb contextual (`ProjectBreadcrumb`). Detalle de artefacto con CTA al hub. Ver ADR-007 y spec `06-ui-ux-design-generator`.
+- **Vista Diseño & UX:** `/projects/[id]/designs` — hub con **Camino A** (formulario → `POST .../designs/generate` → HTML visual con Tailwind CSS renderizado en iframe con controles mobile/tablet/desktop) y **Camino B** (herramientas numeradas → hilo UI/UX con HTML visual, nunca ASCII art, + `getDesignWorkflowContext` + `design-tool-workflow`). Tres niveles: wireframe (neutro), mockup low-fi (componentes detallados), mockup high-fi (tipo Figma). Breadcrumb contextual (`ProjectBreadcrumb`). Detalle de artefacto con CTA al hub. Ver ADR-007 y spec `06-ui-ux-design-generator`.
 
 ### 2.5 Correcciones recientes
 
@@ -73,7 +73,7 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 
 ## 3. Lo que falta o está a medias para v1.0
 
-- **Diseño & UX:** API `POST /designs/generate` y vistas hub operativas; pueden faltar refinamientos del spec (thumbnails, job asíncrono dedicado, integración modal en Phase 02, E2E). Revisar `tasks.md` del feature 06.
+- **Diseño & UX:** Hub completo con generación HTML visual (wireframe/lowfi/highfi), refinamiento, aprobación y almacenamiento dual (DB + Storage). Pendientes menores: thumbnails en lista, job asíncrono dedicado, integración modal en Phase 02, E2E. Revisar `tasks.md` del feature 06.
 - **Fases 03–07:** Implementar en UI los checklists interactivos (Environment, Dev, QA, Launch, Iteration) y la persistencia del estado por proyecto, para que el usuario pueda marcar tareas y ver progreso real.
 - **Experiencia de errores unificada:** Que todos los flujos que llaman a Anthropic (Phase 00, Phase 01 chat, agentes) muestren mensajes consistentes (clave faltante, créditos, timeout) vía `ChatErrorBanner` o equivalente.
 - **Validación operativa:** Ejecutar la suite E2E en local y en staging y cerrar los fallos que aparezcan; dejar documentado qué tests son bloqueantes para v1.0.
