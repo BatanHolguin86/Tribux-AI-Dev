@@ -51,15 +51,42 @@ function renderInline(text: string): React.ReactNode[] {
   return parts
 }
 
-function isHtmlContent(content: string): boolean {
+/** Detects full HTML documents */
+function isFullHtmlDocument(content: string): boolean {
   const trimmed = content.trim()
   return trimmed.startsWith('<!DOCTYPE') || trimmed.startsWith('<html') || trimmed.startsWith('<!doctype')
+}
+
+/** Detects HTML snippets with multiple tags and class attributes (e.g. Tailwind wireframes) */
+function isHtmlSnippet(content: string): boolean {
+  const tagMatches = content.match(/<(?:div|section|nav|header|main|footer|button|form|input|article|aside|ul|ol|table|img|svg|span|p|h[1-6])\b[^>]*>/gi)
+  return (tagMatches?.length ?? 0) >= 3
+}
+
+/** Wraps an HTML snippet in a full document with Tailwind CDN for iframe rendering */
+function wrapInHtmlDocument(snippet: string): string {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>* { font-family: 'Inter', sans-serif; } body { margin: 0; }</style>
+</head>
+<body class="bg-white p-4">
+${snippet}
+</body>
+</html>`
 }
 
 function HtmlPreview({ content }: { content: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [height, setHeight] = useState(400)
   const [showCode, setShowCode] = useState(false)
+
+  // Ensure content is a full document for iframe rendering
+  const fullHtml = isFullHtmlDocument(content) ? content : wrapInHtmlDocument(content)
 
   useEffect(() => {
     if (!iframeRef.current) return
@@ -74,7 +101,7 @@ function HtmlPreview({ content }: { content: string }) {
     const iframe = iframeRef.current
     iframe.addEventListener('load', handleLoad)
     return () => iframe.removeEventListener('load', handleLoad)
-  }, [content])
+  }, [fullHtml])
 
   return (
     <div className="my-2 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-900">
@@ -95,7 +122,7 @@ function HtmlPreview({ content }: { content: string }) {
         <div className="flex justify-center bg-gray-100 dark:bg-gray-800 overflow-hidden">
           <iframe
             ref={iframeRef}
-            srcDoc={content}
+            srcDoc={fullHtml}
             className="w-full border-0 bg-white"
             style={{ height, maxHeight: 800 }}
             sandbox="allow-scripts"
@@ -105,6 +132,48 @@ function HtmlPreview({ content }: { content: string }) {
       )}
     </div>
   )
+}
+
+/**
+ * Extracts raw HTML blocks from text that aren't inside code fences.
+ * Returns segments of type 'text', 'code', or 'html'.
+ */
+function extractHtmlBlocks(
+  text: string,
+): Array<{ type: 'text' | 'html'; content: string }> {
+  // Find contiguous blocks of HTML tags in plain text
+  // Match from the first HTML tag to the last closing tag
+  const htmlBlockRegex = /(<(?:div|section|nav|header|main|footer|article|aside|body|html)\b[^>]*>[\s\S]*?<\/(?:div|section|nav|header|main|footer|article|aside|body|html)>)/gi
+
+  const segments: Array<{ type: 'text' | 'html'; content: string }> = []
+  let lastIndex = 0
+  let match
+
+  // Reset regex
+  const regex = new RegExp(htmlBlockRegex.source, 'gi')
+  while ((match = regex.exec(text)) !== null) {
+    // Only treat as HTML if it has enough tags (not just a single inline tag)
+    if (!isHtmlSnippet(match[1])) continue
+
+    if (match.index > lastIndex) {
+      const before = text.slice(lastIndex, match.index).trim()
+      if (before) segments.push({ type: 'text', content: before })
+    }
+    segments.push({ type: 'html', content: match[1] })
+    lastIndex = match.index + match[0].length
+  }
+
+  if (lastIndex < text.length) {
+    const remaining = text.slice(lastIndex).trim()
+    if (remaining) segments.push({ type: 'text', content: remaining })
+  }
+
+  // If no HTML blocks were found but the whole text is HTML-like, treat it as one block
+  if (segments.length === 0 && isHtmlSnippet(text)) {
+    return [{ type: 'html', content: text }]
+  }
+
+  return segments.length > 0 ? segments : [{ type: 'text', content: text }]
 }
 
 function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
@@ -126,7 +195,11 @@ function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
 
   return segments.map((segment, si) => {
     if (segment.type === 'code') {
-      if ((segment.lang === 'html' || !segment.lang) && isHtmlContent(segment.content)) {
+      // Render HTML in code fences as visual preview
+      const looksLikeHtml =
+        segment.lang === 'html' ||
+        (!segment.lang && (isFullHtmlDocument(segment.content) || isHtmlSnippet(segment.content)))
+      if (looksLikeHtml) {
         return <HtmlPreview key={si} content={segment.content} />
       }
       return (
@@ -136,101 +209,121 @@ function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
       )
     }
 
-    const paragraphs = segment.content.split(/\n{2,}/)
+    // For text segments: check if they contain raw HTML blocks (agent didn't use code fences)
+    const subSegments = extractHtmlBlocks(segment.content)
+    const hasHtml = subSegments.some((s) => s.type === 'html')
 
-    return paragraphs.map((paragraph, pi) => {
-      const trimmed = paragraph.trim()
-      if (!trimmed) return null
-
-      if (/^-{3,}$/.test(trimmed)) {
-        return <hr key={`${si}-${pi}`} className="my-3 border-gray-200 dark:border-gray-700" />
-      }
-
-      // Headings — standardized margins
-      const h1Match = trimmed.match(/^#\s+(.+)/)
-      if (h1Match) {
-        return (
-          <h2 key={`${si}-${pi}`} className="mt-4 mb-2 text-sm font-bold text-gray-900 dark:text-gray-100">
-            {renderInline(h1Match[1])}
-          </h2>
-        )
-      }
-
-      const h2Match = trimmed.match(/^##\s+(.+)/)
-      if (h2Match) {
-        return (
-          <h3 key={`${si}-${pi}`} className="mt-4 mb-2 text-sm font-bold text-gray-900 dark:text-gray-100">
-            {renderInline(h2Match[1])}
-          </h3>
-        )
-      }
-
-      const h3Match = trimmed.match(/^###\s+(.+)/)
-      if (h3Match) {
-        return (
-          <h4 key={`${si}-${pi}`} className="mt-3 mb-1.5 text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {renderInline(h3Match[1])}
-          </h4>
-        )
-      }
-
-      const h4Match = trimmed.match(/^####\s+(.+)/)
-      if (h4Match) {
-        return (
-          <h5 key={`${si}-${pi}`} className="mt-2 mb-1 text-xs font-semibold text-gray-700 dark:text-gray-300">
-            {renderInline(h4Match[1])}
-          </h5>
-        )
-      }
-
-      const lines = paragraph.split('\n')
-
-      const nonEmptyLines = lines.filter((l) => l.trim())
-      const isList = nonEmptyLines.length > 0 && nonEmptyLines.every(
-        (l) => l.trimStart().startsWith('- ') || l.trimStart().startsWith('* ') || /^\s*\d+\.\s/.test(l) || l.trimStart().startsWith('- [ ]') || l.trimStart().startsWith('- [x]')
-      )
-
-      if (isList) {
-        const items = nonEmptyLines
-        const isNumbered = items.some((l) => /^\s*\d+\.\s/.test(l))
-        const Tag = isNumbered ? 'ol' : 'ul'
-        return (
-          <Tag
-            key={`${si}-${pi}`}
-            className={`my-1.5 space-y-1 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${
-              isUser ? 'marker:text-violet-300' : 'marker:text-violet-500 dark:marker:text-violet-400'
-            }`}
-          >
-            {items.map((item, li) => {
-              const cleaned = item.replace(/^\s*[-*]\s(\[[ x]\]\s?)?|^\s*\d+\.\s/, '')
-              const isChecked = item.includes('[x]')
-              const isCheckbox = item.includes('[ ]') || item.includes('[x]')
-              return (
-                <li key={li} className="pl-0.5 text-sm">
-                  {isCheckbox && (
-                    <span className={`mr-1.5 inline-block ${isChecked ? 'text-emerald-500' : 'text-gray-400 dark:text-gray-500'}`}>
-                      {isChecked ? '✓' : '○'}
-                    </span>
-                  )}
-                  {renderInline(cleaned)}
-                </li>
-              )
-            })}
-          </Tag>
-        )
-      }
-
+    if (hasHtml) {
       return (
-        <p key={`${si}-${pi}`} className={pi > 0 ? 'mt-2' : ''}>
-          {lines.map((line, li) => (
-            <React.Fragment key={li}>
-              {li > 0 && <br />}
-              {renderInline(line)}
-            </React.Fragment>
-          ))}
-        </p>
+        <React.Fragment key={si}>
+          {subSegments.map((sub, ssi) => {
+            if (sub.type === 'html') {
+              return <HtmlPreview key={`${si}-html-${ssi}`} content={sub.content} />
+            }
+            return renderTextContent(sub.content, isUser, `${si}-${ssi}`)
+          })}
+        </React.Fragment>
       )
-    })
+    }
+
+    return renderTextContent(segment.content, isUser, String(si))
+  })
+}
+
+function renderTextContent(text: string, isUser: boolean, keyPrefix: string): React.ReactNode {
+  const paragraphs = text.split(/\n{2,}/)
+
+  return paragraphs.map((paragraph, pi) => {
+    const trimmed = paragraph.trim()
+    if (!trimmed) return null
+
+    if (/^-{3,}$/.test(trimmed)) {
+      return <hr key={`${keyPrefix}-${pi}`} className="my-3 border-gray-200 dark:border-gray-700" />
+    }
+
+    const h1Match = trimmed.match(/^#\s+(.+)/)
+    if (h1Match) {
+      return (
+        <h2 key={`${keyPrefix}-${pi}`} className="mt-4 mb-2 text-sm font-bold text-gray-900 dark:text-gray-100">
+          {renderInline(h1Match[1])}
+        </h2>
+      )
+    }
+
+    const h2Match = trimmed.match(/^##\s+(.+)/)
+    if (h2Match) {
+      return (
+        <h3 key={`${keyPrefix}-${pi}`} className="mt-4 mb-2 text-sm font-bold text-gray-900 dark:text-gray-100">
+          {renderInline(h2Match[1])}
+        </h3>
+      )
+    }
+
+    const h3Match = trimmed.match(/^###\s+(.+)/)
+    if (h3Match) {
+      return (
+        <h4 key={`${keyPrefix}-${pi}`} className="mt-3 mb-1.5 text-sm font-semibold text-gray-800 dark:text-gray-200">
+          {renderInline(h3Match[1])}
+        </h4>
+      )
+    }
+
+    const h4Match = trimmed.match(/^####\s+(.+)/)
+    if (h4Match) {
+      return (
+        <h5 key={`${keyPrefix}-${pi}`} className="mt-2 mb-1 text-xs font-semibold text-gray-700 dark:text-gray-300">
+          {renderInline(h4Match[1])}
+        </h5>
+      )
+    }
+
+    const lines = paragraph.split('\n')
+
+    const nonEmptyLines = lines.filter((l) => l.trim())
+    const isList = nonEmptyLines.length > 0 && nonEmptyLines.every(
+      (l) => l.trimStart().startsWith('- ') || l.trimStart().startsWith('* ') || /^\s*\d+\.\s/.test(l) || l.trimStart().startsWith('- [ ]') || l.trimStart().startsWith('- [x]')
+    )
+
+    if (isList) {
+      const items = nonEmptyLines
+      const isNumbered = items.some((l) => /^\s*\d+\.\s/.test(l))
+      const Tag = isNumbered ? 'ol' : 'ul'
+      return (
+        <Tag
+          key={`${keyPrefix}-${pi}`}
+          className={`my-1.5 space-y-1 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${
+            isUser ? 'marker:text-violet-300' : 'marker:text-violet-500 dark:marker:text-violet-400'
+          }`}
+        >
+          {items.map((item, li) => {
+            const cleaned = item.replace(/^\s*[-*]\s(\[[ x]\]\s?)?|^\s*\d+\.\s/, '')
+            const isChecked = item.includes('[x]')
+            const isCheckbox = item.includes('[ ]') || item.includes('[x]')
+            return (
+              <li key={li} className="pl-0.5 text-sm">
+                {isCheckbox && (
+                  <span className={`mr-1.5 inline-block ${isChecked ? 'text-emerald-500' : 'text-gray-400 dark:text-gray-500'}`}>
+                    {isChecked ? '✓' : '○'}
+                  </span>
+                )}
+                {renderInline(cleaned)}
+              </li>
+            )
+          })}
+        </Tag>
+      )
+    }
+
+    return (
+      <p key={`${keyPrefix}-${pi}`} className={pi > 0 ? 'mt-2' : ''}>
+        {lines.map((line, li) => (
+          <React.Fragment key={li}>
+            {li > 0 && <br />}
+            {renderInline(line)}
+          </React.Fragment>
+        ))}
+      </p>
+    )
   })
 }
 
