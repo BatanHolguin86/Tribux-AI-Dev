@@ -5,6 +5,8 @@
 **Fecha:** 2026-03-08
 **Status:** v1.0 — Implementado
 
+**Alineación con código (marzo 2026):** El listado de agentes y el chat **completo** viven en el tab **Equipo** de `/projects/[id]/phase/00–07` (`PhaseTeamPanel`, `AgentsLayout`, etc.). Las rutas **`/projects/[id]/agents`** y **`/projects/[id]/experts`** **redirigen** a `/projects/[id]/phase/{current_phase}`; las APIs bajo `/api/projects/[id]/agents/...` no cambian. Ver `docs/ESTADO-DEL-PRODUCTO.md`.
+
 ---
 
 ## Checklist de Implementacion
@@ -41,7 +43,7 @@
 - [x] **TASK-193:** Crear `POST /api/projects/[id]/agents/[agentType]/threads` — crea nuevo hilo vacio; valida acceso al agente segun plan
 - [x] **TASK-194:** Crear `DELETE /api/projects/[id]/agents/[agentType]/threads/[threadId]` — elimina hilo y mensajes; valida ownership
 - [x] **TASK-195:** Crear `POST /api/projects/[id]/agents/[agentType]/threads/[threadId]/chat` — recibe mensaje, construye contexto completo del proyecto, inyecta system prompt del agente, llama a Claude con streaming, persiste mensajes en el hilo, auto-genera titulo si es primer mensaje
-- [ ] **TASK-196:** Crear `POST /api/projects/[id]/agents/[agentType]/threads/[threadId]/stop` — envia abort signal al stream activo
+- [ ] **TASK-196:** Crear `POST /api/projects/[id]/agents/[agentType]/threads/[threadId]/stop` — abort del stream en servidor _(pendiente: hoy el stop es en **cliente** via `useChat().stop()` / SDK en `AgentChat` y mini-drawer; no hay Route Handler dedicado)_
 - [x] **TASK-197:** Crear `POST /api/projects/[id]/artifacts` — guarda contenido como artifact en Storage y registra en `project_documents` con type 'artifact'
 - [x] **TASK-197b:** Crear `GET /api/projects/[id]/agents/suggestions` — construye contexto del proyecto, llama a LLM con prompt de sugerencias proactivas, retorna 1–3 sugerencias accionables
 - [x] **TASK-198:** Actualizar `src/lib/ai/context-builder.ts` — agregar funcion `buildFullProjectContext(projectId)` que incluye: discovery + specs + artifacts + fase actual; implementar truncamiento progresivo para contextos > 100K tokens
@@ -50,8 +52,8 @@
 
 ### Frontend — Layout y Pagina
 
-- [x] **TASK-200:** Crear `src/app/(dashboard)/projects/[id]/agents/page.tsx` — Server Component que carga la lista de agentes y threads del agente por defecto (CTO Virtual)
-- [x] **TASK-201:** Crear `src/app/(dashboard)/projects/[id]/agents/loading.tsx` — skeleton con sidebar de agentes y area de chat
+- [x] **TASK-200:** Crear `src/app/(dashboard)/projects/[id]/agents/page.tsx` — hoy **redirige** a `/projects/[id]/phase/{current_phase}`; la carga de agentes/threads ocurre en el tab **Equipo** del layout de fase
+- [x] **TASK-201:** Crear `src/app/(dashboard)/projects/[id]/agents/loading.tsx` — skeleton (sigue existiendo para la navegacion intermedia antes del redirect)
 
 ### Frontend — Componentes de Agentes
 
@@ -73,8 +75,8 @@
 
 ### Frontend — Floating Button
 
-- [x] **TASK-212:** Crear `FloatingAgentButton.tsx` — boton fijo en esquina inferior derecha; visible en todas las paginas del proyecto excepto `/agents`; click abre mini-drawer con chat del CTO Virtual o ultimo agente usado
-- [x] **TASK-213:** Crear `MiniAgentDrawer.tsx` — drawer lateral (400px) con chat simplificado; boton "Abrir chat completo" que navega a `/agents`
+- [x] **TASK-212:** Crear `src/components/agents/FloatingAgentButton.tsx` — boton fijo en esquina inferior derecha; visible en **todo** el layout `/projects/[id]/*` (incl. accesos que redirigen); abre mini-drawer CTO
+- [x] **TASK-213:** Crear `src/components/agents/MiniAgentDrawer.tsx` — drawer lateral (~400px); boton para abrir workspace completo navega a una **fase** (p. ej. `/projects/[id]/phase/00`) donde el tab **Equipo** concentra el chat completo — no a `/agents` estático
 
 ### Stores y Estado Global
 
@@ -83,8 +85,8 @@
 ### Tests
 
 - [x] **TASK-215:** Tests unitarios para cada system prompt de agente — verifica que el prompt incluye rol, contexto del proyecto y instrucciones correctas (`tests/unit/ai/agents/`)
-- [ ] **TASK-216:** Tests unitarios para `buildFullProjectContext` — verifica inclusion de discovery, specs y artifacts; verifica truncamiento en > 100K tokens
-- [ ] **TASK-217:** Tests unitarios para `generateThreadTitle` — verifica generacion correcta y fallback a timestamp
+- [ ] **TASK-216:** Tests unitarios para `buildFullProjectContext` — verifica inclusion de discovery, specs y artifacts; verifica truncamiento en > 100K tokens _(parcial: existen `tests/unit/ai/context-builder.test.ts` para `truncateText` y mocks en integracion, no suite dedicada de `buildFullProjectContext`)_
+- [ ] **TASK-217:** Tests unitarios para `generateThreadTitle` — verifica generacion correcta y fallback a timestamp _(pendiente: solo mock en `agent-chat.test.ts`)_
 - [x] **TASK-218:** Test de integracion para CRUD de threads — crear, listar, eliminar (`tests/integration/api/threads.test.ts`)
 - [x] **TASK-219:** Test de integracion para chat con agente — mock de Claude API, verifica streaming, persistencia de mensajes y auto-generacion de titulo (`tests/integration/api/agent-chat.test.ts`)
 - [ ] **TASK-220:** Test de integracion para artifacts — guardar, listar en documentos, verificar en Storage (`tests/integration/api/artifacts.test.ts`)
@@ -92,7 +94,7 @@
 - [x] **TASK-221b:** Test E2E o integracion — sugerencias proactivas: API GET suggestions devuelve 200 y array; fallback a array vacio (`tests/integration/api/agents-suggestions.test.ts`)
 - [x] **TASK-222:** Test E2E — restriccion de plan: usuario Starter intenta acceder a agente Builder → ve paywall (`tests/e2e/agents-paywall.authenticated.spec.ts`)
 - [ ] **TASK-223:** Test E2E — multiples hilos: crear 3 hilos con el mismo agente, navegar entre ellos, verificar persistencia del historial
-- [ ] **TASK-504:** Tests de integracion/unidad para adjuntos: subida de archivos, persistencia en `attachments` y exposicion en API /threads/[threadId]
+- [x] **TASK-504:** Tests de integracion/unidad para adjuntos: subida de archivos, persistencia en `attachments` y exposicion en API /threads/[threadId] _(cubierto por `tests/unit/lib/storage.test.ts` chat-attachments, integracion en `agent-chat.test.ts`, E2E `tests/e2e/agents-with-attachments.authenticated.spec.ts`)_
 
 ### Deploy
 
@@ -106,7 +108,7 @@
 
 ## Definition of Done — Feature 05
 
-- [x] La pagina `/projects/:id/agents` muestra los 9 agentes (CTO Virtual + 8 especializados) con icono, nombre y especialidad
+- [x] Los 9 agentes (CTO Virtual + 8 especializados) son accesibles desde el tab **Equipo** en `/projects/:id/phase/NN` (la ruta `/agents` redirige a la fase actual y ahi se muestra el selector)
 - [x] El chat con cada agente funciona con streaming (< 2s primer token)
 - [x] Cada agente tiene system prompt unico y recibe el contexto completo del proyecto
 - [x] El CTO Virtual sugiere agentes especializados cuando la pregunta es especifica

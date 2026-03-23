@@ -81,3 +81,4 @@ Las carpetas bajo `docs/` usan **prefijo numérico de fase IA DLC** (`00-discove
 - Roadmap y criterios v1.0: `docs/00-discovery/estatus-v1-y-roadmap.md`
 - E2E y QA: `docs/05-qa/e2e-tests.md`
 - Arquitectura de carpetas (detalle; revisar nota de vigencia al inicio): `docs/02-architecture/folder-structure.md`
+- Checklists de implementación alineados con este documento: `docs/01-specs/05-orchestrator/tasks.md`, `docs/01-specs/06-ui-ux-design-generator/tasks.md`
