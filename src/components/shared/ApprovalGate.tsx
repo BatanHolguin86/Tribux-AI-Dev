@@ -7,6 +7,8 @@ type ApprovalGateProps = {
   onApprove: () => void
   onRevisionRequest: (feedback: string) => void
   isApproving: boolean
+  onRegenerate?: () => void
+  isRegenerating?: boolean
 }
 
 export function ApprovalGate({
@@ -14,6 +16,8 @@ export function ApprovalGate({
   onApprove,
   onRevisionRequest,
   isApproving,
+  onRegenerate,
+  isRegenerating,
 }: ApprovalGateProps) {
   const [feedback, setFeedback] = useState('')
   const [showRevision, setShowRevision] = useState(false)
@@ -30,14 +34,23 @@ export function ApprovalGate({
         Mira el panel derecho. ¿Encaja? Aprueba. Si no, pide cambios abajo.
       </p>
 
-      <div className="mt-3 flex gap-3">
+      <div className="mt-3 flex flex-wrap gap-2">
         <button
           onClick={onApprove}
-          disabled={isApproving}
+          disabled={isApproving || isRegenerating}
           className="flex-1 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
         >
           {isApproving ? 'Aprobando...' : 'Aprobar seccion'}
         </button>
+        {onRegenerate && (
+          <button
+            onClick={onRegenerate}
+            disabled={isRegenerating || isApproving}
+            className="rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 disabled:opacity-50 dark:border-violet-800 dark:bg-violet-900/30 dark:text-violet-300 dark:hover:bg-violet-900/50"
+          >
+            {isRegenerating ? 'Regenerando...' : 'Regenerar con cambios'}
+          </button>
+        )}
         <button
           onClick={() => setShowRevision(!showRevision)}
           className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"

@@ -39,7 +39,10 @@ function actionHint(documents: DocMap, active: KiroDocumentType): string {
   if (hasBody) {
     return 'Revisa el documento a la derecha. Aprueba o pide cambios — el CTO ajusta en este chat.'
   }
-  return 'Conversa con el CTO aquí. Cuando indique que está listo, verás Generar documento; después Aprueba para desbloquear la siguiente pestaña.'
+  if (active === 'requirements' || active === 'tasks') {
+    return 'El CTO genera el documento automaticamente. En segundos aparecera en el panel derecho.'
+  }
+  return 'El CTO presenta una propuesta compacta. Confirma o ajusta, y se genera el documento.'
 }
 
 const STEP_SHORT: Record<KiroDocumentType, string> = {

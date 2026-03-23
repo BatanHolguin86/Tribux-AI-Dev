@@ -122,6 +122,18 @@ export async function POST(
     featureDescription: feature?.description ?? null,
   })
 
+    // If a document already exists (auto-drafted or previously generated), inject for refinement context
+    const { data: existingDoc } = await supabase
+      .from('feature_documents')
+      .select('content')
+      .eq('feature_id', featureId)
+      .eq('document_type', docType)
+      .single()
+
+    if (existingDoc?.content) {
+      systemPrompt += `\n\n---\nDOCUMENTO ACTUAL (ya generado — el usuario puede estar pidiendo ajustes):\n${existingDoc.content.slice(0, 6000)}\n---\nSi el usuario pide cambios, responde SOLO con los cambios especificos. Cierra con: "Cambie X e Y. Apruebas o ajustamos algo mas?"\nSi el usuario aprueba los cambios, responde con [SECTION_READY] para que pueda regenerar el documento.`
+    }
+
     // CTO orchestration (Option B): consult specialists internally per docType
     // Optimize latency: only consult on first user turn for this docType thread
     const isFirstTurn = coreMessages.filter((m) => m.content.trim().length > 0).length <= 1

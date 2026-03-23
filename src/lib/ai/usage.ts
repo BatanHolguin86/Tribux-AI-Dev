@@ -15,6 +15,8 @@ export const AI_USAGE_EVENT_TYPES = [
   'phase00_generate',
   'phase01_chat',
   'phase01_generate',
+  'phase01_autodraft',
+  'phase01_autodraft_specialist',
   'phase02_chat',
   'phase02_generate',
   'phase03_chat',
