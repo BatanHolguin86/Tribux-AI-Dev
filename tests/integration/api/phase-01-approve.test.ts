@@ -141,6 +141,66 @@ describe('POST /api/projects/[id]/phases/1/features/[featureId]/documents/[docTy
     expect(body.document_type).toBe('design')
   })
 
+  it('retorna next_document: tasks cuando se aprueba design', async () => {
+    const { POST } = await import(
+      '@/app/api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/approve/route'
+    )
+    const res = await POST(new Request('http://x'), {
+      params: Promise.resolve({ id: 'p1', featureId: 'f1', docType: 'design' }),
+    })
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.next_document).toBe('tasks')
+  })
+
+  it('retorna next_document: design cuando se aprueba requirements', async () => {
+    const { POST } = await import(
+      '@/app/api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/approve/route'
+    )
+    const res = await POST(new Request('http://x'), {
+      params: Promise.resolve({ id: 'p1', featureId: 'f1', docType: 'requirements' }),
+    })
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.next_document).toBe('design')
+  })
+
+  it('retorna next_document: null cuando se aprueba tasks (ultimo doc)', async () => {
+    const { POST } = await import(
+      '@/app/api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/approve/route'
+    )
+    const res = await POST(new Request('http://x'), {
+      params: Promise.resolve({ id: 'p1', featureId: 'f1', docType: 'tasks' }),
+    })
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.next_document).toBeNull()
+  })
+
+  it('retorna feature_complete: true cuando los 3 docs estan aprobados', async () => {
+    vi.mocked(createClient).mockResolvedValue(
+      createMockSupabase({
+        allDocsSelect: {
+          data: [
+            { document_type: 'requirements', status: 'approved' },
+            { document_type: 'design', status: 'approved' },
+            { document_type: 'tasks', status: 'approved' },
+          ],
+        },
+      }) as never
+    )
+
+    const { POST } = await import(
+      '@/app/api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/approve/route'
+    )
+    const res = await POST(new Request('http://x'), {
+      params: Promise.resolve({ id: 'p1', featureId: 'f1', docType: 'tasks' }),
+    })
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.feature_complete).toBe(true)
+  })
+
   it('aprueba tasks sin validacion de coherencia', async () => {
     const { POST } = await import(
       '@/app/api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/approve/route'
