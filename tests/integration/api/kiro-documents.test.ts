@@ -46,6 +46,30 @@ const createMockFrom = (options?: {
 }) => {
   featureDocsCallCount = 0
   return vi.fn((table: string) => {
+    if (table === 'projects') {
+      return {
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: { name: 'Test', description: 'Desc', industry: 'Fintech', current_phase: 1, user_id: 'user-1' },
+              error: null,
+            }),
+          }),
+        }),
+      }
+    }
+    if (table === 'user_profiles') {
+      return {
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: { persona: 'CEO' },
+              error: null,
+            }),
+          }),
+        }),
+      }
+    }
     if (table === 'agent_conversations') {
       return {
         select: vi.fn().mockReturnValue({
@@ -187,6 +211,7 @@ vi.mock('@/lib/ai/context-builder', () => ({
   }),
   getApprovedDiscoveryDocs: vi.fn().mockResolvedValue(''),
   getApprovedFeatureSpecs: vi.fn().mockResolvedValue(''),
+  truncateText: vi.fn().mockImplementation((text: string) => text),
 }))
 vi.mock('@/lib/ai/agents/prompt-builder', () => ({
   buildAgentPrompt: vi.fn().mockReturnValue('You are a specialist agent.'),

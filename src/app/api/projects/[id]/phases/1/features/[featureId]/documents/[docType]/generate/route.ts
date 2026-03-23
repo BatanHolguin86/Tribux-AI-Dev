@@ -2,10 +2,9 @@ import { generateText } from 'ai'
 import { createAdminClient, createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import {
-  buildFullProjectContext,
-  buildProjectContext,
   getApprovedDiscoveryDocs,
   getApprovedFeatureSpecs,
+  truncateText,
 } from '@/lib/ai/context-builder'
 import {
   buildKiroAutoDraftPrompt,
@@ -54,61 +53,94 @@ export async function POST(
   const docTypeKey = docType as KiroDocumentType
   const section = `feature_${featureId}_${docTypeKey}`
 
-  // For normal mode, require conversation
+  // --- Parallelize ALL DB queries upfront ---
+  const [
+    conversationResult,
+    featureResult,
+    projectResult,
+    profileResult,
+    discoveryDocs,
+    otherFeatureSpecs,
+    ownDocsResult,
+  ] = await Promise.all([
+    // Conversation (only needed for non-auto-draft)
+    isAutoDraft
+      ? Promise.resolve({ data: null })
+      : supabase
+          .from('agent_conversations')
+          .select('messages')
+          .eq('project_id', projectId)
+          .eq('phase_number', 1)
+          .eq('section', section)
+          .single(),
+    // Feature info
+    supabase
+      .from('project_features')
+      .select('name, description')
+      .eq('id', featureId)
+      .single(),
+    // Project info
+    supabase
+      .from('projects')
+      .select('name, description, industry, current_phase, user_id')
+      .eq('id', projectId)
+      .single(),
+    // Profile (we'll filter by user_id after project resolves — for now fetch by auth user)
+    supabase
+      .from('user_profiles')
+      .select('persona')
+      .eq('id', user.id)
+      .single(),
+    // Discovery docs
+    getApprovedDiscoveryDocs(projectId),
+    // Other feature specs
+    getApprovedFeatureSpecs(projectId, featureId),
+    // Own approved docs for this feature
+    supabase
+      .from('feature_documents')
+      .select('document_type, content')
+      .eq('feature_id', featureId)
+      .eq('status', 'approved')
+      .neq('document_type', docTypeKey),
+  ])
+
+  // Validate conversation for normal mode
   let coreMessages: CoreMessage[] = []
   if (!isAutoDraft) {
-    const { data: conversation } = await supabase
-      .from('agent_conversations')
-      .select('messages')
-      .eq('project_id', projectId)
-      .eq('phase_number', 1)
-      .eq('section', section)
-      .single()
-
-    if (!conversation?.messages) {
+    if (!conversationResult.data?.messages) {
       return new Response('No conversation found', { status: 400 })
     }
-    coreMessages = toCoreMessages(conversation.messages)
+    coreMessages = toCoreMessages(conversationResult.data.messages)
   }
 
-  const { data: feature } = await supabase
-    .from('project_features')
-    .select('name, description')
-    .eq('id', featureId)
-    .single()
+  const feature = featureResult.data
+  const project = projectResult.data
 
-  // Update feature status to in_progress
-  await supabase
+  if (!project) {
+    return Response.json({ error: 'Project not found' }, { status: 404 })
+  }
+
+  // Update feature status (fire and forget)
+  supabase
     .from('project_features')
     .update({ status: 'in_progress' })
     .eq('id', featureId)
     .eq('status', 'pending')
+    .then(() => {})
 
-  const context = await buildProjectContext(projectId)
-  const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
-  const otherFeatureSpecs = await getApprovedFeatureSpecs(projectId, featureId)
-
-  // Include THIS feature's earlier approved docs (e.g., Requirements when generating Design)
-  const { data: ownDocs } = await supabase
-    .from('feature_documents')
-    .select('document_type, content')
-    .eq('feature_id', featureId)
-    .eq('status', 'approved')
-    .neq('document_type', docTypeKey)
-
-  const ownDocsContext = (ownDocs ?? [])
+  const ownDocsContext = (ownDocsResult.data ?? [])
     .map((d) => `### ${d.document_type} (aprobado)\n${(d.content ?? '').slice(0, 4000)}`)
     .join('\n\n')
 
   const previousSpecs = [ownDocsContext, otherFeatureSpecs].filter(Boolean).join('\n\n')
 
   const kiroContext = {
-    projectName: context.name,
-    description: context.description,
-    industry: context.industry,
-    persona: context.persona,
-    discoveryDocs: discoveryDocs.slice(0, 8000),
-    previousSpecs: previousSpecs.slice(0, 12000),
+    projectName: project.name,
+    description: project.description,
+    industry: project.industry,
+    persona: profileResult.data?.persona ?? null,
+    discoveryDocs: truncateText(discoveryDocs, 8000),
+    previousSpecs: truncateText(previousSpecs, 12000),
     featureName: feature?.name ?? '',
     featureDescription: feature?.description ?? null,
   }
@@ -117,21 +149,33 @@ export async function POST(
   let userMessage: string
 
   if (isAutoDraft) {
-    // --- AUTO-DRAFT MODE: consult specialists + generate without conversation ---
-    const full = await buildFullProjectContext(projectId)
+    // --- AUTO-DRAFT MODE: consult specialists in parallel + generate ---
+
+    // Build a lightweight context for specialist prompts (reuse data already fetched)
+    const agentContext = {
+      name: project.name,
+      description: project.description,
+      industry: project.industry,
+      persona: profileResult.data?.persona ?? null,
+      currentPhase: project.current_phase,
+      phaseName: 'Requirements & Spec',
+      discoveryDocs: truncateText(discoveryDocs, 6000),
+      featureSpecs: truncateText(otherFeatureSpecs, 8000),
+      artifacts: '',
+    }
 
     async function consult(agentType: AgentType, instruction: string) {
-      const specialistSystem = buildAgentPrompt(agentType, full)
+      const specialistSystem = buildAgentPrompt(agentType, agentContext)
       const { text, usage } = await generateText({
         model: defaultModel,
         system: specialistSystem,
         messages: [
           {
             role: 'user' as const,
-            content: `Contexto del feature:\n- Feature: ${feature?.name ?? featureId}\n- Descripcion: ${feature?.description ?? '—'}\n\nTarea:\n${instruction}\n\nIMPORTANTE:\n- Responde con bullets concretos y accionables.\n- No hagas preguntas generales.\n`,
+            content: `Feature: ${feature?.name ?? featureId}\nDescripcion: ${feature?.description ?? '—'}\n\n${instruction}\n\nResponde con bullets concretos. Max 600 tokens.`,
           },
         ],
-        maxOutputTokens: 800,
+        maxOutputTokens: 600,
         temperature: 0.3,
       })
 
@@ -149,22 +193,23 @@ export async function POST(
       return text
     }
 
+    // Consult specialists in parallel based on doc type
     const specialistParts: string[] = []
     if (docTypeKey === 'requirements') {
       const pa = await consult(
         'product_architect',
-        'Propone user stories (3-8) y acceptance criteria (2-5 por story) para este feature. Incluye edge cases y out of scope.',
+        'Propone user stories (3-8) y acceptance criteria (2-5 por story). Incluye edge cases y out of scope.',
       )
       if (pa) specialistParts.push(`## Product Architect\n${pa}`)
     } else if (docTypeKey === 'tasks') {
       const [ld, qa] = await Promise.all([
         consult(
           'lead_developer',
-          'Descompone la implementacion en tasks atomicas (1-4h) ordenadas por dependencias (setup/db/backend/frontend).',
+          'Descompone la implementacion en tasks atomicas (1-4h) ordenadas por dependencias.',
         ),
         consult(
           'qa_engineer',
-          'Propone tasks de testing (unit/integration/e2e) y casos de prueba criticos para este feature.',
+          'Propone tasks de testing y casos de prueba criticos para este feature.',
         ),
       ])
       if (ld) specialistParts.push(`## Lead Developer\n${ld}`)
@@ -195,38 +240,38 @@ export async function POST(
     const storagePath = `specs/${featureSlug}/${docTypeKey}.md`
     const storageFullPath = `projects/${projectId}/${storagePath}`
 
-    // Upload to storage (best effort)
-    try {
-      await uploadDocument(projectId, storagePath, text)
-    } catch (err) {
-      console.error('[Phase01 generate] uploadDocument failed', err)
-    }
+    // Save to DB + storage in parallel
+    const [, upsertResult] = await Promise.all([
+      // Upload to storage (best effort)
+      uploadDocument(projectId, storagePath, text).catch((err) => {
+        console.error('[Phase01 generate] uploadDocument failed', err)
+      }),
+      // Save to DB (critical)
+      adminSupabase
+        .from('feature_documents')
+        .upsert(
+          {
+            feature_id: featureId,
+            project_id: projectId,
+            document_type: docTypeKey,
+            storage_path: storageFullPath,
+            content: text,
+            version: 1,
+            status: 'draft',
+          },
+          { onConflict: 'feature_id,document_type' },
+        ),
+    ])
 
-    // Save to DB (critical)
-    const { error: upsertError } = await adminSupabase
-      .from('feature_documents')
-      .upsert(
-        {
-          feature_id: featureId,
-          project_id: projectId,
-          document_type: docTypeKey,
-          storage_path: storageFullPath,
-          content: text,
-          version: 1,
-          status: 'draft',
-        },
-        { onConflict: 'feature_id,document_type' },
-      )
-
-    if (upsertError) {
-      console.error('[Phase01 generate] feature_documents upsert failed', upsertError)
+    if (upsertResult.error) {
+      console.error('[Phase01 generate] feature_documents upsert failed', upsertResult.error)
       return Response.json({ error: 'Failed to save document' }, { status: 500 })
     }
 
-    // For auto-draft: create synthetic conversation so refinement chat works
+    // For auto-draft: create synthetic conversation (fire and forget)
     if (isAutoDraft) {
       const now = new Date().toISOString()
-      await supabase
+      supabase
         .from('agent_conversations')
         .upsert(
           {
@@ -241,13 +286,14 @@ export async function POST(
           },
           { onConflict: 'project_id,phase_number,section,agent_type' },
         )
+        .then(() => {})
     }
 
-    // Record AI usage (best effort)
+    // Record AI usage (fire and forget)
     const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
     const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
     recordAiUsage(supabase, {
-      userId: user.id,
+      userId,
       projectId,
       eventType: isAutoDraft ? 'phase01_autodraft' : 'phase01_generate',
       model: defaultModel?.toString?.() ?? undefined,
