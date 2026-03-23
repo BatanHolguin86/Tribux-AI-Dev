@@ -55,19 +55,11 @@ export function Phase01Layout({
     setActiveFeatureId(null)
   }, [])
 
-  const handleFeaturesRefresh = useCallback(() => {
+  const handleRefresh = useCallback(() => {
     window.location.reload()
   }, [])
 
-  const handleDocumentGenerated = useCallback(() => {
-    window.location.reload()
-  }, [])
-
-  const handleDocumentApproved = useCallback(() => {
-    window.location.reload()
-  }, [])
-
-  // --- Feature Workspace view ---
+  // ── Feature workspace (selected feature) ──
   if (activeFeature) {
     return (
       <div className="h-[var(--content-height)]">
@@ -75,48 +67,48 @@ export function Phase01Layout({
           projectId={projectId}
           feature={activeFeature}
           onBack={handleBack}
-          onDocumentGenerated={handleDocumentGenerated}
-          onDocumentApproved={handleDocumentApproved}
+          onDocumentGenerated={handleRefresh}
+          onDocumentApproved={handleRefresh}
         />
       </div>
     )
   }
 
-  // --- Feature list view (default) ---
+  // ── Feature list (default view) ──
   return (
-    <div>
-      {/* Progress bar */}
-      <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {completedFeatures} de {features.length} features completados
-        </p>
+    <div className="space-y-4">
+      {/* Header with progress */}
+      <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
+        <div>
+          <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            KIRO Specs
+          </h2>
+          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+            Define requisitos, diseno y tasks para cada feature
+          </p>
+        </div>
         {features.length > 0 && (
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-              <div
-                className="h-1.5 rounded-full bg-violet-600 transition-all"
-                style={{ width: `${(completedFeatures / features.length) * 100}%` }}
-              />
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-2 sm:flex">
+              <div className="h-1.5 w-24 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                <div
+                  className="h-1.5 rounded-full bg-violet-600 transition-all"
+                  style={{ width: `${(completedFeatures / features.length) * 100}%` }}
+                />
+              </div>
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-              {Math.round((completedFeatures / features.length) * 100)}%
+            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+              completedFeatures === features.length && features.length > 0
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+            }`}>
+              {completedFeatures}/{features.length}
             </span>
           </div>
         )}
       </div>
 
-      <details className="mb-4 rounded-lg border border-gray-100 bg-gray-50/50 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900/30 dark:text-gray-400">
-        <summary className="cursor-pointer px-3 py-2 font-medium text-gray-600 dark:text-gray-300">
-          ¿Qué es Phase 01? (una frase)
-        </summary>
-        <p className="border-t border-gray-100 px-3 py-2 leading-relaxed dark:border-gray-800">
-          Un feature a la vez: <span className="font-medium text-gray-700 dark:text-gray-300">3 pestañas</span>{' '}
-          (Requisitos → Diseño → Tasks), siempre con <span className="font-medium">aprobar</span> antes de la
-          siguiente. El CTO te acompaña en el chat del centro.
-        </p>
-      </details>
-
-      {/* Discovery summary */}
+      {/* Discovery context */}
       <DiscoverySummary docs={discoverySummary} />
 
       {allSpecComplete ? (
@@ -126,29 +118,23 @@ export function Phase01Layout({
         />
       ) : (
         <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
-          {/* Feature cards */}
-          <div>
-            <FeatureList
-              projectId={projectId}
-              features={features.map((f) => ({
-                id: f.id,
-                name: f.name,
-                status: f.status,
-                documents: f.documents,
-              }))}
-              activeFeatureId={null}
-              onSelect={handleFeatureSelect}
-              onFeatureAdded={handleFeaturesRefresh}
-            />
-          </div>
+          <FeatureList
+            projectId={projectId}
+            features={features.map((f) => ({
+              id: f.id,
+              name: f.name,
+              status: f.status,
+              documents: f.documents,
+            }))}
+            activeFeatureId={null}
+            onSelect={handleFeatureSelect}
+            onFeatureAdded={handleRefresh}
+          />
 
-          {/* Suggestions sidebar */}
-          <div>
-            <FeatureSuggestions
-              projectId={projectId}
-              onAccepted={handleFeaturesRefresh}
-            />
-          </div>
+          <FeatureSuggestions
+            projectId={projectId}
+            onAccepted={handleRefresh}
+          />
         </div>
       )}
     </div>
