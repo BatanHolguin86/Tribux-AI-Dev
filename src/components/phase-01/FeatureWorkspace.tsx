@@ -178,9 +178,9 @@ export function FeatureWorkspace({
       <div className="flex min-h-0 flex-1 gap-3">
         {/* Chat panel */}
         <div
-          className={`flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 ${
-            shouldShowDocumentPanel ? 'lg:flex-[6]' : 'lg:flex-1'
-          } ${mobileTab !== 'chat' && shouldShowDocumentPanel ? 'hidden lg:flex' : 'flex'}`}
+          className={`flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 lg:flex-1 ${
+            mobileTab !== 'chat' && shouldShowDocumentPanel ? 'hidden lg:flex' : 'flex'
+          }`}
         >
           <KiroChat
             key={`${feature.id}-${activeDocType}`}
@@ -199,7 +199,7 @@ export function FeatureWorkspace({
         {/* Document panel */}
         {shouldShowDocumentPanel && (
           <div
-            className={`lg:flex-[4] ${
+            className={`lg:flex-1 ${
               mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
             }`}
           >

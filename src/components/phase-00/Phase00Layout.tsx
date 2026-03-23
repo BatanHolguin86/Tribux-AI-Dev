@@ -112,7 +112,7 @@ export function Phase00Layout({
 
           {/* Desktop: split view */}
           <div className="flex h-[var(--content-height)] gap-4">
-            <div className={`flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-900/20 lg:flex-[3] ${
+            <div className={`flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-900/20 lg:flex-1 ${
               mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
             }`}>
               <SectionNav
@@ -132,7 +132,7 @@ export function Phase00Layout({
               />
             </div>
 
-            <div className={`lg:flex-[2] ${
+            <div className={`lg:flex-1 ${
               mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
             }`}>
               <DocumentPanel
