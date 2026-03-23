@@ -17,7 +17,7 @@ import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
 import type { AgentType } from '@/types/agent'
 
-export const maxDuration = 120
+export const maxDuration = 240
 
 type CoreMessage = { role: 'user' | 'assistant'; content: string }
 
@@ -172,10 +172,10 @@ export async function POST(
         messages: [
           {
             role: 'user' as const,
-            content: `Feature: ${feature?.name ?? featureId}\nDescripcion: ${feature?.description ?? '—'}\n\n${instruction}\n\nResponde con bullets concretos. Max 600 tokens.`,
+            content: `Feature: ${feature?.name ?? featureId}\nDescripcion: ${feature?.description ?? '—'}\n\n${instruction}\n\nResponde con bullets concretos. Max 400 tokens.`,
           },
         ],
-        maxOutputTokens: 600,
+        maxOutputTokens: 400,
         temperature: 0.3,
       })
 

@@ -92,7 +92,7 @@ export function KiroChat({
     setGenerateError(null)
 
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 120_000)
+    const timeout = setTimeout(() => controller.abort(), 200_000)
 
     try {
       const res = await fetch(
@@ -157,7 +157,7 @@ export function KiroChat({
     setGenerateError(null)
 
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 120_000)
+    const timeout = setTimeout(() => controller.abort(), 200_000)
 
     try {
       const res = await fetch(
