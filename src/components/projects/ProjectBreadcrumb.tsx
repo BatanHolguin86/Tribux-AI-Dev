@@ -33,6 +33,7 @@ export function ProjectBreadcrumb({
   const isDesignsList = isThisProject && parts[2] === 'designs' && parts.length === 3
   const isDesignsArtifact = isThisProject && parts[2] === 'designs' && parts.length >= 4
   const isExperts = isThisProject && parts[2] === 'experts'
+  const isKnowledge = isThisProject && parts[2] === 'knowledge'
 
   return (
     <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" aria-label="Ruta">
@@ -69,7 +70,14 @@ export function ProjectBreadcrumb({
         </>
       )}
 
-      {!isDesignsList && !isDesignsArtifact && !isExperts && (
+      {isKnowledge && (
+        <>
+          <Chevron />
+          <span className="font-medium text-gray-900 dark:text-gray-100">Base de Conocimiento</span>
+        </>
+      )}
+
+      {!isDesignsList && !isDesignsArtifact && !isExperts && !isKnowledge && (
         <>
           <Chevron />
           <span className="font-medium text-gray-900 dark:text-gray-100">

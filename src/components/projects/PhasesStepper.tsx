@@ -110,6 +110,29 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             )
           })}
         </div>
+
+        {/* Knowledge base link */}
+        <div className="mt-3 border-t border-gray-100 pt-3 dark:border-gray-800">
+          <Link
+            href={`/projects/${projectId}/knowledge`}
+            className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
+              pathname?.includes('/knowledge')
+                ? 'bg-violet-50 dark:bg-violet-900/20'
+                : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+            }`}
+          >
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center text-sm">
+              📚
+            </div>
+            <span className={`text-xs font-medium ${
+              pathname?.includes('/knowledge')
+                ? 'text-violet-700 dark:text-violet-400'
+                : 'text-gray-700 dark:text-gray-300'
+            }`}>
+              Base de Conocimiento
+            </span>
+          </Link>
+        </div>
       </nav>
 
       {/* Reset confirmation modal */}
