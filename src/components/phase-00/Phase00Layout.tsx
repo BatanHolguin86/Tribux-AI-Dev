@@ -132,7 +132,7 @@ export function Phase00Layout({
               />
             </div>
 
-            <div className={`lg:flex-1 ${
+            <div className={`min-w-0 overflow-hidden lg:flex-1 ${
               mobileTab !== 'document' ? 'hidden lg:flex' : 'flex'
             }`}>
               <DocumentPanel
