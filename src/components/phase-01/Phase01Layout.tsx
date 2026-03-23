@@ -73,7 +73,6 @@ export function Phase01Layout({
           feature={activeFeature}
           onBack={handleBack}
           onDocumentGenerated={handleRefresh}
-          onDocumentApproved={handleRefresh}
         />
       </div>
     )

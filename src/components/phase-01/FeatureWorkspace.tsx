@@ -23,7 +23,6 @@ type FeatureWorkspaceProps = {
   }
   onBack: () => void
   onDocumentGenerated: () => void
-  onDocumentApproved: () => void
 }
 
 function isDocAccessible(
@@ -41,8 +40,10 @@ export function FeatureWorkspace({
   feature,
   onBack,
   onDocumentGenerated,
-  onDocumentApproved,
 }: FeatureWorkspaceProps) {
+  // Local document state so we can update after approval without a full page reload
+  const [documents, setDocuments] = useState(feature.documents)
+
   const [activeDocType, setActiveDocType] = useState<KiroDocumentType>(() => {
     if (!feature.documents.requirements || feature.documents.requirements.status !== 'approved') return 'requirements'
     if (!feature.documents.design || feature.documents.design.status !== 'approved') return 'design'
@@ -50,7 +51,7 @@ export function FeatureWorkspace({
   })
   const [mobileTab, setMobileTab] = useState<'chat' | 'document'>('chat')
 
-  const currentDoc = feature.documents[activeDocType] ?? null
+  const currentDoc = documents[activeDocType] ?? null
   const currentConversation = feature.conversations[activeDocType] ?? []
   const shouldShowDocumentPanel =
     !!currentDoc &&
@@ -61,8 +62,22 @@ export function FeatureWorkspace({
     setMobileTab('chat')
   }, [])
 
+  // Handle approval: update local state + switch to next doc type
+  const handleDocApproved = useCallback((nextDocument: KiroDocumentType | null) => {
+    setDocuments((prev) => ({
+      ...prev,
+      [activeDocType]: prev[activeDocType]
+        ? { ...prev[activeDocType]!, status: 'approved' }
+        : prev[activeDocType],
+    }))
+    if (nextDocument) {
+      setActiveDocType(nextDocument)
+      setMobileTab('chat')
+    }
+  }, [activeDocType])
+
   const docsApproved = (['requirements', 'design', 'tasks'] as KiroDocumentType[]).filter(
-    (dt) => feature.documents[dt]?.status === 'approved',
+    (dt) => documents[dt]?.status === 'approved',
   ).length
 
   return (
@@ -100,10 +115,10 @@ export function FeatureWorkspace({
       {/* ── Document type stepper ── */}
       <div className="flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1.5 dark:border-gray-700 dark:bg-gray-900">
         {KIRO_DOC_TYPES.map((dt, i) => {
-          const doc = feature.documents[dt]
+          const doc = documents[dt]
           const isApproved = doc?.status === 'approved'
           const isActive = dt === activeDocType
-          const isLocked = !isDocAccessible(dt, feature.documents)
+          const isLocked = !isDocAccessible(dt, documents)
 
           return (
             <button
@@ -177,7 +192,7 @@ export function FeatureWorkspace({
             initialMessages={currentConversation}
             hasDocument={currentDoc !== null}
             onDocumentGenerated={onDocumentGenerated}
-            onDocumentApproved={onDocumentApproved}
+            onDocumentApproved={handleDocApproved}
           />
         </div>
 

@@ -46,7 +46,7 @@ type KiroChatProps = {
   initialMessages: Array<{ role: string; content: string }>
   hasDocument: boolean
   onDocumentGenerated: () => void
-  onDocumentApproved: () => void
+  onDocumentApproved: (nextDocument: KiroDocumentType | null) => void
 }
 
 export function KiroChat({
@@ -204,7 +204,8 @@ export function KiroChat({
         setApproving(false)
         return
       }
-      onDocumentApproved()
+      const data = await res.json()
+      onDocumentApproved((data.next_document as KiroDocumentType) ?? null)
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
       setApproving(false)
