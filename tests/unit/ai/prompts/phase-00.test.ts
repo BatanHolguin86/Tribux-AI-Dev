@@ -21,15 +21,15 @@ describe('buildPhase00Prompt', () => {
   it('genera prompt para problem_statement con contexto completo', () => {
     const prompt = buildPhase00Prompt('problem_statement', baseContext)
 
-    expect(prompt).toContain('ROL: Eres el CTO Virtual y Orquestador')
+    expect(prompt).toContain('ROL: Eres el CTO Virtual de AI Squad')
     expect(prompt).toContain('CONTEXTO DEL PROYECTO:')
     expect(prompt).toContain('Nombre: Mi Proyecto Test')
     expect(prompt).toContain('Descripcion: Descripcion del proyecto')
     expect(prompt).toContain('Industria: Fintech')
     expect(prompt).toContain('Perfil del usuario: CEO no tecnico')
-    expect(prompt).toContain('SECCION ACTIVA: Problem Statement & Brief')
+    expect(prompt).toContain('SECCION: Problem Statement & Brief')
     expect(prompt).toContain('OBJETIVO:')
-    expect(prompt).toContain('Que problema especifico resuelve tu producto?')
+    expect(prompt).toContain('Contame en 2-3 parrafos')
     expect(prompt).toContain('[SECTION_READY]')
   })
 
@@ -41,9 +41,9 @@ describe('buildPhase00Prompt', () => {
     const prompt = buildPhase00Prompt('value_proposition', context)
 
     expect(prompt).toContain(
-      'SECCIONES APROBADAS PREVIAMENTE: Problem Statement, User Personas'
+      'SECCIONES YA APROBADAS EN DISCOVERY: Problem Statement, User Personas'
     )
-    expect(prompt).toContain('Usa la informacion de estas secciones como contexto')
+    expect(prompt).toContain('Usa toda la informacion de estas secciones como base')
   })
 
   it('no incluye secciones aprobadas cuando esta vacio', () => {
@@ -72,7 +72,7 @@ describe('buildPhase00Prompt', () => {
       const prompt = buildPhase00Prompt(section, baseContext)
 
       expect(prompt).toContain('CONTEXTO DEL PROYECTO:')
-      expect(prompt).toContain('INSTRUCCIONES:')
+      expect(prompt).toContain('FASE ACTIVA:')
       expect(prompt).toContain('es-LATAM')
       expect(prompt.length).toBeGreaterThan(200)
     }
@@ -83,7 +83,7 @@ describe('buildDocumentGenerationPrompt', () => {
   it('genera prompt de documento con estructura para problem_statement', () => {
     const prompt = buildDocumentGenerationPrompt('problem_statement', baseContext)
 
-    expect(prompt).toContain('ROL: Eres el CTO Virtual de AI Squad Command Center')
+    expect(prompt).toContain('ROL: Eres el CTO Virtual de AI Squad')
     expect(prompt).toContain('CONTEXTO DEL PROYECTO:')
     expect(prompt).toContain('SECCION: Problem Statement & Brief')
     expect(prompt).toContain('# Brief del Producto')

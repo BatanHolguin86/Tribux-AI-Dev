@@ -10,8 +10,13 @@ const mockInsertDesignArtifacts = vi.fn().mockReturnValue({
   }),
 })
 
+const mockUpdateDesignArtifacts = vi.fn().mockReturnValue({
+  eq: vi.fn().mockResolvedValue({ error: null }),
+})
+
 const createMockFrom = (overrides?: {
   phaseStatus?: string
+  featureCount?: number
 }) => {
   return vi.fn((table: string) => {
     if (table === 'project_phases') {
@@ -22,6 +27,18 @@ const createMockFrom = (overrides?: {
               data: { status: overrides?.phaseStatus ?? 'completed' },
               error: null,
             }),
+          }),
+        }),
+      })
+      return { select }
+    }
+    if (table === 'project_features') {
+      // Used by Phase 01 active check: .select('id', { count: 'exact', head: true }).eq(...).in(...)
+      const select = vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          in: vi.fn().mockResolvedValue({
+            count: overrides?.featureCount ?? 3,
+            error: null,
           }),
         }),
       })
@@ -39,7 +56,10 @@ const createMockFrom = (overrides?: {
       return { select }
     }
     if (table === 'design_artifacts') {
-      return { insert: mockInsertDesignArtifacts }
+      return {
+        insert: mockInsertDesignArtifacts,
+        update: mockUpdateDesignArtifacts,
+      }
     }
     if (table === 'storage') {
       return {}
@@ -56,6 +76,11 @@ const createMockSupabase = (overrides?: Parameters<typeof createMockFrom>[0]) =>
     }),
   },
   from: createMockFrom(overrides),
+  storage: {
+    from: vi.fn().mockReturnValue({
+      upload: vi.fn().mockResolvedValue({ error: null }),
+    }),
+  },
 })
 
 vi.mock('@/lib/supabase/server', () => ({
@@ -63,13 +88,9 @@ vi.mock('@/lib/supabase/server', () => ({
 }))
 
 vi.mock('ai', () => ({
-  streamText: vi.fn().mockReturnValue({
-    toTextStreamResponse: vi.fn().mockReturnValue(
-      new Response('test', {
-        status: 200,
-        headers: new Headers({ 'X-Artifact-Id': 'art-1' }),
-      })
-    ),
+  generateText: vi.fn().mockResolvedValue({
+    text: '<html><body>test design</body></html>',
+    usage: { inputTokens: 100, outputTokens: 200 },
   }),
 }))
 
@@ -77,7 +98,7 @@ vi.mock('@/lib/ai/anthropic', () => ({
   defaultModel: 'test-model',
   AI_CONFIG: {
     designPrompts: {
-      maxTokens: 100,
+      maxOutputTokens: 8192,
       temperature: 0.5,
     },
   },
@@ -86,6 +107,11 @@ vi.mock('@/lib/ai/anthropic', () => ({
 vi.mock('@/lib/ai/context-builder', () => ({
   getApprovedDiscoveryDocs: vi.fn().mockResolvedValue(''),
   getApprovedFeatureSpecs: vi.fn().mockResolvedValue(''),
+}))
+
+vi.mock('@/lib/ai/usage', () => ({
+  recordAiUsage: vi.fn().mockResolvedValue(undefined),
+  estimateTokensFromText: vi.fn().mockReturnValue(100),
 }))
 
 vi.mock('@/lib/rate-limit', () => ({
@@ -146,9 +172,9 @@ describe('POST /api/projects/[id]/designs/generate', () => {
     expect(res.status).toBe(400)
   })
 
-  it('devuelve 400 cuando Phase 01 no esta completada', async () => {
+  it('devuelve 400 cuando Phase 01 esta locked', async () => {
     vi.mocked(createClient).mockResolvedValue(
-      createMockSupabase({ phaseStatus: 'in_progress' }) as never
+      createMockSupabase({ phaseStatus: 'locked' }) as never
     )
 
     const { POST } = await import('@/app/api/projects/[id]/designs/generate/route')
@@ -167,7 +193,7 @@ describe('POST /api/projects/[id]/designs/generate', () => {
     expect(res.status).toBe(400)
   })
 
-  it('retorna streaming response con status 200', async () => {
+  it('retorna response con status 200', async () => {
     const { POST } = await import('@/app/api/projects/[id]/designs/generate/route')
 
     const res = await POST(

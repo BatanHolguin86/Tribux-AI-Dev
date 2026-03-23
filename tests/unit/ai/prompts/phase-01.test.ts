@@ -66,7 +66,7 @@ describe('buildKiroPrompt', () => {
 
     expect(prompt).toContain('DOCUMENTO: Tasks')
     expect(prompt).toContain('TASK-001')
-    expect(prompt).toContain('Design aprobado')
+    expect(prompt).toContain('Design ya estan aprobados')
   })
 
   it('usa placeholders cuando campos opcionales son nulos', () => {

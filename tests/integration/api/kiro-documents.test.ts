@@ -3,7 +3,7 @@
  * chat → generate → approve per document type (requirements, design, tasks).
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 const projectId = 'p1'
 const featureId = 'f1'
@@ -17,7 +17,25 @@ const mockUpdateFeatureDocs = vi.fn().mockReturnValue({
   eq: vi.fn().mockResolvedValue({ error: null }),
 })
 
-let convSelectCallCount = 0
+/**
+ * feature_documents is queried by multiple routes with different patterns:
+ *
+ * Chat route:
+ *   1. select('content').eq('feature_id').eq('document_type').single() → existingDoc
+ *
+ * Generate route (regular supabase):
+ *   2. select('document_type, content').eq('feature_id').eq('status','approved').neq('document_type') → ownDocs (array)
+ *
+ * Generate route (adminSupabase — separate mock):
+ *   - upsert(...) → save doc
+ *
+ * Approve route:
+ *   3. select('id, content').eq('feature_id').eq('document_type').single() → docForApprove
+ *   4. update({status:'approved'...}).eq('id') → approve doc
+ *   5. select('document_type, status').eq('feature_id') → allDocs (array)
+ *
+ * We use a counter to distinguish calls and return appropriate shapes.
+ */
 let featureDocsCallCount = 0
 
 const createMockFrom = (options?: {
@@ -26,7 +44,6 @@ const createMockFrom = (options?: {
   docForApprove?: { id: string; content: string } | null
   allDocsAfterApprove?: { document_type: string; status: string }[]
 }) => {
-  convSelectCallCount = 0
   featureDocsCallCount = 0
   return vi.fn((table: string) => {
     if (table === 'agent_conversations') {
@@ -69,7 +86,9 @@ const createMockFrom = (options?: {
     }
     if (table === 'feature_documents') {
       featureDocsCallCount++
-      const docSelect = options?.docForApprove ?? {
+      const call = featureDocsCallCount
+
+      const docForApprove = options?.docForApprove ?? {
         id: 'fd-1',
         content: 'create table user_profiles (id uuid);',
       }
@@ -78,23 +97,48 @@ const createMockFrom = (options?: {
         { document_type: 'design', status: 'approved' },
         { document_type: 'tasks', status: 'draft' },
       ]
-      // Call 1: generate upsert; 2: approve select single; 3: approve update; 4: approve select all
-      const call = featureDocsCallCount
-      const selectSingle = {
+
+      // Build a flexible select mock that handles all query patterns:
+      // - .eq().eq().single() → returns single doc (existingDoc from chat, docForApprove from approve)
+      // - .eq().eq().neq() → returns array (ownDocs from generate)
+      // - .eq() → returns array (allDocs from approve)
+      const singleResult = call <= 2
+        ? { data: null, error: null } // calls 1-2: chat existingDoc + generate ownDocs (no existing doc)
+        : { data: docForApprove, error: null } // call 3+: approve docForApprove
+
+      const selectChain = {
         eq: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({ data: docSelect, error: null }),
+            single: vi.fn().mockResolvedValue(singleResult),
+            neq: vi.fn().mockResolvedValue({ data: [], error: null }),
           }),
+          single: vi.fn().mockResolvedValue(singleResult),
         }),
       }
-      const selectAll = {
+
+      // For the "allDocs" select in approve (select then eq returning array)
+      const allDocsChain = {
         eq: vi.fn().mockResolvedValue({ data: allDocs, error: null }),
       }
+
       return {
-        select: vi.fn().mockImplementation(() =>
-          call === 2 ? selectSingle : call === 4 ? selectAll : {}
-        ),
+        select: vi.fn().mockImplementation(() => {
+          // Approve route's second select (allDocs) is call 5 in the full flow
+          if (call === 5) return allDocsChain
+          return selectChain
+        }),
         update: mockUpdateFeatureDocs,
+        upsert: vi.fn().mockResolvedValue({ error: null }),
+      }
+    }
+    return {}
+  })
+}
+
+const createMockAdminFrom = () => {
+  return vi.fn((table: string) => {
+    if (table === 'feature_documents') {
+      return {
         upsert: vi.fn().mockResolvedValue({ error: null }),
       }
     }
@@ -117,12 +161,25 @@ const createMockSupabase = (opts?: Parameters<typeof createMockFrom>[0]) => ({
   },
 })
 
+const createMockAdminSupabase = () => ({
+  from: createMockAdminFrom(),
+})
+
 const mockStreamResponse = () =>
   new Response('mocked stream', { headers: { 'content-type': 'text/plain; charset=utf-8' } })
 
-vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
+vi.mock('@/lib/supabase/server', () => ({
+  createClient: vi.fn(),
+  createAdminClient: vi.fn(),
+}))
 vi.mock('@/lib/ai/context-builder', () => ({
   buildProjectContext: vi.fn().mockResolvedValue({
+    name: 'Test',
+    description: 'Desc',
+    industry: 'Fintech',
+    persona: 'CEO',
+  }),
+  buildFullProjectContext: vi.fn().mockResolvedValue({
     name: 'Test',
     description: 'Desc',
     industry: 'Fintech',
@@ -131,18 +188,29 @@ vi.mock('@/lib/ai/context-builder', () => ({
   getApprovedDiscoveryDocs: vi.fn().mockResolvedValue(''),
   getApprovedFeatureSpecs: vi.fn().mockResolvedValue(''),
 }))
+vi.mock('@/lib/ai/agents/prompt-builder', () => ({
+  buildAgentPrompt: vi.fn().mockReturnValue('You are a specialist agent.'),
+}))
 vi.mock('@/lib/storage/documents', () => ({
   uploadDocument: vi.fn().mockResolvedValue('projects/p1/specs/login/requirements.md'),
 }))
+vi.mock('@/lib/ai/usage', () => ({
+  recordAiUsage: vi.fn().mockResolvedValue(undefined),
+  estimateTokensFromText: vi.fn().mockReturnValue(100),
+}))
 vi.mock('ai', () => ({
-  streamText: vi.fn().mockImplementation(({ onFinish }: { onFinish?: (arg: { text: string }) => Promise<void> }) => {
+  streamText: vi.fn().mockImplementation(({ onFinish }: { onFinish?: (arg: { text: string; usage?: { inputTokens: number; outputTokens: number } }) => Promise<void> }) => {
     if (onFinish) {
-      queueMicrotask(() => onFinish({ text: 'Generated document content' }))
+      queueMicrotask(() => onFinish({ text: 'Generated document content', usage: { inputTokens: 50, outputTokens: 50 } }))
     }
     return {
       toTextStreamResponse: () =>
         new Response('mocked stream', { headers: { 'content-type': 'text/plain; charset=utf-8' } }),
     }
+  }),
+  generateText: vi.fn().mockResolvedValue({
+    text: 'Generated document content',
+    usage: { inputTokens: 50, outputTokens: 50 },
   }),
 }))
 
@@ -150,6 +218,7 @@ describe('Phase 01 KIRO documents flow (chat → generate → approve)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(createClient).mockResolvedValue(createMockSupabase() as never)
+    vi.mocked(createAdminClient).mockResolvedValue(createMockAdminSupabase() as never)
   })
 
   describe('POST /api/.../phases/1/features/[featureId]/chat', () => {
@@ -213,6 +282,7 @@ describe('Phase 01 KIRO documents flow (chat → generate → approve)', () => {
       vi.mocked(createClient).mockResolvedValue(
         createMockSupabase({ conversation: null }) as never
       )
+      vi.mocked(createAdminClient).mockResolvedValue(createMockAdminSupabase() as never)
 
       const { POST } = await import(
         '@/app/api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/generate/route'
@@ -223,7 +293,7 @@ describe('Phase 01 KIRO documents flow (chat → generate → approve)', () => {
       expect(res.status).toBe(400)
     })
 
-    it('devuelve 200 y stream cuando hay conversación', async () => {
+    it('devuelve 200 cuando hay conversación', async () => {
       const { POST } = await import(
         '@/app/api/projects/[id]/phases/1/features/[featureId]/documents/[docType]/generate/route'
       )
@@ -231,7 +301,6 @@ describe('Phase 01 KIRO documents flow (chat → generate → approve)', () => {
         params: Promise.resolve({ id: projectId, featureId, docType: 'requirements' }),
       })
       expect(res.status).toBe(200)
-      expect(res.headers.get('content-type')).toMatch(/text\/plain|stream/)
     })
   })
 
@@ -241,6 +310,7 @@ describe('Phase 01 KIRO documents flow (chat → generate → approve)', () => {
       async (docType) => {
         const base = createMockSupabase()
         vi.mocked(createClient).mockResolvedValue(base as never)
+        vi.mocked(createAdminClient).mockResolvedValue(createMockAdminSupabase() as never)
 
         const { POST: chatPost } = await import(
           '@/app/api/projects/[id]/phases/1/features/[featureId]/chat/route'

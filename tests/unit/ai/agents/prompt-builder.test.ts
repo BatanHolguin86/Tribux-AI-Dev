@@ -54,7 +54,7 @@ describe('buildAgentPrompt', () => {
     expect(prompt).toContain('Product Architect')
     expect(prompt).toContain('Lead Developer')
     expect(prompt).toContain('DB Admin')
-    expect(prompt).toContain('Delegacion')
+    expect(prompt).toContain('delegas')
   })
 
   it('Lead Developer incluye instrucciones de codigo', () => {
