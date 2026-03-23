@@ -57,9 +57,9 @@ export function KnowledgeEntryDetail({
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <div className="flex items-start justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
+      <div className="shrink-0 flex items-start justify-between border-b border-gray-100 px-5 py-3 dark:border-gray-800">
         <div className="min-w-0 flex-1">
           <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">
             {entry.title}
@@ -143,7 +143,9 @@ export function KnowledgeEntryDetail({
       </div>
 
       {/* Content */}
-      <DocumentViewer content={entry.content ?? ''} />
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <DocumentViewer content={entry.content ?? ''} />
+      </div>
     </div>
   )
 }

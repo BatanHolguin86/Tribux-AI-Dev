@@ -165,7 +165,7 @@ export function KnowledgeLayout({
       {/* Main content: list + detail */}
       <div className="flex min-h-0 flex-1 gap-4">
         {/* Entry list */}
-        <div className="flex w-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 lg:w-80 lg:shrink-0">
+        <div className="flex min-h-0 w-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 lg:w-80 lg:shrink-0">
           <KnowledgeEntryList
             entries={entries}
             selectedId={selectedId}
@@ -197,7 +197,7 @@ export function KnowledgeLayout({
         </div>
 
         {/* Detail panel */}
-        <div className="hidden min-w-0 flex-1 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 lg:flex">
+        <div className="hidden min-h-0 min-w-0 flex-1 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 lg:flex">
           {selectedEntry ? (
             <KnowledgeEntryDetail
               projectId={projectId}
