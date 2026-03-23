@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { formatRelativeDate } from '@/lib/utils'
 
 type ChatMessageProps = {
@@ -51,6 +51,62 @@ function renderInline(text: string): React.ReactNode[] {
   return parts
 }
 
+function isHtmlContent(content: string): boolean {
+  const trimmed = content.trim()
+  return trimmed.startsWith('<!DOCTYPE') || trimmed.startsWith('<html') || trimmed.startsWith('<!doctype')
+}
+
+function HtmlPreview({ content }: { content: string }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [height, setHeight] = useState(400)
+  const [showCode, setShowCode] = useState(false)
+
+  useEffect(() => {
+    if (!iframeRef.current) return
+    function handleLoad() {
+      try {
+        const doc = iframeRef.current?.contentDocument
+        if (doc?.body) {
+          setHeight(Math.max(doc.body.scrollHeight + 20, 200))
+        }
+      } catch { /* cross-origin */ }
+    }
+    const iframe = iframeRef.current
+    iframe.addEventListener('load', handleLoad)
+    return () => iframe.removeEventListener('load', handleLoad)
+  }, [content])
+
+  return (
+    <div className="my-2 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-900">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vista previa</span>
+        <button
+          onClick={() => setShowCode(!showCode)}
+          className="text-[10px] font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+        >
+          {showCode ? 'Ver diseño' : 'Ver código'}
+        </button>
+      </div>
+      {showCode ? (
+        <pre className="overflow-x-auto p-3 text-xs leading-relaxed bg-gray-900 dark:bg-gray-950 max-h-[400px] overflow-y-auto">
+          <code className="font-mono text-gray-100">{content}</code>
+        </pre>
+      ) : (
+        <div className="flex justify-center bg-gray-100 dark:bg-gray-800 overflow-hidden">
+          <iframe
+            ref={iframeRef}
+            srcDoc={content}
+            className="w-full border-0 bg-white"
+            style={{ height, maxHeight: 800 }}
+            sandbox="allow-scripts"
+            title="Design preview"
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
 function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
   const codeBlockRegex = /```(\w*)\n?([\s\S]*?)```/g
   const segments: Array<{ type: 'text' | 'code'; content: string; lang?: string }> = []
@@ -70,6 +126,9 @@ function renderMarkdown(text: string, isUser: boolean): React.ReactNode {
 
   return segments.map((segment, si) => {
     if (segment.type === 'code') {
+      if ((segment.lang === 'html' || !segment.lang) && isHtmlContent(segment.content)) {
+        return <HtmlPreview key={si} content={segment.content} />
+      }
       return (
         <pre key={si} className="my-2 overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs leading-relaxed dark:bg-gray-950">
           <code className="font-mono text-gray-100">{segment.content}</code>
