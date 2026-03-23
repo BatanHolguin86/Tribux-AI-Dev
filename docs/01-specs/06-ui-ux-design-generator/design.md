@@ -15,12 +15,12 @@ El generador de diseños UI/UX permite, tras completar Phase 01 (KIRO), producir
 
 La vista `/projects/[id]/designs` actúa como **hub** con **dos caminos** explícitos (decisión documentada en **ADR-007**):
 
-| Camino | Nombre en UI | Objetivo | Implementación resumida |
-|--------|----------------|----------|-------------------------|
-| **A** | Pantallas visuales | Wireframes/mockups **persistidos** en el proyecto | Formulario (pantallas por coma, tipo, refinamiento) → `POST /api/projects/[id]/designs/generate` → lista **Diseños generados** y detalle `/designs/[artifactId]` |
-| **B** | Kit de diseño con agente | Style guide, component library, user flows, responsive, petición custom | Tarjetas con orden sugerido 1→6: crean hilo `ui_ux_designer`; primer mensaje compuesto con `getDesignWorkflowContext` (personas, value proposition, proyecto) + guion por herramienta (`src/lib/design/design-tool-workflow.ts`) |
+| Camino | Nombre en UI             | Objetivo                                                                | Implementación resumida                                                                                                                                                                                                          |
+| ------ | ------------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A**  | Pantallas visuales       | Wireframes/mockups **persistidos** en el proyecto                       | Formulario (pantallas por coma, tipo, refinamiento) → `POST /api/projects/[id]/designs/generate` → lista **Diseños generados** y detalle `/designs/[artifactId]`                                                                 |
+| **B**  | Kit de diseño con agente | Style guide, component library, user flows, responsive, petición custom | Tarjetas con orden sugerido 1→6: crean hilo `ui_ux_designer`; primer mensaje compuesto con `getDesignWorkflowContext` (personas, value proposition, proyecto) + guion por herramienta (`src/lib/design/design-tool-workflow.ts`) |
 
-**Navegación:** `ProjectBreadcrumb` refleja si el usuario está en una fase, en Diseño & UX, en detalle de artefacto o en Agentes IA (`/experts`), evitando breadcrumbs engañosos.
+**Navegación:** `ProjectBreadcrumb` refleja fase, Diseño & UX, detalle de artefacto o rutas de agentes. Los enlaces `/projects/[id]/experts` (y `/agents`) **redirigen** a la fase actual — el trabajo con agentes ocurre en el tab **Equipo** del workspace de fase.
 
 **Archivos clave:** `DesignGenerator.tsx`, `DesignChat.tsx`, `ArtifactDetail.tsx`, `design-tool-workflow.ts`, `context-builder.ts`, `ProjectBreadcrumb.tsx`, `ProjectTools.tsx`.
 
@@ -81,6 +81,7 @@ Todos los endpoints requieren autenticación (Supabase session). El `project_id`
 Solicita la generación de uno o más diseños. La generación puede ser asíncrona; la respuesta confirma la aceptación y devuelve los IDs de artefactos en creación.
 
 **Request:**
+
 ```json
 {
   "type": "wireframe",
@@ -94,6 +95,7 @@ Solicita la generación de uno o más diseños. La generación puede ser asíncr
 - `refinement`: opcional; instrucción en lenguaje natural para el agente.
 
 **Response 202 Accepted:**
+
 ```json
 {
   "job_id": "uuid",
@@ -114,6 +116,7 @@ Solicita la generación de uno o más diseños. La generación puede ser asíncr
 Lista todos los design artifacts del proyecto.
 
 **Response 200:**
+
 ```json
 {
   "artifacts": [
@@ -140,6 +143,7 @@ Lista todos los design artifacts del proyecto.
 Detalle de un artefacto + URL de descarga (signed) del archivo en Storage.
 
 **Response 200:**
+
 ```json
 {
   "id": "uuid",
@@ -187,6 +191,7 @@ Pide al agente UI/UX Designer que refine el diseño con una nueva instrucción. 
 La generación **Camino A** se invoca desde el **formulario en la parte superior del hub** (equivalente al flujo “Nuevo diseño” del spec original). Pendiente: modal desde Phase 02 (TASK-016) y disparo automático desde chat (TASK-020).
 
 Invocación prevista adicional:
+
 1. **Vista Phase 02:** botón “Generar wireframes para este proyecto” que abre modal o in-line form (selección de pantallas, tipo, refinamiento opcional).
 2. **Chat del agente UI/UX Designer:** el usuario escribe “genera wireframes para Login y Dashboard”; el agente llama al backend (o el backend expone una acción que el orquestador puede invocar) y luego muestra enlaces a los diseños generados.
 3. **Hub /designs — Camino B:** abrir una herramienta; no sustituye a Camino A para artefactos guardados en lista.
@@ -220,6 +225,7 @@ Invocación prevista adicional:
 ## Architecture Decisions
 
 ### Generación de diseños — HTML visual (implementado en v1.0)
+
 - **Enfoque:** El LLM genera HTML autocontenido con Tailwind CSS (via CDN) + Google Fonts (Inter). El resultado se renderiza directamente en un iframe con sandbox en la vista de detalle.
 - **Tres niveles de fidelidad:** `wireframe` (colores neutros, estructura), `mockup_lowfi` (un color primario + grays, componentes con specs detallados), `mockup_highfi` (paleta completa, micro-interacciones, tipografía refinada — aspecto de producto terminado tipo Figma).
 - **Prompts dedicados:** `src/lib/ai/prompts/design-generation.ts` con `TYPE_INSTRUCTIONS` por nivel y regla absoluta de HTML-only (nunca ASCII art, nunca markdown).
@@ -227,16 +233,19 @@ Invocación prevista adicional:
 - No se usan APIs de generación de imágenes (DALL·E, Ideogram) — todo es HTML renderizable.
 
 ### Almacenamiento — estrategia dual
+
 - **Columna `content` en PostgreSQL** (fuente primaria): acceso rápido, siempre disponible, sin dependencia de bucket.
 - **Supabase Storage** (best-effort): upload como respaldo; el bucket `project-designs` puede no existir en todos los entornos.
 - **Metadatos en PostgreSQL** con RLS: listado, filtros y permisos coherentes con el resto del producto.
 
 ### Agente UI/UX Designer
+
 - **Camino A (generate):** Prompt dedicado HTML-only (`design-generation.ts`). Usa `generateText` (no `streamText`) para garantizar completitud. Guarda contenido en DB + Storage.
 - **Camino B (chat/kit):** El agente usa su system prompt (`ui-ux-designer.ts`) que ahora genera HTML visual con Tailwind en bloques de código, nunca ASCII art. Entregables en conversación (style guide, component library, user flows, responsive specs).
 - El orquestador delega al UI/UX Designer cuando detecta intención de diseño (keywords: wireframe, mockup, diseño, pantalla, layout).
 
 ### Integración con Phase 01
+
 - **Gate relajado:** La generación se permite cuando Phase 01 está `completed` o `active` con al menos un feature en estado `spec_complete`, `approved` o `in_progress`. Si Phase 01 está `locked`, se muestra mensaje “Completa Phase 01 para generar diseños”.
 - El usuario introduce pantallas manualmente (separadas por coma), no se parsean automáticamente de `design.md`.
 

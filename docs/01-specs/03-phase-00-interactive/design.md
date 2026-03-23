@@ -140,13 +140,13 @@ OUTPUT ESPERADO: {estructura del documento a generar}
 
 ### Mapa de Secciones → Documentos → Prompts
 
-| Seccion | Documento generado | Preguntas clave del orquestador |
-|---------|-------------------|--------------------------------|
-| `problem_statement` | `01-brief.md` | ¿Que problema resuelves? ¿Para quien? ¿Como lo resuelven hoy? ¿Por que es urgente? |
-| `personas` | `02-personas.md` | ¿Quien es tu usuario ideal? ¿Que hace en su dia a dia? ¿Que le frustra? ¿Que logro busca? |
-| `value_proposition` | `03-value-proposition.md` | ¿Que hace tu producto que los demas no? ¿Cual es el momento "aha"? ¿Como describes tu producto en una oracion? |
-| `metrics` | `04-metrics.md` | ¿Como sabras que tuviste exito en 6 meses? ¿Cual es el norte que quieres medir? ¿Cuantos usuarios/ingresos en Mes 3, 6, 12? |
-| `competitive_analysis` | `05-competitive-analysis.md` | ¿Quien mas resuelve este problema hoy? ¿Por que tu usuario elegiria tu producto sobre esos? ¿Cual es tu ventaja real? |
+| Seccion                | Documento generado           | Preguntas clave del orquestador                                                                                             |
+| ---------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `problem_statement`    | `01-brief.md`                | ¿Que problema resuelves? ¿Para quien? ¿Como lo resuelven hoy? ¿Por que es urgente?                                          |
+| `personas`             | `02-personas.md`             | ¿Quien es tu usuario ideal? ¿Que hace en su dia a dia? ¿Que le frustra? ¿Que logro busca?                                   |
+| `value_proposition`    | `03-value-proposition.md`    | ¿Que hace tu producto que los demas no? ¿Cual es el momento "aha"? ¿Como describes tu producto en una oracion?              |
+| `metrics`              | `04-metrics.md`              | ¿Como sabras que tuviste exito en 6 meses? ¿Cual es el norte que quieres medir? ¿Cuantos usuarios/ingresos en Mes 3, 6, 12? |
+| `competitive_analysis` | `05-competitive-analysis.md` | ¿Quien mas resuelve este problema hoy? ¿Por que tu usuario elegiria tu producto sobre esos? ¿Cual es tu ventaja real?       |
 
 ---
 
@@ -179,6 +179,7 @@ OUTPUT ESPERADO: {estructura del documento a generar}
 ```
 [ ✓ Problem Statement ] [ ✓ Personas ] [ ▶ Value Prop ] [ ○ Metrics ] [ 🔒 Competitive ]
 ```
+
 - `✓` Verde — seccion aprobada
 - `▶` Violeta + pulse — seccion activa en progreso
 - `○` Gris claro — seccion pendiente (accesible para navegar si anterior esta aprobada)
@@ -230,6 +231,7 @@ Aparece cuando las 5 secciones estan aprobadas:
 ### Mobile Layout
 
 En mobile (< 768px), el split view se convierte en tabs:
+
 - Tab "Conversacion" — muestra el chat
 - Tab "Documento" — muestra el documento de la seccion activa
 
@@ -238,18 +240,21 @@ En mobile (< 768px), el split view se convierte en tabs:
 ## API Design
 
 ### `POST /api/projects/:id/phases/0/chat`
+
 Envia un mensaje al orquestador y retorna la respuesta en streaming.
 
 **Request:**
+
 ```json
 {
   "section": "problem_statement",
   "message": "Quiero resolver el problema de...",
-  "conversation_id": "uuid"  // opcional, para continuar conversacion existente
+  "conversation_id": "uuid" // opcional, para continuar conversacion existente
 }
 ```
 
 **Response:** `text/event-stream` (Server-Sent Events via Vercel AI SDK)
+
 ```
 data: {"type":"text","text":"Entendido. Para profundizar..."}
 data: {"type":"text","text":" en el problema..."}
@@ -259,29 +264,34 @@ data: {"type":"done","conversation_id":"uuid"}
 **Headers:** `Content-Type: text/event-stream`, `X-Conversation-Id: uuid`
 
 ### `POST /api/projects/:id/phases/0/sections/:section/generate`
+
 Dispara la generacion del documento para una seccion. El orquestador usa el historial completo de la seccion para generar el markdown.
 
 **Request:** `{}` (usa la conversacion existente en DB)
 
 **Response:** `text/event-stream` — streaming del documento generado
+
 ```
 data: {"type":"document_chunk","content":"# Brief\n\n## Problem Statement\n\n"}
 data: {"type":"document_done","document_id":"uuid","storage_path":"projects/.../01-brief.md"}
 ```
 
 ### `PATCH /api/projects/:id/documents/:document_id`
+
 Actualiza el contenido de un documento (edicion manual del usuario).
 
 **Request:** `{ "content": "# Brief\n\n## Problem...(editado)" }`
 **Response 200:** `{ "document_id": "uuid", "version": 2, "updated_at": "..." }`
 
 ### `POST /api/projects/:id/phases/0/sections/:section/approve`
+
 Aprueba una seccion del discovery.
 
 **Request:** `{}` (la seccion debe tener documento con status `draft`)
 **Response 200:** `{ "section": "problem_statement", "status": "approved", "next_section": "personas" }`
 
 ### `POST /api/projects/:id/phases/0/approve`
+
 Aprueba Phase 00 completo. Requiere que las 5 secciones esten en status `approved`.
 
 **Request:** `{}`
@@ -354,18 +364,23 @@ const { messages, input, handleSubmit, isLoading, stop } = useChat({
 ## Architecture Decisions
 
 ### Vercel AI SDK `useChat` para el cliente
+
 Maneja streaming, historial de mensajes en memoria, estado de loading y abort — sin necesidad de implementar SSE manualmente.
 
 ### Persistencia del historial en Supabase (JSONB)
+
 Los mensajes se almacenan como array JSONB en `agent_conversations.messages`. Rapido de leer/escribir, suficiente para el volumen esperado (< 100 mensajes por seccion). Si el historial crece, se puede comprimir con un resumen antes de enviar al modelo.
 
 ### Documentos en Supabase Storage (no en DB)
+
 Los markdowns pueden ser grandes (5–20KB). Almacenarlos en Storage evita inflar la DB y permite servir el contenido con URLs firmadas. Se mantiene un cache del contenido en `project_documents.content` para lecturas rapidas (< 50KB).
 
 ### Generacion de documento separada del chat
+
 La generacion del documento es una llamada separada al LLM (`/generate` endpoint) que usa todo el historial de la seccion como contexto. Esto permite regenerar el documento si el usuario no esta conforme, sin afectar el historial de la conversacion.
 
 ### Secciones bloqueadas secuencialmente
+
 Cada seccion se desbloquea al aprobar la anterior — garantiza que el discovery sea coherente y que el usuario no salte pasos criticos.
 
 ---

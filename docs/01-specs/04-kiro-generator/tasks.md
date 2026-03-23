@@ -10,17 +10,20 @@
 ## Checklist de Implementacion
 
 ### Base de Datos
+
 - [x] **TASK-129:** Crear migracion `007_create_project_features.sql` — tabla `project_features` con RLS, unique constraint (project_id, name) e indice en (project_id, display_order)
 - [x] **TASK-130:** Crear migracion `008_create_feature_documents.sql` — tabla `feature_documents` con RLS y unique constraint (feature_id, document_type)
 - [x] **TASK-131:** Actualizar politicas de `agent_conversations` para soportar `phase_number = 1` con section pattern `feature_{feature_id}_{document_type}`
 
 ### Refactorizacion — Componentes Compartidos
+
 - [x] **TASK-132:** Mover `ChatHistory.tsx`, `ChatMessage.tsx`, `ChatInput.tsx`, `StreamingIndicator.tsx` de `src/components/phase-00/` a `src/components/shared/chat/`; actualizar imports en Phase 00
 - [x] **TASK-133:** Mover `DocumentPanel.tsx`, `DocumentViewer.tsx`, `DocumentEditor.tsx`, `DocumentHeader.tsx` de `src/components/phase-00/` a `src/components/shared/document/`; actualizar imports en Phase 00
 - [x] **TASK-134:** Mover `ApprovalGate.tsx` a `src/components/shared/` y parametrizar textos de boton y callback via props
 - [x] **TASK-135:** Verificar que Phase 00 sigue funcionando correctamente despues de la refactorizacion (tests existentes pasan)
 
 ### Tipos y Configuracion IA
+
 - [x] **TASK-136:** Crear `src/types/feature.ts` — tipos `ProjectFeature`, `FeatureStatus`, `FeatureDocument`, `KiroDocumentType`
 - [x] **TASK-137:** Crear `src/lib/ai/prompts/phase-01.ts` — system prompts para cada tipo de documento KIRO (requirements, design, tasks) + funcion `buildKiroPrompt(docType, projectContext, discoveryDocs, previousSpecs)`
 - [x] **TASK-138:** Crear `src/lib/ai/prompts/feature-suggestions.ts` — prompt especializado para sugerir features basados en el discovery
@@ -28,6 +31,7 @@
 - [x] **TASK-140:** Implementar truncamiento inteligente de contexto cuando supera 50K tokens — `applyProgressiveTruncation` en context-builder; cap en `getApprovedFeatureSpecs`
 
 ### Backend — API Routes
+
 - [x] **TASK-141:** Crear `GET /api/projects/[id]/phases/1/features` — retorna features con estado de documentos; incluye conteo de features completados
 - [x] **TASK-142:** Crear `POST /api/projects/[id]/phases/1/features` — crea feature con validacion Zod (name required, max 100 chars); asigna display_order automaticamente
 - [x] **TASK-143:** Crear `PATCH /api/projects/[id]/phases/1/features/[featureId]` — actualiza nombre, descripcion, display_order; valida que el feature pertenezca al usuario
@@ -41,10 +45,12 @@
 - [x] **TASK-150:** Crear `POST /api/projects/[id]/phases/1/approve` — valida todos los features aprobados; actualiza `project_phases` phase 1 → completed, phase 2 → active
 
 ### Frontend — Layout y Pagina
+
 - [x] **TASK-151:** Crear `src/app/(dashboard)/projects/[id]/phase/01/page.tsx` — Server Component que carga features, documentos y estado; determina feature activo
 - [x] **TASK-152:** Crear `src/app/(dashboard)/projects/[id]/phase/01/loading.tsx` — skeleton con sidebar de features y split view
 
 ### Frontend — Componentes de Feature
+
 - [x] **TASK-153:** Crear `Phase01Layout.tsx` — layout con FeatureList sidebar (25%) + split view (75%); responsive con dropdown en mobile
 - [x] **TASK-154:** Crear `DiscoverySummary.tsx` — panel colapsable con resumen de los 5 documentos de Phase 00; inicialmente expandido en primera visita, colapsado despues
 - [x] **TASK-155:** Crear `FeatureList.tsx` — sidebar con lista de features ordenable (drag & drop con @dnd-kit); muestra estado e indicadores [R][D][T] por feature
@@ -54,18 +60,22 @@
 - [x] **TASK-159:** Crear `DocumentTypeNav.tsx` — tabs para requirements/design/tasks con estado visual (locked/pending/active/approved); secuencia obligatoria
 
 ### Frontend — Chat y Documentos (reutilizacion)
+
 - [x] **TASK-160:** Crear `KiroChat.tsx` — wrapper que configura los componentes compartidos de chat para Phase 01 (endpoints, contexto, textos)
 - [x] **TASK-161:** Configurar `ApprovalGate` para Phase 01 — textos especificos: "Aprobar requirements" / "Aprobar design" / "Aprobar tasks"
 
 ### Frontend — Gates y Flujo
+
 - [x] **TASK-162:** Crear `Phase01FinalGate.tsx` — gate final con lista de features y documentos aprobados, conteo total, boton de aprobacion final con confirmacion
 - [x] **TASK-163:** Implementar logica de desbloqueo en `DocumentTypeNav` — requirements primero, design requiere requirements aprobado, tasks requiere design aprobado
 - [x] **TASK-164:** Implementar animacion de celebracion al aprobar Phase 01 — redirigir a `/projects/:id/phase/02`
 
 ### Stores y Estado Global
+
 - [x] **TASK-165:** Crear `src/stores/phase-01-store.ts` — store Zustand con: feature activo, document_type activo, lista de features, estado de documentos; acciones: `setActiveFeature`, `setActiveDocType`, `approveDocument`, `addFeature`, `reorderFeatures`
 
 ### Tests
+
 - [x] **TASK-166:** Tests unitarios para `buildKiroPrompt` — verifica prompt correcto para cada tipo de documento con contexto del proyecto (`tests/unit/ai/prompts/phase-01.test.ts`)
 - [x] **TASK-167:** Tests unitarios para truncamiento de contexto — verifica que contextos > 50K tokens se resumen correctamente (`tests/unit/lib/context-truncation.test.ts`)
 - [x] **TASK-168:** Test de integracion para CRUD de features — crear, editar, reordenar, eliminar (`tests/integration/api/features.test.ts`)
@@ -76,12 +86,14 @@
 - [x] **TASK-173:** Test de regresion — verificar que Phase 00 sigue funcionando tras la refactorizacion de componentes compartidos (`phase-00.authenticated.spec.ts` — TASK-173 regression test)
 
 ### Deploy
+
 - [x] **TASK-174:** Aplicar migraciones 007 y 008 (project_features, feature_documents) en staging
 - [x] **TASK-175:** Instalar `@dnd-kit/core` + `@dnd-kit/sortable` en el proyecto
 - [x] **TASK-176:** Smoke test en staging: crear proyecto, completar Phase 00, entrar a Phase 01, definir features, generar spec completo de un feature, aprobar
 - [ ] **TASK-177:** Verificar rendimiento del contexto acumulativo con 5+ features especificados (token usage y latencia)
 
 ### Alineacion v1.0 KIRO
+
 - [x] **TASK-520:** Revisar `requirements.md` de Phase 01 (Generador KIRO) — v1.0 incluye CRUD features, drag&drop, generacion KIRO, validacion coherencia, gates
 - [x] **TASK-521:** Actualizar `design.md` de KIRO con el modelo de datos y flujos actuales
 - [x] **TASK-522:** Completar y ajustar este `tasks.md` con tareas v1.0 pendientes y backlog

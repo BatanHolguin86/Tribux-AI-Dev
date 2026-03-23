@@ -11,6 +11,7 @@
 ## 2. Configurar variables de entorno
 
 ### Local (.env.local)
+
 ```
 NEXT_PUBLIC_SENTRY_DSN=https://tu-dsn-aqui@oXXXXX.ingest.sentry.io/XXXXX
 SENTRY_AUTH_TOKEN=sntrys_tu-token-aqui
@@ -19,7 +20,9 @@ SENTRY_PROJECT=ai-squad-command-center
 ```
 
 ### Vercel (Production)
+
 En Vercel Dashboard > Settings > Environment Variables, agrega:
+
 - `NEXT_PUBLIC_SENTRY_DSN` — el DSN de Sentry
 - `SENTRY_AUTH_TOKEN` — token de autenticacion (Settings > Auth Tokens)
 - `SENTRY_ORG` — nombre de tu organizacion en Sentry
@@ -28,6 +31,7 @@ En Vercel Dashboard > Settings > Environment Variables, agrega:
 ## 3. Verificar
 
 Despues de hacer deploy:
+
 1. Abre la app en produccion
 2. Abre la consola del navegador y escribe: `throw new Error('Test Sentry')`
 3. Ve a Sentry Dashboard > Issues — deberia aparecer el error
@@ -35,6 +39,7 @@ Despues de hacer deploy:
 ## Archivos de configuracion
 
 Ya creados en el proyecto:
+
 - `sentry.client.config.ts` — Init del SDK en el browser
 - `sentry.server.config.ts` — Init del SDK en Node.js server
 - `sentry.edge.config.ts` — Init del SDK en Edge Runtime

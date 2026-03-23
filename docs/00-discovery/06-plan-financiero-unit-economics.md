@@ -18,34 +18,34 @@
 
 ### 2.1 Costos fijos (mensual, aproximados)
 
-| Concepto | Estimación v1.0 | Notas |
-|----------|------------------|--------|
-| Vercel (Pro/hosting) | $20–80 | Según tráfico |
-| Supabase (Pro) | $25–50 | DB, Auth, Storage |
-| Dominio, email (Resend) | $10–30 | |
-| Herramientas (Sentry, analytics) | $0–50 | Planes free/low |
-| **Total fijos** | **$55–210/mes** | Escala con equipo y tráfico |
+| Concepto                         | Estimación v1.0 | Notas                       |
+| -------------------------------- | --------------- | --------------------------- |
+| Vercel (Pro/hosting)             | $20–80          | Según tráfico               |
+| Supabase (Pro)                   | $25–50          | DB, Auth, Storage           |
+| Dominio, email (Resend)          | $10–30          |                             |
+| Herramientas (Sentry, analytics) | $0–50           | Planes free/low             |
+| **Total fijos**                  | **$55–210/mes** | Escala con equipo y tráfico |
 
 ### 2.2 Costo variable principal: IA (Anthropic / OpenAI)
 
 Referencia de precios **Anthropic Claude Sonnet 4** (por millón de tokens, redondeado):
 
-| | Input | Output |
-|---|--------|--------|
-| **$/MTok** | $3 | $15 |
+|            | Input | Output |
+| ---------- | ----- | ------ |
+| **$/MTok** | $3    | $15    |
 
 Equivalencia aproximada: **1 MTok ≈ 750.000 palabras**; mensajes típicos: ~200–500 tokens input, 500–2000 output por intercambio.
 
 **Uso de IA en el producto (por evento):**
 
-| Evento | Input aprox. (tokens) | Output aprox. (tokens) | Coste aprox. por evento (USD) |
-|--------|------------------------|------------------------|-------------------------------|
-| Mensaje chat agente (1 turno) | 3.000–15.000 | 500–2.000 | $0,02–0,06 |
-| Generar doc Phase 00 (1 sección) | 2.000–8.000 | 1.000–4.000 | $0,02–0,08 |
-| Generar doc KIRO (requirements/design/tasks) | 5.000–20.000 | 2.000–8.000 | $0,05–0,18 |
-| Generar diseño (wireframe/mockup) | 4.000–12.000 | 1.000–4.000 | $0,03–0,10 |
-| Título de hilo | 500–2.000 | 20–50 | <$0,01 |
-| Sugerencias proactivas (1 llamada) | 2.000–8.000 | 200–500 | $0,01–0,03 |
+| Evento                                       | Input aprox. (tokens) | Output aprox. (tokens) | Coste aprox. por evento (USD) |
+| -------------------------------------------- | --------------------- | ---------------------- | ----------------------------- |
+| Mensaje chat agente (1 turno)                | 3.000–15.000          | 500–2.000              | $0,02–0,06                    |
+| Generar doc Phase 00 (1 sección)             | 2.000–8.000           | 1.000–4.000            | $0,02–0,08                    |
+| Generar doc KIRO (requirements/design/tasks) | 5.000–20.000          | 2.000–8.000            | $0,05–0,18                    |
+| Generar diseño (wireframe/mockup)            | 4.000–12.000          | 1.000–4.000            | $0,03–0,10                    |
+| Título de hilo                               | 500–2.000             | 20–50                  | <$0,01                        |
+| Sugerencias proactivas (1 llamada)           | 2.000–8.000           | 200–500                | $0,01–0,03                    |
 
 **Coste mensual estimado por usuario activo (uso “normal”):**
 
@@ -61,21 +61,22 @@ Estas bandas sirven para definir **límites de uso y precios mínimos** por plan
 
 Precios actuales (de `docs/01-specs/06-pricing-experiments.md` y `04-metrics.md`):
 
-| Plan | Precio/mes | Proyectos | Agentes |
-|------|------------|-----------|---------|
-| Starter | $149 | 1 | CTO Virtual |
-| Builder | $299 | 2 | Todos (8) |
-| Agency | $699 | 5 | Todos + multi-cliente |
+| Plan    | Precio/mes | Proyectos | Agentes               |
+| ------- | ---------- | --------- | --------------------- |
+| Starter | $149       | 1         | CTO Virtual           |
+| Builder | $299       | 2         | Todos (8)             |
+| Agency  | $699       | 5         | Todos + multi-cliente |
 
 **Objetivo de margen bruto:** Coste de IA ≤ 25–35% del revenue por plan, para dejar margen a costes fijos, CAC y beneficio.
 
-| Plan | Precio | Coste IA obj. (30%) | Coste IA max. por usuario/mes | Margen bruto obj. |
-|------|--------|----------------------|--------------------------------|--------------------|
-| Starter | $149 | ≤ ~$45 | $45 | ~70% |
-| Builder | $299 | ≤ ~$90 | $90 | ~70% |
-| Agency | $699 | ≤ ~$210 | $210 | ~70% |
+| Plan    | Precio | Coste IA obj. (30%) | Coste IA max. por usuario/mes | Margen bruto obj. |
+| ------- | ------ | ------------------- | ----------------------------- | ----------------- |
+| Starter | $149   | ≤ ~$45              | $45                           | ~70%              |
+| Builder | $299   | ≤ ~$90              | $90                           | ~70%              |
+| Agency  | $699   | ≤ ~$210             | $210                          | ~70%              |
 
 **Conclusión:** Con las bandas de uso “normal” anteriores, los precios actuales son compatibles con **margen bruto > 60%** siempre que:
+
 - El coste real de IA por usuario se mantenga dentro de las bandas indicadas (Starter &lt; ~$45, Builder &lt; ~$90, Agency &lt; ~$210).
 - Se apliquen **límites y guardas** (véase sección 5) para evitar abusos.
 

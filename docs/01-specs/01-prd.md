@@ -1,4 +1,5 @@
 # Product Requirements Document (PRD)
+
 ## AI Squad Command Center
 
 **Version:** 1.0
@@ -21,6 +22,7 @@ AI Squad Command Center es una plataforma SaaS B2B que permite a personas sin ex
 ## 2. Contexto y Antecedentes
 
 Ver documentos de Phase 00:
+
 - `docs/00-discovery/01-brief.md` — Problem statement e hipotesis
 - `docs/00-discovery/02-personas.md` — 4 perfiles de usuario
 - `docs/00-discovery/05-competitive-analysis.md` — Landscape y gap
@@ -33,12 +35,12 @@ El mercado esta fragmentado entre herramientas para tecnicos (que excluyen al us
 
 ## 3. Usuarios Objetivo
 
-| Persona | Perfil | Plan objetivo |
-|---------|--------|---------------|
-| Santiago — Founder no-tecnico | Early-stage, necesita MVP rapido | Builder ($299/mes) |
-| Valentina — PM Senior | Empresa mediana, valida hipotesis | Builder ($299/mes) |
-| Rodrigo — Consultor/Agency | Entrega productos a clientes | Agency ($699/mes) |
-| Camila — Emprendedora digital | Primera idea, sin equipo | Starter ($149/mes) |
+| Persona                       | Perfil                            | Plan objetivo      |
+| ----------------------------- | --------------------------------- | ------------------ |
+| Santiago — Founder no-tecnico | Early-stage, necesita MVP rapido  | Builder ($299/mes) |
+| Valentina — PM Senior         | Empresa mediana, valida hipotesis | Builder ($299/mes) |
+| Rodrigo — Consultor/Agency    | Entrega productos a clientes      | Agency ($699/mes)  |
+| Camila — Emprendedora digital | Primera idea, sin equipo          | Starter ($149/mes) |
 
 **Usuario primario del MVP:** Camila y Santiago — perfiles con mayor urgencia y caso de uso mas directo.
 
@@ -52,18 +54,18 @@ El mercado esta fragmentado entre herramientas para tecnicos (que excluyen al us
 
 La plataforma no restringe el tipo de producto. El orquestador y los agentes especializados guian al usuario a traves de la metodologia IA DLC para construir lo que su vision requiere. Incluye:
 
-| Categoria | Ejemplos |
-|-----------|----------|
-| **Interfaces y aplicaciones web** | Landing pages, dashboards, CRUD apps, portales de usuario, herramientas de productividad |
-| **Productos SaaS** | Subscripcion B2B/B2C, multi-tenant, gestion de usuarios, facturacion |
-| **Marketplaces y plataformas** | One-sided, two-sided, catalogos, reservas, pagos, splits |
-| **Productos con integraciones** | APIs externas, webhooks, OAuth, servicios de terceros (pagos, email, SMS, mapas, IA) |
-| **Soluciones con IA y agentes** | Asistentes inteligentes, chatbots, automatizacion con LLMs, pipelines de datos, RAG, agents autonomos |
-| **Sistemas complejos** | Logica en tiempo real, WebSockets, multi-tenant enterprise, SSO, RBAC avanzado |
+| Categoria                         | Ejemplos                                                                                              |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Interfaces y aplicaciones web** | Landing pages, dashboards, CRUD apps, portales de usuario, herramientas de productividad              |
+| **Productos SaaS**                | Subscripcion B2B/B2C, multi-tenant, gestion de usuarios, facturacion                                  |
+| **Marketplaces y plataformas**    | One-sided, two-sided, catalogos, reservas, pagos, splits                                              |
+| **Productos con integraciones**   | APIs externas, webhooks, OAuth, servicios de terceros (pagos, email, SMS, mapas, IA)                  |
+| **Soluciones con IA y agentes**   | Asistentes inteligentes, chatbots, automatizacion con LLMs, pipelines de datos, RAG, agents autonomos |
+| **Sistemas complejos**            | Logica en tiempo real, WebSockets, multi-tenant enterprise, SSO, RBAC avanzado                        |
 
 ### Principio de no-restriccion
 
-- **Onboarding:** Los ejemplos en Paso 1 y 3 muestran la amplitud: *"Desde una web simple hasta un SaaS con integraciones o una solucion con agentes IA — construye lo que imagines."*
+- **Onboarding:** Los ejemplos en Paso 1 y 3 muestran la amplitud: _"Desde una web simple hasta un SaaS con integraciones o una solucion con agentes IA — construye lo que imagines."_
 - **Prompts del orquestador:** El system prompt de Phase 00 adapta las preguntas al tipo de producto que el usuario describe. No existe una lista cerrada de "productos permitidos"; el orquestador explora y profundiza segun el contexto.
 - **Validacion:** El orquestador ayuda al usuario a definir alcance y prioridades (MVP vs. vision completa), pero no sugiere "simplificar" por restricciones de la plataforma — solo por buenas practicas de producto (empezar por lo esencial).
 
@@ -73,21 +75,22 @@ La plataforma no restringe el tipo de producto. El orquestador y los agentes esp
 
 ### MVP (v1.0) — Modulos (M1–M11)
 
-| # | Modulo | Descripcion |
-|---|--------|-------------|
-| M1 | Auth & Onboarding | Registro, login, perfil de usuario, creacion de primer proyecto |
-| M2 | Project Dashboard | Vista y gestion de proyectos, estado de fases, navegacion |
-| M3 | Phase 00 Interactivo | Flujo guiado de discovery con orquestador IA |
-| M4 | Generador KIRO | Phase 01 interactivo — genera requirements, design y tasks |
-| M5 | Orquestador + Agentes | Interfaz de chat con CTO Virtual y 8 agentes especializados (incl. UI/UX Designer y Operator) |
-| M6 | Phase 02 Interactivo | Guia interactiva para arquitectura, ADRs y hub **Diseño & UX** (pantallas guardadas + kit con agente; wireframes/mockups) |
-| M7 | Phase 03 Interactivo | Checklist guiado de environment setup (Supabase, Vercel, GitHub) |
-| M8 | Phase 04 Interactivo | Kanban de tasks generadas en KIRO + integracion con chat de agentes |
-| M9 | Phase 05 Interactivo | Generador de test cases y reporte de QA |
-| M10 | Phase 06 Interactivo | Launch checklist interactivo con estado de cada item |
-| M11 | Phase 07 Interactivo | Retrospectiva guiada y generacion de backlog para siguiente sprint |
+| #   | Modulo                | Descripcion                                                                                                               |
+| --- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| M1  | Auth & Onboarding     | Registro, login, perfil de usuario, creacion de primer proyecto                                                           |
+| M2  | Project Dashboard     | Vista y gestion de proyectos, estado de fases, navegacion                                                                 |
+| M3  | Phase 00 Interactivo  | Flujo guiado de discovery con orquestador IA                                                                              |
+| M4  | Generador KIRO        | Phase 01 interactivo — genera requirements, design y tasks                                                                |
+| M5  | Orquestador + Agentes | Interfaz de chat con CTO Virtual y 8 agentes especializados (incl. UI/UX Designer y Operator)                             |
+| M6  | Phase 02 Interactivo  | Guia interactiva para arquitectura, ADRs y hub **Diseño & UX** (pantallas guardadas + kit con agente; wireframes/mockups) |
+| M7  | Phase 03 Interactivo  | Checklist guiado de environment setup (Supabase, Vercel, GitHub)                                                          |
+| M8  | Phase 04 Interactivo  | Kanban de tasks generadas en KIRO + integracion con chat de agentes                                                       |
+| M9  | Phase 05 Interactivo  | Generador de test cases y reporte de QA                                                                                   |
+| M10 | Phase 06 Interactivo  | Launch checklist interactivo con estado de cada item                                                                      |
+| M11 | Phase 07 Interactivo  | Retrospectiva guiada y generacion de backlog para siguiente sprint                                                        |
 
 ### Fuera de Alcance MVP
+
 - Multi-usuario por proyecto (colaboracion en equipo)
 - Integraciones directas con GitHub, Vercel, Supabase (links manuales)
 - Mobile app nativa
@@ -186,6 +189,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 ## 6. Requerimientos Funcionales por Modulo
 
 ### M1 — Auth & Onboarding
+
 - Registro con email/password y Google OAuth
 - Login con email/password y Google OAuth
 - Recuperacion de contrasena via email
@@ -194,6 +198,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 - Rutas protegidas con redirect automatico
 
 ### M2 — Project Dashboard
+
 - Crear, ver, editar y archivar proyectos
 - Vista de estado por fase (0–7) con indicador de progreso
 - Acceso rapido a la fase activa de cada proyecto
@@ -201,6 +206,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 - Busqueda y filtro de proyectos
 
 ### M3 — Phase 00 Interactivo
+
 - Conversacion guiada con orquestador para completar las 5 secciones del discovery
 - Generacion automatica de documentos en `/docs/00-discovery/`
 - Edicion inline de documentos generados
@@ -208,6 +214,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 - Indicador de completitud por seccion (0–100%)
 
 ### M4 — Generador KIRO
+
 - Conversacion guiada para generar specs de cada feature
 - Generacion de requirements.md con user stories y acceptance criteria en EARS
 - Generacion de design.md con data model, UI flow y API design
@@ -216,6 +223,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 - Gate de aprobacion por documento y por feature
 
 ### M5 — Orquestador + Agentes
+
 - Chat persistente con el CTO Virtual (orquestador general)
 - Acceso a 8 agentes especializados via seleccion (Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer, Operator)
 - Adjuntar archivos (al menos imagenes y PDF) en las conversaciones con agentes, almacenados por proyecto y visibles como adjuntos en el historial
@@ -226,33 +234,39 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 - Formato enriquecido: markdown, bloques de codigo, tablas
 
 ### M6 — Phase 02 Interactivo
+
 - Conversacion guiada para definir arquitectura del sistema
 - Generacion de ADRs y diagramas
 - Hub **Diseño & UX** en el proyecto: generación de pantallas (wireframes/mockups) + conversaciones guiadas con UI/UX Designer (style guide, componentes, flujos, responsive), con contexto Discovery — ver spec `06-ui-ux-design-generator` y ADR-007
 - Gate de aprobacion y desbloqueo de Phase 03
 
 ### M7 — Phase 03 Interactivo
+
 - Checklist guiado de environment setup (Supabase, Vercel, GitHub)
 - Validacion de configuracion
 - Gate de aprobacion y desbloqueo de Phase 04
 
 ### M8 — Phase 04 Interactivo
+
 - Kanban de tasks generadas en KIRO
 - Integracion con chat de agentes para ejecutar tasks
 - Seguimiento de progreso por task
 - Gate de aprobacion y desbloqueo de Phase 05
 
 ### M9 — Phase 05 Interactivo
+
 - Generador de test cases desde specs
 - Reporte de QA interactivo
 - Gate de aprobacion y desbloqueo de Phase 06
 
 ### M10 — Phase 06 Interactivo
+
 - Launch checklist interactivo con estado por item
 - Validacion pre-deploy
 - Gate de aprobacion y desbloqueo de Phase 07
 
 ### M11 — Phase 07 Interactivo
+
 - Retrospectiva guiada
 - Generacion de backlog para siguiente sprint
 - Cierre de fase y proyecto
@@ -262,6 +276,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 ## 7. Requerimientos No Funcionales
 
 ### Performance
+
 - LCP (Largest Contentful Paint) < 1.5s en paginas de auth
 - LCP < 2.5s en dashboard y fases
 - Respuesta del orquestador: primero token en < 2s (streaming)
@@ -269,6 +284,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 - Bundle size JS inicial < 150KB gzipped
 
 ### Seguridad
+
 - Autenticacion via Supabase Auth (JWT + refresh tokens)
 - RLS habilitado en todas las tablas de Supabase
 - Variables de entorno nunca expuestas al cliente (prefijo NEXT_PUBLIC solo en vars publicas)
@@ -277,23 +293,27 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 - Nunca almacenar API keys de LLM en el cliente
 
 ### Escalabilidad
+
 - Arquitectura serverless (Vercel Functions) — escala automaticamente
 - Supabase maneja hasta 10,000 conexiones concurrentes en plan Pro
 - Streaming de respuestas del LLM para no bloquear la UI
 - Documentos del proyecto almacenados en Supabase Storage (no en DB)
 
 ### Accesibilidad
+
 - WCAG 2.1 nivel AA
 - Navegacion completa por teclado
 - Soporte de screen readers (ARIA labels en componentes interactivos)
 - Contraste de color minimo 4.5:1
 
 ### Disponibilidad
+
 - Uptime objetivo: 99.5% (Vercel SLA + Supabase SLA)
 - Deployments sin downtime (Vercel rolling deployments)
 - Manejo gracioso de errores del LLM (fallback message, retry automatico)
 
 ### Internacionalizacion
+
 - MVP en espanol (es-LATAM)
 - Arquitectura preparada para i18n desde el inicio (next-intl)
 - Fechas y numeros en formato es-LATAM
@@ -310,7 +330,7 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 ┌──────────────────────▼──────────────────────────────┐
 │              VERCEL (Edge Network)                   │
 │                                                      │
-│  Next.js 14 App Router                               │
+│  Next.js 16 App Router                               │
 │  ├── Server Components (SSR)                        │
 │  ├── Client Components (interactividad)             │
 │  ├── Route Handlers (API)                           │
@@ -328,7 +348,8 @@ Cada fase tiene: flujo guiado con orquestador, gate de aprobacion, desbloqueo de
 ```
 
 ### Stack Tecnologico
-- **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
+
+- **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind CSS 4, shadcn/ui
 - **State:** Zustand (cliente), React Query (server state)
 - **Forms:** React Hook Form + Zod
 - **Backend:** Next.js Route Handlers
@@ -368,12 +389,12 @@ auth.users (Supabase Auth)
 
 Ver detalle de experimentos de trial y paywall en `docs/01-specs/06-pricing-experiments.md`.
 
-| Plan | Precio | Proyectos | Fases | Agentes |
-|------|--------|-----------|-------|---------|
-| Starter | $149/mes | 1 activo | 00–04 | CTO Virtual |
-| Builder | $299/mes | 2 activos | 00–06 | Todos (7) |
-| Agency | $699/mes | 5 activos | 00–07 | Todos + multi-cliente |
-| Enterprise | Negociable | A medida | 00–07 + extendido | Todo + SSO, SLA, soporte prioritario, custom |
+| Plan       | Precio     | Proyectos | Fases             | Agentes                                      |
+| ---------- | ---------- | --------- | ----------------- | -------------------------------------------- |
+| Starter    | $149/mes   | 1 activo  | 00–04             | CTO Virtual                                  |
+| Builder    | $299/mes   | 2 activos | 00–06             | Todos (7)                                    |
+| Agency     | $699/mes   | 5 activos | 00–07             | Todos + multi-cliente                        |
+| Enterprise | Negociable | A medida  | 00–07 + extendido | Todo + SSO, SLA, soporte prioritario, custom |
 
 **Enterprise:** precio, numero de proyectos, fases y beneficios (SSO, SLA, soporte dedicado, etc.) se negocian caso por caso. Ver `docs/00-discovery/01-brief.md` — Modelo de Negocio.
 
@@ -385,20 +406,20 @@ Ver instrumentacion de eventos, embudos y activacion en `docs/01-specs/05-metric
 
 **North Star:** Proyectos completados hasta Phase 06 por mes
 
-| Metrica | Mes 3 | Mes 6 | Mes 12 |
-|---------|-------|-------|--------|
-| MRR | $5k | $25k | $100k |
-| Tasa completion Phase 06 | 30% | 45% | 60% |
-| NPS | 30 | 45 | 60 |
-| Churn mensual | <8% | <5% | <3% |
+| Metrica                  | Mes 3 | Mes 6 | Mes 12 |
+| ------------------------ | ----- | ----- | ------ |
+| MRR                      | $5k   | $25k  | $100k  |
+| Tasa completion Phase 06 | 30%   | 45%   | 60%    |
+| NPS                      | 30    | 45    | 60     |
+| Churn mensual            | <8%   | <5%   | <3%    |
 
 ---
 
 ## 12. Roadmap de Alto Nivel
 
-| Version | Modulos | Timeline estimado |
-|---------|---------|-------------------|
-| v1.0 MVP | M1–M11 (Auth, Dashboard, Phases 00–07 guiadas, KIRO, Agentes) | 20–24 semanas |
-| v1.1 | Notificaciones, mejoras UX, versionado de documentos | +6 semanas |
-| v2.0 | Colaboracion en equipo, integraciones GitHub/Vercel, white-label | +12 semanas |
-| v3.0 | White-label, SSO, marketplace de templates, API publica | +16 semanas |
+| Version  | Modulos                                                          | Timeline estimado |
+| -------- | ---------------------------------------------------------------- | ----------------- |
+| v1.0 MVP | M1–M11 (Auth, Dashboard, Phases 00–07 guiadas, KIRO, Agentes)    | 20–24 semanas     |
+| v1.1     | Notificaciones, mejoras UX, versionado de documentos             | +6 semanas        |
+| v2.0     | Colaboracion en equipo, integraciones GitHub/Vercel, white-label | +12 semanas       |
+| v3.0     | White-label, SSO, marketplace de templates, API publica          | +16 semanas       |

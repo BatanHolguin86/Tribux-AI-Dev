@@ -24,9 +24,9 @@
 ┌───────────────────────────────▼──────────────────────────────────────────────┐
 │                        VERCEL (Edge Network + Serverless)                     │
 │                                                                              │
-│  Next.js 14 App Router                                                       │
+│  Next.js 16 App Router                                                       │
 │  ├── Middleware (auth guard, redirects, rate limiting headers)               │
-│  ├── Server Components (SSR: dashboard, phases, agents page)                │
+│  ├── Server Components (SSR: dashboard, phases, workspace por fase)         │
 │  ├── Route Handlers (API):                                                  │
 │  │   ├── /api/onboarding/*        POST, PATCH                              │
 │  │   ├── /api/projects/*          GET, POST, PATCH                          │
@@ -386,22 +386,22 @@ Key config per use case:
 
 ## 7. Monitoring y Observabilidad
 
-| Herramienta | Que monitorea | Alertas |
-|-------------|---------------|---------|
-| **Vercel Analytics** | Web Vitals (LCP, FID, CLS), page views, speed | LCP > 2.5s |
-| **Sentry** | Errores JS (client + server), unhandled exceptions | Error rate > 1% |
-| **Supabase Dashboard** | DB connections, query performance, storage usage | DB connections > 80% |
-| **Anthropic Dashboard** | Token usage, API errors, rate limits | Monthly spend > $100 |
-| **Custom logging** | Phase completions, agent usage, feature adoption | — |
+| Herramienta             | Que monitorea                                      | Alertas              |
+| ----------------------- | -------------------------------------------------- | -------------------- |
+| **Vercel Analytics**    | Web Vitals (LCP, FID, CLS), page views, speed      | LCP > 2.5s           |
+| **Sentry**              | Errores JS (client + server), unhandled exceptions | Error rate > 1%      |
+| **Supabase Dashboard**  | DB connections, query performance, storage usage   | DB connections > 80% |
+| **Anthropic Dashboard** | Token usage, API errors, rate limits               | Monthly spend > $100 |
+| **Custom logging**      | Phase completions, agent usage, feature adoption   | —                    |
 
 ---
 
 ## 8. Escalabilidad — Decisiones Clave
 
-| Dimension | Estrategia MVP | Limite estimado | Plan de escalamiento |
-|-----------|----------------|-----------------|---------------------|
-| **Users concurrentes** | Vercel serverless auto-scale | ~10,000 | Vercel Pro plan |
-| **DB connections** | Supabase connection pooler (PgBouncer) | 10,000 | Supabase Pro |
-| **LLM requests** | Anthropic API con rate limits | ~1,000/min | Anthropic Enterprise |
-| **Storage** | Supabase Storage | 1GB free, 100GB pro | S3 migration si necesario |
-| **Real-time** | Supabase Realtime (design status polling) | 200 concurrent | Supabase Pro |
+| Dimension              | Estrategia MVP                            | Limite estimado     | Plan de escalamiento      |
+| ---------------------- | ----------------------------------------- | ------------------- | ------------------------- |
+| **Users concurrentes** | Vercel serverless auto-scale              | ~10,000             | Vercel Pro plan           |
+| **DB connections**     | Supabase connection pooler (PgBouncer)    | 10,000              | Supabase Pro              |
+| **LLM requests**       | Anthropic API con rate limits             | ~1,000/min          | Anthropic Enterprise      |
+| **Storage**            | Supabase Storage                          | 1GB free, 100GB pro | S3 migration si necesario |
+| **Real-time**          | Supabase Realtime (design status polling) | 200 concurrent      | Supabase Pro              |

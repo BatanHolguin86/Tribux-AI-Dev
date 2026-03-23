@@ -102,7 +102,6 @@
 
 ### Pain Relievers (Como alivia los dolores)
 
-
 | Dolor                             | Como AI Squad lo alivia                                                                     |
 | --------------------------------- | ------------------------------------------------------------------------------------------- |
 | No saber por donde empezar        | Phase 00 guia al usuario desde la idea hasta el primer spec estructurado                    |
@@ -115,9 +114,7 @@
 | Falta de metodologia              | IA DLC es el proceso — el usuario solo sigue las fases                                      |
 | Bus factor = 1                    | El conocimiento esta en los documentos, no en personas                                      |
 
-
 ### Gain Creators (Como genera los beneficios deseados)
-
 
 | Beneficio                        | Como AI Squad lo crea                                              |
 | -------------------------------- | ------------------------------------------------------------------ |
@@ -126,7 +123,6 @@
 | Calidad predecible               | Stack opinado + convenciones de codigo + checklist de lanzamiento  |
 | Documentacion automatica         | Cada fase genera artifacts persistentes en `/docs`                 |
 | Reutilizacion                    | Specs KIRO, ADRs y convenciones se reutilizan en proyectos futuros |
-
 
 ---
 
@@ -148,4 +144,3 @@
 3. **Spec-driven development** — El formato KIRO obliga a pensar antes de construir. Reduce retrabajo y genera documentacion como subproducto.
 4. **Stack opinado y probado** — No hay decision fatigue sobre tecnologia. El stack (Next.js + Supabase + Vercel) esta elegido y validado para MVPs de alta calidad.
 5. **Conocimiento persistente** — Todo queda documentado en el repositorio. El proyecto puede pausarse y retomarse sin perder contexto.
-

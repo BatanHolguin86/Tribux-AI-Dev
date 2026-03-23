@@ -23,7 +23,6 @@ El MVP requiere:
 
 ## Opciones Evaluadas
 
-
 | Criterio               | Supabase Auth     | NextAuth.js | Clerk  | Auth0  |
 | ---------------------- | ----------------- | ----------- | ------ | ------ |
 | Integrado con DB (RLS) | ✓                 | ✗           | ✗      | ✗      |
@@ -32,7 +31,6 @@ El MVP requiere:
 | Precio MVP             | $0                | $0          | $25/mo | $23/mo |
 | SSR support            | ✓ (@supabase/ssr) | ✓           | ✓      | ✓      |
 | Complejidad setup      | Baja              | Media       | Baja   | Media  |
-
 
 ## Justificacion
 
@@ -58,4 +56,3 @@ Supabase Auth es la opcion natural dado que ya usamos Supabase para DB y Storage
 
 - Lock-in con Supabase Auth (mitigable: JWT estandar, migracion posible a cualquier IdP)
 - Limite de 50,000 MAU en free tier (suficiente para MVP, Supabase Pro si escala)
-

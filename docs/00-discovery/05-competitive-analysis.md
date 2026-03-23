@@ -16,6 +16,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 ## Categoria 1: No-Code / Low-Code Platforms
 
 ### Bubble
+
 - **Propuesta:** Constructor visual de apps web sin codigo
 - **Fortaleza:** Comunidad grande, templates, hosting incluido
 - **Debilidad:** Curva de aprendizaje significativa, vendor lock-in, no escala bien, limitado para logica compleja
@@ -23,6 +24,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Gap vs AI Squad:** Requiere que el usuario aprenda la herramienta; no genera codigo real; limitado en complejidad tecnica
 
 ### Webflow
+
 - **Propuesta:** Constructor visual de sitios web con CMS
 - **Fortaleza:** Calidad de diseño, SEO, hosting
 - **Debilidad:** Solo frontend/marketing sites; no sirve para web apps con logica de negocio compleja
@@ -30,6 +32,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Gap vs AI Squad:** No es para productos SaaS o apps; no tiene backend real
 
 ### Retool / AppSmith
+
 - **Propuesta:** Constructor de herramientas internas
 - **Fortaleza:** Rapido para dashboards internos, integraciones con DBs
 - **Debilidad:** Solo herramientas internas; no para productos de cara al usuario final
@@ -41,6 +44,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 ## Categoria 2: AI Code Generators
 
 ### GitHub Copilot
+
 - **Propuesta:** Asistente de codigo en el IDE
 - **Fortaleza:** Integracion nativa con flujo de desarrollo, amplio soporte de lenguajes
 - **Debilidad:** Requiere saber programar para usarlo; no tiene metodologia ni proceso; solo genera codigo, no arquitectura ni deployment
@@ -48,6 +52,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Gap vs AI Squad:** Es una herramienta para developers, no para no-tecnicos; no tiene proceso end-to-end
 
 ### Cursor
+
 - **Propuesta:** IDE con IA integrada para developers
 - **Fortaleza:** Contexto del codebase completo, edicion multiarchivo
 - **Debilidad:** Requiere ser desarrollador para operar; no tiene proceso ni metodologia
@@ -55,6 +60,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Gap vs AI Squad:** Mismo gap que Copilot — para tecnicos, no para estrategas
 
 ### v0 by Vercel
+
 - **Propuesta:** Generador de UI con prompts en lenguaje natural
 - **Fortaleza:** Output de alta calidad en React/Tailwind, integrado con Vercel
 - **Debilidad:** Solo genera componentes UI; no tiene backend, auth, DB ni proceso completo
@@ -62,6 +68,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Gap vs AI Squad:** Es una pieza del puzzle (UI), no el puzzle completo
 
 ### Bolt.new / Lovable
+
 - **Propuesta:** Generacion de apps completas desde un prompt
 - **Fortaleza:** Velocidad inicial impresionante, genera apps funcionales rapido
 - **Debilidad:** No tiene metodologia estructurada; output inconsistente en proyectos complejos; no hay validacion por fases; el usuario pierde control a medida que el proyecto crece; no escala bien mas alla de prototipos simples
@@ -73,6 +80,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 ## Categoria 3: AI Agents / Autonomous Dev
 
 ### Devin (Cognition AI)
+
 - **Propuesta:** Agente de IA que actua como desarrollador autonomo
 - **Fortaleza:** Altamente capaz en tareas tecnicas complejas
 - **Debilidad:** Caja negra para el usuario no-tecnico; precio muy alto ($500+/mes); no tiene proceso de product management ni metodologia de fases; el usuario no tiene control granular
@@ -80,6 +88,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Gap vs AI Squad:** Orientado a equipos tecnicos, no a estrategas; no tiene la capa de metodologia de producto
 
 ### GPT-Engineer / Aider
+
 - **Propuesta:** CLI tools para generar y editar codebases con IA
 - **Fortaleza:** Potentes para developers que saben lo que quieren
 - **Debilidad:** Requieren conocimiento tecnico profundo; no tienen UI; no tienen proceso de producto
@@ -91,6 +100,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 ## Categoria 4: Agencias Digitales / Freelancers
 
 ### Agencias tradicionales
+
 - **Propuesta:** Equipo humano completo para desarrollo de productos
 - **Fortaleza:** Calidad alta (si se elige bien), capacidad de proyectos complejos
 - **Debilidad:** Costo muy alto ($15k–$50k/mes), comunicacion lenta, poca transparencia, dependencia del equipo
@@ -98,6 +108,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Gap vs AI Squad:** 10–30x mas caro; 3–6 meses para arrancar; poca visibilidad del proceso
 
 ### Plataformas de freelancers (Upwork, Toptal)
+
 - **Propuesta:** Acceso a talento tecnico por proyecto u hora
 - **Fortaleza:** Flexibilidad, variedad de perfiles, puede ser economico
 - **Debilidad:** Calidad inconsistente, alto costo de coordinacion, riesgo de abandono, requiere saber evaluar tecnicamente
@@ -108,20 +119,20 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 
 ## Matriz Comparativa
 
-| Criterio | AI Squad | Bubble/No-code | Bolt/Lovable | Devin | Agencia |
-|----------|----------|----------------|--------------|-------|---------|
-| No requiere saber programar | SI | Parcial | SI | No | SI |
-| Guia desde el primer paso (onboarding de idea) | SI | No | No | No | Parcial |
-| Productos complejos/escalables | SI | No | No | SI | SI |
-| Metodologia estructurada | SI | No | No | No | Parcial |
-| Control por fases con validacion humana | SI | No | No | No | Parcial |
-| Costo accesible (<$500/mes) | SI | SI | SI | No | No |
-| Plan de entrada para emprendedores (<$150/mes) | SI | SI | SI | No | No |
-| Output es codigo real/propio | SI | No | SI | SI | SI |
-| Velocidad (MVP <90 dias) | SI | SI | SI | SI | No |
-| Escalabilidad del producto | SI | No | No | SI | SI |
-| Documentacion automatica | SI | No | No | No | Parcial |
-| Apto para emprendedor digital sin equipo | SI | Parcial | Parcial | No | No |
+| Criterio                                       | AI Squad | Bubble/No-code | Bolt/Lovable | Devin | Agencia |
+| ---------------------------------------------- | -------- | -------------- | ------------ | ----- | ------- |
+| No requiere saber programar                    | SI       | Parcial        | SI           | No    | SI      |
+| Guia desde el primer paso (onboarding de idea) | SI       | No             | No           | No    | Parcial |
+| Productos complejos/escalables                 | SI       | No             | No           | SI    | SI      |
+| Metodologia estructurada                       | SI       | No             | No           | No    | Parcial |
+| Control por fases con validacion humana        | SI       | No             | No           | No    | Parcial |
+| Costo accesible (<$500/mes)                    | SI       | SI             | SI           | No    | No      |
+| Plan de entrada para emprendedores (<$150/mes) | SI       | SI             | SI           | No    | No      |
+| Output es codigo real/propio                   | SI       | No             | SI           | SI    | SI      |
+| Velocidad (MVP <90 dias)                       | SI       | SI             | SI           | SI    | No      |
+| Escalabilidad del producto                     | SI       | No             | No           | SI    | SI      |
+| Documentacion automatica                       | SI       | No             | No           | No    | Parcial |
+| Apto para emprendedor digital sin equipo       | SI       | Parcial        | Parcial      | No    | No      |
 
 ---
 

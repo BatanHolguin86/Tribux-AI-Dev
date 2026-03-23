@@ -13,6 +13,16 @@ El modulo de Orquestador + Agentes expone una interfaz de chat libre con 9 agent
 
 **Sugerencias proactivas (v1.0):** Al abrir el chat con un agente o la vista de agentes, el sistema puede mostrar sugerencias proactivas (sin que el usuario pregunte) basadas en el estado del proyecto: fase actual, documentos pendientes, siguiente accion recomendada. El CTO Virtual muestra un mensaje inicial con 1–3 sugerencias accionables en hilos vacios. Las sugerencias se generan en servidor con el contexto del proyecto y se muestran como opciones clickeables o texto que el usuario puede enviar como primer mensaje. El usuario puede ignorarlas y escribir libremente.
 
+### Implementacion actual (marzo 2026)
+
+- **UI principal:** El listado de agentes y el chat viven en el tab **Equipo** dentro de `/projects/[id]/phase/00–07` (p. ej. `PhaseTeamPanel`), no en una pagina dedicada permanente.
+- **Rutas de compatibilidad:** `/projects/[id]/experts` y `/projects/[id]/agents` **redirigen** a `/projects/[id]/phase/{fase actual}` (mismo comportamiento; enlaces desde `ProjectTools` usan `/experts`).
+- **APIs:** Siguen bajo `/api/projects/[id]/agents/...` (threads, chat streaming, suggestions).
+- **Persistencia:** Hilos en **`conversation_threads`** (incl. columna **`attachments`** JSONB para archivos en Storage `project-chat`).
+- **Planes:** Limites y candados en `src/lib/plans/guards.ts` (Starter vs Builder/Agency; Operator en plan alto).
+
+Ver tambien `docs/ESTADO-DEL-PRODUCTO.md`.
+
 ---
 
 ## Data Model
@@ -20,6 +30,7 @@ El modulo de Orquestador + Agentes expone una interfaz de chat libre con 9 agent
 ### Extension de `agent_conversations` (tabla existente de Feature 03)
 
 Se reutiliza la tabla existente con nuevos valores:
+
 - `phase_number = null` (conversaciones no vinculadas a una fase especifica)
 - `section = null`
 - `agent_type` = `'cto_virtual'` | `'product_architect'` | `'system_architect'` | `'ui_ux_designer'` | `'lead_developer'` | `'db_admin'` | `'qa_engineer'` | `'devops_engineer'`
@@ -53,6 +64,7 @@ create index idx_threads_project_agent on conversation_threads(project_id, agent
 ### Extension de `project_documents` para Artifacts
 
 Se reutiliza `project_documents` con:
+
 - `document_type = 'artifact'`
 - `phase_number = null` (o la fase seleccionada por el usuario al guardar)
 - `section` = titulo del artifact
@@ -77,17 +89,17 @@ bucket: project-documents
 
 ### Tabla de Agentes
 
-| ID | Nombre | Icono | Especialidad | Plan minimo |
-|----|--------|-------|--------------|-------------|
-| `cto_virtual` | CTO Virtual | 🧠 | Vision holistica, delegacion, metodologia IA DLC | Starter |
-| `product_architect` | Product Architect | 📐 | Producto, priorizacion, scope, user stories | Builder |
-| `system_architect` | System Architect | 🏗️ | Arquitectura, patrones, tecnologias, diagramas | Builder |
-| `ui_ux_designer` | UI/UX Designer | 🎨 | Wireframes, mockups, guias de estilo, consistencia visual a partir de specs | Builder |
-| `lead_developer` | Lead Developer | 💻 | Implementacion, codigo, debugging, best practices | Builder |
-| `db_admin` | DB Admin | 🗄️ | Esquemas, queries, migraciones, RLS, performance | Builder |
-| `qa_engineer` | QA Engineer | 🧪 | Testing, test cases, QA strategy, regression | Builder |
-| `devops_engineer` | DevOps Engineer | 🚀 | Deploy, CI/CD, monitoring, infraestructura | Builder |
-| `operator` | Operator | 🛠️ | Opera sistemas end-to-end: repos, entornos, CI/CD y deploys reproducibles | Agency |
+| ID                  | Nombre            | Icono | Especialidad                                                                | Plan minimo |
+| ------------------- | ----------------- | ----- | --------------------------------------------------------------------------- | ----------- |
+| `cto_virtual`       | CTO Virtual       | 🧠    | Vision holistica, delegacion, metodologia IA DLC                            | Starter     |
+| `product_architect` | Product Architect | 📐    | Producto, priorizacion, scope, user stories                                 | Builder     |
+| `system_architect`  | System Architect  | 🏗️    | Arquitectura, patrones, tecnologias, diagramas                              | Builder     |
+| `ui_ux_designer`    | UI/UX Designer    | 🎨    | Wireframes, mockups, guias de estilo, consistencia visual a partir de specs | Builder     |
+| `lead_developer`    | Lead Developer    | 💻    | Implementacion, codigo, debugging, best practices                           | Builder     |
+| `db_admin`          | DB Admin          | 🗄️    | Esquemas, queries, migraciones, RLS, performance                            | Builder     |
+| `qa_engineer`       | QA Engineer       | 🧪    | Testing, test cases, QA strategy, regression                                | Builder     |
+| `devops_engineer`   | DevOps Engineer   | 🚀    | Deploy, CI/CD, monitoring, infraestructura                                  | Builder     |
+| `operator`          | Operator          | 🛠️    | Opera sistemas end-to-end: repos, entornos, CI/CD y deploys reproducibles   | Agency      |
 
 ### System Prompts — Estructura Comun
 
@@ -104,7 +116,7 @@ DOCUMENTOS DEL PROYECTO:
   - Discovery: {resumen de brief, personas, value prop, metrics, competitive}
   - Specs: {resumen de features especificados con data models y APIs}
   - Artifacts previos: {lista de artifacts guardados}
-STACK TECNICO: Next.js 14, TypeScript, Supabase, Tailwind, shadcn/ui, Vercel
+STACK TECNICO: Next.js 16, TypeScript, Supabase, Tailwind, shadcn/ui, Vercel
 INSTRUCCIONES:
   - Responde en espanol; codigo y nombres tecnicos en ingles
   - Usa markdown enriquecido: headers, listas, code blocks con lenguaje, tablas
@@ -118,35 +130,43 @@ FORMATO DE RESPUESTA: {especifico por agente}
 ### Prompts Especificos por Agente
 
 **CTO Virtual:**
+
 - Tiene vision holistica de todas las fases
 - Puede recomendar delegar a agentes especializados
 - Formato: respuestas ejecutivas con decision + justificacion + siguiente paso
 
 **Product Architect:**
+
 - Enfocado en producto: user stories, priorizacion, scope, roadmap
 - Formato: user stories con acceptance criteria, matrices de priorizacion
 
 **System Architect:**
+
 - Enfocado en arquitectura: patrones, flujos, diagramas, trade-offs
 - Formato: diagramas ASCII, comparativas de opciones, ADRs
 
 **Lead Developer:**
+
 - Enfocado en codigo: implementacion, snippets, debugging, refactoring
 - Formato: code blocks con explicaciones paso a paso
 
 **DB Admin:**
+
 - Enfocado en datos: esquemas SQL, queries, migraciones, indices, RLS
 - Formato: SQL con comentarios, diagramas ER simplificados
 
 **QA Engineer:**
+
 - Enfocado en calidad: test cases, estrategia de testing, regression
 - Formato: tablas de test cases, checklists de QA
 
 **DevOps Engineer:**
+
 - Enfocado en ops: CI/CD, deploy, monitoring, config, scripts
 - Formato: YAML configs, scripts shell, checklists de deploy
 
 **UI/UX Designer:**
+
 - Enfocado en diseño: wireframes, mockups y guías de estilo visuales en HTML + Tailwind CSS a partir de design.md y user flows
 - Camino A: genera diseños HTML persistidos via API (`POST /designs/generate`); Camino B: entregables en conversación (style guide, component library, user flows, responsive)
 - Formato: bloques HTML renderizables con Tailwind CSS, especificaciones de componentes, iconos SVG inline. Nunca ASCII art
@@ -155,10 +175,12 @@ FORMATO DE RESPUESTA: {especifico por agente}
 
 ## UI/UX Layout
 
+> **Nota (marzo 2026):** El diagrama siguiente describe el **layout logico** (selector + chat) tal como se incrusta hoy en el tab **Equipo** de la fase. La ruta `/projects/:id/agents` en el navegador redirige a la fase activa; la URL estable del workspace es `/projects/:id/phase/NN`.
+
 ### Estructura de Pagina
 
 ```
-/projects/:id/agents
+/projects/:id/phase/NN  (tab Equipo — mismo layout que antes en /agents)
 ├── TopBar
 │   ├── Breadcrumb: Proyecto → Agentes
 │   └── Boton "Volver a fases del proyecto"
@@ -204,6 +226,7 @@ FORMATO DE RESPUESTA: {especifico por agente}
 │ ● 3 conversaciones           │
 └──────────────────────────────┘
 ```
+
 - Card normal: clickeable, hover con borde violeta
 - Card activa: borde violeta solido, fondo claro
 - Card bloqueada (plan): icono de candado, tooltip "Disponible en plan Builder"
@@ -212,7 +235,7 @@ FORMATO DE RESPUESTA: {especifico por agente}
 
 Cada mensaje del agente tiene iconos de accion al hacer hover:
 
-```
+````
 ┌─────────────────────────────────────────────┐
 │ 🧠 CTO Virtual                       12:30  │
 │                                             │
@@ -226,7 +249,8 @@ Cada mensaje del agente tiene iconos de accion al hacer hover:
 │ Las razones principales son...              │
 │                                      [📋] [💾] │
 └─────────────────────────────────────────────┘
-```
+````
+
 - `📋` Copiar al portapapeles
 - `💾` Guardar como artifact
 
@@ -252,11 +276,13 @@ Visible en todas las paginas del proyecto (excepto `/agents`):
 │ 🤖💬 │  ← Boton flotante esquina inferior derecha
 └──────┘
 ```
+
 Al hacer click, abre un mini-chat drawer con el ultimo agente usado o el CTO Virtual.
 
 ### Mobile Layout
 
 En mobile (< 768px):
+
 - AgentSelector se convierte en dropdown selector
 - ThreadSidebar se muestra como drawer
 - ChatArea ocupa 100% del ancho
@@ -267,11 +293,13 @@ En mobile (< 768px):
 ## API Design
 
 ### `GET /api/projects/:id/agents/suggestions`
+
 Retorna sugerencias proactivas para el contexto actual del proyecto (v1.0). Se usa cuando el usuario abre la vista de agentes o un hilo vacio.
 
 **Query params (opcionales):** `agent_type` — si se especifica, las sugerencias se orientan a ese agente (ej. CTO Virtual).
 
 **Response 200:**
+
 ```json
 {
   "suggestions": [
@@ -281,7 +309,7 @@ Retorna sugerencias proactivas para el contexto actual del proyecto (v1.0). Se u
       "agent_hint": "product_architect"
     },
     {
-      "id": "s2", 
+      "id": "s2",
       "text": "Tu spec de Auth esta completo. ¿Quieres que el System Architect revise la arquitectura de autenticacion?",
       "agent_hint": "system_architect"
     }
@@ -293,9 +321,11 @@ Retorna sugerencias proactivas para el contexto actual del proyecto (v1.0). Se u
 Si no hay sugerencias relevantes (proyecto sin contexto suficiente), `suggestions` puede ser `[]`. Las sugerencias se generan con una llamada al LLM (prompt dedicado) que recibe el contexto del proyecto y devuelve 1–3 items accionables.
 
 ### `GET /api/projects/:id/agents`
+
 Retorna la lista de agentes disponibles con conteo de threads por agente.
 
 **Response 200:**
+
 ```json
 {
   "agents": [
@@ -314,9 +344,11 @@ Retorna la lista de agentes disponibles con conteo de threads por agente.
 ```
 
 ### `GET /api/projects/:id/agents/:agentType/threads`
+
 Retorna los hilos de conversacion con un agente.
 
 **Response 200:**
+
 ```json
 {
   "threads": [
@@ -332,26 +364,32 @@ Retorna los hilos de conversacion con un agente.
 ```
 
 ### `POST /api/projects/:id/agents/:agentType/threads`
+
 Crea un nuevo hilo de conversacion.
 
 **Request:** `{}` (el titulo se auto-genera del primer mensaje)
 **Response 201:** `{ "id": "uuid", "agent_type": "system_architect" }`
 
 ### `DELETE /api/projects/:id/agents/:agentType/threads/:threadId`
+
 Elimina un hilo y sus mensajes.
 
 **Response 204:** (no content)
 
 ### `POST /api/projects/:id/agents/:agentType/threads/:threadId/chat`
+
 Envia un mensaje al agente y retorna respuesta en streaming.
 
 **Request:**
+
 ```json
 {
   "message": "¿Que arquitectura recomiendas para el modulo de pagos?"
 }
 ```
+
 **Response:** `text/event-stream`
+
 ```
 data: {"type":"text","text":"Para tu proyecto "}
 data: {"type":"text","text":"de marketplace..."}
@@ -359,14 +397,17 @@ data: {"type":"done","message_count":13}
 ```
 
 ### `POST /api/projects/:id/agents/:agentType/threads/:threadId/stop`
+
 Detiene la generacion actual.
 
 **Response 200:** `{ "stopped": true }`
 
 ### `POST /api/projects/:id/artifacts`
+
 Guarda un mensaje del agente como artifact.
 
 **Request:**
+
 ```json
 {
   "name": "Arquitectura de pagos",
@@ -376,6 +417,7 @@ Guarda un mensaje del agente como artifact.
   "source_message_index": 5
 }
 ```
+
 **Response 201:** `{ "id": "uuid", "storage_path": "projects/.../artifacts/arquitectura-de-pagos.md" }`
 
 ---
@@ -406,6 +448,7 @@ src/components/agents/
 ### Reutilizacion de Componentes Compartidos
 
 Se reutilizan de `src/components/shared/chat/`:
+
 - `ChatHistory.tsx`, `ChatMessage.tsx`, `ChatInput.tsx`, `StreamingIndicator.tsx`
 
 `ChatMessage.tsx` se extiende con un slot para `MessageActions` (copiar, guardar) via render prop o children.
@@ -435,7 +478,7 @@ export async function POST(req: Request) {
       if (thread.message_count === 0) {
         await generateThreadTitle(threadId, message)
       }
-    }
+    },
   })
 
   return result.toDataStreamResponse()
@@ -462,18 +505,23 @@ async function generateThreadTitle(threadId: string, firstMessage: string) {
 ## Architecture Decisions
 
 ### `conversation_threads` en lugar de reutilizar `agent_conversations`
+
 `agent_conversations` esta disenada para Phase 00/01 con unique constraint por (project, phase, section, agent). Para el chat libre necesitamos multiples hilos por agente, sin seccion ni fase fija. Una tabla separada es mas limpia y permite indices optimizados para la lista de hilos.
 
 ### Contexto completo del proyecto en cada llamada
+
 Cada llamada al agente incluye el contexto completo del proyecto (discovery + specs + artifacts). Esto es mas costoso en tokens pero garantiza que el agente siempre este actualizado. Se implementa truncamiento progresivo: primero resumir artifacts, luego specs antiguos, finalmente discovery.
 
 ### Titulo auto-generado del hilo
+
 Evita pedirle al usuario que nombre cada conversacion. Se genera despues del primer intercambio con una llamada rapida al LLM (< 50 tokens). Si falla, se usa un fallback basado en el timestamp.
 
 ### Floating Agent Button
+
 Permite acceso rapido al chat sin navegar fuera de la fase actual. Abre un mini-drawer (no fullscreen) para consultas rapidas. Para conversaciones largas, el usuario navega a `/agents`.
 
 ### Artifacts como `project_documents`
+
 Se reutiliza la tabla existente para evitar crear otra entidad. El `document_type = 'artifact'` los distingue. Aparecen en el sidebar de documentos del proyecto como seccion separada.
 
 ---

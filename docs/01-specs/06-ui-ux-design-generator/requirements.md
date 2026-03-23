@@ -93,4 +93,3 @@
 - Generación de prototipos interactivos clickeables — v2.
 - Detección automática de componentes reutilizables (design system) a partir de mockups — v2.
 - Soporte para diseño móvil vs desktop como flujos separados en v1 (se puede mencionar en el prompt; generación única por pantalla es aceptable).
-

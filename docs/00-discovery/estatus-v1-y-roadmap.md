@@ -13,15 +13,15 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 
 ### Criterio go/no-go v1.0 (resumen)
 
-| Área | Estado | Notas |
-|------|--------|--------|
-| IA y configuración | Depende de entorno | `ANTHROPIC_API_KEY` debe estar configurada; Phase 00 y agentes muestran mensajes claros si falla |
-| Auth + Onboarding | ✅ Implementado | Flujo registro/login/onboarding y primer proyecto |
-| Phase 00 + Phase 01 | ✅ Implementado | Discovery guiado, KIRO (features, docs, coherencia, gates) |
-| Agentes (CTO + 8) + adjuntos | ✅ Implementado | Threads, streaming, paywall, adjuntos en chat, contexto de adjuntos en prompt |
-| Diseño & UX (hub) | ✅ Implementado | Hub con Camino A/B, generate HTML visual (wireframe/lowfi/highfi) + lista + detalle con iframe + chat kit HTML (nunca ASCII); revisar backlog menor en `06-ui-ux-design-generator/tasks.md` |
-| Fases 03–07 | ⚠️ Esqueleto | Tasks.md y checklists definidos; UI mínima por fase |
-| QA / E2E | ✅ Cubierto | Specs para auth, Phase 00/01, agentes, paywall, adjuntos, smoke staging |
+| Área                         | Estado             | Notas                                                                                                                                                                                                               |
+| ---------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| IA y configuración           | Depende de entorno | `ANTHROPIC_API_KEY` debe estar configurada; Phase 00 y agentes muestran mensajes claros si falla                                                                                                                    |
+| Auth + Onboarding            | ✅ Implementado    | Flujo registro/login/onboarding y primer proyecto                                                                                                                                                                   |
+| Phase 00 + Phase 01          | ✅ Implementado    | Discovery guiado, KIRO (features, docs, coherencia, gates)                                                                                                                                                          |
+| Agentes (CTO + 8) + adjuntos | ✅ Implementado    | Threads, streaming, paywall, adjuntos en chat, contexto de adjuntos en prompt                                                                                                                                       |
+| Diseño & UX (hub)            | ✅ Implementado    | Hub con Camino A/B: **A** = HTML persistido (`design_artifacts` + iframe); **B** = kit vía hilo UI/UX (HTML+Tailwind en chat, sin ASCII por regla de prompt). Backlog menor en `06-ui-ux-design-generator/tasks.md` |
+| Fases 03–07                  | ⚠️ Esqueleto       | Tasks.md y checklists definidos; UI mínima por fase                                                                                                                                                                 |
+| QA / E2E                     | ✅ Cubierto        | Specs para auth, Phase 00/01, agentes, paywall, adjuntos, smoke staging                                                                                                                                             |
 
 ---
 
@@ -38,7 +38,7 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 
 ### 2.2 Base de datos e infraestructura
 
-- Migraciones Supabase numeradas (001–015), incluyendo:
+- Migraciones Supabase en `infrastructure/supabase/migrations/` (numeración actual **001–020+**), incluyendo:
   - `conversation_threads` con columna `attachments` (JSONB) para adjuntos del chat.
   - `design_artifacts` para el Generador UI/UX.
 - RLS en tablas sensibles; runbooks en `docs/06-ops/` (migraciones staging, etc.).
@@ -52,10 +52,10 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 ### 2.4 Funcionalidad de producto
 
 - **Phase 00 (Discovery):** Chat por sección, generación de documentos, gates de aprobación, persistencia en `agent_conversations` y `project_documents`.
-- **Phase 01 (KIRO):** Features, documentos requirements/design/tasks, validación de coherencia entre specs, aprobaciones y gate final.
-- **Agentes:** Listado CTO + 8 especializados, threads por agente, streaming, sugerencias proactivas, paywall por plan (Starter vs Builder/Agency).
+- **Phase 01 (KIRO):** Features, documentos requirements/design/tasks, validación de coherencia entre specs, aprobaciones y gate final; rail de documentos (`KiroWorkflowRail`) en la UI.
+- **Agentes:** CTO + especialistas + Operator; UI en el tab **Equipo** de `/projects/[id]/phase/00–07` (`PhaseTeamPanel`). Las rutas `/projects/[id]/experts` y `/agents` **redirigen** a la fase actual del proyecto. Threads, streaming, sugerencias proactivas, adjuntos y paywall por plan (Starter vs Builder/Agency).
 - **Adjuntos en chat de agentes:** Subida a Storage (`project-chat`), metadatos en `conversation_threads.attachments`, UI (botón +, “Adjuntos listos”, listado “Archivos adjuntos en esta conversación”), resumen de adjuntos en el prompt del agente.
-- **Vista Diseño & UX:** `/projects/[id]/designs` — hub con **Camino A** (formulario → `POST .../designs/generate` → HTML visual con Tailwind CSS renderizado en iframe con controles mobile/tablet/desktop) y **Camino B** (herramientas numeradas → hilo UI/UX con HTML visual, nunca ASCII art, + `getDesignWorkflowContext` + `design-tool-workflow`). Tres niveles: wireframe (neutro), mockup low-fi (componentes detallados), mockup high-fi (tipo Figma). Breadcrumb contextual (`ProjectBreadcrumb`). Detalle de artefacto con CTA al hub. Ver ADR-007 y spec `06-ui-ux-design-generator`.
+- **Vista Diseño & UX:** `/projects/[id]/designs` — hub con **Camino A** (formulario → `POST .../designs/generate` → HTML con Tailwind en iframe + controles viewport) y **Camino B** (herramientas numeradas → hilo `ui_ux_designer` con `getDesignWorkflowContext` + `design-tool-workflow`; entregables visuales en HTML+Tailwind, sin ASCII art). Tres niveles: wireframe, mockup low-fi, mockup high-fi. `ProjectBreadcrumb` contextual; detalle de artefacto con CTA al hub. Ver ADR-007 y `06-ui-ux-design-generator`.
 
 ### 2.5 Correcciones recientes
 

@@ -135,6 +135,7 @@ create trigger on_auth_user_created
 ### Componentes UI
 
 **Paginas de Auth** (`/login`, `/register`)
+
 - Layout dividido: lado izquierdo con valor prop de AI Squad, lado derecho con formulario
 - Formulario con React Hook Form + validacion Zod
 - Boton Google OAuth prominente, separador visual "o continua con"
@@ -142,6 +143,7 @@ create trigger on_auth_user_created
 - Estados de loading, error y success claros
 
 **Onboarding** (`/onboarding`)
+
 - Barra de progreso en la parte superior (Paso X de 4)
 - Navegacion Atras / Siguiente / Omitir
 - Paso 1: Mensaje de amplitud — "Desde una web simple hasta un SaaS con integraciones o una solucion con agentes IA — construye lo que imagines."
@@ -154,15 +156,19 @@ create trigger on_auth_user_created
 ## Architecture Decisions
 
 ### Supabase Auth (no custom auth)
+
 Supabase maneja tokens JWT, refresh tokens, OAuth flows y email templates. Evita implementar auth desde cero — reduce superficie de ataque y tiempo de desarrollo.
 
 ### Server Components para rutas protegidas
+
 La verificacion de sesion se hace en el servidor con `createServerClient` de Supabase. Evita flash de contenido no autenticado y mejora SEO.
 
 ### Middleware de Next.js para proteccion de rutas
+
 `middleware.ts` intercepta todas las requests, verifica el token y redirige segun estado de auth. Unico punto de control, facil de mantener.
 
 ### Onboarding state en DB (no localStorage)
+
 El progreso del onboarding se persiste en `user_profiles.onboarding_step` — si el usuario cierra el browser a mitad, retoma donde lo dejo. Consistente entre dispositivos.
 
 ---
@@ -172,9 +178,11 @@ El progreso del onboarding se persiste en `user_profiles.onboarding_step` — si
 Los endpoints de auth los maneja Supabase directamente via su SDK. Los endpoints propios son:
 
 ### `POST /api/onboarding/complete`
+
 Marca el onboarding como completado y guarda perfil + primer proyecto.
 
 **Request:**
+
 ```json
 {
   "persona": "emprendedor",
@@ -187,6 +195,7 @@ Marca el onboarding como completado y guarda perfil + primer proyecto.
 ```
 
 **Response 200:**
+
 ```json
 {
   "profile": { "persona": "emprendedor", "onboarding_completed": true },
@@ -195,11 +204,13 @@ Marca el onboarding como completado y guarda perfil + primer proyecto.
 ```
 
 **Response 400:**
+
 ```json
 { "error": "El nombre del proyecto es requerido", "code": "MISSING_PROJECT_NAME" }
 ```
 
 ### `PATCH /api/onboarding/step`
+
 Actualiza el paso actual del onboarding (para persistencia mid-flow).
 
 **Request:** `{ "step": 2 }`

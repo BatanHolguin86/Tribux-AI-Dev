@@ -1,84 +1,82 @@
 # Folder Structure — AI Squad Command Center
 
 **Phase:** 02 — Architecture & Design
-**Fecha:** 2026-03-08
-**Status:** Pendiente aprobacion CEO/CPO
+**Fecha:** 2026-03-08 (actualizado marzo 2026)
+**Status:** Referencia viva — validar rutas de archivo contra el repo; ver también `docs/ESTADO-DEL-PRODUCTO.md`
 
 ---
 
-## Estructura Definitiva del Proyecto
+## Nota de vigencia (marzo 2026)
+
+- **Documentación** bajo `docs/` usa carpetas numeradas por fase IA DLC: `00-discovery`, `01-specs`, `02-architecture`, `03-environment`, `04-development`, `05-qa`, `06-ops`.
+- **Next.js** en el repo: **16.x**; **Tailwind** 4 (config vía `postcss.config.mjs` y `src/app/globals.css`; no hay `tailwind.config.ts` en la raíz).
+- **Agentes en UI:** el chat vive en el tab **Equipo** de `/projects/[id]/phase/00–07`. `/projects/[id]/experts` y `/projects/[id]/agents` **redirigen** a la fase actual.
+- El **árbol detallado de `src/`** más abajo puede diferir en nombres puntuales; la fuente de verdad es el filesystem.
+
+---
+
+## Estructura de alto nivel del proyecto
 
 ```
 /
+├── README.md                              # Punto de entrada; enlaza a docs/
 ├── CLAUDE.md                              # Instrucciones del orquestador
 ├── .env.local                             # Variables de entorno locales (NO commit)
 ├── .env.example                           # Template de variables (SI commit)
 ├── package.json
 ├── pnpm-lock.yaml
 ├── tsconfig.json                          # TypeScript strict: true
-├── next.config.ts                         # Next.js 14 config
-├── tailwind.config.ts                     # Tailwind + shadcn/ui theme
-├── postcss.config.js
+├── next.config.ts                         # Next.js config
+├── postcss.config.mjs                     # PostCSS + Tailwind 4
 ├── vitest.config.ts                       # Vitest config
 ├── playwright.config.ts                   # Playwright E2E config
-├── .eslintrc.json                         # ESLint + Prettier
+├── eslint.config.mjs                      # ESLint
 ├── .prettierrc
 ├── .gitignore
 │
-├── docs/                                  # Toda la documentacion del proyecto
-│   ├── discovery/                         # Phase 00 — briefs e investigacion
+├── docs/                                  # Documentacion (fases IA DLC)
+│   ├── README.md                          # Indice maestro
+│   ├── ESTADO-DEL-PRODUCTO.md             # Snapshot producto vs codigo
+│   │
+│   ├── 00-discovery/                      # Phase 00
 │   │   ├── 01-brief.md
 │   │   ├── 02-personas.md
 │   │   ├── 03-value-proposition.md
 │   │   ├── 04-metrics.md
-│   │   └── 05-competitive-analysis.md
+│   │   ├── 05-competitive-analysis.md
+│   │   ├── 06-plan-financiero-unit-economics.md
+│   │   ├── 07-backoffice-financiero.md
+│   │   └── estatus-v1-y-roadmap.md
 │   │
-│   ├── specs/                             # Phase 01 — specs KIRO por feature
-│   │   ├── 01-prd.md                      # Product Requirements Document
-│   │   ├── 02-requirements.md             # System requirements (EARS)
-│   │   ├── 03-moscow.md                   # Feature priority matrix
-│   │   ├── 04-constraints.md              # Technical & business constraints
-│   │   ├── 05-metrics-instrumentation.md  # Event tracking spec
-│   │   ├── 06-pricing-experiments.md      # Pricing experiments spec
-│   │   │
-│   │   ├── 01-auth-onboarding/
-│   │   │   ├── requirements.md
-│   │   │   ├── design.md
-│   │   │   └── tasks.md
+│   ├── 01-specs/                          # Phase 01 — KIRO + PRD
+│   │   ├── 01-prd.md
+│   │   ├── 02-requirements.md
+│   │   ├── 03-moscow.md
+│   │   ├── 04-constraints.md
+│   │   ├── 05-metrics-instrumentation.md
+│   │   ├── 06-pricing-experiments.md
+│   │   ├── 01-auth-onboarding/            # requirements, design, tasks
 │   │   ├── 02-project-dashboard/
-│   │   │   ├── requirements.md
-│   │   │   ├── design.md
-│   │   │   └── tasks.md
 │   │   ├── 03-phase-00-interactive/
-│   │   │   ├── requirements.md
-│   │   │   ├── design.md
-│   │   │   └── tasks.md
 │   │   ├── 04-kiro-generator/
-│   │   │   ├── requirements.md
-│   │   │   ├── design.md
-│   │   │   └── tasks.md
 │   │   ├── 05-orchestrator/
-│   │   │   ├── requirements.md
-│   │   │   ├── design.md
-│   │   │   └── tasks.md
-│   │   └── 06-ui-ux-design-generator/
-│   │       ├── requirements.md
-│   │       ├── design.md
-│   │       └── tasks.md
+│   │   ├── 06-ui-ux-design-generator/
+│   │   └── 07-phase-03-environment/ … 11-phase-07-iteration/  # tasks por fase
 │   │
-│   ├── architecture/                      # Phase 02 — arquitectura y ADRs
-│   │   ├── system-architecture.md         # Diagramas de sistema
-│   │   ├── database-schema.md             # Esquema completo de DB
+│   ├── 02-architecture/                   # Phase 02
+│   │   ├── system-architecture.md
+│   │   ├── database-schema.md
+│   │   ├── design-tokens.md
+│   │   ├── analisis-comparativo-claude-code-project.md
 │   │   ├── folder-structure.md            # Este archivo
-│   │   └── decisions/                     # Architecture Decision Records
-│   │       ├── ADR-001-stack-selection.md
-│   │       ├── ADR-002-supabase-auth.md
-│   │       ├── ADR-003-vercel-ai-sdk.md
-│   │       ├── ADR-004-document-storage.md
-│   │       └── ADR-005-agent-architecture.md
+│   │   └── decisions/                     # ADR-001 … ADR-007 + README
 │   │
-│   ├── qa/                                # Phase 05 — reportes de calidad
-│   └── ops/                               # Phase 06 — runbooks operacionales
+│   ├── 03-environment/                    # Phase 03 — ver /infrastructure
+│   ├── 04-development/                    # Phase 04 — ver /src
+│   ├── 05-qa/                             # E2E, RLS audit, smoke staging
+│   └── 06-ops/                            # Runbooks (migraciones, Sentry)
+│
+├── scripts/                               # Utilidades dev (plan enterprise, etc.)
 │
 ├── src/                                   # Codigo fuente de la aplicacion
 │   │
@@ -136,9 +134,12 @@
 │   │   │   │       │       └── page.tsx   # Phase 07 Iteration
 │   │   │   │       │
 │   │   │   │       ├── agents/
-│   │   │   │       │   ├── page.tsx       # Agent selection + chat (SSR)
+│   │   │   │       │   ├── page.tsx       # Redirect → phase/{current_phase} (Equipo)
 │   │   │   │       │   ├── loading.tsx
 │   │   │   │       │   └── error.tsx
+│   │   │   │       │
+│   │   │   │       ├── experts/
+│   │   │   │       │   └── page.tsx       # Redirect → phase/{current_phase} (acceso rapido)
 │   │   │   │       │
 │   │   │   │       └── designs/
 │   │   │   │           ├── page.tsx       # Design gallery (SSR)
@@ -407,7 +408,8 @@
 │   │   │   ├── 008_create_feature_documents.sql
 │   │   │   ├── 009_create_conversation_threads.sql
 │   │   │   ├── 010_create_design_artifacts.sql
-│   │   │   └── 011_create_updated_at_triggers.sql
+│   │   │   ├── 011_create_updated_at_triggers.sql
+│   │   │   └── …                          # 012–020+ (adjuntos, planes, design content, knowledge_base, etc.)
 │   │   └── seed.sql                       # Datos iniciales (industries, etc.)
 │   │
 │   ├── github/
@@ -429,13 +431,13 @@
 
 ## Convenciones de Naming
 
-| Elemento | Convencion | Ejemplo |
-|----------|-----------|---------|
-| Archivos y carpetas | `kebab-case` | `phase-00-store.ts` |
-| Componentes React | `PascalCase` | `ProjectCard.tsx` |
-| Route Handlers | `route.ts` (Next.js convention) | `api/projects/route.ts` |
-| Types | `PascalCase` | `ProjectFeature` |
-| Zod schemas | `camelCase` + Schema suffix | `createProjectSchema` |
-| Zustand stores | `kebab-case` + store suffix | `phase-01-store.ts` |
-| Migrations | `NNN_description.sql` | `007_create_project_features.sql` |
-| Tests | Match source file + `.test.ts` / `.spec.ts` | `context-builder.test.ts` |
+| Elemento            | Convencion                                  | Ejemplo                           |
+| ------------------- | ------------------------------------------- | --------------------------------- |
+| Archivos y carpetas | `kebab-case`                                | `phase-00-store.ts`               |
+| Componentes React   | `PascalCase`                                | `ProjectCard.tsx`                 |
+| Route Handlers      | `route.ts` (Next.js convention)             | `api/projects/route.ts`           |
+| Types               | `PascalCase`                                | `ProjectFeature`                  |
+| Zod schemas         | `camelCase` + Schema suffix                 | `createProjectSchema`             |
+| Zustand stores      | `kebab-case` + store suffix                 | `phase-01-store.ts`               |
+| Migrations          | `NNN_description.sql`                       | `007_create_project_features.sql` |
+| Tests               | Match source file + `.test.ts` / `.spec.ts` | `context-builder.test.ts`         |

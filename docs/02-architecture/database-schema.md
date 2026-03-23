@@ -469,10 +469,10 @@ create trigger set_updated_at before update on design_artifacts
 
 ## Supabase Storage — Buckets
 
-| Bucket | Visibilidad | Uso | RLS |
-|--------|-------------|-----|-----|
-| `project-documents` | Private | Markdown docs (discovery, specs, artifacts) | Via signed URLs del servidor |
-| `project-designs` | Private | Wireframes y mockups (PNG/SVG) | Via signed URLs del servidor |
+| Bucket              | Visibilidad | Uso                                         | RLS                          |
+| ------------------- | ----------- | ------------------------------------------- | ---------------------------- |
+| `project-documents` | Private     | Markdown docs (discovery, specs, artifacts) | Via signed URLs del servidor |
+| `project-designs`   | Private     | Wireframes y mockups (PNG/SVG)              | Via signed URLs del servidor |
 
 ### Estructura de archivos en Storage
 
@@ -503,15 +503,15 @@ project-designs/
 
 ## Resumen de Tablas
 
-| # | Tabla | Migration | Rows estimadas/usuario | Indices |
-|---|-------|-----------|----------------------|---------|
-| 1 | `user_profiles` | 001 | 1 | PK |
-| 2 | `projects` | 002 | 1–5 | user+status, user+activity |
-| 3 | `project_phases` | 003 | 8 per project | project+phase (unique) |
-| 4 | `phase_sections` | 004 | 5–20 per project | project+phase |
-| 5 | `agent_conversations` | 005 | 10–30 per project | project+phase+section |
-| 6 | `project_documents` | 006 | 10–30 per project | project+phase+type |
-| 7 | `project_features` | 007 | 3–10 per project | project+order |
-| 8 | `feature_documents` | 008 | 3 per feature | feature+type (unique) |
-| 9 | `conversation_threads` | 009 | 5–20 per project | project+agent+last_msg |
-| 10 | `design_artifacts` | 010 | 5–30 per project | project, project+type |
+| #   | Tabla                  | Migration | Rows estimadas/usuario | Indices                    |
+| --- | ---------------------- | --------- | ---------------------- | -------------------------- |
+| 1   | `user_profiles`        | 001       | 1                      | PK                         |
+| 2   | `projects`             | 002       | 1–5                    | user+status, user+activity |
+| 3   | `project_phases`       | 003       | 8 per project          | project+phase (unique)     |
+| 4   | `phase_sections`       | 004       | 5–20 per project       | project+phase              |
+| 5   | `agent_conversations`  | 005       | 10–30 per project      | project+phase+section      |
+| 6   | `project_documents`    | 006       | 10–30 per project      | project+phase+type         |
+| 7   | `project_features`     | 007       | 3–10 per project       | project+order              |
+| 8   | `feature_documents`    | 008       | 3 per feature          | feature+type (unique)      |
+| 9   | `conversation_threads` | 009       | 5–20 per project       | project+agent+last_msg     |
+| 10  | `design_artifacts`     | 010       | 5–30 per project       | project, project+type      |

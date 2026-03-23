@@ -1,4 +1,5 @@
 # Requirements — AI Squad Command Center
+
 ## EARS Notation (Easy Approach to Requirements Syntax)
 
 **Version:** 1.0
@@ -6,6 +7,7 @@
 **Status:** Pendiente aprobacion CEO/CPO
 
 ### Guia de notacion EARS
+
 - **Ubiquitous:** `The system shall [requirement]`
 - **Event-driven:** `WHEN [trigger], the system shall [requirement]`
 - **State-driven:** `WHILE [state], the system shall [requirement]`

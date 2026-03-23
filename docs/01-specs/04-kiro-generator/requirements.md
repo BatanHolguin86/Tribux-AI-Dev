@@ -150,4 +150,3 @@ La experiencia debe sentirse como una sesion de planificacion con un CTO experto
 - Templates pre-generados de features comunes (auth, CRUD, pagos) — v1.1
 - Colaboracion multi-usuario en la misma Phase 01 — v2.0
 - Export de todos los specs como PDF o ZIP — v1.1
-

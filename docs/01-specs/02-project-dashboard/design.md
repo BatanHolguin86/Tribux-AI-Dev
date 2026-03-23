@@ -18,6 +18,7 @@ El Project Dashboard es una pagina SSR (Server Component) que carga los proyecto
 ### Tablas involucradas
 
 **`projects`** (ya definida en Feature 01)
+
 ```sql
 id            uuid primary key
 user_id       uuid references auth.users
@@ -32,6 +33,7 @@ updated_at    timestamptz default now()
 ```
 
 **`project_phases`** (nueva tabla)
+
 ```sql
 create table project_phases (
   id            uuid primary key default gen_random_uuid(),
@@ -154,6 +156,7 @@ order by p.last_activity desc;
 ```
 
 **Estados de fase en mini timeline:**
+
 - Completada: icono check, color verde (`text-green-600`)
 - Activa: icono play, color primario (`text-violet-600`), animacion pulse
 - Bloqueada: icono lock, color gris (`text-gray-300`)
@@ -220,11 +223,13 @@ Al hacer click en el icono expand, la tarjeta crece verticalmente mostrando:
 ## API Design
 
 ### `GET /api/projects`
+
 Retorna proyectos del usuario autenticado con progreso calculado.
 
 **Query params:** `status=active|archived` (default: `active`)
 
 **Response 200:**
+
 ```json
 {
   "projects": [
@@ -250,9 +255,11 @@ Retorna proyectos del usuario autenticado con progreso calculado.
 ```
 
 ### `POST /api/projects`
+
 Crea un nuevo proyecto e inicializa sus 8 fases (via trigger en DB).
 
 **Request:**
+
 ```json
 {
   "name": "Mi App de Delivery",
@@ -262,6 +269,7 @@ Crea un nuevo proyecto e inicializa sus 8 fases (via trigger en DB).
 ```
 
 **Response 201:**
+
 ```json
 {
   "id": "uuid",
@@ -274,15 +282,18 @@ Crea un nuevo proyecto e inicializa sus 8 fases (via trigger en DB).
 **Response 403:** `{ "error": "Has alcanzado el limite de proyectos de tu plan", "code": "PLAN_LIMIT_REACHED" }`
 
 ### `PATCH /api/projects/:id`
+
 Actualiza nombre, descripcion o estado (archivar/restaurar).
 
 **Request:** `{ "name": "Nuevo nombre" }` | `{ "status": "archived" }`
 **Response 200:** proyecto actualizado
 
 ### `GET /api/projects/:id/phases`
+
 Retorna el estado de las 8 fases de un proyecto.
 
 **Response 200:**
+
 ```json
 {
   "phases": [
@@ -319,6 +330,7 @@ src/components/dashboard/
 ```
 
 **Patron de data fetching:**
+
 - `dashboard/page.tsx` (Server Component) hace el fetch inicial de proyectos con `createServerClient` de Supabase — los datos llegan pre-renderizados
 - `ProjectsGrid` (Client Component) recibe los proyectos como props y maneja busqueda/filtros en memoria (no re-fetch)
 - Mutaciones (crear, archivar, editar) usan Route Handlers y actualizan el estado local del Client Component con `useOptimistic` de React para feedback instantaneo
@@ -328,15 +340,19 @@ src/components/dashboard/
 ## Architecture Decisions
 
 ### SSR para el dashboard inicial
+
 Los proyectos se cargan en el Server Component para evitar loading states y mejorar el LCP. La busqueda y filtros operan sobre los datos ya en memoria — no se hacen peticiones adicionales al servidor al filtrar.
 
 ### `useOptimistic` para mutaciones
+
 Al archivar o editar un proyecto, la UI se actualiza inmediatamente (optimistic update) mientras la peticion al servidor se procesa en background. Si falla, se revierte con un toast de error.
 
 ### Trigger en DB para inicializar fases
+
 Las 8 filas de `project_phases` se crean via trigger en PostgreSQL al insertar un proyecto — garantiza consistencia incluso si la API falla despues de crear el proyecto.
 
 ### Progreso calculado en el servidor
+
 El `progress_percentage` se calcula en la query SQL, no en el cliente — unica fuente de verdad y sin logica duplicada.
 
 ---

@@ -13,12 +13,14 @@ Almacenar los archivos markdown y imagenes de diseño en **Supabase Storage** (b
 ## Contexto
 
 El producto genera multiples documentos por proyecto:
+
 - Discovery docs (5 markdowns, ~5-20KB cada uno)
 - KIRO specs (3 markdowns por feature, ~5-30KB cada uno)
 - Artifacts (markdowns de respuestas guardadas, tamaño variable)
 - Design artifacts (PNG/SVG wireframes/mockups, ~100KB-2MB)
 
 Se necesita:
+
 - Almacenamiento persistente y escalable
 - Acceso controlado por usuario (RLS)
 - Lecturas rapidas para mostrar documentos en la UI
@@ -26,14 +28,14 @@ Se necesita:
 
 ## Opciones Evaluadas
 
-| Criterio | Storage + DB cache | Solo DB (columna text) | S3 externo |
-|----------|:---:|:---:|:---:|
-| Archivos grandes | ✓ | Limitado (< 1MB) | ✓ |
-| RLS integrado | ✓ (via signed URLs) | ✓ (directo) | ✗ (IAM separado) |
-| Lectura rapida | ✓ (cache en DB) | ✓ | ✗ (latencia extra) |
-| Costo adicional | $0 (incluido Supabase) | $0 | ~$5/mo S3 |
-| Complejidad | Media | Baja | Alta |
-| Imagenes | ✓ | ✗ | ✓ |
+| Criterio         |   Storage + DB cache   | Solo DB (columna text) |     S3 externo     |
+| ---------------- | :--------------------: | :--------------------: | :----------------: |
+| Archivos grandes |           ✓            |    Limitado (< 1MB)    |         ✓          |
+| RLS integrado    |  ✓ (via signed URLs)   |      ✓ (directo)       |  ✗ (IAM separado)  |
+| Lectura rapida   |    ✓ (cache en DB)     |           ✓            | ✗ (latencia extra) |
+| Costo adicional  | $0 (incluido Supabase) |           $0           |     ~$5/mo S3      |
+| Complejidad      |         Media          |          Baja          |        Alta        |
+| Imagenes         |           ✓            |           ✗            |         ✓          |
 
 ## Justificacion
 
@@ -58,10 +60,12 @@ project-designs/ (private bucket)
 ## Consecuencias
 
 **Positivas:**
+
 - Un solo servicio (Supabase) para DB + Storage + Auth
 - Cache en DB elimina latencia de Storage para markdowns
 - Signed URLs dan seguridad sin RLS complejo en Storage
 
 **Negativas/Riesgos:**
+
 - Duplicacion de contenido (Storage + DB cache) para markdowns — aceptable dado el tamaño pequeno
 - Sincronizar cache en DB con archivo en Storage requiere disciplina (actualizar ambos en la misma operacion)

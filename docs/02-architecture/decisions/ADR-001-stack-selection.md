@@ -22,7 +22,6 @@ Se necesita un stack que permita:
 
 ## Opciones Evaluadas
 
-
 | Criterio               | Next.js + Supabase + Vercel | Remix + Prisma + Railway | SvelteKit + PocketBase |
 | ---------------------- | --------------------------- | ------------------------ | ---------------------- |
 | Auth integrado         | ✓ (Supabase Auth)           | Parcial (manual)         | Parcial                |
@@ -32,7 +31,6 @@ Se necesita un stack que permita:
 | Ecosistema componentes | ✓ (shadcn/ui)               | Parcial                  | Limitado               |
 | Storage integrado      | ✓ (Supabase Storage)        | ✗ (S3 manual)            | ✓ (PocketBase)         |
 | Madurez y comunidad    | Alta                        | Media                    | Media                  |
-
 
 ## Justificacion
 
@@ -56,3 +54,9 @@ Se necesita un stack que permita:
 - Supabase como punto unico de falla para DB + Auth + Storage (mitigable: backups automaticos, plan Pro con SLA)
 - shadcn/ui componentes son copy-paste, no actualizables automaticamente (mitigable: bajo churn en componentes base)
 
+---
+
+## Seguimiento (marzo 2026)
+
+- El repositorio corre hoy **Next.js 16.x** (App Router), **React 19** y **Tailwind 4**. La decision del ADR (Next + App Router + Vercel + Supabase + shadcn) se mantiene; solo cambia la version menor/mayor del framework en el codigo.
+- Documentacion operativa del estado actual: `docs/ESTADO-DEL-PRODUCTO.md`.

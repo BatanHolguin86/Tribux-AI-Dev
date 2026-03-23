@@ -125,9 +125,11 @@ Usa la plataforma como el "equipo tecnico" de su consultora. El actua como orque
 **Ubicacion:** LATAM (Colombia, Mexico, Argentina, Peru)
 
 ### Contexto
+
 Camila tiene un trabajo estable pero lleva meses con una idea de negocio digital que no deja de crecer en su cabeza. Tiene claro el problema que quiere resolver, quien es su cliente y como monetizarlo. Ha hecho research de mercado por su cuenta, tiene un nombre, quiza un logo. Lo que no tiene es claridad sobre como dar el primer paso tecnico: no sabe si necesita un desarrollador, una app, un sitio web, o por donde empezar. Le da miedo invertir mal su tiempo y sus ahorros.
 
 ### Goals
+
 - Convertir su idea en un producto digital real sin gastar una fortuna
 - Entender que necesita construir exactamente (no mas, no menos) para validar su idea
 - Tener algo funcional que mostrar a primeros usuarios o inversores en 30–60 dias
@@ -135,6 +137,7 @@ Camila tiene un trabajo estable pero lleva meses con una idea de negocio digital
 - Sentir que esta avanzando, no dando vueltas en la planificacion
 
 ### Pain Points
+
 - **No sabe por donde empezar:** Tiene la idea clara pero el primer paso tecnico es completamente opaco. App nativa o web? Backend propio o no-code? Cuanto cuesta? Cuanto tarda?
 - **Miedo a gastar mal:** Ha escuchado historias de emprendedores que perdieron sus ahorros con desarrolladores que no entregaron o entregaron algo que no funcionaba
 - **Paralisis por analisis:** Investiga, compara herramientas, ve tutoriales de YouTube, pero no ejecuta porque no sabe si esta tomando la decision correcta
@@ -143,21 +146,21 @@ Camila tiene un trabajo estable pero lleva meses con una idea de negocio digital
 - **Soledad en el proceso:** Emprende sola o con un co-founder no-tecnico; no tiene equipo ni con quien validar decisiones tecnicas
 
 ### Como usa AI Squad
+
 Es el usuario que mas se beneficia del punto de entrada de Phase 00. Llega sin claridad sobre que construir exactamente — AI Squad la ayuda a definir eso primero (discovery), luego a especificarlo (KIRO) y finalmente a ejecutarlo paso a paso. La metodologia le da la estructura y confianza que necesita para dar el primer paso y no detenerse.
 
 ### Quote representativo
+
 > "Llevo 6 meses con esta idea en la cabeza. Se exactamente el problema que resuelvo y quien me lo va a pagar. Lo que no se es como empezar a construirlo sin perder mis ahorros en el intento."
 
 ---
 
 ## Resumen de Personas
 
-
-| Atributo          | Santiago (Founder)          | Valentina (PM Senior)           | Rodrigo (Consultor)                  | Camila (Emprendedora)               |
-| ----------------- | --------------------------- | ------------------------------- | ------------------------------------ | ----------------------------------- |
-| Urgencia          | Alta — necesita MVP rapido  | Media — quiere velocidad        | Alta — depende de ingresos           | Muy alta — quiere empezar ya        |
-| Presupuesto       | $200–$800/mes               | $500–$2000/mes (empresa)        | $800–$3000/mes (cliente paga)        | $99–$199/mes (ahorros propios)      |
-| Frecuencia de uso | Diaria — es su unico equipo | Semanal — complementa al equipo | Por proyecto — multiple clientes     | Diaria — es su proyecto de vida     |
-| Exito =           | MVP lanzado y con usuarios  | Feature validada en produccion  | Cliente satisfecho, margen alto      | Primera venta o usuario real        |
+| Atributo          | Santiago (Founder)          | Valentina (PM Senior)           | Rodrigo (Consultor)                  | Camila (Emprendedora)                       |
+| ----------------- | --------------------------- | ------------------------------- | ------------------------------------ | ------------------------------------------- |
+| Urgencia          | Alta — necesita MVP rapido  | Media — quiere velocidad        | Alta — depende de ingresos           | Muy alta — quiere empezar ya                |
+| Presupuesto       | $200–$800/mes               | $500–$2000/mes (empresa)        | $800–$3000/mes (cliente paga)        | $99–$199/mes (ahorros propios)              |
+| Frecuencia de uso | Diaria — es su unico equipo | Semanal — complementa al equipo | Por proyecto — multiple clientes     | Diaria — es su proyecto de vida             |
+| Exito =           | MVP lanzado y con usuarios  | Feature validada en produccion  | Cliente satisfecho, margen alto      | Primera venta o usuario real                |
 | Mayor fear        | Perder tiempo y dinero      | No poder demostrar ROI          | Entregar un producto de baja calidad | No saber si esta tomando el camino correcto |
-

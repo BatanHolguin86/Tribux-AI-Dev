@@ -31,11 +31,13 @@ Pendiente típico respecto al spec original: bloque explícito en Phase 02 (TASK
 ## Checklist de Implementacion
 
 ### Setup & Base de datos
+
 - [ ] **TASK-001:** Crear migracion `00X_create_design_artifacts.sql` — tabla `design_artifacts` con RLS e indices segun design.md
 - [ ] **TASK-002:** Crear bucket Supabase Storage `project-designs` (privado) y politicas RLS por `project_id` / `user_id` propietario
 - [ ] **TASK-003:** Definir helper para extraer lista de pantallas/flujos desde `design.md` del proyecto (parseo de seccion UI flow o equivalente)
 
 ### Backend — API
+
 - [ ] **TASK-004:** Crear `POST /api/projects/[projectId]/designs/generate` — valida Phase 01 completada, acepta type + screens + refinement, crea registros en `design_artifacts` con status `generating` y encola job
 - [ ] **TASK-005:** Implementar job/worker (o serverless invocable) que para cada pantalla: llama al agente/LLM con contexto (design.md, requirements, refinement), obtiene wireframe (SVG/HTML o imagen), sube a Storage, actualiza `design_artifacts.storage_path` y status a `draft`
 - [ ] **TASK-006:** Crear `GET /api/projects/[projectId]/designs` — lista artefactos del proyecto con thumbnail_url (signed o route)
@@ -46,6 +48,7 @@ Pendiente típico respecto al spec original: bloque explícito en Phase 02 (TASK
 - [ ] **TASK-011:** Rate limiting o cuota por proyecto para `/designs/generate` y `/refine` (segun constraints del producto)
 
 ### Frontend — Vistas
+
 - [ ] **TASK-012:** Crear ruta `src/app/(dashboard)/projects/[id]/designs/page.tsx` — lista de diseños (grid o tabla) con miniatura, nombre, tipo, estado, acciones (ver, refinar, aprobar, descargar)
 - [ ] **TASK-013:** Crear ruta `src/app/(dashboard)/projects/[id]/designs/[artifactId]/page.tsx` — detalle: imagen full-size, metadatos, botones Refinar, Aprobar para desarrollo, Descargar
 - [ ] **TASK-014:** Crear componente `DesignGenerateModal` — selector de pantallas (desde API o desde design.md), tipo (wireframe / mockup_lowfi / mockup_highfi), campo opcional refinamiento, boton Generar; cierra y refresca lista al exito
@@ -55,24 +58,29 @@ Pendiente típico respecto al spec original: bloque explícito en Phase 02 (TASK
 - [ ] **TASK-018:** Añadir enlace “Diseño” en sidebar del proyecto (junto a Documentos, Phase 02, etc.) que apunte a `/projects/[id]/designs`
 
 ### Agente UI/UX Designer
+
 - [ ] **TASK-019:** Registrar agente “UI/UX Designer” en config de agentes (tipo, nombre, system prompt) — rol: generar wireframes/mockups a partir de specs y user flows; instrucciones de refinamiento
 - [ ] **TASK-020:** En el flujo del chat del agente UI/UX Designer: detectar intención de generación (ej. “genera wireframes para Login y Dashboard”) y llamar a `POST /api/projects/[projectId]/designs/generate` con pantallas extraídas del mensaje; responder con enlaces a los diseños generados o en cola
 - [ ] **TASK-021:** Dar al agente acceso a contexto del proyecto: design.md, requirements.md, nombre e industria del proyecto (incluidos en context o via llamada interna)
 
 ### Integración y guards
+
 - [ ] **TASK-022:** En `GET /designs` y en UI de generación: si el proyecto no tiene Phase 01 completada, devolver 400 con mensaje claro y en front mostrar mensaje “Completa Phase 01 (KIRO) para generar diseños” sin permitir generación
 - [ ] **TASK-023:** En Phase 04 (Core Development): en documentación o panel del proyecto, mostrar enlace a “Diseños aprobados” (filtrar por `status = 'approved'`) para que Frontend Dev los consulte
 
 ### Tipos y tests
+
 - [ ] **TASK-024:** Crear `src/types/design.ts` — tipos `DesignArtifact`, `DesignType`, `DesignStatus`, request/response de generate y refine
 - [ ] **TASK-025:** Tests unitarios para schemas Zod de designs (`tests/unit/validations/designs.test.ts`)
 - [ ] **TASK-026:** Test E2E opcional: usuario con proyecto en Phase 02 genera wireframe, ve lista, abre detalle, aprueba y descarga
 
 ### Deploy y documentación
+
 - [ ] **TASK-027:** Variables de entorno para generación (API de imágenes si se usa; timeouts para jobs)
 - [ ] **TASK-028:** Documentar en `docs/02-architecture/` o ADR la decisión de generación (LLM+SVG/HTML vs API de imágenes) y ubicación de artefactos (Storage path)
 
 ### Alineacion v1.0 KIRO
+
 - [ ] **TASK-601:** Revisar `requirements.md` del Generador de diseños UI/UX para definir explicitamente el alcance v1.0 (wireframes/diseños textuales mínimos y, opcionalmente, mockups low-fi) y mover a v1.1/v2 lo que requiera image APIs avanzadas, Figma, prototipos interactivos, etc.
 - [ ] **TASK-602:** Escribir o actualizar `design.md` minimo viable del Generador de diseños con el modelo de datos (`design_artifacts`), rutas API, integracion con Phase 02 y referencia desde Phase 04, asegurando que describe la implementacion actual
 - [ ] **TASK-603:** Ajustar este `tasks.md` para separar claramente tareas v1.0 (MVP navegable de diseños en el proyecto) y backlog posterior, alineado con la estrategia de producto

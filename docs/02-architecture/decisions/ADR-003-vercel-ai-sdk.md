@@ -13,6 +13,7 @@ Usar **Vercel AI SDK** (`ai` + `@ai-sdk/anthropic`) para todas las interacciones
 ## Contexto
 
 El producto requiere:
+
 - Streaming de respuestas token-by-token en la UI
 - Multiples puntos de chat (Phase 00, Phase 01, Agentes libres)
 - Manejo de historial de mensajes en memoria y persistencia
@@ -21,18 +22,19 @@ El producto requiere:
 
 ## Opciones Evaluadas
 
-| Criterio | Vercel AI SDK | Anthropic SDK directo | LangChain.js |
-|----------|:---:|:---:|:---:|
-| Streaming built-in | ✓ (`streamText`) | ✓ (manual SSE) | ✓ |
-| React hooks | ✓ (`useChat`) | ✗ | ✗ |
-| Provider-agnostic | ✓ (swap model) | ✗ (Anthropic only) | ✓ |
-| Bundle size | Pequeno | Pequeno | Grande |
-| Abort/stop support | ✓ | Manual | ✓ |
-| Complejidad | Baja | Media | Alta |
+| Criterio           |  Vercel AI SDK   | Anthropic SDK directo | LangChain.js |
+| ------------------ | :--------------: | :-------------------: | :----------: |
+| Streaming built-in | ✓ (`streamText`) |    ✓ (manual SSE)     |      ✓       |
+| React hooks        |  ✓ (`useChat`)   |           ✗           |      ✗       |
+| Provider-agnostic  |  ✓ (swap model)  |  ✗ (Anthropic only)   |      ✓       |
+| Bundle size        |     Pequeno      |        Pequeno        |    Grande    |
+| Abort/stop support |        ✓         |        Manual         |      ✓       |
+| Complejidad        |       Baja       |         Media         |     Alta     |
 
 ## Justificacion
 
 Vercel AI SDK ofrece:
+
 1. **`streamText()`** en el servidor — une modelo + prompt + mensajes y retorna un stream listo para SSE
 2. **`useChat()`** en el cliente — maneja mensajes, input, loading state, abort y persistencia en memoria
 3. **Provider swap** — cambiar de Claude a GPT o Gemini requiere solo cambiar la instancia del modelo, no la logica
@@ -68,10 +70,12 @@ const { messages, input, handleSubmit, isLoading, stop } = useChat({
 ## Consecuencias
 
 **Positivas:**
+
 - Streaming funcional en < 50 lineas de codigo
 - Cambio de proveedor de LLM sin reescribir logica de chat
 - `useChat` maneja UX completa (loading, abort, retry) out-of-the-box
 
 **Negativas/Riesgos:**
+
 - Dependencia en Vercel AI SDK (mitigable: es open source, API estable)
 - `useChat` maneja mensajes en memoria — se requiere persistencia manual a Supabase en `onFinish`

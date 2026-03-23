@@ -38,13 +38,12 @@ Si un estratega de negocio puede actuar como CEO/CPO de un equipo de agentes IA 
 
 Cuatro personas identificadas — ver detalle en `02-personas.md`:
 
-
-| Persona         | Perfil                                        | Urgencia | ARPU Estimado   |
-| --------------- | --------------------------------------------- | -------- | --------------- |
-| Santiago Reyes  | Founder no-tecnico, early-stage               | Alta     | $200–$400/mes   |
-| Valentina Mora  | Senior PM en empresa mediana                  | Media    | $500–$800/mes   |
-| Rodrigo Fuentes | Consultor / Agency owner                      | Alta     | $800–$1,500/mes |
-| Camila Torres   | Emprendedora digital, idea clara, sin equipo  | Muy alta | $99–$199/mes    |
+| Persona         | Perfil                                       | Urgencia | ARPU Estimado   |
+| --------------- | -------------------------------------------- | -------- | --------------- |
+| Santiago Reyes  | Founder no-tecnico, early-stage              | Alta     | $200–$400/mes   |
+| Valentina Mora  | Senior PM en empresa mediana                 | Media    | $500–$800/mes   |
+| Rodrigo Fuentes | Consultor / Agency owner                     | Alta     | $800–$1,500/mes |
+| Camila Torres   | Emprendedora digital, idea clara, sin equipo | Muy alta | $99–$199/mes    |
 
 Los cuatro perfiles comparten tres atributos clave: mentalidad experimentadora, claridad sobre la idea de negocio, y la misma brecha — no saben por donde empezar a construir tecnicamente.
 
@@ -74,16 +73,16 @@ Los cuatro perfiles comparten tres atributos clave: mentalidad experimentadora, 
 
 El ciclo de desarrollo que la plataforma guia, de la idea al producto en produccion y la iteracion posterior:
 
-| Fase | Nombre | Objetivo |
-|------|--------|----------|
-| 00 | Discovery & Ideation | Problema de negocio, usuarios, value prop, metricas, analisis competitivo |
-| 01 | Requirements & Spec (KIRO) | Requirements, design y tasks por feature — spec completo antes de codigo |
-| 02 | Architecture & Design | Arquitectura, ADRs, diagramas; wireframes y mockups a partir de specs |
-| 03 | Environment Setup | Repo, CI/CD, Supabase, Vercel — proyecto corriendo en staging |
-| 04 | Core Development | Implementacion segun tasks; integracion con agentes IA |
-| 05 | Testing & QA | Tests, reporte de calidad, criterios de aceptacion |
-| 06 | Launch & Deployment | Deploy a produccion, monitoring, runbook operacional |
-| 07 | Iteration & Growth | Retrospectiva, backlog, siguiente ciclo |
+| Fase | Nombre                     | Objetivo                                                                  |
+| ---- | -------------------------- | ------------------------------------------------------------------------- |
+| 00   | Discovery & Ideation       | Problema de negocio, usuarios, value prop, metricas, analisis competitivo |
+| 01   | Requirements & Spec (KIRO) | Requirements, design y tasks por feature — spec completo antes de codigo  |
+| 02   | Architecture & Design      | Arquitectura, ADRs, diagramas; wireframes y mockups a partir de specs     |
+| 03   | Environment Setup          | Repo, CI/CD, Supabase, Vercel — proyecto corriendo en staging             |
+| 04   | Core Development           | Implementacion segun tasks; integracion con agentes IA                    |
+| 05   | Testing & QA               | Tests, reporte de calidad, criterios de aceptacion                        |
+| 06   | Launch & Deployment        | Deploy a produccion, monitoring, runbook operacional                      |
+| 07   | Iteration & Growth         | Retrospectiva, backlog, siguiente ciclo                                   |
 
 Cada fase tiene un gate de aprobacion: el usuario valida antes de avanzar. Detalle operativo en `CLAUDE.md` y alcance por modulo en `docs/01-specs/01-prd.md`.
 
@@ -94,16 +93,17 @@ Cada fase tiene un gate de aprobacion: el usuario valida antes de avanzar. Detal
 **Tipo:** SaaS B2B
 **Modelo de pricing (hipotesis inicial):**
 
-| Plan       | Precio            | Para quien                   | Proyectos | Fases incluidas (IA DLC) | Agentes IA |
-| ---------- | ----------------- | ---------------------------- | --------- | ------------------------- | ---------- |
-| Starter    | $149/mes          | Founders early-stage         | 1 activo | **00–04** (Discovery → KIRO → Arquitectura/Diseño UI → Environment → Core Dev) | CTO Virtual |
-| Builder    | $299/mes          | PMs y founders con traccion  | 2 activos | **00–06** (hasta Launch & Deployment — producto en produccion) | CTO + 7 especializados |
-| Agency     | $699/mes          | Consultores y agencias       | 5 activos | **00–07** (ciclo completo + Phase 07 Iteration; multi-cliente) | CTO + 7 + white-label parcial |
-| Enterprise | Negociable        | Empresas, equipos internos, volumen | A medida  | **00–07** + alcance extendido | Todo + SSO, SLA, soporte prioritario, custom |
+| Plan       | Precio     | Para quien                          | Proyectos | Fases incluidas (IA DLC)                                                       | Agentes IA                                   |
+| ---------- | ---------- | ----------------------------------- | --------- | ------------------------------------------------------------------------------ | -------------------------------------------- |
+| Starter    | $149/mes   | Founders early-stage                | 1 activo  | **00–04** (Discovery → KIRO → Arquitectura/Diseño UI → Environment → Core Dev) | CTO Virtual                                  |
+| Builder    | $299/mes   | PMs y founders con traccion         | 2 activos | **00–06** (hasta Launch & Deployment — producto en produccion)                 | CTO + 7 especializados                       |
+| Agency     | $699/mes   | Consultores y agencias              | 5 activos | **00–07** (ciclo completo + Phase 07 Iteration; multi-cliente)                 | CTO + 7 + white-label parcial                |
+| Enterprise | Negociable | Empresas, equipos internos, volumen | A medida  | **00–07** + alcance extendido                                                  | Todo + SSO, SLA, soporte prioritario, custom |
 
 **Enterprise** requiere negociacion previa: precio, numero de proyectos, fases y beneficios adicionales (SSO, SLA, soporte dedicado, integraciones a medida, etc.) se definen en funcion del volumen y necesidades del cliente. La oferta de valor se cotiza caso por caso.
 
 **Que implica cada rango de fases:**
+
 - **Starter (00–04):** Llevas tu idea desde discovery hasta specs KIRO, diseños UI/UX y desarrollo core; ideal para validar un primer MVP sin llegar a deploy publico.
 - **Builder (00–06):** Todo lo anterior mas Testing & QA y Launch — puedes poner productos en produccion; 2 proyectos en paralelo y acceso a todos los agentes (Product/System Architect, UI/UX Designer, Lead Dev, DB Admin, QA, DevOps).
 - **Agency (00–07):** Ciclo completo incluyendo Phase 07 (retrospectiva, backlog, siguiente sprint); 5 proyectos; orientado a consultoras que gestionan varios clientes.
@@ -127,7 +127,6 @@ Ver analisis completo en `05-competitive-analysis.md`.
 
 ## Riesgos Identificados
 
-
 | Riesgo                                                             | Probabilidad | Impacto | Mitigacion                                                                  |
 | ------------------------------------------------------------------ | ------------ | ------- | --------------------------------------------------------------------------- |
 | Los LLMs cometen errores tecnicos que el usuario no puede detectar | Media        | Alto    | Gates de validacion por fase + stack opinado que reduce superficie de error |
@@ -135,7 +134,6 @@ Ver analisis completo en `05-competitive-analysis.md`.
 | Competidores (Bolt, Lovable) agregan metodologia                   | Media        | Alto    | Velocidad de ejecucion + comunidad + brand de metodologia                   |
 | Precio demasiado bajo para ser sostenible                          | Baja         | Medio   | Monitorear LTV/CAC desde el primer mes                                      |
 | Dependencia de un solo proveedor de LLM                            | Media        | Alto    | Arquitectura multi-modelo desde el inicio                                   |
-
 
 ---
 

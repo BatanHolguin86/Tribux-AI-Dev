@@ -10,22 +10,26 @@
 ## User Stories
 
 ### Registro
+
 - Como emprendedor digital, quiero registrarme con mi email y contrasena, para crear mi cuenta y empezar a construir mi primer proyecto.
 - Como usuario, quiero registrarme con Google (OAuth), para no tener que crear otra contrasena y entrar mas rapido.
 - Como usuario, quiero recibir un email de confirmacion al registrarme, para verificar que mi cuenta es valida y segura.
 
 ### Login
+
 - Como usuario registrado, quiero iniciar sesion con email y contrasena, para acceder a mis proyectos.
 - Como usuario registrado, quiero iniciar sesion con Google, para entrar rapido sin recordar contrasena.
 - Como usuario, quiero poder recuperar mi contrasena via email, para no perder acceso a mi cuenta.
 
 ### Onboarding
+
 - Como nuevo usuario, quiero un flujo de onboarding guiado despues de registrarme, para entender que es AI Squad, como funciona la metodologia IA DLC y que puedo construir con la plataforma.
 - Como nuevo usuario, quiero crear mi primer proyecto durante el onboarding (nombre, descripcion breve, industria), para llegar directo al valor sin pasos extra.
 - Como nuevo usuario, quiero seleccionar mi perfil de usuario (Founder, PM, Consultor, Emprendedor digital), para que la plataforma personalice la experiencia y el lenguaje segun mi contexto.
 - Como nuevo usuario, quiero ver un resumen de las 8 fases del IA DLC antes de empezar, para saber que recorrido me espera y sentirme orientado.
 
 ### Sesion & Seguridad
+
 - Como usuario, quiero que mi sesion persista entre visitas, para no tener que hacer login cada vez que entro.
 - Como usuario, quiero poder cerrar sesion de forma segura, para proteger mi cuenta en dispositivos compartidos.
 
@@ -34,6 +38,7 @@
 ## Acceptance Criteria
 
 ### Registro
+
 - [ ] El usuario puede registrarse con email + contrasena (minimo 8 caracteres, al menos 1 numero)
 - [ ] El usuario puede registrarse con Google OAuth en un solo click
 - [ ] Al registrarse con email, se envia un correo de confirmacion automatico
@@ -41,6 +46,7 @@
 - [ ] El formulario valida campos en tiempo real antes del submit
 
 ### Login
+
 - [ ] El usuario puede iniciar sesion con email + contrasena correctos
 - [ ] El usuario puede iniciar sesion con Google OAuth
 - [ ] Credenciales incorrectas muestran mensaje de error sin revelar cual campo fallo (seguridad)
@@ -48,6 +54,7 @@
 - [ ] La sesion persiste minimo 7 dias sin actividad (refresh token)
 
 ### Onboarding
+
 - [ ] El onboarding se activa automaticamente en el primer login del usuario
 - [ ] El flujo tiene maximo 4 pasos (no abrumar al usuario nuevo)
 - [ ] El usuario selecciona su perfil: Founder, PM Senior, Consultor/Agency, Emprendedor Digital
@@ -58,6 +65,7 @@
 - [ ] El progreso del onboarding se guarda si el usuario lo abandona a mitad
 
 ### Sesion & Seguridad
+
 - [ ] Logout limpia la sesion del cliente y del servidor (invalida el token)
 - [ ] Rutas protegidas redirigen a /login si el usuario no esta autenticado
 - [ ] El estado de autenticacion es consistente entre tabs del mismo navegador

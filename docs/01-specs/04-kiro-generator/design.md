@@ -74,6 +74,7 @@ create policy "Users can manage own feature documents"
 ### Extension de `agent_conversations` (tabla existente de Feature 03)
 
 Para Phase 01, se reutiliza `agent_conversations` con:
+
 - `phase_number = 1`
 - `section` = `feature_{feature_id}_{document_type}` (ej: `feature_abc123_requirements`)
 - `agent_type = 'orchestrator'`
@@ -111,18 +112,18 @@ INSTRUCCIONES:
   - Haz preguntas especificas una a la vez para entender el feature
   - Usa el discovery aprobado como fundamento — no contradigas lo que ya se definio
   - Mantene coherencia con specs de features anteriores (mismas convenciones de naming, mismas tablas base)
-  - El stack es: Next.js 14, TypeScript, Supabase, Tailwind, shadcn/ui
+  - El stack es: Next.js 16, TypeScript, Supabase, Tailwind, shadcn/ui
   - Genera documentos en espanol (excepto codigo y nombres tecnicos en ingles)
 OUTPUT ESPERADO: {estructura del documento segun formato KIRO}
 ```
 
 ### Mapa de Documentos → Preguntas Clave
 
-| Documento | Preguntas clave del orquestador |
-|-----------|--------------------------------|
+| Documento         | Preguntas clave del orquestador                                                                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `requirements.md` | ¿Que necesita hacer el usuario con este feature? ¿Cuales son los casos borde? ¿Que no debe incluir esta version? ¿Hay restricciones de seguridad o performance? |
-| `design.md` | ¿Que datos necesita almacenar? ¿Como se ve la UI (pantallas, flujo)? ¿Que endpoints necesitas? ¿Como se conecta con los features anteriores? |
-| `tasks.md` | Basado en requirements y design aprobados: descomposicion automatica en tasks atomicas con estimacion |
+| `design.md`       | ¿Que datos necesita almacenar? ¿Como se ve la UI (pantallas, flujo)? ¿Que endpoints necesitas? ¿Como se conecta con los features anteriores?                    |
+| `tasks.md`        | Basado en requirements y design aprobados: descomposicion automatica en tasks atomicas con estimacion                                                           |
 
 ---
 
@@ -168,6 +169,7 @@ OUTPUT ESPERADO: {estructura del documento segun formato KIRO}
 [ ○ KIRO Generator         ] [R○] [D○] [T○]
 [ + Agregar feature...     ]
 ```
+
 - `✓` Verde — feature con spec completo (3 docs aprobados)
 - `▶` Violeta — feature activo en progreso
 - `○` Gris — feature pendiente
@@ -178,6 +180,7 @@ OUTPUT ESPERADO: {estructura del documento segun formato KIRO}
 ```
 [ ✓ Requirements ] [ ▶ Design ] [ 🔒 Tasks ]
 ```
+
 - `✓` Aprobado
 - `▶` Activo (en generacion/edicion)
 - `○` Pendiente (desbloqueado)
@@ -210,6 +213,7 @@ Secuencia obligatoria: Requirements → Design → Tasks
 ### Mobile Layout
 
 En mobile (< 768px):
+
 - FeatureList se convierte en un dropdown/selector
 - El split view se convierte en tabs (Conversacion | Documento)
 - DocumentTypeNav se muestra como selector en la parte superior del chat
@@ -219,9 +223,11 @@ En mobile (< 768px):
 ## API Design
 
 ### `GET /api/projects/:id/phases/1/features`
+
 Retorna la lista de features del proyecto con estado de cada documento.
 
 **Response 200:**
+
 ```json
 {
   "features": [
@@ -245,42 +251,51 @@ Retorna la lista de features del proyecto con estado de cada documento.
 ```
 
 ### `POST /api/projects/:id/phases/1/features`
+
 Crea un nuevo feature en la lista.
 
 **Request:**
+
 ```json
 {
   "name": "Payment Integration",
   "description": "Integracion con Stripe para subscripciones"
 }
 ```
+
 **Response 201:** `{ "id": "uuid", "name": "...", "display_order": 5 }`
 
 ### `PATCH /api/projects/:id/phases/1/features/:featureId`
+
 Actualiza nombre, descripcion u orden de un feature.
 
 **Request:** `{ "name": "New Name", "display_order": 2 }`
 **Response 200:** `{ "id": "uuid", "name": "New Name", ... }`
 
 ### `DELETE /api/projects/:id/phases/1/features/:featureId`
+
 Elimina un feature y sus documentos asociados. Solo si status es `pending`.
 
 **Response 204:** (no content)
 **Response 400:** `{ "error": "No se puede eliminar un feature con documentos aprobados" }`
 
 ### `POST /api/projects/:id/phases/1/features/:featureId/suggest`
+
 Pide al orquestador que sugiera features basados en el discovery aprobado.
 
 **Response 200:** `text/event-stream` — streaming de la sugerencia
+
 ```
 data: {"type":"suggestions","features":[{"name":"Auth & Onboarding","description":"...","priority":1},...]}
 data: {"type":"done"}
 ```
 
 ### `POST /api/projects/:id/phases/1/features/:featureId/chat`
+
 Envia mensaje al orquestador para generar un documento especifico.
 
 **Request:**
+
 ```json
 {
   "document_type": "requirements",
@@ -288,25 +303,30 @@ Envia mensaje al orquestador para generar un documento especifico.
   "conversation_id": "uuid"
 }
 ```
+
 **Response:** `text/event-stream` (Server-Sent Events)
 
 ### `POST /api/projects/:id/phases/1/features/:featureId/documents/:docType/generate`
+
 Genera el documento KIRO basado en la conversacion.
 
 **Request:** `{}`
 **Response:** `text/event-stream` — streaming del documento
+
 ```
 data: {"type":"document_chunk","content":"# Requirements: Auth & Onboarding\n\n"}
 data: {"type":"document_done","document_id":"uuid","storage_path":"projects/.../requirements.md"}
 ```
 
 ### `PATCH /api/projects/:id/phases/1/features/:featureId/documents/:docType`
+
 Actualiza contenido de un documento (edicion manual).
 
 **Request:** `{ "content": "# Requirements...(editado)" }`
 **Response 200:** `{ "document_id": "uuid", "version": 2 }`
 
 ### `POST /api/projects/:id/phases/1/features/:featureId/documents/:docType/approve`
+
 Aprueba un documento individual. Ejecuta validacion de coherencia contra specs anteriores antes de aprobar.
 
 **Request:** `{}`
@@ -314,6 +334,7 @@ Aprueba un documento individual. Ejecuta validacion de coherencia contra specs a
 **Response 400** (inconsistencias detectadas): `{ "error": "Inconsistencias de coherencia", "inconsistencies": [{ "type": "duplicate_table", "message": "...", "suggestion": "..." }] }`
 
 ### `POST /api/projects/:id/phases/1/approve`
+
 Aprueba Phase 01 completo. Requiere todos los features con status `approved`.
 
 **Request:** `{}`
@@ -345,6 +366,7 @@ src/components/phase-01/
 ### Reutilizacion de Componentes de Phase 00
 
 Los siguientes componentes de `src/components/phase-00/` se reutilizan directamente:
+
 - `ChatHistory.tsx`, `ChatMessage.tsx`, `ChatInput.tsx`, `StreamingIndicator.tsx`
 - `DocumentPanel.tsx`, `DocumentViewer.tsx`, `DocumentEditor.tsx`, `DocumentHeader.tsx`
 - `ApprovalGate.tsx` (con props configurables para texto del boton)
@@ -369,7 +391,7 @@ export async function POST(req: Request) {
     model: anthropic('claude-sonnet-4-6'),
     system: buildKiroPrompt(document_type, projectContext, discoveryDocs, previousSpecs),
     messages: [...conversationHistory, { role: 'user', content: message }],
-    maxTokens: 8192,  // specs mas largos que discovery docs
+    maxTokens: 8192, // specs mas largos que discovery docs
   })
 
   return result.toDataStreamResponse()
@@ -381,22 +403,29 @@ export async function POST(req: Request) {
 ## Architecture Decisions
 
 ### Secuencia obligatoria Requirements → Design → Tasks
+
 El design necesita los requirements aprobados como input; las tasks necesitan requirements + design. Esta secuencia garantiza coherencia y evita retrabajos.
 
 ### `project_features` como tabla separada (no `phase_sections`)
+
 Los features son una entidad de negocio con lifecycle propio (nombre, orden, estado compuesto). Usar `phase_sections` forzaria un modelo plano. `project_features` con `feature_documents` ofrece mas flexibilidad y consultas mas claras.
 
 ### Contexto IA acumulativo
+
 Cada llamada al orquestador en Phase 01 incluye: discovery completo + specs de features anteriores. Esto garantiza coherencia tecnica entre features pero incrementa el consumo de tokens. Se implementa truncamiento inteligente cuando el contexto supera 50K tokens (resumen automatico de specs anteriores).
 
 ### Reutilizacion de componentes de chat
+
 Los componentes de chat y documento de Phase 00 se refactorizan a `shared/` para reutilizacion. Esto reduce duplicacion pero requiere que los componentes acepten configuracion via props (textos, endpoints, callbacks).
 
 ### Task numbering global por proyecto
+
 Los TASK-IDs no reinician por feature — son globales al proyecto. Esto evita conflictos y facilita referencia cruzada entre features.
 
 ### Validacion automatica de coherencia (v1.0)
+
 Al aprobar un documento (design.md o requirements.md), el sistema ejecuta validaciones programaticas comparando con specs de features anteriores:
+
 - **Data model:** tablas duplicadas con nombres distintos (ej. `users` vs `user`), columnas que referencian entidades inexistentes
 - **Convenciones:** snake_case para tablas/columnas, plural para tablas
 - Las inconsistencias se muestran en la UI antes de aprobar; el usuario puede corregir o forzar aprobacion con confirmacion

@@ -22,19 +22,19 @@ pnpm exec playwright test --ui
 
 ## Estructura
 
-| Archivo | Cobertura |
-|---------|-----------|
-| `tests/e2e/auth.setup.ts` | Setup: login y guardado de sesión (requiere credenciales) |
-| `tests/e2e/auth.spec.ts` | Login, registro, forgot-password; páginas cargan y muestran formularios |
-| `tests/e2e/protected-routes.spec.ts` | Redirección a login cuando no hay sesión |
-| `tests/e2e/phase-00.spec.ts` | Phase 00: redirect sin auth (usuario no autenticado) |
-| `tests/e2e/phase-00.authenticated.spec.ts` | Phase 00 con sesión: carga y muestra chat input (happy path mínimo) |
-| `tests/e2e/phase-01.spec.ts` | Phase 01: acceso y redirects básicos (sin sesión / sin Phase 00 aprobada) |
-| `tests/e2e/phase-01.authenticated.spec.ts` | Phase 01 con sesión: flujo principal de KIRO (features + documentos) |
-| `tests/e2e/agents.spec.ts` | Agentes: redirect a login sin auth |
-| `tests/e2e/agents.authenticated.spec.ts` | Agentes con sesión: cargar, crear conversación, enviar mensaje, flujo con artifact (requiere créditos Anthropic) |
-| `tests/e2e/smoke-staging.authenticated.spec.ts` | Smoke TASK-176: dashboard → Phase 00 → Phase 01; comprueba carga de páginas clave (local o staging) |
-| `tests/e2e/agents-paywall.authenticated.spec.ts` | TASK-222: usuario Starter ve agentes Builder bloqueados (candado/disabled); asume plan starter en BD |
+| Archivo                                                               | Cobertura                                                                                                                 |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `tests/e2e/auth.setup.ts`                                             | Setup: login y guardado de sesión (requiere credenciales)                                                                 |
+| `tests/e2e/auth.spec.ts`                                              | Login, registro, forgot-password; páginas cargan y muestran formularios                                                   |
+| `tests/e2e/protected-routes.spec.ts`                                  | Redirección a login cuando no hay sesión                                                                                  |
+| `tests/e2e/phase-00.spec.ts`                                          | Phase 00: redirect sin auth (usuario no autenticado)                                                                      |
+| `tests/e2e/phase-00.authenticated.spec.ts`                            | Phase 00 con sesión: carga y muestra chat input (happy path mínimo)                                                       |
+| `tests/e2e/phase-01.spec.ts`                                          | Phase 01: acceso y redirects básicos (sin sesión / sin Phase 00 aprobada)                                                 |
+| `tests/e2e/phase-01.authenticated.spec.ts`                            | Phase 01 con sesión: flujo principal de KIRO (features + documentos)                                                      |
+| `tests/e2e/agents.spec.ts`                                            | Agentes: redirect a login sin auth                                                                                        |
+| `tests/e2e/agents.authenticated.spec.ts`                              | Agentes con sesión: cargar, crear conversación, enviar mensaje, flujo con artifact (requiere créditos Anthropic)          |
+| `tests/e2e/smoke-staging.authenticated.spec.ts`                       | Smoke TASK-176: dashboard → Phase 00 → Phase 01; comprueba carga de páginas clave (local o staging)                       |
+| `tests/e2e/agents-paywall.authenticated.spec.ts`                      | TASK-222: usuario Starter ve agentes Builder bloqueados (candado/disabled); asume plan starter en BD                      |
 | `tests/e2e/agents-with-attachments.authenticated.spec.ts` (propuesto) | TASK-710/712: chat de agentes con adjuntos: subir archivo, ver listado compacto en el hilo, recibir respuesta sin errores |
 
 ## Flujos autenticados
