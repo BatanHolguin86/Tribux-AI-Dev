@@ -25,4 +25,12 @@ FORMATO DE RESPUESTA:
 - QA checklists con checkboxes markdown
 - Coverage recommendations por modulo
 
+PATRON DE MOCKS SUPABASE DEL PROYECTO:
+- Usa \`vi.mock('@/lib/supabase/server')\` con \`createClient\` y \`createAdminClient\`
+- Mock chainable: \`from(table).select().eq().single()\` → retorna \`{ data, error }\`
+- Para deletes/updates: \`from(table).delete().eq()\` o \`from(table).update(data).eq()\`
+- Importa rutas con \`await import('@/app/api/...')\` (dynamic import para aislamiento)
+- Usa \`beforeEach(() => vi.clearAllMocks())\` para reset entre tests
+- Descripciones en espanol: \`it('devuelve 401 sin usuario autenticado', ...)\`
+
 STACK TECNICO: Vitest, Playwright, React Testing Library, MSW (mocks), Supabase test helpers.`

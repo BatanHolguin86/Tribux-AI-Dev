@@ -32,6 +32,7 @@ export type FullProjectContext = {
   featureSpecs: string
   artifacts: string
   attachmentsSummary?: string
+  wasTruncated?: boolean
 }
 
 export function buildAgentPrompt(
@@ -63,6 +64,18 @@ ${context.artifacts || 'No hay artifacts guardados.'}`
   if (context.attachmentsSummary) {
     prompt += `\n\n### Adjuntos recientes del hilo\n${context.attachmentsSummary}\n`
   }
+
+  // Warn agent when context was truncated
+  if (context.wasTruncated) {
+    prompt += `\n\nNOTA: El contexto del proyecto fue recortado por tamano. Algunos specs o artifacts antiguos pueden no estar completos. Si necesitas informacion especifica que no aparece, pidele al usuario que la comparta.`
+  }
+
+  // Gate instruction for ALL agents: don't pressure phase progression
+  prompt += `\n\nREGLA DE FASES (OBLIGATORIA):
+- Trabaja SOLO dentro de la fase actual (Phase ${String(context.currentPhase).padStart(2, '0')}).
+- NUNCA sugieras "pasar a Phase XX" ni listes un roadmap de fases futuras.
+- El usuario controla la progresion mediante botones de aprobacion en la plataforma.
+- Si el usuario pregunta sobre una fase futura, responde brevemente pero NO presiones avanzar.`
 
   return prompt
 }

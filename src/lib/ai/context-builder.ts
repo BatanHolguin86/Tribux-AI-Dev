@@ -117,15 +117,16 @@ export function applyProgressiveTruncation(
   featureSpecs: string,
   artifacts: string,
   maxTotal: number = 200_000,
-): { discoveryDocs: string; featureSpecs: string; artifacts: string } {
+): { discoveryDocs: string; featureSpecs: string; artifacts: string; wasTruncated: boolean } {
   const totalChars = discoveryDocs.length + featureSpecs.length + artifacts.length
   if (totalChars <= maxTotal) {
-    return { discoveryDocs, featureSpecs, artifacts }
+    return { discoveryDocs, featureSpecs, artifacts, wasTruncated: false }
   }
   return {
     discoveryDocs: truncateText(discoveryDocs, 40_000),
     featureSpecs: truncateText(featureSpecs, 80_000),
     artifacts: truncateText(artifacts, 20_000),
+    wasTruncated: true,
   }
 }
 
@@ -193,6 +194,7 @@ export async function buildFullProjectContext(projectId: string): Promise<{
   discoveryDocs: string
   featureSpecs: string
   artifacts: string
+  wasTruncated: boolean
 }> {
   const supabase = await createClient()
 
@@ -235,7 +237,7 @@ export async function buildFullProjectContext(projectId: string): Promise<{
     .map((a) => `### ${a.section}\n${truncateText(a.content ?? '', 1000)}`)
     .join('\n\n')
 
-  const { discoveryDocs: finalDiscovery, featureSpecs: finalSpecs, artifacts: finalArtifacts } =
+  const { discoveryDocs: finalDiscovery, featureSpecs: finalSpecs, artifacts: finalArtifacts, wasTruncated } =
     applyProgressiveTruncation(discoveryDocs, featureSpecs, artifacts, 200_000)
 
   return {
@@ -248,6 +250,7 @@ export async function buildFullProjectContext(projectId: string): Promise<{
     discoveryDocs: finalDiscovery,
     featureSpecs: finalSpecs,
     artifacts: finalArtifacts,
+    wasTruncated,
   }
 }
 

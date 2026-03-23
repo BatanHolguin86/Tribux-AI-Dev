@@ -21,4 +21,9 @@ FORMATO DE RESPUESTA:
 - Scope: lista de "Incluye" y "No incluye (v2.0)"
 - Roadmap: fases o sprints con deliverables concretos
 
+COMUNICACION CON USUARIOS NO TECNICOS:
+- Muchos usuarios NO son tecnicos (founders, PMs, emprendedores).
+- Incluye un bloque "**Resumen para ti**" al inicio con 3-4 lineas en lenguaje NO tecnico explicando que se decidio y por que importa para su negocio.
+- Prioriza claridad sobre jerga: "los usuarios podran X" en vez de "el endpoint soporta Y".
+
 STACK TECNICO: Next.js 14+ (App Router), TypeScript strict, Supabase, Tailwind CSS, shadcn/ui.`

@@ -112,6 +112,14 @@ vi.mock('@/lib/ai/agents/prompt-builder', () => ({
 vi.mock('@/lib/ai/title-generator', () => ({
   generateThreadTitle: vi.fn().mockResolvedValue('Test thread'),
 }))
+vi.mock('@/lib/ai/anthropic', () => ({
+  defaultModel: 'mock-model',
+  AI_CONFIG: { chat: { maxOutputTokens: 8192, temperature: 0.7 } },
+}))
+vi.mock('@/lib/ai/usage', () => ({
+  recordAiUsage: vi.fn().mockResolvedValue(undefined),
+  estimateTokensFromText: vi.fn().mockReturnValue(100),
+}))
 vi.mock('ai', () => ({
   streamText: vi.fn().mockImplementation(() => ({
     toTextStreamResponse: () =>
@@ -119,6 +127,10 @@ vi.mock('ai', () => ({
         headers: { 'content-type': 'text/plain; charset=utf-8' },
       }),
   })),
+  generateText: vi.fn().mockResolvedValue({
+    text: 'Internal specialist note',
+    usage: { inputTokens: 50, outputTokens: 50 },
+  }),
 }))
 
 describe('POST /api/projects/[id]/agents/[agentType]/threads/[threadId]/chat', () => {

@@ -248,7 +248,7 @@ export async function POST(
     const isCto = (agentType as AgentType) === 'cto_virtual'
     const isFirstThreadTurn = thread.message_count === 0
     const currentPhase = projectContext.currentPhase
-    if (isCto && isFirstThreadTurn && currentPhase >= 3 && currentPhase <= 7) {
+    if (isCto && isFirstThreadTurn && currentPhase >= 0 && currentPhase <= 7) {
       async function consultInternal(a: AgentType, instruction: string, eventType: AiUsageEventType) {
         const specialistSystem = buildAgentPrompt(a, {
           ...projectContext,
@@ -289,7 +289,42 @@ export async function POST(
       const needsOperator = /runbook|operaci(on)?|on-?call|incident|rollback|sre/.test(userMsgLower)
       const needsQA = /test|qa|quality|e2e|integration|unit|regression/.test(userMsgLower)
 
-      if (currentPhase === 3) {
+      if (currentPhase === 0) {
+        const pa = await consultInternal(
+          'product_architect',
+          'Analiza el mensaje del usuario en contexto de Discovery. Dame bullets sobre: problema real vs percibido, personas clave, y riesgos de scope.',
+          'phase00_chat',
+        )
+        internalNotesParts.push(`## Product Architect\n${pa}`)
+      } else if (currentPhase === 1) {
+        const [pa, sa] = await Promise.all([
+          consultInternal(
+            'product_architect',
+            'Analiza el contexto de los specs KIRO. Dame bullets sobre: coherencia de user stories, prioridad de features, y gaps de acceptance criteria.',
+            'phase01_chat',
+          ),
+          consultInternal(
+            'system_architect',
+            'Analiza los specs KIRO. Dame bullets sobre: viabilidad tecnica del design, riesgos de arquitectura, y dependencias criticas.',
+            'phase01_chat',
+          ),
+        ])
+        internalNotesParts.push(`## Product Architect\n${pa}`, `## System Architect\n${sa}`)
+      } else if (currentPhase === 2) {
+        const [sa, dba] = await Promise.all([
+          consultInternal(
+            'system_architect',
+            'Analiza la arquitectura propuesta. Dame bullets sobre: patrones recomendados, trade-offs, y ADRs pendientes.',
+            'phase02_chat',
+          ),
+          consultInternal(
+            'db_admin',
+            'Analiza el modelo de datos propuesto. Dame bullets sobre: esquema, indices, RLS policies necesarias, y riesgos de performance.',
+            'phase02_chat',
+          ),
+        ])
+        internalNotesParts.push(`## System Architect\n${sa}`, `## DB Admin\n${dba}`)
+      } else if (currentPhase === 3) {
         const [devops, operator, dba] = await Promise.all([
           consultInternal(
             'devops_engineer',

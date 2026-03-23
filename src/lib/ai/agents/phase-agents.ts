@@ -27,3 +27,12 @@ export const PHASE_02_AGENTS: Record<Phase02Section, AgentType[]> = {
   api_design: ['cto_virtual', 'lead_developer', 'system_architect'],
   architecture_decisions: ['cto_virtual', 'system_architect', 'product_architect'],
 }
+
+/** Phases 03-07: agents consulted by CTO orchestration on first message */
+export const PHASE_03_07_AGENTS: Record<number, AgentType[]> = {
+  3: ['devops_engineer', 'operator', 'db_admin'],
+  4: ['lead_developer', 'qa_engineer'],
+  5: ['qa_engineer', 'lead_developer'],
+  6: ['devops_engineer', 'operator'],
+  7: ['product_architect', 'qa_engineer'],
+}
