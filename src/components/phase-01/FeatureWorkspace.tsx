@@ -73,8 +73,11 @@ export function FeatureWorkspace({
     if (nextDocument) {
       setActiveDocType(nextDocument)
       setMobileTab('chat')
+    } else {
+      // Last doc approved → feature complete, go back to feature list
+      setTimeout(() => onBack(), 1500)
     }
-  }, [activeDocType])
+  }, [activeDocType, onBack])
 
   const docsApproved = (['requirements', 'design', 'tasks'] as KiroDocumentType[]).filter(
     (dt) => documents[dt]?.status === 'approved',

@@ -57,7 +57,7 @@ export function Phase01Layout({
   }, [])
 
   const handleBack = useCallback(() => {
-    setActiveFeatureId(null)
+    window.location.reload()
   }, [])
 
   const handleRefresh = useCallback(() => {
