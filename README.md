@@ -26,3 +26,5 @@ pnpm dev
 ## Infraestructura
 
 Migraciones y seed: `infrastructure/supabase/`. CI: `infrastructure/github/workflows/`.
+
+**Release / producción:** variables, migraciones (incl. `021` para checklists por ítem), buckets y checklist previo al deploy en [`docs/06-ops/v1-release.md`](./docs/06-ops/v1-release.md).

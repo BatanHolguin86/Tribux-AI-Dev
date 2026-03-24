@@ -60,6 +60,15 @@ begin
 end $$;
 
 -- ============================================================
+-- 021: Per-item checklist state on phase_sections
+-- ============================================================
+
+alter table phase_sections
+  add column if not exists item_states jsonb not null default '{}'::jsonb;
+
+comment on column phase_sections.item_states is 'Per-item checklist progress: keys are string indices "0","1", values boolean';
+
+-- ============================================================
 -- Verification: check all tables have RLS enabled
 -- ============================================================
 

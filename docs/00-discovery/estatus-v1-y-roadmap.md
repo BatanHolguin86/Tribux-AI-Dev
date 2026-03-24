@@ -1,6 +1,6 @@
 # Informe de avances y hoja de ruta v1.0 — AI Squad Command Center
 
-**Fecha:** 2026-03 (actualizado 2026-03-24 — Fase A cerrada)  
+**Fecha:** 2026-03 (actualizado 2026-03-24 — Fases A, B y C cerradas)  
 **Objetivo:** Resumir en qué hemos avanzado, el estatus actual y la hoja de ruta global sugerida para culminar la v1.0.
 
 ---
@@ -9,7 +9,7 @@
 
 ### Visión en una frase
 
-El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Agentes con adjuntos) y el hub **Diseño & UX** (generate + kit con agente). Las fases 03–07 tienen especificación y tareas definidas, pero la implementación es parcial o en esqueleto.
+El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Agentes con adjuntos) y el hub **Diseño & UX** (generate + kit con agente). Las fases **03–07** tienen checklists/Kanban persistidos, enlaces a runbooks y narrativa de cierre en dashboard y proyecto; parte del trabajo sigue siendo manual o externo (CI, Supabase, Vercel).
 
 ### Criterio go/no-go v1.0 (resumen)
 
@@ -22,7 +22,7 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 | Phase 00 + Phase 01          | ✅ Implementado     | Discovery guiado, KIRO (features, docs, coherencia, gates)                                                                                                                                                          |
 | Agentes (CTO + 8) + adjuntos | ✅ Implementado     | Threads, streaming, paywall, adjuntos en chat, contexto de adjuntos en prompt                                                                                                                                       |
 | Diseño & UX (hub)            | ✅ Implementado     | Hub con Camino A/B: **A** = HTML persistido (`design_artifacts` + iframe); **B** = kit vía hilo UI/UX (HTML+Tailwind en chat, sin ASCII por regla de prompt). Backlog menor en `06-ui-ux-design-generator/tasks.md` |
-| Fases 03–07                  | ⚠️ Esqueleto       | Tasks.md y checklists definidos; UI mínima por fase                                                                                                                                                                 |
+| Fases 03–07                  | ✅ Operativas       | `PhaseProgressHeader` + checklists persistidos (ítems en 03/05/06/07; Kanban en 04); docs 05-qa / 06-ops enlazados; migración `021` (`item_states`)                                                                 |
 | QA / E2E                     | ✅ Cubierto         | Specs + suite local estable (`pnpm test:e2e`: 0 fallos con credenciales/setup adecuados); ver `v1-go-no-go.md` y `e2e-tests.md`                                                                                    |
 
 ---
@@ -76,7 +76,7 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 ## 3. Lo que falta o está a medias para v1.0
 
 - **Diseño & UX:** Hub en Phase 02 (Camino A/B), aprobación en detalle, panel aprobados en Phase 04, CTA en Secciones, chat → generate con `[GENERAR …]`, mini-vistas en lista. Pendientes menores: job asíncrono dedicado, E2E dedicado, parser `design.md` (TASK-003). Ver `06-ui-ux-design-generator/tasks.md`.
-- **Fases 03–07:** Implementar en UI los checklists interactivos (Environment, Dev, QA, Launch, Iteration) y la persistencia del estado por proyecto, para que el usuario pueda marcar tareas y ver progreso real.
+- **Fases 03–07:** Checklists/Kanban con persistencia (categoría + ítems en 03/05/06/07; tasks en 04). Evoluciones futuras: más automatización o sync con CI.
 - **Staging / release:** Re-ejecutar E2E y smoke contra staging cuando cambie el entorno; mantener evidencia en `v1-go-no-go.md` antes de go-live.
 
 ---
@@ -107,15 +107,15 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 
    PATCH `approved` ya existía en detalle de artefacto; Phase 04 muestra panel **Diseños aprobados** con enlaces a cada artefacto (`Phase04ResourceBar`).
 
-### Fase C — Esqueleto “construir + lanzar” (1 sprint)
+### Fase C — Esqueleto “construir + lanzar” (1 sprint) — ✅ Cerrada (mar 2026)
 
-1. **Fases 03–07 operativas**
+1. **Fases 03–07 operativas** — ✅
 
-   Implementar en cada fase (03–07) la vista con `PhaseProgressHeader` y un checklist persistido (por proyecto), con opción de marcar ítems como completados. Enlazar a runbooks existentes en `docs/06-ops/` y `docs/05-qa/`.
+   `PhaseProgressHeader` en 03–07; categorías persistidas en `phase_sections`; **ítems** por categoría en `item_states` (JSON) vía `POST .../phases/{3|5|6|7}/sections/[section]/item`. Phase 04: Kanban = checklist persistido (`project_tasks`) + `PhaseDocsCallout` y cabecera con estado vacío claro. Enlaces a `docs/06-ops/`, `docs/05-qa/` (incl. `v1-go-no-go.md`) y `docs/04-development/` ampliados. Migración: `021_phase_sections_item_states.sql`.
 
-2. **Narrativa de cierre**
+2. **Narrativa de cierre** — ✅
 
-   Asegurar que desde el dashboard o la navegación quede claro que el usuario puede “completar” Environment, Dev, QA, Launch e Iteration (aunque parte del trabajo sea manual/externo), alineado con el objetivo de “diseña + construye + lanza”.
+   `DlcClosingNarrative` en dashboard (`ProjectsGrid`) y layout de proyecto (debajo del breadcrumb): explica flujo 03–07 y trabajo manual vs. in-app.
 
 ### Fase D — Cierre v1.0
 
@@ -123,9 +123,9 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 
    Recorrer la checklist go/no-go con un usuario de prueba; corregir bugs críticos.
 
-2. **Documentación de release**
+2. **Documentación de release** — ✅ (mar 2026)
 
-   Actualizar README o `docs/` con requisitos de despliegue (variables de entorno, migraciones, buckets) y con la definición de “v1.0” (alcance y limitaciones conocidas).
+   Guía operativa: [`docs/06-ops/v1-release.md`](../06-ops/v1-release.md) (alcance v1.0, limitaciones, env, migraciones incl. `021`, buckets, checklist pre-deploy). README raíz y `docs/README.md` enlazan a la guía.
 
 3. **Lanzamiento**
 
@@ -136,6 +136,6 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 ## 5. Resumen ejecutivo
 
 - **Avances:** Base metodológica (KIRO + IA DLC), Auth/Dashboard, Phase 00 y 01 completas, Orquestador + 9 agentes con adjuntos y contexto enriquecido, hub **Diseño & UX** (Camino A/B, generate, `design_artifacts`), QA documentada y tests E2E definidos. Correcciones recientes en Phase 00 y chat de agentes para evitar 500 y pantallas mudas.
-- **Estado:** El producto permite hoy “diseñar” de punta a punta (Discovery → KIRO → Agentes); “construir” y “lanzar” están en especificación y en esqueleto de fases 03–07.
-- **Hoja de ruta sugerida:** **(A)(B) Hechas.** **Siguiente:** (C) Checklists 03–07 operativos; (D) Revisión go/no-go, docs de release y lanzamiento.
+- **Estado:** “Diseñar” (00–02) y “construir + lanzar” (03–07) con checklists/Kanban persistidos e ítems por categoría donde aplica; narrativa en dashboard y proyecto.
+- **Hoja de ruta sugerida:** **(A)(B)(C) Hechas.** **Siguiente:** (D) Revisión go/no-go con usuario de prueba, docs de release y lanzamiento.
 

@@ -29,6 +29,7 @@ La carpeta `docs/` está ordenada según la **metodología IA DLC** (AI-Driven D
 - **Priorización y alcance:** `01-specs/03-moscow.md`, `01-specs/01-prd.md`
 - **Avances, gaps y roadmap v1.0:** `00-discovery/estatus-v1-y-roadmap.md`
 - **Go / No-go v1.0 y baseline QA:** `05-qa/v1-go-no-go.md`
+- **Release v1.0 (despliegue, migraciones 021, buckets):** `06-ops/v1-release.md`
 - **Decisiones técnicas (índice):** `02-architecture/decisions/README.md`
 - **Diseño & UX en el producto (hub, Camino A/B, agente):** `01-specs/06-ui-ux-design-generator/` y ADR-007 en `02-architecture/decisions/ADR-007-design-hub-two-path-ux.md`
 
