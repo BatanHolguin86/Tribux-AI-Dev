@@ -2,7 +2,7 @@ import { generateText, streamText } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
-import { buildFullProjectContext } from '@/lib/ai/context-builder'
+import { buildFullProjectContext, getProjectKnowledgeContext } from '@/lib/ai/context-builder'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { generateThreadTitle } from '@/lib/ai/title-generator'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
@@ -14,6 +14,7 @@ import { AGENT_MAP } from '@/lib/ai/agents'
 import type { AgentType } from '@/types/agent'
 import type { AiUsageEventType } from '@/lib/ai/usage'
 import { extractTextFromMessage } from '@/lib/ai/extract-text-from-message'
+import { validateAgentOutput } from '@/lib/ai/output-validator'
 
 export const maxDuration = 60
 
@@ -208,11 +209,15 @@ export async function POST(
 
     const allAttachments = [...existingAttachments, ...newAttachments]
 
-    // Build context and prompt (including summary of recent attachments)
-    const projectContext = await buildFullProjectContext(projectId)
+    // Build context and prompt (including summary of recent attachments + KB memory)
+    const [projectContext, knowledgeContext] = await Promise.all([
+      buildFullProjectContext(projectId),
+      getProjectKnowledgeContext(projectId),
+    ])
     const attachmentsSummary = buildAttachmentsSummary(allAttachments)
     let systemPrompt = buildAgentPrompt(agentType as AgentType, {
       ...projectContext,
+      knowledgeContext,
       attachmentsSummary,
     })
 
@@ -416,6 +421,72 @@ export async function POST(
       }
     }
 
+    // Cross-consultation for non-CTO specialists:
+    // When a user's question crosses into another agent's specialty,
+    // automatically consult the relevant peer and inject their input.
+    if (!isCto) {
+      const CROSS_CONSULT_TRIGGERS: Record<string, Array<{ pattern: RegExp; peer: AgentType; instruction: string }>> = {
+        lead_developer: [
+          { pattern: /test|spec|qa|quality|coverage/i, peer: 'qa_engineer', instruction: 'Que tests y criterios de calidad aplican para esta implementacion? Bullets concretos.' },
+          { pattern: /schema|tabla|migracion|rls|index|database|base de datos|sql/i, peer: 'db_admin', instruction: 'Revisa el modelo de datos implicado. Que esquema, indices y RLS se necesitan? Bullets concretos.' },
+          { pattern: /deploy|ci|cd|pipeline|vercel/i, peer: 'devops_engineer', instruction: 'Que consideraciones de deployment y CI/CD aplican? Bullets concretos.' },
+        ],
+        db_admin: [
+          { pattern: /api|endpoint|route|rest|graphql/i, peer: 'system_architect', instruction: 'Que patrones de API y arquitectura complementan este modelo de datos? Bullets concretos.' },
+        ],
+        ui_ux_designer: [
+          { pattern: /schema|datos|api|endpoint|backend/i, peer: 'system_architect', instruction: 'Que estructura de datos y API soporta este diseno de UI? Bullets concretos.' },
+        ],
+        qa_engineer: [
+          { pattern: /implementa|codigo|component|hook|function/i, peer: 'lead_developer', instruction: 'Que patrones de implementacion y mejores practicas aplican para facilitar el testing? Bullets concretos.' },
+        ],
+        system_architect: [
+          { pattern: /test|qa|quality|coverage/i, peer: 'qa_engineer', instruction: 'Que estrategia de testing complementa esta arquitectura? Bullets concretos.' },
+          { pattern: /deploy|infra|ci|cd|pipeline/i, peer: 'devops_engineer', instruction: 'Que consideraciones de infraestructura y deployment aplican? Bullets concretos.' },
+        ],
+        devops_engineer: [
+          { pattern: /schema|migracion|database|rls/i, peer: 'db_admin', instruction: 'Que consideraciones de base de datos aplican para este deployment? Bullets concretos.' },
+        ],
+      }
+
+      const triggers = CROSS_CONSULT_TRIGGERS[agentType] ?? []
+      const userMsgLower = userMessage.toLowerCase()
+      const matchedTrigger = triggers.find((t) => t.pattern.test(userMsgLower))
+
+      if (matchedTrigger) {
+        const peerSystem = buildAgentPrompt(matchedTrigger.peer, {
+          ...projectContext,
+          knowledgeContext,
+        })
+        const { text: peerAdvice, usage: peerUsage } = await generateText({
+          model: defaultModel,
+          system: peerSystem,
+          messages: [
+            {
+              role: 'user' as const,
+              content: `Contexto: un colega ${agentType} esta respondiendo al usuario sobre: "${userMessage.slice(0, 300)}"\n\n${matchedTrigger.instruction}\n\nMax 400 tokens.`,
+            },
+          ],
+          maxOutputTokens: 400,
+          temperature: 0.3,
+        })
+
+        const peerInputTokens = peerUsage?.inputTokens ?? estimateTokensFromText(peerSystem + matchedTrigger.instruction)
+        const peerOutputTokens = peerUsage?.outputTokens ?? estimateTokensFromText(peerAdvice)
+        recordAiUsage(supabase, {
+          userId,
+          projectId,
+          eventType: 'agent_chat',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens: peerInputTokens,
+          outputTokens: peerOutputTokens,
+        }).catch(() => {})
+
+        const peerLabel = AGENT_MAP[matchedTrigger.peer]?.name ?? matchedTrigger.peer
+        systemPrompt += `\n\n---\n\nCONSULTA CRUZADA (input de ${peerLabel}, integra en tu respuesta sin citarlo como fuente):\n${peerAdvice}`
+      }
+    }
+
     const result = streamText({
       model: defaultModel,
       system: systemPrompt,
@@ -423,10 +494,11 @@ export async function POST(
       maxOutputTokens: AI_CONFIG.chat.maxOutputTokens,
       temperature: AI_CONFIG.chat.temperature,
       onFinish: async (response) => {
+        const validatedText = validateAgentOutput(response.text)
         const updatedMessages = [
           ...existingMessages,
           { role: 'user', content: userMessage, created_at: now },
-          { role: 'assistant', content: response.text, created_at: now },
+          { role: 'assistant', content: validatedText, created_at: now },
         ]
 
         await supabase

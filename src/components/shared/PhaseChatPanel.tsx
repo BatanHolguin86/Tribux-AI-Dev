@@ -1,0 +1,134 @@
+'use client'
+
+import { useRef, useEffect, useState } from 'react'
+import { useChat } from '@ai-sdk/react'
+import { TextStreamChatTransport } from 'ai'
+import type { UIMessage } from 'ai'
+import { ChatMessage } from '@/components/shared/chat/ChatMessage'
+import { ChatInput } from '@/components/shared/chat/ChatInput'
+import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
+import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { QuickReplies, extractOptions } from '@/components/shared/chat/QuickReplies'
+import { PHASE_KICKOFF_MESSAGES } from '@/lib/ai/prompts/phase-chat-builders'
+import { PHASE_NAMES } from '@/types/project'
+
+function getTextContent(msg: UIMessage): string {
+  return msg.parts
+    .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+    .map((p) => p.text)
+    .join('')
+}
+
+type PhaseChatPanelProps = {
+  projectId: string
+  phaseNumber: number
+  initialMessages: Array<{ role: string; content: string; created_at?: string }>
+}
+
+export function PhaseChatPanel({ projectId, phaseNumber, initialMessages }: PhaseChatPanelProps) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const kickoffSent = useRef(false)
+  const [input, setInput] = useState('')
+
+  const kickoffMessage = PHASE_KICKOFF_MESSAGES[phaseNumber] ?? ''
+  const phaseName = PHASE_NAMES[phaseNumber] ?? `Phase ${phaseNumber}`
+
+  const { messages, sendMessage, status, stop, error } = useChat({
+    transport: new TextStreamChatTransport({
+      api: `/api/projects/${projectId}/phases/${phaseNumber}/chat`,
+    }),
+    messages: initialMessages.map((m, i) => ({
+      id: String(i),
+      role: m.role as 'user' | 'assistant',
+      parts: [{ type: 'text' as const, text: m.content }],
+    })),
+  })
+
+  const isLoading = status === 'streaming' || status === 'submitted'
+
+  // Auto-kickoff on first visit
+  useEffect(() => {
+    if (initialMessages.length === 0 && !kickoffSent.current && kickoffMessage) {
+      kickoffSent.current = true
+      sendMessage({ text: kickoffMessage })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-scroll
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [messages, isLoading])
+
+  // Quick replies from last assistant message
+  const lastMessage = messages[messages.length - 1]
+  const lastText = lastMessage ? getTextContent(lastMessage) : ''
+  const lastAssistantText = lastMessage?.role === 'assistant' ? lastText : ''
+  const { options: quickOptions } = extractOptions(lastAssistantText)
+  const showQuickReplies = quickOptions.length > 0 && !isLoading
+
+  function handleQuickReply(option: string) {
+    sendMessage({ text: option })
+  }
+
+  function onSubmit() {
+    if (!input.trim()) return
+    sendMessage({ text: input })
+    setInput('')
+  }
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      {error && <ChatErrorBanner error={error} />}
+
+      {/* Messages */}
+      <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
+        {messages.length === 0 && !isLoading && (
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
+            <p className="text-sm text-violet-600 font-medium">
+              El CTO esta analizando {phaseName}...
+            </p>
+            <p className="text-xs text-gray-400">
+              Preparando guia basada en el contexto del proyecto
+            </p>
+          </div>
+        )}
+
+        {messages.map((msg) => {
+          const text = getTextContent(msg)
+          // Hide auto-kickoff user messages
+          if (msg.role === 'user' && text === kickoffMessage) {
+            return null
+          }
+          const { cleanText } = extractOptions(text)
+          return (
+            <ChatMessage
+              key={msg.id}
+              role={msg.role as 'user' | 'assistant'}
+              content={cleanText}
+              projectId={projectId}
+            />
+          )
+        })}
+
+        {isLoading && <StreamingIndicator />}
+      </div>
+
+      {/* Quick replies */}
+      {showQuickReplies && (
+        <QuickReplies options={quickOptions} onSelect={handleQuickReply} />
+      )}
+
+      {/* Input */}
+      <ChatInput
+        value={input}
+        onChange={setInput}
+        onSubmit={onSubmit}
+        onStop={stop}
+        isLoading={isLoading}
+      />
+    </div>
+  )
+}

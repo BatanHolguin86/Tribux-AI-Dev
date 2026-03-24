@@ -10,6 +10,7 @@ import { KanbanBoard } from './KanbanBoard'
 import { Phase04FinalGate } from './Phase04FinalGate'
 import { Phase04ResourceBar, type Phase04ApprovedDesign } from './Phase04ResourceBar'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
+import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
 const PHASE04_OBJECTIVE =
   'El Kanban es tu checklist de desarrollo: cada task KIRO persistida se mueve hasta Done. Parte del trabajo puede ser manual (IDE, PRs, repos externos).'
@@ -18,6 +19,7 @@ type Phase04LayoutProps = {
   projectId: string
   initialTasks: TaskWithFeature[]
   approvedDesigns?: Phase04ApprovedDesign[]
+  initialMessages: Array<{ role: string; content: string; created_at?: string }>
 }
 
 const phaseAgents = getPhaseAgents(4)
@@ -26,6 +28,7 @@ export function Phase04Layout({
   projectId,
   initialTasks,
   approvedDesigns = [],
+  initialMessages,
 }: Phase04LayoutProps) {
   const [tasks, setTasks] = useState(initialTasks)
 
@@ -111,11 +114,21 @@ export function Phase04Layout({
       </div>
     )
 
+  const chatContent = (
+    <PhaseChatPanel
+      projectId={projectId}
+      phaseNumber={4}
+      initialMessages={initialMessages}
+    />
+  )
+
   return (
     <PhaseWorkspaceTabs
       phaseNumber={4}
       projectId={projectId}
       phaseAgents={phaseAgents}
+      hasTools
+      toolsContent={chatContent}
       teamContent={(goToSecciones) => (
         <PhaseTeamPanel
           projectId={projectId}

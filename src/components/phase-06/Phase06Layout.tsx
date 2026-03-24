@@ -12,6 +12,7 @@ import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCard } from '@/components/shared/ChecklistCard'
 import { Phase06FinalGate } from './Phase06FinalGate'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
+import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
 const PHASE_OBJECTIVE =
   'Verifica checklist de lanzamiento: deploy, monitoring, dominios y documentación operacional.'
@@ -19,11 +20,12 @@ const PHASE_OBJECTIVE =
 type Phase06LayoutProps = {
   projectId: string
   categories: PhaseChecklistCategory[]
+  initialMessages: Array<{ role: string; content: string; created_at?: string }>
 }
 
 const phaseAgents = getPhaseAgents(6)
 
-export function Phase06Layout({ projectId, categories: initialCategories }: Phase06LayoutProps) {
+export function Phase06Layout({ projectId, categories: initialCategories, initialMessages }: Phase06LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
 
   const completedCount = categories.filter(
@@ -139,11 +141,21 @@ export function Phase06Layout({ projectId, categories: initialCategories }: Phas
     </div>
   )
 
+  const chatContent = (
+    <PhaseChatPanel
+      projectId={projectId}
+      phaseNumber={6}
+      initialMessages={initialMessages}
+    />
+  )
+
   return (
     <PhaseWorkspaceTabs
       phaseNumber={6}
       projectId={projectId}
       phaseAgents={phaseAgents}
+      hasTools
+      toolsContent={chatContent}
       teamContent={(goToSecciones) => (
         <PhaseTeamPanel
           projectId={projectId}

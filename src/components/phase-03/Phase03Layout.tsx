@@ -12,6 +12,7 @@ import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCategory } from './ChecklistCategory'
 import { Phase03FinalGate } from './Phase03FinalGate'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
+import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
 const PHASE_OBJECTIVE =
   'Configura repositorio, base de datos, autenticación, hosting y variables de entorno antes de pasar a desarrollo.'
@@ -19,11 +20,12 @@ const PHASE_OBJECTIVE =
 type Phase03LayoutProps = {
   projectId: string
   categories: PhaseChecklistCategory[]
+  initialMessages: Array<{ role: string; content: string; created_at?: string }>
 }
 
 const phaseAgents = getPhaseAgents(3)
 
-export function Phase03Layout({ projectId, categories: initialCategories }: Phase03LayoutProps) {
+export function Phase03Layout({ projectId, categories: initialCategories, initialMessages }: Phase03LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
 
   const completedCount = categories.filter(
@@ -140,11 +142,21 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
     </div>
   )
 
+  const chatContent = (
+    <PhaseChatPanel
+      projectId={projectId}
+      phaseNumber={3}
+      initialMessages={initialMessages}
+    />
+  )
+
   return (
     <PhaseWorkspaceTabs
       phaseNumber={3}
       projectId={projectId}
       phaseAgents={phaseAgents}
+      hasTools
+      toolsContent={chatContent}
       teamContent={(goToSecciones) => (
         <PhaseTeamPanel
           projectId={projectId}

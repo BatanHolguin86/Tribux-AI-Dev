@@ -12,6 +12,7 @@ import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCard } from '@/components/shared/ChecklistCard'
 import { Phase07FinalGate } from './Phase07FinalGate'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
+import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
 const PHASE_OBJECTIVE =
   'Recopila feedback, analiza métricas y planifica el siguiente ciclo del producto.'
@@ -19,11 +20,12 @@ const PHASE_OBJECTIVE =
 type Phase07LayoutProps = {
   projectId: string
   categories: PhaseChecklistCategory[]
+  initialMessages: Array<{ role: string; content: string; created_at?: string }>
 }
 
 const phaseAgents = getPhaseAgents(7)
 
-export function Phase07Layout({ projectId, categories: initialCategories }: Phase07LayoutProps) {
+export function Phase07Layout({ projectId, categories: initialCategories, initialMessages }: Phase07LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
 
   const completedCount = categories.filter((c) => c.status === 'completed' || c.status === 'approved').length
@@ -138,11 +140,21 @@ export function Phase07Layout({ projectId, categories: initialCategories }: Phas
     </div>
   )
 
+  const chatContent = (
+    <PhaseChatPanel
+      projectId={projectId}
+      phaseNumber={7}
+      initialMessages={initialMessages}
+    />
+  )
+
   return (
     <PhaseWorkspaceTabs
       phaseNumber={7}
       projectId={projectId}
       phaseAgents={phaseAgents}
+      hasTools
+      toolsContent={chatContent}
       teamContent={(goToSecciones) => (
         <PhaseTeamPanel
           projectId={projectId}

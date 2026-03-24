@@ -12,6 +12,7 @@ import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCard } from '@/components/shared/ChecklistCard'
 import { Phase05FinalGate } from './Phase05FinalGate'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
+import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
 const PHASE_OBJECTIVE =
   'Completa tests unitarios, de integración y E2E; genera el reporte de QA antes de aprobar la fase.'
@@ -19,11 +20,12 @@ const PHASE_OBJECTIVE =
 type Phase05LayoutProps = {
   projectId: string
   categories: PhaseChecklistCategory[]
+  initialMessages: Array<{ role: string; content: string; created_at?: string }>
 }
 
 const phaseAgents = getPhaseAgents(5)
 
-export function Phase05Layout({ projectId, categories: initialCategories }: Phase05LayoutProps) {
+export function Phase05Layout({ projectId, categories: initialCategories, initialMessages }: Phase05LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
 
   const completedCount = categories.filter(
@@ -139,11 +141,21 @@ export function Phase05Layout({ projectId, categories: initialCategories }: Phas
     </div>
   )
 
+  const chatContent = (
+    <PhaseChatPanel
+      projectId={projectId}
+      phaseNumber={5}
+      initialMessages={initialMessages}
+    />
+  )
+
   return (
     <PhaseWorkspaceTabs
       phaseNumber={5}
       projectId={projectId}
       phaseAgents={phaseAgents}
+      hasTools
+      toolsContent={chatContent}
       teamContent={(goToSecciones) => (
         <PhaseTeamPanel
           projectId={projectId}

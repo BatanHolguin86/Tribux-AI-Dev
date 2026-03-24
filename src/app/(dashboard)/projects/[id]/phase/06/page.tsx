@@ -43,5 +43,17 @@ export default async function Phase06Page({
     }
   })
 
-  return <Phase06Layout projectId={projectId} categories={categories} />
+  // Fetch CTO chat messages for Herramientas tab
+  const { data: chatRow } = await supabase
+    .from('agent_conversations')
+    .select('messages')
+    .eq('project_id', projectId)
+    .eq('phase_number', 6)
+    .eq('section', 'all')
+    .eq('agent_type', 'orchestrator')
+    .maybeSingle()
+
+  const initialMessages = (chatRow?.messages as Array<{ role: string; content: string; created_at?: string }>) ?? []
+
+  return <Phase06Layout projectId={projectId} categories={categories} initialMessages={initialMessages} />
 }

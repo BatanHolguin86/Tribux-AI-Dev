@@ -1,12 +1,21 @@
 'use client'
 
 import React, { useRef, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { formatRelativeDate } from '@/lib/utils'
+
+type ActionSuggestion = {
+  type: 'navigate' | 'consult_agent'
+  label: string
+  url?: string
+  agent?: string
+}
 
 type ChatMessageProps = {
   role: 'user' | 'assistant'
   content: string
   createdAt?: string
+  projectId?: string
 }
 
 function renderInline(text: string): React.ReactNode[] {
@@ -327,8 +336,58 @@ function renderTextContent(text: string, isUser: boolean, keyPrefix: string): Re
   })
 }
 
-export function ChatMessage({ role, content, createdAt }: ChatMessageProps) {
+/** Parse ---ACTION--- blocks from agent response */
+function extractAction(text: string): { cleanText: string; action: ActionSuggestion | null } {
+  const actionRegex = /---ACTION---\s*(\{[\s\S]*?\})\s*---\/ACTION---/
+  const match = text.match(actionRegex)
+  if (!match) return { cleanText: text, action: null }
+
+  try {
+    const parsed = JSON.parse(match[1]) as ActionSuggestion
+    if (parsed.type && parsed.label) {
+      return {
+        cleanText: text.replace(match[0], '').trim(),
+        action: parsed,
+      }
+    }
+  } catch { /* invalid JSON */ }
+
+  return { cleanText: text.replace(match[0], '').trim(), action: null }
+}
+
+function ActionButton({ action, projectId }: { action: ActionSuggestion; projectId?: string }) {
+  const router = useRouter()
+
+  function handleClick() {
+    if (action.type === 'navigate' && action.url) {
+      router.push(action.url)
+    } else if (action.type === 'consult_agent' && action.agent && projectId) {
+      router.push(`/projects/${projectId}/agents?agent=${action.agent}`)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      className="mt-2 flex items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:border-violet-800 dark:bg-violet-900/30 dark:text-violet-300 dark:hover:bg-violet-900/50"
+    >
+      {action.type === 'navigate' ? (
+        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      ) : (
+        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+      )}
+      {action.label}
+    </button>
+  )
+}
+
+export function ChatMessage({ role, content, createdAt, projectId }: ChatMessageProps) {
   const isUser = role === 'user'
+  const { cleanText, action } = isUser ? { cleanText: content, action: null } : extractAction(content)
 
   return (
     <div className={`flex gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`}>
@@ -350,8 +409,9 @@ export function ChatMessage({ role, content, createdAt }: ChatMessageProps) {
               : 'rounded-tl-sm bg-gray-50 text-gray-700 ring-1 ring-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700'
           }`}
         >
-          {renderMarkdown(content, isUser)}
+          {renderMarkdown(cleanText, isUser)}
         </div>
+        {action && <ActionButton action={action} projectId={projectId} />}
         {createdAt && (
           <p className={`mt-1 text-[10px] text-gray-400 dark:text-gray-500 ${isUser ? 'text-right' : ''}`}>
             {formatRelativeDate(createdAt)}

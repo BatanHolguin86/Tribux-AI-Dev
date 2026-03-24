@@ -8,6 +8,34 @@ import { DB_ADMIN_PROMPT } from './db-admin'
 import { QA_ENGINEER_PROMPT } from './qa-engineer'
 import { DEVOPS_ENGINEER_PROMPT } from './devops-engineer'
 import { OPERATOR_PROMPT } from './operator'
+import { truncateText } from '@/lib/ai/context-builder'
+
+/**
+ * Agent-specific context budgets (chars).
+ * Each agent type gets a custom allocation so truncation preserves
+ * the most relevant content for its specialty.
+ * Order: [discovery, featureSpecs, artifacts, knowledge]
+ */
+const AGENT_CONTEXT_BUDGETS: Record<AgentType, [number, number, number, number]> = {
+  // CTO: balanced view of everything
+  cto_virtual:        [50_000, 80_000, 30_000, 20_000],
+  // Product: heavy on discovery + specs (user stories, acceptance criteria)
+  product_architect:  [80_000, 60_000, 15_000, 25_000],
+  // System: heavy on specs (design docs) + artifacts (ADRs)
+  system_architect:   [30_000, 90_000, 40_000, 20_000],
+  // UI/UX: heavy on discovery (personas, value prop) + artifacts (designs)
+  ui_ux_designer:     [80_000, 40_000, 40_000, 20_000],
+  // Lead Dev: heavy on specs (tasks, design) + artifacts (code patterns)
+  lead_developer:     [20_000, 100_000, 30_000, 20_000],
+  // DB Admin: heavy on specs (design = schemas) + artifacts
+  db_admin:           [15_000, 100_000, 40_000, 15_000],
+  // QA: heavy on specs (requirements, acceptance criteria) + artifacts
+  qa_engineer:        [25_000, 90_000, 30_000, 25_000],
+  // DevOps: moderate specs + heavy artifacts (infra configs)
+  devops_engineer:    [20_000, 50_000, 60_000, 20_000],
+  // Operator: moderate everything, heavy on artifacts (runbooks)
+  operator:           [20_000, 50_000, 60_000, 20_000],
+}
 
 const AGENT_PROMPTS: Record<AgentType, string> = {
   cto_virtual: CTO_VIRTUAL_PROMPT,
@@ -31,6 +59,8 @@ export type FullProjectContext = {
   discoveryDocs: string
   featureSpecs: string
   artifacts: string
+  repoContext?: string
+  knowledgeContext?: string
   attachmentsSummary?: string
   wasTruncated?: boolean
 }
@@ -40,6 +70,13 @@ export function buildAgentPrompt(
   context: FullProjectContext,
 ): string {
   const basePrompt = AGENT_PROMPTS[agentType]
+
+  // Apply agent-specific context budgets for smart truncation
+  const [maxDiscovery, maxSpecs, maxArtifacts, maxKB] = AGENT_CONTEXT_BUDGETS[agentType]
+  const discovery = context.discoveryDocs ? truncateText(context.discoveryDocs, maxDiscovery) : ''
+  const specs = context.featureSpecs ? truncateText(context.featureSpecs, maxSpecs) : ''
+  const artifacts = context.artifacts ? truncateText(context.artifacts, maxArtifacts) : ''
+  const kb = context.knowledgeContext ? truncateText(context.knowledgeContext, maxKB) : ''
 
   let prompt = `${basePrompt}
 
@@ -53,13 +90,19 @@ CONTEXTO DEL PROYECTO:
 DOCUMENTOS DEL PROYECTO:
 
 ### Discovery
-${context.discoveryDocs || 'No hay documentos de discovery aprobados.'}
+${discovery || 'No hay documentos de discovery aprobados.'}
 
 ### Specs de Features
-${context.featureSpecs || 'No hay specs de features aprobados.'}
+${specs || 'No hay specs de features aprobados.'}
 
 ### Artifacts
-${context.artifacts || 'No hay artifacts guardados.'}`
+${artifacts || 'No hay artifacts guardados.'}
+
+### Decisiones y Notas del Proyecto (Base de Conocimiento)
+${kb || 'No hay entradas en la base de conocimiento.'}
+
+### Repositorio GitHub
+${context.repoContext || 'No hay repositorio conectado.'}`
 
   if (context.attachmentsSummary) {
     prompt += `\n\n### Adjuntos recientes del hilo\n${context.attachmentsSummary}\n`
@@ -69,6 +112,22 @@ ${context.artifacts || 'No hay artifacts guardados.'}`
   if (context.wasTruncated) {
     prompt += `\n\nNOTA: El contexto del proyecto fue recortado por tamano. Algunos specs o artifacts antiguos pueden no estar completos. Si necesitas informacion especifica que no aparece, pidele al usuario que la comparta.`
   }
+
+  // Structured action suggestions
+  prompt += `\n\nACCIONES SUGERIDAS (OPCIONAL):
+Cuando identifiques un paso accionable concreto, puedes sugerir UNA accion estructurada al final de tu respuesta usando este formato exacto:
+---ACTION---
+{"type":"navigate","label":"Texto del boton","url":"/projects/PROJECT_ID/phase/XX"}
+---/ACTION---
+
+Tipos de accion disponibles:
+- "navigate": Lleva al usuario a una seccion relevante. URL debe ser relativa (/projects/...).
+- "consult_agent": Sugiere consultar otro agente. Usa {"type":"consult_agent","label":"Consultar al DB Admin","agent":"db_admin"}.
+
+Reglas:
+- Maximo UNA accion por respuesta.
+- Solo sugiere acciones cuando sean realmente utiles, no en cada mensaje.
+- El label debe ser corto y claro en espanol.`
 
   // Gate instruction for ALL agents: don't pressure phase progression
   prompt += `\n\nREGLA DE FASES (OBLIGATORIA):

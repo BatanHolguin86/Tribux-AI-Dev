@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { Phase00Section, Phase02Section } from '@/types/conversation'
 import { SECTION_LABELS } from '@/lib/ai/prompts/phase-00'
 import { SECTION_LABELS as PHASE02_SECTION_LABELS } from '@/lib/ai/prompts/phase-02'
+import { getGitHubRepoContext, formatRepoContext } from '@/lib/github/repo-context'
 
 export type ProjectContext = {
   name: string
@@ -194,13 +195,14 @@ export async function buildFullProjectContext(projectId: string): Promise<{
   discoveryDocs: string
   featureSpecs: string
   artifacts: string
+  repoContext: string
   wasTruncated: boolean
 }> {
   const supabase = await createClient()
 
   const { data: project } = await supabase
     .from('projects')
-    .select('name, description, industry, current_phase, user_id')
+    .select('name, description, industry, current_phase, user_id, repo_url')
     .eq('id', projectId)
     .single()
 
@@ -223,17 +225,21 @@ export async function buildFullProjectContext(projectId: string): Promise<{
     7: 'Iteration & Growth',
   }
 
-  const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
-  const featureSpecs = await getApprovedFeatureSpecs(projectId)
+  const [discoveryDocs, featureSpecs, artifactDocs, repoCtx] = await Promise.all([
+    getApprovedDiscoveryDocs(projectId),
+    getApprovedFeatureSpecs(projectId),
+    supabase
+      .from('project_documents')
+      .select('section, content')
+      .eq('project_id', projectId)
+      .eq('document_type', 'artifact'),
+    // Fetch GitHub repo context if connected
+    project.repo_url
+      ? getGitHubRepoContext(project.repo_url)
+      : Promise.resolve({ tree: '', recentCommits: '' }),
+  ])
 
-  // Fetch artifacts
-  const { data: artifactDocs } = await supabase
-    .from('project_documents')
-    .select('section, content')
-    .eq('project_id', projectId)
-    .eq('document_type', 'artifact')
-
-  const artifacts = (artifactDocs ?? [])
+  const artifacts = (artifactDocs.data ?? [])
     .map((a) => `### ${a.section}\n${truncateText(a.content ?? '', 1000)}`)
     .join('\n\n')
 
@@ -250,8 +256,47 @@ export async function buildFullProjectContext(projectId: string): Promise<{
     discoveryDocs: finalDiscovery,
     featureSpecs: finalSpecs,
     artifacts: finalArtifacts,
+    repoContext: formatRepoContext(repoCtx),
     wasTruncated,
   }
+}
+
+/**
+ * Fetches pinned + recent KB entries to inject cross-thread memory into agent prompts.
+ * Returns a formatted string ready for system prompt injection.
+ */
+export async function getProjectKnowledgeContext(projectId: string): Promise<string> {
+  const supabase = await createClient()
+
+  // Fetch pinned entries (high-signal, user-curated) — up to 10
+  const { data: pinned } = await supabase
+    .from('knowledge_base_entries')
+    .select('title, category, content, phase_number')
+    .eq('project_id', projectId)
+    .eq('is_pinned', true)
+    .order('updated_at', { ascending: false })
+    .limit(10)
+
+  // Fetch recent entries (not already pinned) — up to 10
+  const { data: recent } = await supabase
+    .from('knowledge_base_entries')
+    .select('title, category, content, phase_number')
+    .eq('project_id', projectId)
+    .eq('is_pinned', false)
+    .order('updated_at', { ascending: false })
+    .limit(10)
+
+  const allEntries = [...(pinned ?? []), ...(recent ?? [])]
+  if (allEntries.length === 0) return ''
+
+  const lines = allEntries.map((e) => {
+    const phase = e.phase_number !== null ? ` (Phase ${String(e.phase_number).padStart(2, '0')})` : ''
+    const category = e.category ? `[${e.category}]` : ''
+    const content = truncateText(e.content ?? '', 800)
+    return `#### ${category} ${e.title}${phase}\n${content}`
+  })
+
+  return lines.join('\n\n')
 }
 
 /** Context for hub Diseño & UX (Camino B): personas, value prop, project — UI + enriched UI/UX Designer prompts */

@@ -13,6 +13,7 @@ import {
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { uploadDocument } from '@/lib/storage/documents'
 import { slugify } from '@/lib/utils'
+import { validateAgentOutput } from '@/lib/ai/output-validator'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
 import type { AgentType } from '@/types/agent'
@@ -232,7 +233,7 @@ export async function POST(
   const featureSlug = slugify(feature?.name ?? featureId)
 
   try {
-    const { text, usage } = await generateText({
+    const { text: rawText, usage } = await generateText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
@@ -241,6 +242,8 @@ export async function POST(
       ],
       ...AI_CONFIG.documentGeneration,
     })
+
+    const text = validateAgentOutput(rawText)
 
     const storagePath = `specs/${featureSlug}/${docTypeKey}.md`
     const storageFullPath = `projects/${projectId}/${storagePath}`
