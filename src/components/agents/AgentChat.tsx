@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { TextStreamChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
@@ -38,7 +38,7 @@ export function AgentChat({
   const [pendingFiles, setPendingFiles] = useState<File[]>([])
   const [attachments, setAttachments] = useState<Array<Record<string, unknown>>>([])
 
-  async function loadAttachments() {
+  const loadAttachments = useCallback(async () => {
     try {
       const res = await fetch(
         `/api/projects/${projectId}/agents/${agentType}/threads/${threadId}`,
@@ -50,7 +50,7 @@ export function AgentChat({
     } catch {
       // Silenciar errores de UI; el chat sigue funcionando aunque falle esta carga
     }
-  }
+  }, [projectId, agentType, threadId])
 
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new TextStreamChatTransport({
@@ -102,8 +102,10 @@ export function AgentChat({
   }, [messages, isLoading])
 
   useEffect(() => {
-    void loadAttachments()
-  }, [projectId, agentType, threadId])
+    queueMicrotask(() => {
+      void loadAttachments()
+    })
+  }, [loadAttachments])
 
   function onSubmit() {
     if (!input.trim()) return

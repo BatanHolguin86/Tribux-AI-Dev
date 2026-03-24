@@ -13,36 +13,9 @@ import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-l
 import { AGENT_MAP } from '@/lib/ai/agents'
 import type { AgentType } from '@/types/agent'
 import type { AiUsageEventType } from '@/lib/ai/usage'
+import { extractTextFromMessage } from '@/lib/ai/extract-text-from-message'
 
 export const maxDuration = 60
-
-function extractTextFromMessage(message: any): string {
-  if (!message) return ''
-
-  if (typeof message.content === 'string') {
-    return message.content
-  }
-
-  if (Array.isArray(message.parts)) {
-    return message.parts
-      .filter((p: any) => p && p.type === 'text' && typeof p.text === 'string')
-      .map((p: any) => p.text)
-      .join('')
-  }
-
-  if (Array.isArray(message.content)) {
-    return message.content
-      .filter((p: any) => p && p.type === 'text' && typeof p.text === 'string')
-      .map((p: any) => p.text)
-      .join('')
-  }
-
-  if (typeof message.text === 'string') {
-    return message.text
-  }
-
-  return ''
-}
 
 async function parseJsonBody(request: Request): Promise<{ messages?: unknown[] } | null> {
   try {

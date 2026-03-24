@@ -11,7 +11,7 @@
 | #   | Criterio                                        | Verificación                                                                                    | Estado |
 | --- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------ |
 | 1   | **Typecheck**                                   | `pnpm exec tsc --noEmit` sin errores.                                                           | ⬜     |
-| 1b  | **ESLint**                                      | `pnpm lint` sin errores _(deuda conocida: reglas `no-explicit-any`, `set-state-in-effect`, etc.; planificar sprint de higiene)_. | ⬜     |
+| 1b  | **ESLint**                                      | `pnpm lint` sin **errores** (warnings restantes: principalmente `no-unused-vars`; limpiar en higiene). | ⬜     |
 | 2   | **Tests automatizados base**                    | `pnpm test` (Vitest) verde: unit + integración.                                                 | ⬜     |
 | 3   | **IA configurada**                              | En staging: `ANTHROPIC_API_KEY` válida; Phase 00 / agentes muestran error claro si falta clave. | ⬜     |
 | 4   | **Auth + onboarding + primer proyecto**         | Happy path: registro/login (o login test), onboarding, proyecto creado, acceso a Phase 00.      | ⬜     |
@@ -44,7 +44,7 @@ Listado completo: `docs/05-qa/e2e-tests.md`.
 | -------------------- | ------------------------------------------------------------------------- |
 | `pnpm exec tsc --noEmit` | ✅ OK                                                                     |
 | `pnpm test`          | ✅ 668 tests (46 archivos)                                                |
-| `pnpm lint`          | ❌ 37 errors / 23 warnings (preexistentes; no bloqueó corrección TS tests) |
+| `pnpm lint`          | ✅ 0 errores / ~22 warnings (`no-unused-vars`, etc.; no fallan el comando) |
 | `pnpm test:e2e`      | Ejecutar con `CI` desactivado si `localhost:3000` está ocupado (`reuseExistingServer`). Último run: **13 passed**, **26 skipped**, **0 failed** (home: link «Comenzar gratis» acotado a `navigation` por strict mode de Playwright). |
 
 **Notas E2E**
@@ -68,4 +68,5 @@ Listado completo: `docs/05-qa/e2e-tests.md`.
 
 | Fecha        | Resultado | Notas                                                                 |
 | ------------ | --------- | --------------------------------------------------------------------- |
-| 2026-03-24   | Baseline  | TS + Vitest + E2E (suite local) verdes; checklist creada; ESLint en deuda documentada |
+| 2026-03-24   | Baseline  | TS + Vitest + E2E (suite local) verdes; checklist creada; ESLint 0 errores |
+| 2026-03-24   | Lint      | Eliminados `no-explicit-any` en rutas chat/generate; `set-state-in-effect` vía ref/microtask; Playwright `import` dotenv; ignore `scripts/**/*.cjs` |

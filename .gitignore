@@ -34,6 +34,8 @@ npm-debug.log*
 # IDE
 .idea/
 .vscode/
+# Cursor — local editor/plugin settings (rules under .cursor/ may still be committed)
+.cursor/settings.json
 *.swp
 *.swo
 

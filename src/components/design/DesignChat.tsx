@@ -24,8 +24,8 @@ type DesignChatProps = {
 
 export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const initialSentRef = useRef(false)
   const [input, setInput] = useState('')
-  const [hasSentInitial, setHasSentInitial] = useState(false)
 
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new TextStreamChatTransport({
@@ -35,13 +35,12 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
 
   const isLoading = status === 'streaming' || status === 'submitted'
 
-  // Auto-send the template prompt on mount
+  // Auto-send the template prompt once (ref avoids setState inside effect)
   useEffect(() => {
-    if (!hasSentInitial && initialPrompt) {
-      setHasSentInitial(true)
-      sendMessage({ text: initialPrompt })
-    }
-  }, [hasSentInitial, initialPrompt, sendMessage])
+    if (initialSentRef.current || !initialPrompt) return
+    initialSentRef.current = true
+    sendMessage({ text: initialPrompt })
+  }, [initialPrompt, sendMessage])
 
   useEffect(() => {
     if (scrollRef.current) {

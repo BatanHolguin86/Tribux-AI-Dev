@@ -80,7 +80,9 @@ export function KnowledgeLayout({
   }, [projectId])
 
   useEffect(() => {
-    fetchEntries(activeCategory, searchQuery, page)
+    queueMicrotask(() => {
+      void fetchEntries(activeCategory, searchQuery, page)
+    })
   }, [activeCategory, searchQuery, page, fetchEntries])
 
   const handleCategoryChange = useCallback((cat: KBCategory | null) => {

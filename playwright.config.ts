@@ -1,8 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 import * as path from 'path'
+import { config as loadEnv } from 'dotenv'
 
 try {
-  require('dotenv').config({ path: '.env.local' })
+  loadEnv({ path: '.env.local' })
 } catch {
   // dotenv optional
 }

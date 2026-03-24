@@ -104,16 +104,18 @@ export function FinanceOverviewTable() {
   const [month, setMonth] = useState<string>('')
 
   useEffect(() => {
-    setLoading(true)
-    const params = month ? `?month=${encodeURIComponent(month)}` : ''
-    fetch(`/api/admin/finance/overview${params}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(res.status === 403 ? 'Acceso denegado' : 'Error al cargar')
-        return res.json()
-      })
-      .then(setData)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false))
+    queueMicrotask(() => {
+      setLoading(true)
+      const params = month ? `?month=${encodeURIComponent(month)}` : ''
+      fetch(`/api/admin/finance/overview${params}`)
+        .then((res) => {
+          if (!res.ok) throw new Error(res.status === 403 ? 'Acceso denegado' : 'Error al cargar')
+          return res.json()
+        })
+        .then(setData)
+        .catch((e) => setError(e.message))
+        .finally(() => setLoading(false))
+    })
   }, [month])
 
   if (error) {

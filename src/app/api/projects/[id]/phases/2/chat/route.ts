@@ -10,6 +10,7 @@ import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase02Section } from '@/types/conversation'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import type { AgentType } from '@/types/agent'
+import { extractTextFromMessage } from '@/lib/ai/extract-text-from-message'
 
 export const maxDuration = 60
 
@@ -24,39 +25,19 @@ type StoredMessage = {
   created_at: string
 }
 
-function extractTextFromMessage(message: any): string {
-  if (!message) return ''
-
-  if (typeof message.content === 'string') {
-    return message.content
+function coreRoleFromMessage(m: unknown): CoreMessage['role'] {
+  if (m && typeof m === 'object' && 'role' in m) {
+    const r = (m as { role?: unknown }).role
+    if (r === 'assistant' || r === 'user') return r
   }
-
-  if (Array.isArray(message.parts)) {
-    return message.parts
-      .filter((p: any) => p && p.type === 'text' && typeof p.text === 'string')
-      .map((p: any) => p.text)
-      .join('')
-  }
-
-  if (Array.isArray(message.content)) {
-    return message.content
-      .filter((p: any) => p && p.type === 'text' && typeof p.text === 'string')
-      .map((p: any) => p.text)
-      .join('')
-  }
-
-  if (typeof message.text === 'string') {
-    return message.text
-  }
-
-  return ''
+  return 'user'
 }
 
 function toCoreMessages(rawMessages: unknown): CoreMessage[] {
   if (!Array.isArray(rawMessages)) return []
 
-  return rawMessages.map((m: any) => ({
-    role: (m?.role ?? 'user') as CoreMessage['role'],
+  return rawMessages.map((m: unknown) => ({
+    role: coreRoleFromMessage(m),
     content: extractTextFromMessage(m),
   }))
 }
@@ -66,11 +47,16 @@ function toStoredMessages(rawMessages: unknown): StoredMessage[] {
 
   const now = new Date().toISOString()
 
-  return rawMessages.map((m: any) => ({
-    role: m?.role ?? 'user',
-    content: extractTextFromMessage(m),
-    created_at: m?.created_at ?? now,
-  }))
+  return rawMessages.map((m: unknown) => {
+    const row = m && typeof m === 'object' ? (m as Record<string, unknown>) : {}
+    const role = typeof row.role === 'string' ? row.role : 'user'
+    const created_at = typeof row.created_at === 'string' ? row.created_at : now
+    return {
+      role,
+      content: extractTextFromMessage(m),
+      created_at,
+    }
+  })
 }
 
 export async function POST(
