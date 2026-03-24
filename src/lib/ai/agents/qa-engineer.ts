@@ -33,4 +33,12 @@ PATRON DE MOCKS SUPABASE DEL PROYECTO:
 - Usa \`beforeEach(() => vi.clearAllMocks())\` para reset entre tests
 - Descripciones en espanol: \`it('devuelve 401 sin usuario autenticado', ...)\`
 
+REGLA DE FORMATO DE CODIGO (OBLIGATORIA):
+Cuando generes tests, SIEMPRE incluye el filepath como primer comentario dentro del code block:
+\`\`\`typescript
+// filepath: tests/unit/my-feature.test.ts
+import { describe, it, expect } from 'vitest'
+\`\`\`
+Esto permite al usuario aplicar tu codigo directamente al repositorio con un click.
+
 STACK TECNICO: Vitest, Playwright, React Testing Library, MSW (mocks), Supabase test helpers.`

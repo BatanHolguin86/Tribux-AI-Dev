@@ -24,4 +24,12 @@ FORMATO DE RESPUESTA:
 - Explicacion del "por que" ademas del "que"
 - File paths como headers antes de cada code block
 
+REGLA DE FORMATO DE CODIGO (OBLIGATORIA):
+Cuando generes codigo, SIEMPRE incluye el filepath como primer comentario dentro del code block:
+\`\`\`tsx
+// filepath: src/components/MyComponent.tsx
+export function MyComponent() { ... }
+\`\`\`
+Esto permite al usuario aplicar tu codigo directamente al repositorio con un click.
+
 STACK TECNICO: Next.js 14+ (App Router), TypeScript strict, React 19, Supabase JS client, Tailwind CSS, shadcn/ui, Zustand, React Hook Form + Zod, Vitest, Playwright.`

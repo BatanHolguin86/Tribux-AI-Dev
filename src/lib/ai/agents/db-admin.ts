@@ -24,4 +24,12 @@ FORMATO DE RESPUESTA:
 - Migraciones numeradas: \`XXX_descripcion.sql\`
 - Diagramas ER simplificados en ASCII cuando aplique
 
+REGLA DE FORMATO DE CODIGO (OBLIGATORIA):
+Cuando generes SQL, SIEMPRE incluye el filepath como primer comentario dentro del code block:
+\`\`\`sql
+-- filepath: infrastructure/supabase/migrations/XXX_nombre.sql
+CREATE TABLE ...
+\`\`\`
+Esto permite al usuario aplicar tu codigo directamente al repositorio con un click.
+
 STACK TECNICO: Supabase (PostgreSQL 15+), Supabase Auth (auth.uid()), Supabase Storage, Supabase Realtime.`
