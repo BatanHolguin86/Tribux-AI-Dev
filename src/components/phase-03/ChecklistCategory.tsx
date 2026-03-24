@@ -8,9 +8,17 @@ type ChecklistCategoryProps = {
   sectionKey: string
   status: SectionStatus
   onToggle: () => void
+  itemStates: Record<number, boolean>
+  onItemToggle: (sectionKey: string, itemIndex: number) => void
 }
 
-export function ChecklistCategory({ sectionKey, status, onToggle }: ChecklistCategoryProps) {
+export function ChecklistCategory({
+  sectionKey,
+  status,
+  onToggle,
+  itemStates,
+  onItemToggle,
+}: ChecklistCategoryProps) {
   const config = CATEGORY_CONFIGS[sectionKey as Phase03Section]
   if (!config) return null
 
@@ -37,27 +45,45 @@ export function ChecklistCategory({ sectionKey, status, onToggle }: ChecklistCat
         </div>
       </div>
 
-      {/* Items */}
+      {/* Items — persisted per row in item_states when category open */}
       <div className="mb-4 space-y-2">
-        {config.items.map((item, i) => (
-          <div key={i} className="flex items-start gap-2">
-            <div className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded ${
-              isCompleted ? 'bg-green-500 text-white' : 'border border-gray-300'
-            }`}>
-              {isCompleted && (
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              )}
-            </div>
-            <div>
-              <p className={`text-sm font-medium ${isCompleted ? 'text-green-700 line-through' : 'text-gray-700'}`}>
-                {item.label}
-              </p>
-              <p className="text-xs text-gray-400">{item.description}</p>
-            </div>
-          </div>
-        ))}
+        {config.items.map((item, i) => {
+          const itemDone = isCompleted || itemStates[i] === true
+          return (
+            <button
+              key={i}
+              type="button"
+              disabled={isCompleted}
+              title={
+                isCompleted
+                  ? 'Desmarca la categoria para editar items por separado'
+                  : 'Marcar item como hecho'
+              }
+              onClick={() => onItemToggle(sectionKey, i)}
+              className={`flex w-full items-start gap-2 rounded-md p-1 text-left transition-colors ${
+                isCompleted ? 'cursor-default' : 'hover:bg-white/80'
+              }`}
+            >
+              <div
+                className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded ${
+                  itemDone ? 'bg-green-500 text-white' : 'border border-gray-300'
+                }`}
+              >
+                {itemDone && (
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+              <div>
+                <p className={`text-sm font-medium ${itemDone ? 'text-green-700 line-through' : 'text-gray-700'}`}>
+                  {item.label}
+                </p>
+                <p className="text-xs text-gray-400">{item.description}</p>
+              </div>
+            </button>
+          )
+        })}
       </div>
 
       {/* Toggle button */}

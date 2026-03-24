@@ -4,12 +4,7 @@ import { PlanGuard } from '@/components/shared/PlanGuard'
 import { canAccessPhase } from '@/lib/plans/guards'
 import { PHASE07_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-07'
 import type { SectionStatus } from '@/types/conversation'
-
-type CategoryData = {
-  key: string
-  label: string
-  status: SectionStatus
-}
+import { parseItemStates, type PhaseChecklistCategory } from '@/lib/phase-checklist-sections'
 
 export default async function Phase07Page({
   params,
@@ -34,16 +29,17 @@ export default async function Phase07Page({
 
   const { data: sections } = await supabase
     .from('phase_sections')
-    .select('section, status')
+    .select('section, status, item_states')
     .eq('project_id', projectId)
     .eq('phase_number', 7)
 
-  const categories: CategoryData[] = PHASE07_SECTIONS.map((key) => {
+  const categories: PhaseChecklistCategory[] = PHASE07_SECTIONS.map((key) => {
     const row = (sections ?? []).find((s) => s.section === key)
     return {
       key,
       label: SECTION_LABELS[key],
       status: (row?.status ?? 'pending') as SectionStatus,
+      itemStates: parseItemStates(row?.item_states),
     }
   })
 

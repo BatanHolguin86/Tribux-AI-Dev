@@ -6,6 +6,7 @@ import { PhasesStepper } from '@/components/projects/PhasesStepper'
 import { ProactiveSuggestions } from '@/components/projects/ProactiveSuggestions'
 import { MobileSidebarDrawer } from '@/components/projects/MobileSidebarDrawer'
 import { ProjectBreadcrumb } from '@/components/projects/ProjectBreadcrumb'
+import { DlcClosingNarrative } from '@/components/projects/DlcClosingNarrative'
 
 export default async function ProjectLayout({
   children,
@@ -46,6 +47,8 @@ export default async function ProjectLayout({
         currentPhase={currentPhase}
         phaseName={phaseName}
       />
+
+      <DlcClosingNarrative variant="project" />
 
       {/* Main layout: sidebar + content */}
       <div className="flex gap-6">

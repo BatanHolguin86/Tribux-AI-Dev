@@ -6,6 +6,7 @@ import type { ProjectWithProgress } from '@/types/project'
 import { ProjectCard } from './ProjectCard'
 import { EmptyState } from './EmptyState'
 import { DashboardHeader } from './DashboardHeader'
+import { DlcClosingNarrative } from '@/components/projects/DlcClosingNarrative'
 import { CreateProjectModal } from './CreateProjectModal'
 import { EditProjectModal } from './EditProjectModal'
 import { ArchiveConfirmDialog } from './ArchiveConfirmDialog'
@@ -72,6 +73,8 @@ export function ProjectsGrid({ projects: initialProjects }: ProjectsGridProps) {
   return (
     <>
       <DashboardHeader summary={summary} onCreateProject={() => setCreateOpen(true)} />
+
+      <DlcClosingNarrative variant="dashboard" />
 
       {/* Toolbar: search + tabs */}
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
