@@ -13,15 +13,17 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 
 ### Criterio go/no-go v1.0 (resumen)
 
+Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-qa/v1-go-no-go.md).
+
 | Área                         | Estado             | Notas                                                                                                                                                                                                               |
 | ---------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | IA y configuración           | Depende de entorno | `ANTHROPIC_API_KEY` debe estar configurada; Phase 00 y agentes muestran mensajes claros si falla                                                                                                                    |
-| Auth + Onboarding            | ✅ Implementado    | Flujo registro/login/onboarding y primer proyecto                                                                                                                                                                   |
-| Phase 00 + Phase 01          | ✅ Implementado    | Discovery guiado, KIRO (features, docs, coherencia, gates)                                                                                                                                                          |
-| Agentes (CTO + 8) + adjuntos | ✅ Implementado    | Threads, streaming, paywall, adjuntos en chat, contexto de adjuntos en prompt                                                                                                                                       |
-| Diseño & UX (hub)            | ✅ Implementado    | Hub con Camino A/B: **A** = HTML persistido (`design_artifacts` + iframe); **B** = kit vía hilo UI/UX (HTML+Tailwind en chat, sin ASCII por regla de prompt). Backlog menor en `06-ui-ux-design-generator/tasks.md` |
+| Auth + Onboarding            | ✅ Implementado     | Flujo registro/login/onboarding y primer proyecto                                                                                                                                                                   |
+| Phase 00 + Phase 01          | ✅ Implementado     | Discovery guiado, KIRO (features, docs, coherencia, gates)                                                                                                                                                          |
+| Agentes (CTO + 8) + adjuntos | ✅ Implementado     | Threads, streaming, paywall, adjuntos en chat, contexto de adjuntos en prompt                                                                                                                                       |
+| Diseño & UX (hub)            | ✅ Implementado     | Hub con Camino A/B: **A** = HTML persistido (`design_artifacts` + iframe); **B** = kit vía hilo UI/UX (HTML+Tailwind en chat, sin ASCII por regla de prompt). Backlog menor en `06-ui-ux-design-generator/tasks.md` |
 | Fases 03–07                  | ⚠️ Esqueleto       | Tasks.md y checklists definidos; UI mínima por fase                                                                                                                                                                 |
-| QA / E2E                     | ✅ Cubierto        | Specs para auth, Phase 00/01, agentes, paywall, adjuntos, smoke staging                                                                                                                                             |
+| QA / E2E                     | ✅ Cubierto         | Specs para auth, Phase 00/01, agentes, paywall, adjuntos, smoke staging                                                                                                                                             |
 
 ---
 
@@ -34,7 +36,7 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
   - **Bloque 1:** Alineación v1.0 en Auth, Dashboard, Phase 00, Phase 01, Orquestador+Agentes (TASK-5xx, 51x, 52x, 53x, 54x).
   - **Bloque 2:** Diseño & UX (feature 06) con TASK-601–607 + hub Camino A/B, ADR-007.
   - **Bloque 3:** Fases 03–07 + QA con tasks y checklists (TASK-7xx, 73x–78x, 710–712).
-- **Docs de QA:** `docs/05-qa/e2e-tests.md` actualizado con todos los specs E2E y flujos v1.0.
+- **Docs de QA:** `docs/05-qa/e2e-tests.md` (specs E2E) y `docs/05-qa/v1-go-no-go.md` (definición de hecho v1 + baseline).
 
 ### 2.2 Base de datos e infraestructura
 
@@ -84,35 +86,51 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 
 ### Fase A — Estabilidad y experiencia de errores (1–2 sprints)
 
-1. **Unificar manejo de errores de IA**  
+1. **Unificar manejo de errores de IA**
+
    Revisar todas las rutas que usan `streamText` (Phase 00, Phase 01 chat, agentes) y asegurar que ante falta de clave, créditos o error de red se devuelva un cuerpo JSON con `error`/`message` y que la UI muestre siempre un mensaje claro (no pantalla en blanco ni “Error de conexión” genérico sin detalle).
-2. **Checklist go/no-go en código/docs**  
-   Dejar en `docs/05-qa/` o en el PRD una checklist corta de 5–7 ítems (IA configurada, Auth+Onboarding, Phase 00+01, agentes+adjuntos, hub **Diseño & UX** accesible, E2E críticos pasando) y usarla como criterio de release v1.0.
-3. **Ejecutar y estabilizar E2E**  
+
+2. **Checklist go/no-go en código/docs**
+
+   Checklist publicada en `docs/05-qa/v1-go-no-go.md` (criterios v1 + baseline). Mantenerla al día con CI/staging.
+
+3. **Ejecutar y estabilizar E2E**
+
    Correr `pnpm test:e2e` (y smoke en staging); corregir fallos y marcar tests opcionales si hace falta para no bloquear el release.
 
 ### Fase B — Cerrar valor “diseño” (1 sprint)
 
-4. **Diseño & UX — cerrar brechas spec**  
+1. **Diseño & UX — cerrar brechas spec**
+
    Validar criterios abiertos en `docs/01-specs/06-ui-ux-design-generator/tasks.md` (Phase 02 modal, polling/generating UX, chat → generate, thumbnails). El generate y el hub Camino A/B ya están en código base.
-5. **Marcar “aprobado para desarrollo”**  
+
+2. **Marcar “aprobado para desarrollo”**
+
    Permitir en la UI de diseños marcar un artefacto como aprobado y exponerlo en Phase 04 (referencia para el usuario).
 
 ### Fase C — Esqueleto “construir + lanzar” (1 sprint)
 
-6. **Fases 03–07 operativas**  
+1. **Fases 03–07 operativas**
+
    Implementar en cada fase (03–07) la vista con `PhaseProgressHeader` y un checklist persistido (por proyecto), con opción de marcar ítems como completados. Enlazar a runbooks existentes en `docs/06-ops/` y `docs/05-qa/`.
-7. **Narrativa de cierre**  
+
+2. **Narrativa de cierre**
+
    Asegurar que desde el dashboard o la navegación quede claro que el usuario puede “completar” Environment, Dev, QA, Launch e Iteration (aunque parte del trabajo sea manual/externo), alineado con el objetivo de “diseña + construye + lanza”.
 
 ### Fase D — Cierre v1.0
 
-8. **Revisión final**  
+1. **Revisión final**
+
    Recorrer la checklist go/no-go con un usuario de prueba; corregir bugs críticos.
-9. **Documentación de release**  
+
+2. **Documentación de release**
+
    Actualizar README o `docs/` con requisitos de despliegue (variables de entorno, migraciones, buckets) y con la definición de “v1.0” (alcance y limitaciones conocidas).
-10. **Lanzamiento**  
-    Deploy a producción según criterios de negocio (staging estable, métricas básicas si aplica).
+
+3. **Lanzamiento**
+
+   Deploy a producción según criterios de negocio (staging estable, métricas básicas si aplica).
 
 ---
 
@@ -121,3 +139,4 @@ El producto tiene **operativos** los módulos de diseño (Discovery + KIRO + Age
 - **Avances:** Base metodológica (KIRO + IA DLC), Auth/Dashboard, Phase 00 y 01 completas, Orquestador + 9 agentes con adjuntos y contexto enriquecido, hub **Diseño & UX** (Camino A/B, generate, `design_artifacts`), QA documentada y tests E2E definidos. Correcciones recientes en Phase 00 y chat de agentes para evitar 500 y pantallas mudas.
 - **Estado:** El producto permite hoy “diseñar” de punta a punta (Discovery → KIRO → Agentes); “construir” y “lanzar” están en especificación y en esqueleto de fases 03–07.
 - **Hoja de ruta sugerida:** (A) Estabilidad y mensajes de error unificados + E2E verdes; (B) Cerrar brechas spec Diseño & UX + integración Phase 02; (C) Checklists 03–07 operativos; (D) Checklist go/no-go, docs de release y lanzamiento. Con esto se puede cerrar una v1.0 alineada al objetivo del producto y estable para pruebas reales.
+
