@@ -10,7 +10,7 @@
 - **Stack:** Next.js **16** (App Router), React 19, TypeScript strict, Tailwind 4, Supabase (Auth + DB + Storage), Vercel AI SDK + Anthropic (`ANTHROPIC_API_KEY`).
 - **Flujo principal:** Auth → Onboarding → Dashboard → proyecto por fases **00–07** (IA DLC).
 - **Valor entregado hoy:** Phase 00 (Discovery) y Phase 01 (KIRO) con chat guiado, documentos y aprobaciones; **hub Diseño & UX** (`/projects/[id]/designs`) con Camino A (generación HTML persistida) y Camino B (kit con agente UI/UX en hilo); **agentes** (CTO + especialistas + Operator) en el tab **Equipo** de la fase activa, con threads, streaming, sugerencias proactivas, adjuntos y límites por **plan**.
-- **Parcial / esqueleto:** Fases 03–07 con UI y checklists en evolución; billing Stripe opcional según `.env`.
+- **Parcial:** Fases **03–07** tienen vista por fase con `PhaseProgressHeader`, checklists o Kanban (04), toggles persistidos y gates de aprobación; faltan enlaces profundos a `docs/` desde la UI y algunas integraciones (p. ej. diseños aprobados en Phase 04). **Billing** Stripe opcional según `.env`.
 
 ---
 
@@ -24,7 +24,7 @@
 | `/projects/[id]/designs`         | Hub **Diseño & UX** (Camino A + B). Detalle: `/projects/[id]/designs/[artifactId]`.            |
 | APIs agentes                     | `/api/projects/[id]/agents/...` (lista, threads, chat, suggestions) — sin cambio de prefijo.   |
 
-**Componentes de navegación/contexto:** `ProjectBreadcrumb`, `ProjectTools`, `PhasesStepper`, `PhaseWorkspaceTabs`, `KiroWorkflowRail` (Phase 01).
+**Componentes de navegación/contexto:** `ProjectBreadcrumb`, `ProjectTools`, `PhasesStepper`, `PhaseWorkspaceTabs`. Existe `KiroWorkflowRail.tsx` (Phase 01) pero **aún no está montado** en `Phase01Layout` — el flujo KIRO usa `FeatureList` / `DocumentTypeNav` / `FeatureWorkspace`.
 
 ---
 

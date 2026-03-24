@@ -5,6 +5,8 @@
 **Fecha:** 2026-03-05
 **Status:** v1.0 — Implementado
 
+**Alineación código (marzo 2026):** Ver `docs/ESTADO-DEL-PRODUCTO.md`. Rate limiting en auth: comprobar rutas reales en `src/app/api/auth/` (el spec histórico menciona paths que pueden diferir).
+
 ---
 
 ## Checklist de Implementacion
@@ -64,7 +66,7 @@
 
 - [x] **TASK-033:** Tests unitarios para schemas Zod de auth y onboarding (`tests/unit/validations/auth.test.ts`)
 - [x] **TASK-033b:** Tests unitarios para rate limiter (`tests/unit/lib/rate-limit.test.ts`)
-- [ ] **TASK-034:** Test E2E — flujo completo registro con email → confirmacion → login → onboarding → dashboard (`tests/e2e/auth.spec.ts`)
+- [ ] **TASK-034:** Test E2E — flujo completo registro con email → confirmacion → login → onboarding → dashboard _(parcial: `tests/e2e/auth.spec.ts` valida carga de login/register/forgot-password; no cubre confirmación de email ni onboarding end-to-end)_
 - [ ] **TASK-035:** Test E2E — flujo login con Google OAuth (`tests/e2e/oauth.spec.ts`)
 - [ ] **TASK-036:** Test E2E — flujo forgot password → reset (`tests/e2e/password-reset.spec.ts`)
 

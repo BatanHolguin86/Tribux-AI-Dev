@@ -3,7 +3,9 @@
 **Feature:** Phase 04 — Core Development Interactivo  
 **Fase IA DLC:** Phase 04 — Core Development  
 **Fecha:** 2026-03-08  
-**Status:** Pendiente definicion detallada (v1.0)
+**Status:** Kanban + tasks persistidas (marzo 2026); enlaces explícitos a diseños en backlog
+
+**Alineación código:** `Phase04Layout`, `KanbanBoard`, `project_tasks` + `PATCH .../phases/4/tasks/[taskId]`, `Phase04FinalGate`, tab Equipo. Ver `docs/ESTADO-DEL-PRODUCTO.md`.
 
 ---
 
@@ -11,12 +13,12 @@
 
 ### UI y Flujo
 
-- [ ] **TASK-741:** Crear vista de Phase 04 con `PhaseProgressHeader` y checklist simple que conecte tasks KIRO aprobadas con el trabajo de desarrollo (por ahora checklist manual, no Kanban completo)
-- [ ] **TASK-742:** Permitir marcar tasks como completadas a nivel de fase y mostrar porcentaje de avance basado en ese checklist
+- [x] **TASK-741:** Vista Phase 04 con `PhaseProgressHeader` + **Kanban** (`KanbanBoard`) alimentado por tasks derivadas de KIRO (vacío hasta que existan tasks en BD)
+- [x] **TASK-742:** Mover tasks entre columnas; progreso = tasks `done` / total; persistencia por API
 
 ### Integracion con Specs
 
-- [ ] **TASK-743:** Mostrar referencia a specs KIRO y diseños aprobados (Phase 01 + UI/UX) dentro de Phase 04 para guiar al desarrollador (links a documentos y a `/projects/[id]/designs`)
+- [ ] **TASK-743:** Bloque UI con enlaces a documentos KIRO y a **`/projects/[id]/designs`** (diseños aprobados) _(hoy solo copy que menciona specs Phase 01; sin links en panel)_
 
 ### Alineacion v1.0 KIRO
 

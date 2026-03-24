@@ -3,7 +3,9 @@
 **Feature:** Phase 07 — Iteration Interactivo  
 **Fase IA DLC:** Phase 07 — Iteration & Growth  
 **Fecha:** 2026-03-08  
-**Status:** Pendiente definicion detallada (v1.0)
+**Status:** Checklist UI implementada (marzo 2026); notas/backlog persistido en backlog
+
+**Alineación código:** `Phase07Layout`, `ChecklistCard`, `phase-07.ts`, toggle fase 7, `Phase07FinalGate`. Ver `docs/ESTADO-DEL-PRODUCTO.md`.
 
 ---
 
@@ -11,12 +13,12 @@
 
 ### UI y Flujo
 
-- [ ] **TASK-781:** Crear vista de Phase 07 con `PhaseProgressHeader` y checklist de retrospectiva (learnings, lo que funciono/no, decisiones clave) y generacion de backlog siguiente ciclo
-- [ ] **TASK-782:** Permitir capturar notas de retrospectiva y una lista basica de items de backlog (texto) asociados al proyecto
+- [x] **TASK-781:** Vista Phase 07 con `PhaseProgressHeader` y categorías de iteración (retrospectiva guionada en cards)
+- [ ] **TASK-782:** Formulario libre o tabla persistida para notas de retrospectiva y backlog textual _(no implementado: solo checklists por categoría)_
 
 ### Integracion con Roadmap
 
-- [ ] **TASK-783:** Enlazar desde Phase 07 a los documentos clave del proyecto (discovery, KIRO, QA) para que la retrospectiva se base en evidencia
+- [ ] **TASK-783:** Enlaces en UI a discovery / KIRO / QA del proyecto _(backlog; usar hub de proyecto y documentos como workaround)_
 
 ### Alineacion v1.0 KIRO
 

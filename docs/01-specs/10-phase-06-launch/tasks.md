@@ -3,7 +3,9 @@
 **Feature:** Phase 06 — Launch Interactivo  
 **Fase IA DLC:** Phase 06 — Launch & Deployment  
 **Fecha:** 2026-03-08  
-**Status:** Pendiente definicion detallada (v1.0)
+**Status:** Checklist UI implementada (marzo 2026); runbooks enlazados desde UI en backlog
+
+**Alineación código:** `Phase06Layout`, `ChecklistCard`, `phase-06.ts` configs, toggle fase 6, `Phase06FinalGate`. Ver `docs/ESTADO-DEL-PRODUCTO.md`.
 
 ---
 
@@ -11,12 +13,12 @@
 
 ### UI y Flujo
 
-- [ ] **TASK-761:** Crear vista de Phase 06 con `PhaseProgressHeader` y launch checklist alineado con `docs/06-ops/` (migraciones aplicadas, variables en Vercel, RLS, monitoring, dominio, Lighthouse)
-- [ ] **TASK-762:** Permitir marcar cada item del launch checklist como completado y mostrar un indicador de readiness de lanzamiento
+- [x] **TASK-761:** Vista Phase 06 con `PhaseProgressHeader` y categorías tipo launch (deploy, monitoring, documentación, checklist)
+- [x] **TASK-762:** Toggle por categoría + progreso en header; gate final al completar todas
 
 ### Integracion con Operaciones
 
-- [ ] **TASK-763:** Enlazar desde Phase 06 a los runbooks de operaciones (`docs/06-ops/`) y a los reportes de QA relevantes para validar readiness
+- [ ] **TASK-763:** Links directos en UI a `docs/06-ops/*` y reportes QA _(items textuales; sin URLs al repo)_
 
 ### Alineacion v1.0 KIRO
 

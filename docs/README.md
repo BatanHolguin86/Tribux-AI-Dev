@@ -23,6 +23,7 @@ La carpeta `docs/` está ordenada según la **metodología IA DLC** (AI-Driven D
 ## Rutas rápidas
 
 - **Estado del producto alineado con el código (revisar primero si mantienes docs):** `ESTADO-DEL-PRODUCTO.md`
+- **Checklists de implementación por feature/fase:** `01-specs/*/tasks.md` (todos sincronizados marzo 2026 con el código)
 - **Empezar por el problema y la propuesta:** `00-discovery/01-brief.md`
 - **Ver qué features está especificando el producto:** `01-specs/` (carpetas por feature: 01-auth-onboarding, 04-kiro-generator, 05-orchestrator, etc.)
 - **Priorización y alcance:** `01-specs/03-moscow.md`, `01-specs/01-prd.md`

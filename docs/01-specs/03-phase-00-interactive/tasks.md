@@ -5,6 +5,8 @@
 **Fecha:** 2026-03-06
 **Status:** v1.0 — Implementado
 
+**Alineación código (marzo 2026):** Phase 00 comprueba `ANTHROPIC_API_KEY` en rutas de IA; chat/documentos en `src/components/phase-00/` y `shared/`. Ver `docs/ESTADO-DEL-PRODUCTO.md`.
+
 ---
 
 ## Checklist de Implementacion
@@ -73,10 +75,10 @@
 ### Tests
 
 - [x] **TASK-118:** Tests unitarios para `buildPhase00Prompt` — verifica que cada seccion genera el prompt correcto con el contexto del proyecto (`tests/unit/ai/prompts/`)
-- [x] **TASK-119:** Tests unitarios para `context-builder.ts` — verifica truncamiento y formato del contexto inyectado
+- [x] **TASK-119:** Tests unitarios para utilidades de contexto — `tests/unit/ai/context-builder.test.ts` cubre **`truncateText`**; no hay suite dedicada de todo `context-builder.ts` (integración vía Phase 00 chat)
 - [x] **TASK-120:** Test de integracion para `POST /api/projects/[id]/phases/0/chat` — mock de la API de Anthropic, verifica persistencia del mensaje en DB (`tests/integration/api/phase-00-chat.test.ts`)
 - [x] **TASK-121:** Test de integracion para el flujo de aprobacion — section approve → phase approve → project_phases updated (`tests/integration/api/phase-00-approve.test.ts`)
-- [ ] **TASK-122:** Test E2E — flujo completo Phase 00: entrar → conversar en Problem Statement → generar documento → aprobar seccion → completar las 5 secciones → aprobar Phase 00 → ver Phase 01 desbloqueada (`tests/e2e/phase-00.spec.ts`)
+- [ ] **TASK-122:** Test E2E — flujo completo Phase 00 _(existe `phase-00.spec.ts` sin auth y `phase-00.authenticated.spec.ts` happy path mínimo; flujo 5 secciones + approve completo sigue en backlog o manual)_
 - [ ] **TASK-123:** Test E2E — retomar Phase 00 a mitad: completar 2 secciones, recargar, verificar que el historial y los documentos persisten correctamente
 
 ### Alineacion v1.0 KIRO

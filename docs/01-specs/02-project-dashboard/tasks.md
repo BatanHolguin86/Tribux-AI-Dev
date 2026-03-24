@@ -5,6 +5,8 @@
 **Fecha:** 2026-03-06
 **Status:** v1.0 — Implementado
 
+**Alineación código (marzo 2026):** `docs/ESTADO-DEL-PRODUCTO.md`. Columna `last_activity` está en `infrastructure/supabase/migrations/002_create_projects.sql` (no existe migración `004_add_last_activity` en el repo).
+
 ---
 
 ## Checklist de Implementacion
@@ -13,8 +15,8 @@
 
 - [x] **TASK-041:** Crear migracion `003_create_project_phases.sql` — tabla `project_phases` con RLS y constraint unique(project_id, phase_number)
 - [x] **TASK-042:** Crear funcion y trigger `on_project_created` que inicializa las 8 filas de `project_phases` al insertar un proyecto (phase 0 → active, phases 1–7 → locked)
-- [x] **TASK-043:** Crear migracion `004_add_last_activity_to_projects.sql` — agregar columna `last_activity` a `projects` con default `now()`
-- [x] **TASK-044:** Crear funcion y trigger `on_phase_updated` que actualiza `projects.last_activity` y `projects.current_phase` cuando cambia el status de una fase
+- [x] **TASK-043:** Columna `last_activity` en `projects` — creada en migración **`002_create_projects.sql`** (no hay archivo separado `004_add_last_activity_*`)
+- [x] **TASK-044:** Actualización de `last_activity` y `current_phase` — implementada en **rutas de aprobación de fase** (`src/app/api/projects/[id]/phases/*/approve/route.ts`, etc.); **no** hay trigger SQL `on_phase_updated` en las migraciones actuales
 
 ### Backend — API Routes
 
@@ -42,8 +44,8 @@
 - [x] **TASK-057:** Crear `DashboardHeader.tsx` — stats bar ("X proyectos · X fases esta semana") + boton "Nuevo proyecto" que abre `CreateProjectModal`
 - [x] **TASK-058:** Crear `ProjectsGrid.tsx` — Client Component que recibe proyectos como props, maneja estado de busqueda y tab activo (Activos/Archivados), renderiza grid de `ProjectCard` o `EmptyState`
 - [x] **TASK-059:** Crear `ProjectCard.tsx` — tarjeta con: industry tag, menu de opciones, nombre, descripcion truncada, fase activa, barra de progreso, mini timeline de iconos, "siguiente accion", fecha relativa y boton "Continuar"
-- [ ] **TASK-060:** Crear `ProjectCardExpanded.tsx` — extension de la tarjeta que muestra timeline completo de 8 fases con iconos de estado, nombres y fechas; toggle animado con CSS transition
-- [ ] **TASK-061:** Crear `PhaseTimeline.tsx` — componente reutilizable del timeline de 8 fases; acepta props `phases: ProjectPhase[]` y `variant: 'mini' | 'full'`
+- [x] **TASK-060:** Timeline expandible en tarjeta — implementado **dentro de** `ProjectCard.tsx` (estado `expanded` + `PhaseTimeline` `variant="full"`); no hay archivo `ProjectCardExpanded.tsx` separado
+- [x] **TASK-061:** `src/components/dashboard/PhaseTimeline.tsx` — props `phases` y `variant: 'mini' | 'full'`
 - [x] **TASK-062:** Crear `ProgressBar.tsx` — barra de progreso con porcentaje numerico; acepta `value: number` (0-100) y `size: 'sm' | 'md'`
 - [x] **TASK-063:** Crear `IndustryTag.tsx` — tag con color segun industria; mapeado desde constante `INDUSTRY_COLORS`
 - [x] **TASK-064:** Crear `EmptyState.tsx` — componente reutilizable con ilustracion SVG, titulo, descripcion y CTA opcional; acepta props para customizar cada estado vacio
@@ -66,9 +68,9 @@
 
 ### Tests
 
-- [ ] **TASK-072:** Tests unitarios para `get-next-action.ts` — cubrir todos los casos de fase activa y documentos pendientes (`tests/unit/projects/`)
+- [x] **TASK-072:** Tests unitarios para `get-next-action.ts` — `tests/unit/lib/get-next-action.test.ts`
 - [x] **TASK-073:** Tests unitarios para validaciones Zod de proyecto (`tests/unit/validations/project.test.ts`)
-- [ ] **TASK-074:** Test de integracion para `GET /api/projects` — verifica calculo de progreso y summary (`tests/integration/api/projects.test.ts`)
+- [x] **TASK-074:** Test de integracion para proyectos — `tests/integration/api/projects-crud.test.ts` (CRUD + listados; validar allí cobertura de progreso/summary según evolución)
 - [ ] **TASK-075:** Test E2E — flujo completo: crear proyecto → ver en dashboard → expandir timeline → archivar → restaurar (`tests/e2e/dashboard.spec.ts`)
 - [ ] **TASK-076:** Test E2E — limite de plan: usuario Starter intenta crear segundo proyecto → ve modal de upgrade (`tests/e2e/plan-limits.spec.ts`)
 
@@ -83,7 +85,7 @@
 
 - [x] **TASK-077:** Aplicar migraciones 003 y 004 en base de datos staging
 - [x] **TASK-078:** Verificar que el trigger `on_project_created` inicializa correctamente las 8 fases en staging
-- [ ] **TASK-079:** Smoke test del dashboard en staging: crear proyecto, ver progreso, archivar, restaurar
+- [ ] **TASK-079:** Smoke test del dashboard en staging: crear proyecto, ver progreso, archivar, restaurar _(relacionado: `tests/e2e/smoke-staging.authenticated.spec.ts` en local/staging)_
 - [ ] **TASK-080:** Lighthouse audit del dashboard — Performance > 85, Accessibility > 95
 
 ---
@@ -97,7 +99,7 @@
 - [x] Edicion de nombre/descripcion funcional
 - [x] Busqueda en tiempo real funcional
 - [x] Tabs Activos/Archivados funcionales
-- [ ] Timeline de fases expandible en cada tarjeta
+- [x] Timeline de fases expandible en cada tarjeta (`ProjectCard` + `PhaseTimeline`)
 - [x] "Siguiente accion" correcta por fase activa
 - [x] SSR verificado (HTML pre-renderizado en source)
 - [x] Optimistic updates funcionando sin lag visible
