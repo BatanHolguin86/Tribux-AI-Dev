@@ -112,10 +112,10 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <Link
-            href={`/projects/${projectId}/designs`}
+            href={`/projects/${projectId}/phase/02`}
             className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           >
-            &larr; Diseño &amp; UX
+            &larr; Diseño &amp; UX (Phase 02)
           </Link>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{artifact.screen_name}</h1>
           <span className="rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-400">

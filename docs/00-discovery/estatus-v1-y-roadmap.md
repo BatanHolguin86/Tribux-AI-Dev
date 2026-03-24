@@ -75,7 +75,7 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 
 ## 3. Lo que falta o está a medias para v1.0
 
-- **Diseño & UX:** Hub completo con generación HTML visual (wireframe/lowfi/highfi), refinamiento, aprobación y almacenamiento dual (DB + Storage). Pendientes menores: thumbnails en lista, job asíncrono dedicado, integración modal en Phase 02, E2E. Revisar `tasks.md` del feature 06.
+- **Diseño & UX:** Hub en Phase 02 (Camino A/B), aprobación en detalle, panel aprobados en Phase 04, CTA en Secciones, chat → generate con `[GENERAR …]`, mini-vistas en lista. Pendientes menores: job asíncrono dedicado, E2E dedicado, parser `design.md` (TASK-003). Ver `06-ui-ux-design-generator/tasks.md`.
 - **Fases 03–07:** Implementar en UI los checklists interactivos (Environment, Dev, QA, Launch, Iteration) y la persistencia del estado por proyecto, para que el usuario pueda marcar tareas y ver progreso real.
 - **Staging / release:** Re-ejecutar E2E y smoke contra staging cuando cambie el entorno; mantener evidencia en `v1-go-no-go.md` antes de go-live.
 
@@ -97,15 +97,15 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 
    Suite `pnpm test:e2e` estable (0 fallos con setup documentado). Smoke staging: repetir tras despliegues.
 
-### Fase B — Cerrar valor “diseño” (1 sprint)
+### Fase B — Cerrar valor “diseño” (1 sprint) — ✅ Cerrada (mar 2026)
 
-1. **Diseño & UX — cerrar brechas spec**
+1. **Diseño & UX — cerrar brechas spec** — ✅
 
-   Validar criterios abiertos en `docs/01-specs/06-ui-ux-design-generator/tasks.md` (Phase 02 modal, polling/generating UX, chat → generate, thumbnails). El generate y el hub Camino A/B ya están en código base.
+   Phase 02: CTA en Secciones hacia Herramientas (`DesignHubSectionCallout` + contexto de tabs). Generación: overlay “Generando…” (síncrono); lista con mini-vista HTML (`?thumb=1`). Chat → generate: comando `[GENERAR wireframe] …` en UI/UX Designer. Detalle: `tasks.md` del feature 06 actualizado.
 
-2. **Marcar “aprobado para desarrollo”**
+2. **Marcar “aprobado para desarrollo”** — ✅
 
-   Permitir en la UI de diseños marcar un artefacto como aprobado y exponerlo en Phase 04 (referencia para el usuario).
+   PATCH `approved` ya existía en detalle de artefacto; Phase 04 muestra panel **Diseños aprobados** con enlaces a cada artefacto (`Phase04ResourceBar`).
 
 ### Fase C — Esqueleto “construir + lanzar” (1 sprint)
 
@@ -137,5 +137,5 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 
 - **Avances:** Base metodológica (KIRO + IA DLC), Auth/Dashboard, Phase 00 y 01 completas, Orquestador + 9 agentes con adjuntos y contexto enriquecido, hub **Diseño & UX** (Camino A/B, generate, `design_artifacts`), QA documentada y tests E2E definidos. Correcciones recientes en Phase 00 y chat de agentes para evitar 500 y pantallas mudas.
 - **Estado:** El producto permite hoy “diseñar” de punta a punta (Discovery → KIRO → Agentes); “construir” y “lanzar” están en especificación y en esqueleto de fases 03–07.
-- **Hoja de ruta sugerida:** **(A) Hecha** — errores IA, checklist go/no-go, E2E local. **Siguiente:** (B) Brechas spec Diseño & UX + aprobación en UI; (C) Checklists 03–07 operativos; (D) Revisión go/no-go con usuario de prueba, docs de release y lanzamiento.
+- **Hoja de ruta sugerida:** **(A)(B) Hechas.** **Siguiente:** (C) Checklists 03–07 operativos; (D) Revisión go/no-go, docs de release y lanzamiento.
 

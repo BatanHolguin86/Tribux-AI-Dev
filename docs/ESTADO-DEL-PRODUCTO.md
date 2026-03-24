@@ -11,7 +11,8 @@
 - **Flujo principal:** Auth → Onboarding → Dashboard → proyecto por fases **00–07** (IA DLC).
 - **Valor entregado hoy:** Phase 00 (Discovery) y Phase 01 (KIRO) con chat guiado, documentos y aprobaciones; **hub Diseño & UX** (`/projects/[id]/designs`) con Camino A (generación HTML persistida) y Camino B (kit con agente UI/UX en hilo); **agentes** (CTO + especialistas + Operator) en el tab **Equipo** de la fase activa, con threads, streaming, sugerencias proactivas, adjuntos y límites por **plan**.
 - **Parcial:** Fases **03–07** con `PhaseProgressHeader`, checklists o Kanban (04), toggles y gates. **Phase 04** incluye barra con enlaces in-app a Phase 01 KIRO y **Diseño & UX**. **Fases 03, 05 y 06** muestran `PhaseDocsCallout` con rutas de archivos del repo (`docs/…`, `infrastructure/…`) y comandos de test donde aplica. **Billing** Stripe opcional según `.env`.
-- **Roadmap v1 — Fase A (mar 2026):** Cerrada en código/docs: manejo alineado de errores en rutas con `streamText`, checklist go/no-go en `docs/05-qa/v1-go-no-go.md`, suite E2E local estable (`pnpm test:e2e`). Siguiente foco operativo: Fase B (Diseño & UX) y evidencia staging antes de release.
+- **Roadmap v1 — Fase A (mar 2026):** Cerrada: errores IA alineados, `v1-go-no-go.md`, E2E local estable.
+- **Roadmap v1 — Fase B (mar 2026):** Cerrada: CTA Diseño en Phase 02 Secciones, mini-vistas en lista (`GET .../designs?thumb=1`), comando `[GENERAR tipo] pantallas` en chat UI/UX → `POST .../designs/generate`, panel de diseños **aprobados** en Phase 04. Hub en **Phase 02 → Herramientas**; `/projects/[id]/designs` redirige a Phase 02.
 
 ---
 

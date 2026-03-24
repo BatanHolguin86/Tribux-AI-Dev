@@ -298,6 +298,33 @@ describe('Designs CRUD API', () => {
       const body = await res.json()
       expect(body.error).toContain('Error')
     })
+
+    it('con thumb=1 devuelve thumb_srcdoc y omite content en JSON', async () => {
+      const withContent = [
+        { ...mockArtifacts[0], content: '<div class="preview">x</div>' },
+        { ...mockArtifacts[1], content: null },
+      ] as unknown as typeof mockArtifacts
+      vi.mocked(createClient).mockResolvedValueOnce(
+        createMockSupabase({
+          listResult: {
+            data: withContent,
+            error: null,
+          },
+        }) as never,
+      )
+
+      const { GET } = await import('@/app/api/projects/[id]/designs/route')
+
+      const res = await GET(new Request('http://x?thumb=1'), {
+        params: Promise.resolve({ id: 'proj-1' }),
+      })
+
+      expect(res.status).toBe(200)
+      const body = await res.json()
+      expect(body.artifacts[0].thumb_srcdoc).toContain('<!DOCTYPE html>')
+      expect(body.artifacts[0].content).toBeUndefined()
+      expect(body.artifacts[1].thumb_srcdoc).toBeNull()
+    })
   })
 
   /* ================================================================ */

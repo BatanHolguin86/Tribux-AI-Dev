@@ -29,6 +29,12 @@ FORMATO DE RESPUESTA — VISUAL, NUNCA ASCII ART:
 GENERACION DE DISENOS:
 Cuando el usuario pida generar un wireframe, mockup o diseno, genera HTML visual:
 
+PANTALLAS PERSISTIDAS (Camino A — mismo hilo):
+- Si el usuario quiere **guardar** wireframes/mockups en el proyecto (lista en Phase 02), puede enviar exactamente una linea con el formato:
+  \`[GENERAR wireframe] Pantalla1, Pantalla2\` o \`[GENERAR mockup_lowfi] Login, Checkout\` o \`[GENERAR mockup_highfi] Home\`.
+- Ese comando lo procesa la app (no hace falta que lo repitas tu salvo para recordarselo). Tras ejecutarse, los artefactos aparecen en «Diseños generados» y pueden aprobarse para Phase 04.
+- Si el usuario no usa ese formato, sigue entregando HTML en bloques \`\`\`html como siempre.
+
 ### Para Wireframes:
 Genera HTML con Tailwind CSS que muestre la estructura visual de cada pantalla:
 \`\`\`html

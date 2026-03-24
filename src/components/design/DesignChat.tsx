@@ -8,6 +8,7 @@ import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { parseDesignGenerateCommand } from '@/lib/design/parse-design-generate-command'
 
 function getTextContent(msg: UIMessage): string {
   return msg.parts
@@ -20,12 +21,22 @@ type DesignChatProps = {
   projectId: string
   threadId: string
   initialPrompt: string
+  /** After Camino A generate triggered from chat (TASK-020), refresh parent artifact list */
+  onCaminoAGenerateSuccess?: () => void
 }
 
-export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatProps) {
+export function DesignChat({
+  projectId,
+  threadId,
+  initialPrompt,
+  onCaminoAGenerateSuccess,
+}: DesignChatProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const initialSentRef = useRef(false)
   const [input, setInput] = useState('')
+  const [caminoAInfo, setCaminoAInfo] = useState<string | null>(null)
+  const [caminoAError, setCaminoAError] = useState<string | null>(null)
+  const [caminoABusy, setCaminoABusy] = useState(false)
 
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new TextStreamChatTransport({
@@ -33,7 +44,7 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
     }),
   })
 
-  const isLoading = status === 'streaming' || status === 'submitted'
+  const isLoading = status === 'streaming' || status === 'submitted' || caminoABusy
 
   // Auto-send the template prompt once (ref avoids setState inside effect)
   useEffect(() => {
@@ -48,9 +59,43 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
     }
   }, [messages, isLoading])
 
-  function onSubmit() {
-    if (!input.trim()) return
-    sendMessage({ text: input })
+  async function onSubmit() {
+    const trimmed = input.trim()
+    if (!trimmed) return
+
+    const cmd = parseDesignGenerateCommand(trimmed)
+    if (cmd) {
+      setInput('')
+      setCaminoAInfo(null)
+      setCaminoAError(null)
+      setCaminoABusy(true)
+      try {
+        const res = await fetch(`/api/projects/${projectId}/designs/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: cmd.type,
+            screens: cmd.screens,
+          }),
+        })
+        const body = (await res.json().catch(() => null)) as { error?: string; message?: string } | null
+        if (!res.ok) {
+          setCaminoAError(body?.message || body?.error || `Error ${res.status}`)
+          return
+        }
+        onCaminoAGenerateSuccess?.()
+        setCaminoAInfo(
+          `Se guardaron ${cmd.screens.length} pantalla(s) en el proyecto. Abre la pestaña Herramientas y revisa «Diseños generados» o el detalle de cada artefacto.`,
+        )
+      } catch (e) {
+        setCaminoAError(e instanceof Error ? e.message : 'Error de red')
+      } finally {
+        setCaminoABusy(false)
+      }
+      return
+    }
+
+    sendMessage({ text: trimmed })
     setInput('')
   }
 
@@ -87,13 +132,40 @@ export function DesignChat({ projectId, threadId, initialPrompt }: DesignChatPro
       </div>
 
       <div className="border-t border-gray-100 dark:border-gray-800 p-3">
+        <p className="mb-2 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400">
+          <span className="font-semibold text-gray-600 dark:text-gray-300">Camino A desde el chat:</span> envía una línea
+          como{' '}
+          <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">
+            [GENERAR wireframe] Login, Dashboard
+          </code>{' '}
+          (tipos: <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">wireframe</code>,{' '}
+          <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">mockup_lowfi</code>,{' '}
+          <code className="rounded bg-gray-100 px-0.5 dark:bg-gray-800">mockup_highfi</code>) para generar HTML
+          persistido sin salir del hilo.
+        </p>
+        {caminoAError && (
+          <div className="mb-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
+            {caminoAError}
+          </div>
+        )}
+        {caminoAInfo && (
+          <div className="mb-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/25 dark:text-emerald-100">
+            {caminoAInfo}
+          </div>
+        )}
+        {caminoABusy && (
+          <div className="mb-2 flex items-center gap-2 rounded-md border border-violet-200 bg-violet-50/80 px-3 py-2 text-xs text-violet-900 dark:border-violet-900/40 dark:bg-violet-950/30 dark:text-violet-100">
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-violet-400 border-t-transparent" />
+            Generando pantallas en el servidor (Camino A)… puede tardar hasta ~1 min.
+          </div>
+        )}
         <ChatInput
           value={input}
           onChange={setInput}
-          onSubmit={onSubmit}
+          onSubmit={() => void onSubmit()}
           onStop={stop}
           isLoading={isLoading}
-          placeholder="Pide cambios al entregable o aclara dudas…"
+          placeholder="Pide cambios al entregable o usa [GENERAR wireframe] Pantalla1, Pantalla2…"
         />
       </div>
     </div>

@@ -8,16 +8,21 @@ import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { KanbanBoard } from './KanbanBoard'
 import { Phase04FinalGate } from './Phase04FinalGate'
-import { Phase04ResourceBar } from './Phase04ResourceBar'
+import { Phase04ResourceBar, type Phase04ApprovedDesign } from './Phase04ResourceBar'
 
 type Phase04LayoutProps = {
   projectId: string
   initialTasks: TaskWithFeature[]
+  approvedDesigns?: Phase04ApprovedDesign[]
 }
 
 const phaseAgents = getPhaseAgents(4)
 
-export function Phase04Layout({ projectId, initialTasks }: Phase04LayoutProps) {
+export function Phase04Layout({
+  projectId,
+  initialTasks,
+  approvedDesigns = [],
+}: Phase04LayoutProps) {
   const [tasks, setTasks] = useState(initialTasks)
 
   const totalTasks = tasks.length
@@ -49,7 +54,7 @@ export function Phase04Layout({ projectId, initialTasks }: Phase04LayoutProps) {
   const sectionsContent =
     totalTasks === 0 ? (
       <div>
-        <Phase04ResourceBar projectId={projectId} />
+        <Phase04ResourceBar projectId={projectId} approvedDesigns={approvedDesigns} />
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 py-16 dark:border-gray-700">
           <div className="mb-3 text-4xl">📋</div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -63,7 +68,7 @@ export function Phase04Layout({ projectId, initialTasks }: Phase04LayoutProps) {
       </div>
     ) : (
       <div>
-        <Phase04ResourceBar projectId={projectId} />
+        <Phase04ResourceBar projectId={projectId} approvedDesigns={approvedDesigns} />
         <PhaseProgressHeader
           title="Core Development"
           completedCount={doneTasks}

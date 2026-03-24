@@ -11,6 +11,7 @@ import { SectionNav } from './SectionNav'
 import { ChatPanel } from './ChatPanel'
 import { DocumentPanel } from './DocumentPanel'
 import { Phase02FinalGate } from './Phase02FinalGate'
+import { DesignHubSectionCallout } from './DesignHubSectionCallout'
 
 type SectionData = {
   key: Phase02Section
@@ -109,6 +110,12 @@ export function Phase02Layout({
           </span>
         )}
       </div>
+
+      <DesignHubSectionCallout
+        projectId={projectId}
+        artifactCount={designArtifacts.length}
+        approvedCount={approvedDesigns.length}
+      />
 
       {allApproved ? (
         <Phase02FinalGate projectId={projectId} />

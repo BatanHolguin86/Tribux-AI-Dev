@@ -1,9 +1,13 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import type { AgentType } from '@/types/agent'
+import {
+  PhaseWorkspaceNavContext,
+  type PhaseTab,
+} from '@/lib/phase-workspace-nav-context'
 
-export type PhaseTab = 'secciones' | 'equipo' | 'herramientas'
+export type { PhaseTab }
 
 type PhaseWorkspaceTabsProps = {
   phaseNumber: number
@@ -37,6 +41,20 @@ export function PhaseWorkspaceTabs({
   const [activeTab, setActiveTab] = useState<PhaseTab>(initialTab)
 
   const goToSecciones = useCallback(() => setActiveTab('secciones'), [])
+  const goToEquipo = useCallback(() => setActiveTab('equipo'), [])
+  const goToHerramientas = useCallback(() => {
+    if (hasTools) setActiveTab('herramientas')
+  }, [hasTools])
+
+  const navValue = useMemo(
+    () => ({
+      goToSecciones,
+      goToEquipo,
+      goToHerramientas,
+      activeTab,
+    }),
+    [goToSecciones, goToEquipo, goToHerramientas, activeTab],
+  )
 
   const tabs = hasTools ? TAB_CONFIG : TAB_CONFIG.filter((t) => t.key !== 'herramientas')
 
@@ -44,6 +62,7 @@ export function PhaseWorkspaceTabs({
     typeof teamContent === 'function' ? teamContent(goToSecciones) : teamContent
 
   return (
+    <PhaseWorkspaceNavContext.Provider value={navValue}>
     <div>
       {/* Tab bar */}
       <div className="mb-4 flex gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 dark:border-gray-700 dark:bg-gray-900">
@@ -71,5 +90,6 @@ export function PhaseWorkspaceTabs({
       {activeTab === 'equipo' && resolvedTeamContent}
       {activeTab === 'herramientas' && hasTools && toolsContent}
     </div>
+    </PhaseWorkspaceNavContext.Provider>
   )
 }

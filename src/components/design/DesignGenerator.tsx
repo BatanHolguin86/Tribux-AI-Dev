@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import type { DesignWorkflowContext } from '@/lib/ai/context-builder'
 import { DESIGN_TEMPLATES } from '@/lib/ai/agents/ui-ux-designer'
@@ -22,6 +22,7 @@ type Artifact = {
   document_type: string
   status: string
   created_at: string
+  thumb_srcdoc?: string | null
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -49,6 +50,35 @@ export function DesignGenerator({
   const [refinement, setRefinement] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
+
+  const mapArtifactRow = useCallback((a: Record<string, unknown>): Artifact => {
+    return {
+      id: String(a.id),
+      title: String(a.screen_name ?? a.title ?? ''),
+      document_type: String(a.type ?? a.document_type ?? ''),
+      status: String(a.status),
+      created_at: String(a.created_at),
+      thumb_srcdoc: typeof a.thumb_srcdoc === 'string' ? a.thumb_srcdoc : null,
+    }
+  }, [])
+
+  const refreshArtifactsWithThumbs = useCallback(async () => {
+    try {
+      const listRes = await fetch(`/api/projects/${projectId}/designs?thumb=1`)
+      if (!listRes.ok) return
+      const json = (await listRes.json()) as { artifacts?: Record<string, unknown>[] }
+      if (Array.isArray(json.artifacts)) {
+        setArtifacts(json.artifacts.map(mapArtifactRow))
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [projectId, mapArtifactRow])
+
+  useEffect(() => {
+    if (existingArtifacts.length === 0) return
+    void refreshArtifactsWithThumbs()
+  }, [existingArtifacts.length, projectId, refreshArtifactsWithThumbs])
 
   async function handleSelectTemplate(templateId: string) {
     setGenerateError(null)
@@ -134,18 +164,7 @@ export function DesignGenerator({
 
       // Refresh artifact list (map API fields to component fields)
       const listRes = await fetch(`/api/projects/${projectId}/designs`)
-      if (listRes.ok) {
-        const json = await listRes.json()
-        if (Array.isArray(json.artifacts)) {
-          setArtifacts(json.artifacts.map((a: Record<string, string>) => ({
-            id: a.id,
-            title: a.screen_name || a.title || '',
-            document_type: a.type || a.document_type || '',
-            status: a.status,
-            created_at: a.created_at,
-          })))
-        }
-      }
+      await refreshArtifactsWithThumbs()
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
     } finally {
@@ -263,7 +282,12 @@ export function DesignGenerator({
             </p>
           </div>
           <div className="h-[min(70vh,560px)] min-h-[300px]">
-            <DesignChat projectId={projectId} threadId={threadId} initialPrompt={composedInitialPrompt} />
+            <DesignChat
+              projectId={projectId}
+              threadId={threadId}
+              initialPrompt={composedInitialPrompt}
+              onCaminoAGenerateSuccess={refreshArtifactsWithThumbs}
+            />
           </div>
         </div>
       </div>
@@ -313,9 +337,23 @@ export function DesignGenerator({
 
       {/* Camino A */}
       <section
-        className="mb-10 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900 md:p-6"
+        className="relative mb-10 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900 md:p-6"
         aria-labelledby="camino-a-title"
       >
+        {isGenerating && (
+          <div
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl bg-white/85 p-6 text-center backdrop-blur-sm dark:bg-gray-900/85"
+            role="status"
+            aria-live="polite"
+          >
+            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-600" />
+            <p className="mt-4 text-sm font-semibold text-gray-900 dark:text-gray-100">Generando diseños…</p>
+            <p className="mt-2 max-w-sm text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+              La IA está creando HTML+Tailwind por cada pantalla en el servidor. Suele tardar entre unos segundos y un
+              minuto; no cierres esta pestaña.
+            </p>
+          </div>
+        )}
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-violet-800 dark:bg-violet-900/40 dark:text-violet-200">
             Camino A
@@ -325,9 +363,10 @@ export function DesignGenerator({
           </h2>
         </div>
         <p className="mb-4 text-xs text-gray-600 dark:text-gray-400">
-          Escribe pantallas separadas por coma, elige tipo y opcionalmente refina. Tras generar, revisa la lista{' '}
-          <strong className="text-gray-800 dark:text-gray-200">Diseños generados</strong> y abre cada artefacto para
-          vista previa y aprobación.
+          Escribe pantallas separadas por coma, elige tipo y opcionalmente refina. La generación es{' '}
+          <strong className="text-gray-800 dark:text-gray-200">síncrona</strong>: verás el estado “Generando…” hasta
+          que termine (sin polling). Tras generar, revisa la lista <strong className="text-gray-800 dark:text-gray-200">Diseños generados</strong>{' '}
+          (vista miniatura cuando hay HTML guardado) y abre cada artefacto para aprobar o refinar.
         </p>
         <div className="mt-3 space-y-3">
           <div>
@@ -504,11 +543,24 @@ export function DesignGenerator({
               <Link
                 key={artifact.id}
                 href={`/projects/${projectId}/designs/${artifact.id}`}
-                className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 transition-colors hover:border-violet-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2.5 transition-colors hover:border-violet-300 hover:bg-gray-50 dark:hover:bg-gray-800 sm:px-4 sm:py-3"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-base">🎨</span>
-                  <div>
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <div className="relative h-20 w-[5.5rem] shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
+                    {artifact.thumb_srcdoc ? (
+                      <iframe
+                        title=""
+                        sandbox="allow-same-origin"
+                        className="pointer-events-none h-full w-full scale-[0.98] border-0"
+                        srcDoc={artifact.thumb_srcdoc}
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-100 to-indigo-100 text-xl dark:from-violet-950 dark:to-indigo-950">
+                        🎨
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {artifact.title || 'Sin nombre'}
                     </p>

@@ -46,5 +46,24 @@ export default async function Phase04Page({
     feature_name: (t.project_features as unknown as { name: string })?.name ?? null,
   }))
 
-  return <Phase04Layout projectId={projectId} initialTasks={tasksWithFeatures} />
+  const { data: approvedDesignRows } = await supabase
+    .from('design_artifacts')
+    .select('id, screen_name, type')
+    .eq('project_id', projectId)
+    .eq('status', 'approved')
+    .order('created_at', { ascending: false })
+
+  const approvedDesigns = (approvedDesignRows ?? []).map((r) => ({
+    id: r.id as string,
+    screen_name: r.screen_name as string,
+    type: r.type as string,
+  }))
+
+  return (
+    <Phase04Layout
+      projectId={projectId}
+      initialTasks={tasksWithFeatures}
+      approvedDesigns={approvedDesigns}
+    />
+  )
 }

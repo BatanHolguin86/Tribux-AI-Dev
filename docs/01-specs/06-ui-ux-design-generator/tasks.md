@@ -2,8 +2,8 @@
 
 **Feature:** Generador de diseños UI/UX (wireframes y mockups) + hub Diseño & UX
 **Fase IA DLC:** Phase 02 — Architecture & Design
-**Fecha:** 2026-03-08 · sincronizado con código marzo 2026
-**Status:** Checklist sincronizado con código (marzo 2026); ítems `[ ]` = backlog real
+**Fecha:** 2026-03-08 · sincronizado con código marzo 2026 (Fase B roadmap cerrada 2026-03-24)
+**Status:** Checklist sincronizado con código; ítems `[ ]` = backlog real (TASK-003, 025, 026, async/polling futuro)
 
 ---
 
@@ -22,7 +22,7 @@ Entregado en aplicación; el bloque **Checklist numerado** más abajo refleja el
 - [x] **Generación síncrona** (`generateText`), rate limit en generate/refine.
 - [x] **Gate Phase 01:** `completed` **o** `active` con ≥1 feature en progreso de spec (ver `designs/generate/route.ts`).
 
-**Backlog frecuente:** TASK-016 (bloque Phase 02), thumbnails en lista, worker async opcional, TASK-020 (chat → generate automático), E2E dedicado, TASK-023/607 (diseños aprobados en Phase 04).
+**Backlog frecuente:** worker async opcional + polling (TASK-017 futuro), E2E dedicado (TASK-026), TASK-003 parser `design.md`, TASK-025 tests unitarios Zod.
 
 ---
 
@@ -47,24 +47,24 @@ Entregado en aplicación; el bloque **Checklist numerado** más abajo refleja el
 
 ### Frontend — Vistas
 
-- [x] **TASK-012:** `src/app/(dashboard)/projects/[id]/designs/page.tsx` + componentes hub (`DesignGenerator`, lista) _(lista sin miniaturas raster — ver backlog)_
+- [x] **TASK-012:** Hub en Phase 02 Herramientas (`DesignGenerator`, lista); `/designs` redirige a Phase 02; lista con **mini-vista** vía `GET .../designs?thumb=1` + iframe `thumb_srcdoc`
 - [x] **TASK-013:** `src/app/(dashboard)/projects/[id]/designs/[artifactId]/page.tsx` + `ArtifactDetail` (iframe HTML, refinar, aprobar)
 - [x] **TASK-014:** Flujo de generación integrado en **Camino A** del hub _(no modal con nombre `DesignGenerateModal` aislado; mismo comportamiento funcional)_
 - [x] **TASK-015:** Refinar en detalle (formulario / flujo en `ArtifactDetail`)
-- [ ] **TASK-016:** Bloque resumen + CTA en **Phase 02** hacia hub o modal de generación
-- [ ] **TASK-017:** UX explícita “Generando…” con polling si la generación pasa a async largo en el futuro _(hoy el generate es síncrono; estado `generating` breve)_
+- [x] **TASK-016:** Bloque resumen + CTA en **Phase 02** (`DesignHubSectionCallout` en tab Secciones → pestaña Herramientas / hub)
+- [x] **TASK-017:** UX explícita “Generando…” en Camino A (overlay + copy) y en chat Camino A desde agente; polling reservado si el generate pasa a async largo
 - [x] **TASK-018:** Acceso **Diseño & UX** desde `ProjectTools` (y breadcrumb); no depende solo de un ítem legacy en sidebar
 
 ### Agente UI/UX Designer
 
 - [x] **TASK-019:** Agente `ui_ux_designer` en `src/lib/ai/agents/` + registry
-- [ ] **TASK-020:** Desde el **chat** del UI/UX Designer, detectar intención y disparar `POST .../designs/generate` automáticamente
+- [x] **TASK-020:** Desde el **chat** del UI/UX Designer, comando `[GENERAR tipo] pantallas` → `POST .../generate` (`parse-design-generate-command.ts` + `DesignChat`)
 - [x] **TASK-021:** Contexto de proyecto en prompts / `buildFullProjectContext` / specs aprobados según flujo
 
 ### Integración y guards
 
 - [x] **TASK-022:** Guard en generate: Phase 01 no `locked`; si `active`, exige ≥1 feature con spec en progreso _(comportamiento actual documentado en `ESTADO-DEL-PRODUCTO.md`)_
-- [ ] **TASK-023:** Panel o enlace en **Phase 04** a diseños `approved` para dev
+- [x] **TASK-023:** Panel en **Phase 04** (`Phase04ResourceBar`) con enlaces a artefactos `approved` + enlace al hub Phase 02
 
 ### Tipos y tests
 
@@ -85,15 +85,15 @@ Entregado en aplicación; el bloque **Checklist numerado** más abajo refleja el
 - [x] **TASK-604:** `design_artifacts` + RLS + Storage
 - [x] **TASK-605:** `POST /designs/generate` con contexto KIRO y persistencia en DB
 - [x] **TASK-606:** Vista `/projects/[id]/designs` operativa
-- [ ] **TASK-607:** Superficie en Phase 04 para diseños aprobados + flujo dev _(PATCH approved existe; falta integración UX Phase 04)_
+- [x] **TASK-607:** Superficie en Phase 04 para diseños aprobados (`Phase04ResourceBar` + query en `phase/04/page.tsx`)
 
 ---
 
 ## Orden de Ejecucion Sugerido (actualizado)
 
-**Hecho (tramo entregado):** TASK-001,002,004–015,018–019,021–022,024,027–028,601–606.
+**Hecho (tramo entregado):** TASK-001,002,004–020,021–024,027–028,601–607 (salvo TASK-003,025,026 explícitos en backlog).
 
-**Backlog priorizado sugerido:** TASK-016 → TASK-023/607 → TASK-020 → TASK-017 (async + polling) → TASK-003 → TASK-025–026.
+**Backlog priorizado sugerido:** TASK-003 → TASK-025–026 → generate async + polling (evolución TASK-017).
 
 ---
 
@@ -103,8 +103,8 @@ Entregado en aplicación; el bloque **Checklist numerado** más abajo refleja el
 - [x] Mockups low-fi y high-fi según `type` en API
 - [x] Diseños en DB (`content`) + listado en `/projects/[id]/designs`; Storage best-effort
 - [x] Refinar y marcar aprobado (PATCH) desde detalle
-- [ ] Agente UI/UX Designer dispara generate automáticamente desde chat (TASK-020)
-- [ ] Phase 02 con bloque Diseño; Phase 04 con enlace a aprobados (TASK-016, TASK-023/607)
+- [x] Agente UI/UX Designer: comando `[GENERAR …]` dispara generate desde chat (TASK-020)
+- [x] Phase 02 con bloque Diseño (TASK-016); Phase 04 con panel a aprobados (TASK-023/607)
 - [x] RLS en `design_artifacts`; bucket acotado al proyecto
 - [x] Rate limit en generate/refine
 - [x] Tests de integración API diseños; E2E dedicado aún backlog (TASK-026)
