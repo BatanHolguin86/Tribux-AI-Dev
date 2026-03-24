@@ -11,6 +11,7 @@
 - **Flujo principal:** Auth → Onboarding → Dashboard → proyecto por fases **00–07** (IA DLC).
 - **Valor entregado hoy:** Phase 00 (Discovery) y Phase 01 (KIRO) con chat guiado, documentos y aprobaciones; **hub Diseño & UX** (`/projects/[id]/designs`) con Camino A (generación HTML persistida) y Camino B (kit con agente UI/UX en hilo); **agentes** (CTO + especialistas + Operator) en el tab **Equipo** de la fase activa, con threads, streaming, sugerencias proactivas, adjuntos y límites por **plan**.
 - **Parcial:** Fases **03–07** con `PhaseProgressHeader`, checklists o Kanban (04), toggles y gates. **Phase 04** incluye barra con enlaces in-app a Phase 01 KIRO y **Diseño & UX**. **Fases 03, 05 y 06** muestran `PhaseDocsCallout` con rutas de archivos del repo (`docs/…`, `infrastructure/…`) y comandos de test donde aplica. **Billing** Stripe opcional según `.env`.
+- **Roadmap v1 — Fase A (mar 2026):** Cerrada en código/docs: manejo alineado de errores en rutas con `streamText`, checklist go/no-go en `docs/05-qa/v1-go-no-go.md`, suite E2E local estable (`pnpm test:e2e`). Siguiente foco operativo: Fase B (Diseño & UX) y evidencia staging antes de release.
 
 ---
 
@@ -79,6 +80,7 @@ Las carpetas bajo `docs/` usan **prefijo numérico de fase IA DLC** (`00-discove
 ## Documentos relacionados
 
 - Roadmap y criterios v1.0: `docs/00-discovery/estatus-v1-y-roadmap.md`
+- Go/no-go v1 y baseline QA: `docs/05-qa/v1-go-no-go.md`
 - E2E y QA: `docs/05-qa/e2e-tests.md`
 - Arquitectura de carpetas (detalle; revisar nota de vigencia al inicio): `docs/02-architecture/folder-structure.md`
 - Checklists de implementación alineados con este documento: `docs/01-specs/05-orchestrator/tasks.md`, `docs/01-specs/06-ui-ux-design-generator/tasks.md`

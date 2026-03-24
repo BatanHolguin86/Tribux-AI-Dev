@@ -38,6 +38,16 @@ Ajustar según acuerdo del equipo; punto de partida:
 
 Listado completo: `docs/05-qa/e2e-tests.md`.
 
+### Entregables roadmap Fase A (mar 2026) — ✅
+
+| Entregable | Evidencia / notas |
+| ---------- | ----------------- |
+| Errores de IA unificados en rutas `streamText` | JSON `error`/`message`; UI `ChatErrorBanner` en chats afectados; `formatChatErrorResponse` |
+| Checklist go/no-go v1 | Este documento + enlaces desde `docs/README.md` y `estatus-v1-y-roadmap.md` |
+| E2E estabilizados (local) | `pnpm test:e2e` — 0 fallos con setup en `e2e-tests.md` / notas de `CI` y puerto 3000 |
+
+Los ítems de la tabla **Criterios (bloqueantes)** siguen marcándose con evidencia por entorno (staging/prod) antes del release.
+
 ### Registro baseline — 2026-03-24
 
 | Comando              | Resultado                                                                 |
@@ -70,3 +80,4 @@ Listado completo: `docs/05-qa/e2e-tests.md`.
 | ------------ | --------- | --------------------------------------------------------------------- |
 | 2026-03-24   | Baseline  | TS + Vitest + E2E (suite local) verdes; checklist creada; ESLint 0 errores |
 | 2026-03-24   | Lint      | Eliminados `no-explicit-any` en rutas chat/generate; `set-state-in-effect` vía ref/microtask; Playwright `import` dotenv; ignore `scripts/**/*.cjs` |
+| 2026-03-24   | Fase A    | Roadmap Fase A cerrada: errores IA + checklist + E2E local estable (ver tabla «Entregables roadmap Fase A») |

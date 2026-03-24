@@ -1,6 +1,6 @@
 # Informe de avances y hoja de ruta v1.0 — AI Squad Command Center
 
-**Fecha:** 2026-03  
+**Fecha:** 2026-03 (actualizado 2026-03-24 — Fase A cerrada)  
 **Objetivo:** Resumir en qué hemos avanzado, el estatus actual y la hoja de ruta global sugerida para culminar la v1.0.
 
 ---
@@ -23,7 +23,7 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 | Agentes (CTO + 8) + adjuntos | ✅ Implementado     | Threads, streaming, paywall, adjuntos en chat, contexto de adjuntos en prompt                                                                                                                                       |
 | Diseño & UX (hub)            | ✅ Implementado     | Hub con Camino A/B: **A** = HTML persistido (`design_artifacts` + iframe); **B** = kit vía hilo UI/UX (HTML+Tailwind en chat, sin ASCII por regla de prompt). Backlog menor en `06-ui-ux-design-generator/tasks.md` |
 | Fases 03–07                  | ⚠️ Esqueleto       | Tasks.md y checklists definidos; UI mínima por fase                                                                                                                                                                 |
-| QA / E2E                     | ✅ Cubierto         | Specs para auth, Phase 00/01, agentes, paywall, adjuntos, smoke staging                                                                                                                                             |
+| QA / E2E                     | ✅ Cubierto         | Specs + suite local estable (`pnpm test:e2e`: 0 fallos con credenciales/setup adecuados); ver `v1-go-no-go.md` y `e2e-tests.md`                                                                                    |
 
 ---
 
@@ -49,7 +49,7 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 
 - **Context-builder:** `buildProjectContext`, `buildFullProjectContext`, `getApprovedDiscoveryDocs`, `getApprovedFeatureSpecs`, truncamiento progresivo.
 - **Prompt-builder:** System prompts por agente (CTO Virtual + 8 especializados, incluido Operator), inyección de contexto de proyecto y **bloque de adjuntos recientes** en el prompt.
-- **Manejo de errores:** `formatChatErrorResponse`, `ChatErrorBanner`; detección de créditos insuficientes; Phase 00 comprueba `ANTHROPIC_API_KEY` y devuelve mensaje claro si falta.
+- **Manejo de errores (Fase A):** Rutas con `streamText` (Phase 00, Phase 01 feature chat, Phase 02 chat, agentes) alineadas a JSON con `error`/`message` donde aplica y UI con `ChatErrorBanner` / mensajes explícitos; `formatChatErrorResponse` para fallos de IA; clave Anthropic y créditos cubiertos en flujos principales.
 
 ### 2.4 Funcionalidad de producto
 
@@ -77,26 +77,25 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 
 - **Diseño & UX:** Hub completo con generación HTML visual (wireframe/lowfi/highfi), refinamiento, aprobación y almacenamiento dual (DB + Storage). Pendientes menores: thumbnails en lista, job asíncrono dedicado, integración modal en Phase 02, E2E. Revisar `tasks.md` del feature 06.
 - **Fases 03–07:** Implementar en UI los checklists interactivos (Environment, Dev, QA, Launch, Iteration) y la persistencia del estado por proyecto, para que el usuario pueda marcar tareas y ver progreso real.
-- **Experiencia de errores unificada:** Que todos los flujos que llaman a Anthropic (Phase 00, Phase 01 chat, agentes) muestren mensajes consistentes (clave faltante, créditos, timeout) vía `ChatErrorBanner` o equivalente.
-- **Validación operativa:** Ejecutar la suite E2E en local y en staging y cerrar los fallos que aparezcan; dejar documentado qué tests son bloqueantes para v1.0.
+- **Staging / release:** Re-ejecutar E2E y smoke contra staging cuando cambie el entorno; mantener evidencia en `v1-go-no-go.md` antes de go-live.
 
 ---
 
 ## 4. Hoja de ruta global sugerida para culminar v1.0
 
-### Fase A — Estabilidad y experiencia de errores (1–2 sprints)
+### Fase A — Estabilidad y experiencia de errores (1–2 sprints) — ✅ Cerrada (mar 2026)
 
-1. **Unificar manejo de errores de IA**
+1. **Unificar manejo de errores de IA** — ✅
 
-   Revisar todas las rutas que usan `streamText` (Phase 00, Phase 01 chat, agentes) y asegurar que ante falta de clave, créditos o error de red se devuelva un cuerpo JSON con `error`/`message` y que la UI muestre siempre un mensaje claro (no pantalla en blanco ni “Error de conexión” genérico sin detalle).
+   Rutas con `streamText` revisadas: respuestas JSON con `error`/`message` en fallos configurables; UI con `ChatErrorBanner` y mensajes explícitos (clave, créditos, red).
 
-2. **Checklist go/no-go en código/docs**
+2. **Checklist go/no-go en código/docs** — ✅
 
-   Checklist publicada en `docs/05-qa/v1-go-no-go.md` (criterios v1 + baseline). Mantenerla al día con CI/staging.
+   Publicada y con baseline en [`docs/05-qa/v1-go-no-go.md`](../05-qa/v1-go-no-go.md); actualizar al cerrar ítems en CI/staging.
 
-3. **Ejecutar y estabilizar E2E**
+3. **Ejecutar y estabilizar E2E** — ✅ (local)
 
-   Correr `pnpm test:e2e` (y smoke en staging); corregir fallos y marcar tests opcionales si hace falta para no bloquear el release.
+   Suite `pnpm test:e2e` estable (0 fallos con setup documentado). Smoke staging: repetir tras despliegues.
 
 ### Fase B — Cerrar valor “diseño” (1 sprint)
 
@@ -138,5 +137,5 @@ Checklist detallada y registro de baseline: [`docs/05-qa/v1-go-no-go.md`](../05-
 
 - **Avances:** Base metodológica (KIRO + IA DLC), Auth/Dashboard, Phase 00 y 01 completas, Orquestador + 9 agentes con adjuntos y contexto enriquecido, hub **Diseño & UX** (Camino A/B, generate, `design_artifacts`), QA documentada y tests E2E definidos. Correcciones recientes en Phase 00 y chat de agentes para evitar 500 y pantallas mudas.
 - **Estado:** El producto permite hoy “diseñar” de punta a punta (Discovery → KIRO → Agentes); “construir” y “lanzar” están en especificación y en esqueleto de fases 03–07.
-- **Hoja de ruta sugerida:** (A) Estabilidad y mensajes de error unificados + E2E verdes; (B) Cerrar brechas spec Diseño & UX + integración Phase 02; (C) Checklists 03–07 operativos; (D) Checklist go/no-go, docs de release y lanzamiento. Con esto se puede cerrar una v1.0 alineada al objetivo del producto y estable para pruebas reales.
+- **Hoja de ruta sugerida:** **(A) Hecha** — errores IA, checklist go/no-go, E2E local. **Siguiente:** (B) Brechas spec Diseño & UX + aprobación en UI; (C) Checklists 03–07 operativos; (D) Revisión go/no-go con usuario de prueba, docs de release y lanzamiento.
 
