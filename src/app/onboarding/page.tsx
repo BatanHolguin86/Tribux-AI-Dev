@@ -8,8 +8,9 @@ import { WelcomeStep } from '@/components/onboarding/WelcomeStep'
 import { PersonaStep } from '@/components/onboarding/PersonaStep'
 import { ProjectStep } from '@/components/onboarding/ProjectStep'
 import { PhasesOverviewStep } from '@/components/onboarding/PhasesOverviewStep'
+import { IntegrationsStep } from '@/components/onboarding/IntegrationsStep'
 
-const STEP_LABELS = ['Bienvenida', 'Tu rol', 'Proyecto', 'Fases']
+const STEP_LABELS = ['Bienvenida', 'Tu rol', 'Proyecto', 'Integraciones', 'Fases']
 
 type ProjectData = {
   name: string
@@ -17,11 +18,18 @@ type ProjectData = {
   industry?: string
 }
 
+type IntegrationData = {
+  repo_url?: string
+  supabase_project_ref?: string
+  supabase_access_token?: string
+}
+
 export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [persona, setPersona] = useState<Persona | null>(null)
   const [projectData, setProjectData] = useState<ProjectData | null>(null)
+  const [integrationData, setIntegrationData] = useState<IntegrationData | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -78,7 +86,12 @@ export default function OnboardingPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           persona,
-          project: projectData,
+          project: {
+            ...projectData,
+            repo_url: integrationData?.repo_url || undefined,
+            supabase_project_ref: integrationData?.supabase_project_ref || undefined,
+            supabase_access_token: integrationData?.supabase_access_token || undefined,
+          },
         }),
       })
 
@@ -148,10 +161,21 @@ export default function OnboardingPage() {
           />
         )}
         {step === 3 && (
+          <IntegrationsStep
+            defaultValues={integrationData ?? undefined}
+            onSubmit={(data) => {
+              setIntegrationData(data)
+              persistStep(4)
+            }}
+            onBack={() => persistStep(2)}
+            onSkip={() => persistStep(4)}
+          />
+        )}
+        {step === 4 && (
           <PhasesOverviewStep
             isSubmitting={isSubmitting}
             onFinish={handleFinish}
-            onBack={() => persistStep(2)}
+            onBack={() => persistStep(3)}
           />
         )}
       </div>

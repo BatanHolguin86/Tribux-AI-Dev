@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     .update({
       persona,
       onboarding_completed: true,
-      onboarding_step: 4,
+      onboarding_step: 5,
     })
     .eq('id', user.id)
 
@@ -50,6 +50,9 @@ export async function POST(request: Request) {
       name: project.name,
       description: project.description ?? null,
       industry: project.industry ?? null,
+      repo_url: project.repo_url ?? null,
+      supabase_project_ref: project.supabase_project_ref ?? null,
+      supabase_access_token: project.supabase_access_token ?? null,
       current_phase: 0,
       status: 'active',
     })

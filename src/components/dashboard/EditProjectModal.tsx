@@ -10,6 +10,9 @@ import { useFocusTrap } from '@/hooks/use-focus-trap'
 const editSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido').max(100),
   description: z.string().max(500).optional(),
+  repo_url: z.string().url('URL invalida').max(200).optional().or(z.literal('')),
+  supabase_project_ref: z.string().max(50).optional().or(z.literal('')),
+  supabase_access_token: z.string().max(200).optional().or(z.literal('')),
 })
 
 type EditInput = z.infer<typeof editSchema>
@@ -28,7 +31,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
     setError,
   } = useForm<EditInput>({
     resolver: zodResolver(editSchema),
-    values: project ? { name: project.name, description: project.description ?? '' } : undefined,
+    values: project ? { name: project.name, description: project.description ?? '', repo_url: project.repo_url ?? '', supabase_project_ref: project.supabase_project_ref ?? '', supabase_access_token: project.supabase_access_token ?? '' } : undefined,
   })
 
   const trapRef = useFocusTrap<HTMLDivElement>(!!project)
@@ -43,10 +46,16 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
   if (!project) return null
 
   async function onSubmit(data: EditInput) {
+    const payload = {
+      ...data,
+      repo_url: data.repo_url?.trim() || null,
+      supabase_project_ref: data.supabase_project_ref?.trim() || null,
+      supabase_access_token: data.supabase_access_token?.trim() || null,
+    }
     const res = await fetch(`/api/projects/${project!.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     })
 
     if (!res.ok) {
@@ -94,6 +103,57 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
               {...register('description')}
               className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
+          </div>
+
+          <div>
+            <label htmlFor="edit-repo" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Repositorio GitHub
+            </label>
+            <input
+              id="edit-repo"
+              type="url"
+              placeholder="https://github.com/usuario/repo"
+              {...register('repo_url')}
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            />
+            {errors.repo_url && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.repo_url.message}</p>}
+            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+              Conecta tu repo para que los agentes vean la estructura y commits recientes.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Supabase</h3>
+            <div>
+              <label htmlFor="edit-sb-ref" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Project Ref
+              </label>
+              <input
+                id="edit-sb-ref"
+                type="text"
+                placeholder="abcdefghijklmnop"
+                {...register('supabase_project_ref')}
+                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              />
+              <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                URL de Supabase: supabase.com/dashboard/project/<strong>TU_REF</strong>
+              </p>
+            </div>
+            <div>
+              <label htmlFor="edit-sb-token" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Access Token
+              </label>
+              <input
+                id="edit-sb-token"
+                type="password"
+                placeholder="sbp_xxxxxxxxxxxxxxxx"
+                {...register('supabase_access_token')}
+                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              />
+              <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                Genera uno en supabase.com/dashboard/account/tokens. Permite ejecutar SQL desde la app.
+              </p>
+            </div>
           </div>
 
           {errors.root && (

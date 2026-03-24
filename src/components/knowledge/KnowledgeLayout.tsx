@@ -8,6 +8,7 @@ import { KnowledgeEntryList } from './KnowledgeEntryList'
 import { KnowledgeEntryDetail } from './KnowledgeEntryDetail'
 import { KnowledgeNoteEditor } from './KnowledgeNoteEditor'
 import { KnowledgeEmptyState } from './KnowledgeEmptyState'
+import { ExportButton } from './ExportButton'
 
 type KnowledgeLayoutProps = {
   projectId: string
@@ -143,15 +144,18 @@ export function KnowledgeLayout({
             {totalAll} entrada{totalAll !== 1 ? 's' : ''} en total
           </p>
         </div>
-        <button
-          onClick={() => setShowEditor(true)}
-          className="flex items-center gap-1.5 rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          Nueva nota
-        </button>
+        <div className="flex items-center gap-2">
+          <ExportButton projectId={projectId} />
+          <button
+            onClick={() => setShowEditor(true)}
+            className="flex items-center gap-1.5 rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Nueva nota
+          </button>
+        </div>
       </div>
 
       {/* Search + Category tabs */}

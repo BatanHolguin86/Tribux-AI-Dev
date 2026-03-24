@@ -102,3 +102,9 @@ export const DESIGN_RATE_LIMIT: RateLimitConfig = {
   maxAttempts: 10,
   windowMs: 60 * 60 * 1000,
 }
+
+/** Preset: SQL execution on Supabase — 5 executions per hour */
+export const SQL_EXECUTE_RATE_LIMIT: RateLimitConfig = {
+  maxAttempts: 5,
+  windowMs: 60 * 60 * 1000,
+}

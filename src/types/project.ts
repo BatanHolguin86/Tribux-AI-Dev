@@ -8,6 +8,9 @@ export type Project = {
   name: string
   description: string | null
   industry: string | null
+  repo_url: string | null
+  supabase_project_ref: string | null
+  supabase_access_token: string | null
   current_phase: number
   status: ProjectStatus
   last_activity: string

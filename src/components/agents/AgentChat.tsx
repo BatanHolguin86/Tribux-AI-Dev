@@ -23,6 +23,8 @@ type AgentChatProps = {
   agentType: string
   threadId: string
   initialMessages: Array<{ role: string; content: string }>
+  repoUrl?: string | null
+  supabaseProjectRef?: string | null
   onSaveArtifact: (content: string) => void
 }
 
@@ -31,6 +33,8 @@ export function AgentChat({
   agentType,
   threadId,
   initialMessages,
+  repoUrl,
+  supabaseProjectRef,
   onSaveArtifact,
 }: AgentChatProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -168,10 +172,13 @@ export function AgentChat({
           const text = getTextContent(msg)
           return (
             <div key={msg.id} className="group">
-              <ChatMessage role={msg.role as 'user' | 'assistant'} content={text} />
+              <ChatMessage role={msg.role as 'user' | 'assistant'} content={text} projectId={projectId} />
               {msg.role === 'assistant' && (
                 <MessageActions
                   content={text}
+                  projectId={projectId}
+                  repoUrl={repoUrl}
+                  supabaseProjectRef={supabaseProjectRef}
                   onSaveArtifact={onSaveArtifact}
                 />
               )}

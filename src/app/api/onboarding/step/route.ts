@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 
 const updateStepSchema = z.object({
-  step: z.number().int().min(0).max(4),
+  step: z.number().int().min(0).max(5),
 })
 
 export async function PATCH(request: Request) {
