@@ -17,6 +17,6 @@ Los tests asociados están en `/tests/` (unit, integration, e2e).
 
 - `scripts/set-user-plan-enterprise.mjs` — asignar plan enterprise a un usuario vía Supabase Admin API (`pnpm run plan:enterprise <email>`).
 - `scripts/sql/grant-enterprise-test-user.sql` — alternativa SQL para pruebas.
-- Otros: `scripts/test-anthropic.ts`, `scripts/export-executive-report-pdf.cjs`, etc.
+- Otros: `scripts/test-anthropic.ts`, etc.
 
 **Estado del producto vs docs:** `docs/ESTADO-DEL-PRODUCTO.md`.
