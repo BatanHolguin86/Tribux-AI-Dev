@@ -18,7 +18,7 @@
 
 ### Integracion con Tests
 
-- [ ] **TASK-753:** Links en UI a `docs/05-qa/e2e-tests.md` o instrucciones `pnpm test` / `pnpm test:e2e` _(contenido guía en cards; sin enlaces al repo)_
+- [x] **TASK-753:** `PhaseDocsCallout` con `docs/05-qa/e2e-tests.md`, smoke staging y comandos `pnpm test` / `pnpm test:e2e`
 
 ### Alineacion v1.0 KIRO
 

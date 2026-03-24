@@ -8,6 +8,7 @@ import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { KanbanBoard } from './KanbanBoard'
 import { Phase04FinalGate } from './Phase04FinalGate'
+import { Phase04ResourceBar } from './Phase04ResourceBar'
 
 type Phase04LayoutProps = {
   projectId: string
@@ -25,9 +26,7 @@ export function Phase04Layout({ projectId, initialTasks }: Phase04LayoutProps) {
 
   const handleStatusChange = useCallback(
     async (taskId: string, newStatus: TaskStatus) => {
-      setTasks((prev) =>
-        prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t))
-      )
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t)))
 
       const res = await fetch(`/api/projects/${projectId}/phases/4/tasks/${taskId}`, {
         method: 'PATCH',
@@ -40,43 +39,52 @@ export function Phase04Layout({ projectId, initialTasks }: Phase04LayoutProps) {
           prev.map((t) => {
             const original = initialTasks.find((o) => o.id === taskId)
             return t.id === taskId && original ? { ...t, status: original.status } : t
-          })
+          }),
         )
       }
     },
-    [projectId, initialTasks]
+    [projectId, initialTasks],
   )
 
-  const sectionsContent = totalTasks === 0 ? (
-    <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 py-16">
-      <div className="mb-3 text-4xl">📋</div>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">No hay tasks aun</h3>
-      <p className="mt-1 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400">
-        Las tasks se generan automaticamente desde los specs KIRO de Phase 01
-        cuando Phase 03 es aprobada.
-      </p>
-    </div>
-  ) : (
-    <div>
-      <PhaseProgressHeader
-        title="Core Development"
-        completedCount={doneTasks}
-        totalCount={totalTasks}
-        unitLabel="tasks"
-      />
-
-      {allDone ? (
-        <Phase04FinalGate projectId={projectId} totalTasks={totalTasks} />
-      ) : (
-        <>
-          <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-            Mueve las tasks por el Kanban. Usa el tab <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para consultar al Lead Developer o CTO.
+  const sectionsContent =
+    totalTasks === 0 ? (
+      <div>
+        <Phase04ResourceBar projectId={projectId} />
+        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 py-16 dark:border-gray-700">
+          <div className="mb-3 text-4xl">📋</div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            No hay tasks aun
+          </h3>
+          <p className="mt-1 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400">
+            Las tasks se generan automaticamente desde los specs KIRO de Phase 01 cuando Phase 03 es
+            aprobada. Mientras tanto, revisa tus specs y diseños desde los enlaces de arriba.
           </p>
-          <KanbanBoard tasks={tasks} onStatusChange={handleStatusChange} />
-        </>
-      )}
-    </div>
-  )
+        </div>
+      </div>
+    ) : (
+      <div>
+        <Phase04ResourceBar projectId={projectId} />
+        <PhaseProgressHeader
+          title="Core Development"
+          completedCount={doneTasks}
+          totalCount={totalTasks}
+          unitLabel="tasks"
+        />
+
+        {allDone ? (
+          <Phase04FinalGate projectId={projectId} totalTasks={totalTasks} />
+        ) : (
+          <>
+            <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+              Mueve las tasks por el Kanban. Usa el tab{' '}
+              <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para
+              consultar al Lead Developer o CTO.
+            </p>
+            <KanbanBoard tasks={tasks} onStatusChange={handleStatusChange} />
+          </>
+        )}
+      </div>
+    )
 
   return (
     <PhaseWorkspaceTabs

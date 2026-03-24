@@ -5,7 +5,7 @@
 **Fecha:** 2026-03-08
 **Status:** v1.0 — Implementado
 
-**Alineación código (marzo 2026):** UI principal en `Phase01Layout` + `FeatureWorkspace` / `DocumentTypeNav`. El archivo `src/components/phase-01/KiroWorkflowRail.tsx` existe pero **no está importado** en el layout actual (backlog de UX si se desea rail lateral dedicado).
+**Alineación código (marzo 2026):** UI principal en `Phase01Layout` + `FeatureWorkspace`. El rail KIRO (`KiroWorkflowRail`) está **integrado en `FeatureWorkspace`** (sustituye el stepper duplicado; pasos clicables cuando el documento previo está aprobado).
 
 ---
 
@@ -100,7 +100,7 @@
 - [x] **TASK-521:** Actualizar `design.md` de KIRO con el modelo de datos y flujos actuales
 - [x] **TASK-522:** Completar y ajustar este `tasks.md` con tareas v1.0 pendientes y backlog
 - [x] **TASK-523:** Ajustar detalles de UX en Phase 01 (celebracion, redireccion a Phase 02, textos de ayuda)
-- [ ] **TASK-523b:** Integrar `KiroWorkflowRail` en `Phase01Layout` (o retirar el componente si se desestima)
+- [x] **TASK-523b:** Integrar `KiroWorkflowRail` en `FeatureWorkspace` (edición de feature en Phase 01)
 
 ---
 

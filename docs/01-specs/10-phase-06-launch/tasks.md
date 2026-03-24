@@ -18,7 +18,7 @@
 
 ### Integracion con Operaciones
 
-- [ ] **TASK-763:** Links directos en UI a `docs/06-ops/*` y reportes QA _(items textuales; sin URLs al repo)_
+- [x] **TASK-763:** `PhaseDocsCallout` con `docs/06-ops/apply-migrations-staging.md` y `sentry-setup.md`
 
 ### Alineacion v1.0 KIRO
 

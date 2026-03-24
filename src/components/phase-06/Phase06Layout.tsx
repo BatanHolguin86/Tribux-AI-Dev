@@ -10,6 +10,7 @@ import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCard } from '@/components/shared/ChecklistCard'
 import { Phase06FinalGate } from './Phase06FinalGate'
+import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 
 const PHASE_OBJECTIVE =
   'Verifica checklist de lanzamiento: deploy, monitoring, dominios y documentación operacional.'
@@ -30,7 +31,9 @@ const phaseAgents = getPhaseAgents(6)
 export function Phase06Layout({ projectId, categories: initialCategories }: Phase06LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
 
-  const completedCount = categories.filter((c) => c.status === 'completed' || c.status === 'approved').length
+  const completedCount = categories.filter(
+    (c) => c.status === 'completed' || c.status === 'approved',
+  ).length
   const totalCategories = categories.length
   const allCompleted = categories.every((c) => c.status === 'completed' || c.status === 'approved')
 
@@ -40,12 +43,10 @@ export function Phase06Layout({ projectId, categories: initialCategories }: Phas
       if (!category) return
 
       const newStatus: SectionStatus =
-        category.status === 'completed' || category.status === 'approved'
-          ? 'pending'
-          : 'completed'
+        category.status === 'completed' || category.status === 'approved' ? 'pending' : 'completed'
 
       setCategories((prev) =>
-        prev.map((c) => (c.key === sectionKey ? { ...c, status: newStatus } : c))
+        prev.map((c) => (c.key === sectionKey ? { ...c, status: newStatus } : c)),
       )
 
       const res = await fetch(`/api/projects/${projectId}/phases/6/sections/${sectionKey}/toggle`, {
@@ -56,12 +57,12 @@ export function Phase06Layout({ projectId, categories: initialCategories }: Phas
 
       if (!res.ok) {
         setCategories((prev) =>
-          prev.map((c) => (c.key === sectionKey ? { ...c, status: category.status } : c))
+          prev.map((c) => (c.key === sectionKey ? { ...c, status: category.status } : c)),
         )
         toast.error('Error al actualizar la categoria')
       }
     },
-    [categories, projectId]
+    [categories, projectId],
   )
 
   const sectionsContent = (
@@ -77,8 +78,18 @@ export function Phase06Layout({ projectId, categories: initialCategories }: Phas
         <Phase06FinalGate projectId={projectId} />
       ) : (
         <>
+          <PhaseDocsCallout
+            title="Operaciones en el repositorio"
+            description="Runbooks para deploy, migraciones y observabilidad."
+            repoPaths={[
+              { label: 'Migraciones staging', path: 'docs/06-ops/apply-migrations-staging.md' },
+              { label: 'Sentry', path: 'docs/06-ops/sentry-setup.md' },
+            ]}
+          />
           <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-            Completa cada categoria de lanzamiento. Usa el tab <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para consultar al DevOps Engineer.
+            Completa cada categoria de lanzamiento. Usa el tab{' '}
+            <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para
+            consultar al DevOps Engineer.
           </p>
 
           <div className="grid gap-4 md:grid-cols-2">

@@ -10,6 +10,7 @@ import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCard } from '@/components/shared/ChecklistCard'
 import { Phase05FinalGate } from './Phase05FinalGate'
+import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 
 const PHASE_OBJECTIVE =
   'Completa tests unitarios, de integración y E2E; genera el reporte de QA antes de aprobar la fase.'
@@ -30,7 +31,9 @@ const phaseAgents = getPhaseAgents(5)
 export function Phase05Layout({ projectId, categories: initialCategories }: Phase05LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
 
-  const completedCount = categories.filter((c) => c.status === 'completed' || c.status === 'approved').length
+  const completedCount = categories.filter(
+    (c) => c.status === 'completed' || c.status === 'approved',
+  ).length
   const totalCategories = categories.length
   const allCompleted = categories.every((c) => c.status === 'completed' || c.status === 'approved')
 
@@ -40,12 +43,10 @@ export function Phase05Layout({ projectId, categories: initialCategories }: Phas
       if (!category) return
 
       const newStatus: SectionStatus =
-        category.status === 'completed' || category.status === 'approved'
-          ? 'pending'
-          : 'completed'
+        category.status === 'completed' || category.status === 'approved' ? 'pending' : 'completed'
 
       setCategories((prev) =>
-        prev.map((c) => (c.key === sectionKey ? { ...c, status: newStatus } : c))
+        prev.map((c) => (c.key === sectionKey ? { ...c, status: newStatus } : c)),
       )
 
       const res = await fetch(`/api/projects/${projectId}/phases/5/sections/${sectionKey}/toggle`, {
@@ -56,12 +57,12 @@ export function Phase05Layout({ projectId, categories: initialCategories }: Phas
 
       if (!res.ok) {
         setCategories((prev) =>
-          prev.map((c) => (c.key === sectionKey ? { ...c, status: category.status } : c))
+          prev.map((c) => (c.key === sectionKey ? { ...c, status: category.status } : c)),
         )
         toast.error('Error al actualizar la categoria')
       }
     },
-    [categories, projectId]
+    [categories, projectId],
   )
 
   const sectionsContent = (
@@ -77,8 +78,19 @@ export function Phase05Layout({ projectId, categories: initialCategories }: Phas
         <Phase05FinalGate projectId={projectId} />
       ) : (
         <>
+          <PhaseDocsCallout
+            title="QA en el repositorio"
+            description="Listado de suites y flujos E2E documentados en markdown."
+            repoPaths={[
+              { label: 'E2E y estructura de tests', path: 'docs/05-qa/e2e-tests.md' },
+              { label: 'Smoke staging', path: 'docs/05-qa/smoke-staging-phase00-phase01.md' },
+            ]}
+            commands={['pnpm test', 'pnpm test:e2e']}
+          />
           <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-            Completa cada categoria de testing y QA. Usa el tab <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para consultar al QA Engineer.
+            Completa cada categoria de testing y QA. Usa el tab{' '}
+            <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para
+            consultar al QA Engineer.
           </p>
 
           <div className="grid gap-4 md:grid-cols-2">

@@ -9,6 +9,7 @@ import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { ChecklistCategory } from './ChecklistCategory'
 import { Phase03FinalGate } from './Phase03FinalGate'
+import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 
 const PHASE_OBJECTIVE =
   'Configura repositorio, base de datos, autenticación, hosting y variables de entorno antes de pasar a desarrollo.'
@@ -29,7 +30,9 @@ const phaseAgents = getPhaseAgents(3)
 export function Phase03Layout({ projectId, categories: initialCategories }: Phase03LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
 
-  const completedCount = categories.filter((c) => c.status === 'completed' || c.status === 'approved').length
+  const completedCount = categories.filter(
+    (c) => c.status === 'completed' || c.status === 'approved',
+  ).length
   const totalCategories = categories.length
   const allCompleted = categories.every((c) => c.status === 'completed' || c.status === 'approved')
 
@@ -39,12 +42,10 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
       if (!category) return
 
       const newStatus: SectionStatus =
-        category.status === 'completed' || category.status === 'approved'
-          ? 'pending'
-          : 'completed'
+        category.status === 'completed' || category.status === 'approved' ? 'pending' : 'completed'
 
       setCategories((prev) =>
-        prev.map((c) => (c.key === sectionKey ? { ...c, status: newStatus } : c))
+        prev.map((c) => (c.key === sectionKey ? { ...c, status: newStatus } : c)),
       )
 
       const res = await fetch(`/api/projects/${projectId}/phases/3/sections/${sectionKey}/toggle`, {
@@ -55,11 +56,11 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
 
       if (!res.ok) {
         setCategories((prev) =>
-          prev.map((c) => (c.key === sectionKey ? { ...c, status: category.status } : c))
+          prev.map((c) => (c.key === sectionKey ? { ...c, status: category.status } : c)),
         )
       }
     },
-    [categories, projectId]
+    [categories, projectId],
   )
 
   const sectionsContent = (
@@ -75,9 +76,20 @@ export function Phase03Layout({ projectId, categories: initialCategories }: Phas
         <Phase03FinalGate projectId={projectId} />
       ) : (
         <>
+          <PhaseDocsCallout
+            title="Documentación en el repositorio"
+            description="Runbooks e infraestructura (clona el repo o ábrelo en el IDE)."
+            repoPaths={[
+              { label: 'Entorno y variables', path: 'docs/03-environment/README.md' },
+              { label: 'Migraciones staging', path: 'docs/06-ops/apply-migrations-staging.md' },
+              { label: 'Infra', path: 'infrastructure/supabase/migrations/' },
+            ]}
+          />
           <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-            Completa cada categoria marcandola cuando hayas configurado todos los items.
-            Si te atoras, usa el tab <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para consultar al CTO o DevOps.
+            Completa cada categoria marcandola cuando hayas configurado todos los items. Si te
+            atoras, usa el tab{' '}
+            <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para
+            consultar al CTO o DevOps.
           </p>
 
           <div className="grid gap-4 md:grid-cols-2">

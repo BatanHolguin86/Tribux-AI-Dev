@@ -15,7 +15,7 @@
 
 - [x] **TASK-731:** Vista Phase 03 con `PhaseProgressHeader` y checklist por categorías (`ChecklistCategory` + `PHASE03_SECTIONS`)
 - [x] **TASK-732:** Marcar categorías completadas y persistir por proyecto vía API de secciones (`phase_sections` / toggle route)
-- [ ] **TASK-733:** Enlaces **directos** en UI a archivos de `docs/06-ops/` _(hoy el copy guía al usuario; sin links markdown clicables al repo)_
+- [x] **TASK-733:** `PhaseDocsCallout` en Phase 03 con rutas de repo (`docs/03-environment`, `docs/06-ops`, `infrastructure/supabase/migrations`) — referencia en la app (sin URL HTTP al repo)
 
 ### Integracion con Fases
 

@@ -18,7 +18,7 @@
 
 ### Integracion con Specs
 
-- [ ] **TASK-743:** Bloque UI con enlaces a documentos KIRO y a **`/projects/[id]/designs`** (diseños aprobados) _(hoy solo copy que menciona specs Phase 01; sin links en panel)_
+- [x] **TASK-743:** Barra de referencias in-app — `Phase04ResourceBar`: enlaces a **`/projects/[id]/phase/01`** (KIRO) y **`/projects/[id]/designs`** (Diseño & UX); visible también cuando el Kanban está vacío
 
 ### Alineacion v1.0 KIRO
 
