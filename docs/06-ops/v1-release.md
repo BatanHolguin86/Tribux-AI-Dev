@@ -55,6 +55,7 @@ Guía histórica staging (ejemplo de flujo): [`apply-migrations-staging.md`](./a
 Según specs implementadas:
 
 - **`project-documents`** — documentos/specs por proyecto (privado; acceso vía servidor / signed URLs).
+- **`project-chat`** — adjuntos en hilos de agentes (`src/lib/storage/chat-attachments.ts`).
 - **`project-designs`** — artefactos de diseño (privado; uso best-effort si en un entorno aún no existe el bucket).
 
 Crearlos en el dashboard de Supabase con políticas acordes a RLS/privacidad (ver tareas en `docs/01-specs/` Phase 00 y UI/UX design generator).

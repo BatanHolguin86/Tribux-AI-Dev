@@ -10,9 +10,10 @@
 
 | #   | Criterio                                        | Verificación                                                                                    | Estado |
 | --- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------ |
-| 1   | **Typecheck**                                   | `pnpm exec tsc --noEmit` sin errores.                                                           | ⬜     |
-| 1b  | **ESLint**                                      | `pnpm lint` sin **errores** (warnings restantes: principalmente `no-unused-vars`; limpiar en higiene). | ⬜     |
-| 2   | **Tests automatizados base**                    | `pnpm test` (Vitest) verde: unit + integración.                                                 | ⬜     |
+| 1   | **Typecheck**                                   | `pnpm exec tsc --noEmit` sin errores.                                                           | ✅     |
+| 1b  | **ESLint**                                      | `pnpm lint` sin **errores** (warnings restantes: principalmente `no-unused-vars`; limpiar en higiene). | ✅     |
+| 2   | **Tests automatizados base**                    | `pnpm test` (Vitest) verde: unit + integración.                                                 | ✅     |
+| 2b  | **Build producción**                            | `pnpm build` exitoso (Next.js).                                                                  | ✅     |
 | 3   | **IA configurada**                              | En staging: `ANTHROPIC_API_KEY` válida; Phase 00 / agentes muestran error claro si falta clave. | ⬜     |
 | 4   | **Auth + onboarding + primer proyecto**         | Happy path: registro/login (o login test), onboarding, proyecto creado, acceso a Phase 00.      | ⬜     |
 | 5   | **Phase 00 + Phase 01 (KIRO)**                 | Generación/aprobación mínima documentada; flujo coherente con gates.                            | ⬜     |
@@ -21,6 +22,8 @@
 | 8   | **E2E críticos**                                | Subconjunto acordado en verde (ver sección siguiente). `pnpm test:e2e` en CI o manual documentado. | ⬜     |
 | 9   | **Base de datos y Storage**                     | Migraciones aplicadas en staging; buckets necesarios (`project-documents`, `project-chat`, `project-designs` si aplica) y RLS comprobados. | ⬜     |
 | 10  | **Variables de entorno**                        | `.env.example` al día; Vercel/staging con vars mínimas (Supabase, app URL, opcional Stripe).    | ⬜     |
+
+**Nota:** Los ítems **1, 1b, 2 y 2b** tienen evidencia **local** en el registro siguiente (2026-03-24). Los ítems **3–10** dependen de **staging/prod** o de una **sesión con usuario de prueba**; mantener ⬜ hasta registrar evidencia allí.
 
 ---
 
@@ -53,9 +56,16 @@ Los ítems de la tabla **Criterios (bloqueantes)** siguen marcándose con eviden
 | Comando              | Resultado                                                                 |
 | -------------------- | ------------------------------------------------------------------------- |
 | `pnpm exec tsc --noEmit` | ✅ OK                                                                     |
-| `pnpm test`          | ✅ 668 tests (46 archivos)                                                |
-| `pnpm lint`          | ✅ 0 errores / ~22 warnings (`no-unused-vars`, etc.; no fallan el comando) |
-| `pnpm test:e2e`      | Ejecutar con `CI` desactivado si `localhost:3000` está ocupado (`reuseExistingServer`). Último run: **13 passed**, **26 skipped**, **0 failed** (home: link «Comenzar gratis» acotado a `navigation` por strict mode de Playwright). |
+| `pnpm test`          | ✅ **676** tests (**48** archivos) — incl. integración `phase-section-item` |
+| `pnpm lint`          | ✅ 0 errores / **23** warnings (`no-unused-vars`, etc.; no fallan el comando) |
+| `pnpm build`         | ✅ OK (Next.js, rutas dinámicas incl. phase 03–07)                         |
+| `pnpm test:e2e`      | Ejecutar con `CI` desactivado si `localhost:3000` está ocupado (`reuseExistingServer`). Último run documentado en esta fecha: **13 passed**, **26 skipped**, **0 failed** (home: link «Comenzar gratis» acotado a `navigation` por strict mode de Playwright). **Re-ejecutar** antes del corte de release si hubo cambios en UI o auth. |
+
+#### Revisión automatizada (post Fase C + guía `v1-release`)
+
+- **Commit de referencia (código):** `48baa68` — checklists por ítem, API, narrativa cierre.
+- **Commit de referencia (docs):** `7f17134` — roadmap Fase C cerrada, `docs/06-ops/v1-release.md`, `pending-migrations` con **021**.
+- **Decisión:** gates **locales** OK para seguir con validación **staging** (criterios 3–10) y E2E completo según credenciales.
 
 **Notas E2E**
 
@@ -81,3 +91,4 @@ Los ítems de la tabla **Criterios (bloqueantes)** siguen marcándose con eviden
 | 2026-03-24   | Baseline  | TS + Vitest + E2E (suite local) verdes; checklist creada; ESLint 0 errores |
 | 2026-03-24   | Lint      | Eliminados `no-explicit-any` en rutas chat/generate; `set-state-in-effect` vía ref/microtask; Playwright `import` dotenv; ignore `scripts/**/*.cjs` |
 | 2026-03-24   | Fase A    | Roadmap Fase A cerrada: errores IA + checklist + E2E local estable (ver tabla «Entregables roadmap Fase A») |
+| 2026-03-24   | Revisión D (parcial) | `tsc` + `lint` (0 errores) + `test` (676) + `build` OK; criterios 1–2b marcados ✅; pendiente staging/usuario en 3–10; commits `48baa68` / `7f17134` |
