@@ -28,7 +28,21 @@ const mockArtifacts = [
   },
 ]
 
-const mockArtifactDetail = {
+/** Row shape from DB; storage_path may be null when only `content` is set */
+type DesignArtifactDetailMock = {
+  id: string
+  type: string
+  screen_name: string
+  flow_name: string
+  status: string
+  mime_type: string
+  storage_path: string | null
+  content: string | null
+  created_at: string
+  updated_at: string
+}
+
+const mockArtifactDetail: DesignArtifactDetailMock = {
   id: 'art-1',
   type: 'wireframe',
   screen_name: 'Home',
@@ -47,9 +61,9 @@ const mockArtifactDetail = {
 
 const createMockSupabase = (overrides?: {
   listResult?: { data: typeof mockArtifacts | null; error: Error | null }
-  detailResult?: { data: typeof mockArtifactDetail | null; error: Error | null }
+  detailResult?: { data: DesignArtifactDetailMock | null; error: Error | null }
   patchResult?: { data: { id: string; status: string } | null; error: Error | null }
-  refineArtifactResult?: { data: typeof mockArtifactDetail | null; error: Error | null }
+  refineArtifactResult?: { data: DesignArtifactDetailMock | null; error: Error | null }
   projectResult?: { data: { id: string; name: string } | null; error: Error | null }
   storagePath?: string | null
   mimeType?: string

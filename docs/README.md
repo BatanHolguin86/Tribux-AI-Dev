@@ -28,6 +28,7 @@ La carpeta `docs/` está ordenada según la **metodología IA DLC** (AI-Driven D
 - **Ver qué features está especificando el producto:** `01-specs/` (carpetas por feature: 01-auth-onboarding, 04-kiro-generator, 05-orchestrator, etc.)
 - **Priorización y alcance:** `01-specs/03-moscow.md`, `01-specs/01-prd.md`
 - **Avances, gaps y roadmap v1.0:** `00-discovery/estatus-v1-y-roadmap.md`
+- **Go / No-go v1.0 y baseline QA:** `05-qa/v1-go-no-go.md`
 - **Decisiones técnicas (índice):** `02-architecture/decisions/README.md`
 - **Diseño & UX en el producto (hub, Camino A/B, agente):** `01-specs/06-ui-ux-design-generator/` y ADR-007 en `02-architecture/decisions/ADR-007-design-hub-two-path-ux.md`
 
@@ -42,6 +43,7 @@ La carpeta `docs/` está ordenada según la **metodología IA DLC** (AI-Driven D
 | SQL alternativo para plan de prueba   | `scripts/sql/grant-enterprise-test-user.sql`                                |
 | Migraciones Supabase                  | `infrastructure/supabase/migrations/`                                       |
 | Tests E2E documentados                | `05-qa/e2e-tests.md`                                                        |
+| Go / No-go v1.0 (definición de hecho) | `05-qa/v1-go-no-go.md`                                                      |
 
 ---
 

@@ -157,13 +157,12 @@ describe('FeatureWorkspace', () => {
       expect(screen.getByTestId('kiro-doctype').textContent).toBe('tasks')
     })
 
-    it('unlocks tasks tab in stepper after design approval', () => {
+    it('unlocks tasks step in rail after design approval', () => {
       const feature = makeFeature()
       render(<FeatureWorkspace {...defaultProps} feature={feature} />)
 
-      // Tasks tab should be locked (disabled) before design approval
-      const tasksButton = screen.getByRole('button', { name: /Tasks/ })
-      expect(tasksButton).toBeDisabled()
+      // Tasks step is locked → no clickable button (only span in KiroWorkflowRail)
+      expect(screen.queryByRole('button', { name: /Abrir Tasks/ })).not.toBeInTheDocument()
 
       // Approve design → switch to tasks
       const onDocumentApproved = capturedKiroChatProps.onDocumentApproved as (next: KiroDocumentType | null) => void
@@ -171,9 +170,8 @@ describe('FeatureWorkspace', () => {
         onDocumentApproved('tasks')
       })
 
-      // Tasks tab should now be enabled
-      const tasksButtonAfter = screen.getByRole('button', { name: /Tasks/ })
-      expect(tasksButtonAfter).not.toBeDisabled()
+      const tasksButtonAfter = screen.getByRole('button', { name: /Abrir Tasks/ })
+      expect(tasksButtonAfter).toBeEnabled()
     })
 
     it('updates progress badge after approval', () => {
@@ -207,28 +205,21 @@ describe('FeatureWorkspace', () => {
     })
   })
 
-  describe('stepper navigation', () => {
-    it('can click on approved doc tabs to navigate back', async () => {
+  describe('KIRO rail navigation', () => {
+    it('can click on approved doc steps to navigate back', async () => {
       const user = userEvent.setup()
       const feature = makeFeature()
       render(<FeatureWorkspace {...defaultProps} feature={feature} />)
 
-      // Click on Requirements (already approved, should be clickable)
-      await user.click(screen.getByRole('button', { name: /Requirements/ }))
+      await user.click(screen.getByRole('button', { name: /Abrir Requisitos/ }))
       expect(screen.getByTestId('kiro-doctype').textContent).toBe('requirements')
     })
 
-    it('cannot click on locked doc tabs', async () => {
-      const user = userEvent.setup()
+    it('does not expose a clickable button for locked tasks step', async () => {
       const feature = makeFeature()
       render(<FeatureWorkspace {...defaultProps} feature={feature} />)
 
-      // Tasks should be locked
-      const tasksButton = screen.getByRole('button', { name: /Tasks/ })
-      expect(tasksButton).toBeDisabled()
-
-      await user.click(tasksButton)
-      // Should still be on design
+      expect(screen.queryByRole('button', { name: /Abrir Tasks/ })).not.toBeInTheDocument()
       expect(screen.getByTestId('kiro-doctype').textContent).toBe('design')
     })
   })
