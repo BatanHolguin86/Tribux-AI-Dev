@@ -40,6 +40,13 @@ export async function POST(request: Request) {
     )
   }
 
+  // Check for existing Stripe customer ID
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('stripe_customer_id')
+    .eq('id', user.id)
+    .single()
+
   try {
     // Create Stripe checkout session via API
     const params = new URLSearchParams({
@@ -51,8 +58,13 @@ export async function POST(request: Request) {
       cancel_url: `${APP_URL}/settings?billing=canceled`,
       'metadata[user_id]': user.id,
       'metadata[plan]': plan,
-      customer_email: user.email ?? '',
     })
+
+    if (profile?.stripe_customer_id) {
+      params.set('customer', profile.stripe_customer_id)
+    } else {
+      params.set('customer_email', user.email ?? '')
+    }
 
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',

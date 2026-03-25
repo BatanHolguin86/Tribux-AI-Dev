@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { parseTasksFromMarkdown } from '@/lib/tasks/parse-tasks'
+import { notifyPhaseApproved } from '@/lib/email/send'
 
 export async function POST(
   _request: Request,
@@ -106,6 +107,9 @@ export async function POST(
     .from('projects')
     .update({ current_phase: 4, last_activity: new Date().toISOString() })
     .eq('id', projectId)
+
+  // Fire-and-forget email notification
+  notifyPhaseApproved(supabase, user.email ?? '', projectId, 3)
 
   return NextResponse.json({
     phase: 3,

@@ -13,6 +13,8 @@ export function Phase07FinalGate({ projectId }: Phase07FinalGateProps) {
   const router = useRouter()
   const [isApproving, setIsApproving] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [cycleApproved, setCycleApproved] = useState(false)
+  const [startingCycle, setStartingCycle] = useState(false)
 
   async function handleApprove() {
     setIsApproving(true)
@@ -28,9 +30,24 @@ export function Phase07FinalGate({ projectId }: Phase07FinalGateProps) {
     }
 
     toast.success('Ciclo IA DLC completado!')
-    setTimeout(() => {
-      router.push(`/projects/${projectId}/dashboard`)
-    }, 2000)
+    setCycleApproved(true)
+  }
+
+  async function handleNewCycle() {
+    setStartingCycle(true)
+
+    const res = await fetch(`/api/projects/${projectId}/new-cycle`, {
+      method: 'POST',
+    })
+
+    if (!res.ok) {
+      setStartingCycle(false)
+      toast.error('Error al iniciar nuevo ciclo')
+      return
+    }
+
+    toast.success('Nuevo ciclo iniciado!')
+    router.push(`/projects/${projectId}/phase/00`)
   }
 
   return (
@@ -58,7 +75,23 @@ export function Phase07FinalGate({ projectId }: Phase07FinalGateProps) {
         Al aprobar, el ciclo IA DLC se marca como completado. Puedes iniciar un nuevo ciclo desde el dashboard.
       </p>
 
-      {!showConfirm ? (
+      {cycleApproved ? (
+        <div className="mt-4 flex justify-center gap-3">
+          <button
+            onClick={() => router.push(`/projects/${projectId}/dashboard`)}
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+          >
+            Ir al dashboard
+          </button>
+          <button
+            onClick={handleNewCycle}
+            disabled={startingCycle}
+            className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-700 disabled:opacity-50"
+          >
+            {startingCycle ? 'Iniciando...' : 'Iniciar nuevo ciclo'}
+          </button>
+        </div>
+      ) : !showConfirm ? (
         <button
           onClick={() => setShowConfirm(true)}
           className="mt-4 rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700"

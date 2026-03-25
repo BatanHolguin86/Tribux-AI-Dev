@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { notifyPhaseApproved } from '@/lib/email/send'
 
 export async function POST(
   _request: Request,
@@ -57,6 +58,9 @@ export async function POST(
       last_activity: new Date().toISOString(),
     })
     .eq('id', projectId)
+
+  // Fire-and-forget email notification (cycle complete template)
+  notifyPhaseApproved(supabase, user.email ?? '', projectId, 7)
 
   return NextResponse.json({
     phase: 7,

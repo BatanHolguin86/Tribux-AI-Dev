@@ -11,6 +11,7 @@ export type Project = {
   repo_url: string | null
   supabase_project_ref: string | null
   supabase_access_token: string | null
+  cycle_number: number
   current_phase: number
   status: ProjectStatus
   last_activity: string

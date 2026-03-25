@@ -85,6 +85,11 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
             Phase {String(project.active_phase).padStart(2, '0')}
           </span>
           <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{phaseName}</span>
+          {project.cycle_number > 1 && (
+            <span className="rounded-full bg-amber-100 dark:bg-amber-900/20 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-400">
+              Ciclo {project.cycle_number}
+            </span>
+          )}
         </div>
         <div className="mt-2">
           <ProgressBar value={project.progress_percentage} />

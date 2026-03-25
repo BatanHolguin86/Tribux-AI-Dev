@@ -41,6 +41,7 @@ type BillingSectionProps = {
   isPaid: boolean
   billingStatus?: string
   billingPlan?: string
+  stripeCustomerId?: string | null
 }
 
 export function BillingSection({
@@ -51,8 +52,10 @@ export function BillingSection({
   isPaid,
   billingStatus,
   billingPlan,
+  stripeCustomerId,
 }: BillingSectionProps) {
   const [loading, setLoading] = useState<string | null>(null)
+  const [portalLoading, setPortalLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showAlert, setShowAlert] = useState(!!billingStatus)
 
@@ -195,7 +198,37 @@ export function BillingSection({
         </div>
       )}
 
-      {isPaid && (
+      {isPaid && stripeCustomerId && (
+        <div className="mt-4">
+          <button
+            onClick={async () => {
+              setPortalLoading(true)
+              setError(null)
+              try {
+                const res = await fetch('/api/billing/portal', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                })
+                const data = await res.json()
+                if (!res.ok) {
+                  setError(data.message ?? data.error ?? 'Error al abrir el portal')
+                  return
+                }
+                if (data.url) window.location.href = data.url
+              } catch {
+                setError('Error de conexion. Intenta de nuevo.')
+              } finally {
+                setPortalLoading(false)
+              }
+            }}
+            disabled={portalLoading}
+            className="rounded-md bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
+          >
+            {portalLoading ? 'Abriendo...' : 'Gestionar suscripcion'}
+          </button>
+        </div>
+      )}
+      {isPaid && !stripeCustomerId && (
         <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">
           Para cambiar o cancelar tu suscripcion, contacta a soporte.
         </p>

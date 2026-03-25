@@ -15,6 +15,7 @@ export type UserProfile = {
   subscription_status: SubscriptionStatus
   onboarding_completed: boolean
   onboarding_step: number
+  stripe_customer_id: string | null
   role: UserRole
   created_at: string
   updated_at: string

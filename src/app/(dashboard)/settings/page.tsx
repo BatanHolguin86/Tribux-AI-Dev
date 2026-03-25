@@ -52,6 +52,7 @@ export default async function SettingsPage({
         isPaid={planStatus.isPaid}
         billingStatus={billingStatus}
         billingPlan={billingPlan}
+        stripeCustomerId={profile.stripe_customer_id}
       />
     </div>
   )
