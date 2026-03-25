@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Phase00Section, SectionStatus } from '@/types/conversation'
 import { getPhaseAgents } from '@/lib/phase-workspace-config'
 import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
@@ -36,6 +37,7 @@ export function Phase00Layout({
   sections: initialSections,
   initialActiveSection,
 }: Phase00LayoutProps) {
+  const router = useRouter()
   const [sections, setSections] = useState(initialSections)
   const [activeSection, setActiveSection] = useState<Phase00Section>(initialActiveSection)
   const [mobileTab, setMobileTab] = useState<'chat' | 'document'>('chat')
@@ -52,8 +54,8 @@ export function Phase00Layout({
   }, [activeSection])
 
   const handleDocumentGenerated = useCallback(() => {
-    window.location.reload()
-  }, [])
+    router.refresh()
+  }, [router])
 
   const approvedCount = sections.filter((s) => s.status === 'approved').length
 

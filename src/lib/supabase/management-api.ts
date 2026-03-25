@@ -48,8 +48,16 @@ export async function executeSqlOnProject(
 /** SQL patterns that are too dangerous to execute from the app */
 const BLOCKED_SQL_PATTERNS = [
   /DROP\s+DATABASE/i,
-  /DROP\s+SCHEMA\s+public/i,
-  /TRUNCATE\s+(pg_|information_schema)/i,
+  /DROP\s+SCHEMA\s+(public|auth|storage|extensions)/i,
+  /TRUNCATE\s+(pg_|information_schema|auth\.|storage\.)/i,
+  /DROP\s+OWNED/i,
+  /ALTER\s+SYSTEM/i,
+  /ALTER\s+ROLE/i,
+  /CREATE\s+ROLE/i,
+  /DROP\s+ROLE/i,
+  /ALTER\s+TABLE\s+(auth|storage)\./i,
+  /DROP\s+TABLE\s+(auth|storage)\./i,
+  /DELETE\s+FROM\s+(auth|storage)\./i,
 ]
 
 export function validateSqlSafety(sql: string): { safe: boolean; reason?: string } {

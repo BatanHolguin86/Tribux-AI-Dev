@@ -31,7 +31,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
     setError,
   } = useForm<EditInput>({
     resolver: zodResolver(editSchema),
-    values: project ? { name: project.name, description: project.description ?? '', repo_url: project.repo_url ?? '', supabase_project_ref: project.supabase_project_ref ?? '', supabase_access_token: project.supabase_access_token ?? '' } : undefined,
+    values: project ? { name: project.name, description: project.description ?? '', repo_url: project.repo_url ?? '', supabase_project_ref: project.supabase_project_ref ?? '', supabase_access_token: '' } : undefined,
   })
 
   const trapRef = useFocusTrap<HTMLDivElement>(!!project)
@@ -46,11 +46,14 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
   if (!project) return null
 
   async function onSubmit(data: EditInput) {
-    const payload = {
+    const payload: Record<string, unknown> = {
       ...data,
       repo_url: data.repo_url?.trim() || null,
       supabase_project_ref: data.supabase_project_ref?.trim() || null,
-      supabase_access_token: data.supabase_access_token?.trim() || null,
+    }
+    // Only send token if user typed a new one (don't clear existing)
+    if (data.supabase_access_token?.trim()) {
+      payload.supabase_access_token = data.supabase_access_token.trim()
     }
     const res = await fetch(`/api/projects/${project!.id}`, {
       method: 'PATCH',
@@ -146,7 +149,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
               <input
                 id="edit-sb-token"
                 type="password"
-                placeholder="sbp_xxxxxxxxxxxxxxxx"
+                placeholder={project?.has_supabase_token ? '••••••••  (guardado)' : 'sbp_xxxxxxxxxxxxxxxx'}
                 {...register('supabase_access_token')}
                 className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
               />

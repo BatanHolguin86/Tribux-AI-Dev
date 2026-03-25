@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Phase02Section, SectionStatus } from '@/types/conversation'
 import type { DesignWorkflowContext } from '@/lib/ai/context-builder'
 import { getPhaseAgents } from '@/lib/phase-workspace-config'
@@ -59,6 +60,7 @@ export function Phase02Layout({
   designArtifacts = [],
   workflowContext,
 }: Phase02LayoutProps) {
+  const router = useRouter()
   const [sections, setSections] = useState(initialSections)
   const [activeSection, setActiveSection] = useState<Phase02Section>(initialActiveSection)
   const [mobileTab, setMobileTab] = useState<'chat' | 'document'>('chat')
@@ -75,8 +77,8 @@ export function Phase02Layout({
   }, [activeSection])
 
   const handleDocumentGenerated = useCallback(() => {
-    window.location.reload()
-  }, [])
+    router.refresh()
+  }, [router])
 
   const approvedCount = sections.filter((s) => s.status === 'approved').length
   const totalSections = sections.length

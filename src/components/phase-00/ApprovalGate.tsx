@@ -18,11 +18,11 @@ export function ApprovalGate({
   const [feedback, setFeedback] = useState('')
 
   return (
-    <div className="mx-4 mb-4 rounded-lg border-2 border-violet-200 bg-violet-50 p-4">
-      <p className="text-sm font-medium text-violet-800">
+    <div className="mx-4 mb-4 rounded-lg border-2 border-violet-200 bg-violet-50 p-4 dark:border-violet-800 dark:bg-violet-900/20">
+      <p className="text-sm font-medium text-violet-800 dark:text-violet-200">
         El documento de {sectionLabel} esta listo para tu revision.
       </p>
-      <p className="mt-1 text-xs text-violet-600">
+      <p className="mt-1 text-xs text-violet-600 dark:text-violet-400">
         Revisa el panel derecho y cuando estes conforme, aprueba la seccion.
       </p>
 
@@ -35,14 +35,14 @@ export function ApprovalGate({
       </button>
 
       <div className="mt-3">
-        <p className="text-xs text-violet-600">O escribe si quieres cambiar algo:</p>
+        <p className="text-xs text-violet-600 dark:text-violet-400">O escribe si quieres cambiar algo:</p>
         <div className="mt-1 flex gap-2">
           <input
             type="text"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="Agrega mas detalle sobre..."
-            className="flex-1 rounded-lg border border-violet-200 bg-white px-3 py-1.5 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            className="flex-1 rounded-lg border border-violet-200 bg-white px-3 py-1.5 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 dark:border-violet-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && feedback.trim()) {
                 onRevisionRequest(feedback)
@@ -58,7 +58,7 @@ export function ApprovalGate({
               }
             }}
             disabled={!feedback.trim()}
-            className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-violet-600 shadow-sm transition-colors hover:bg-violet-100 disabled:opacity-50"
+            className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-violet-600 shadow-sm transition-colors hover:bg-violet-100 disabled:opacity-50 dark:bg-gray-800 dark:text-violet-400 dark:hover:bg-gray-700"
           >
             Enviar
           </button>

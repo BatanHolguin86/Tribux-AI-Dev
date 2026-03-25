@@ -30,7 +30,8 @@ export default async function DashboardPage() {
       industry: p.industry,
       repo_url: p.repo_url ?? null,
       supabase_project_ref: p.supabase_project_ref ?? null,
-      supabase_access_token: p.supabase_access_token ?? null,
+      supabase_access_token: null, // Never send token to client
+      has_supabase_token: !!p.supabase_access_token,
       current_phase: p.current_phase,
       status: p.status,
       last_activity: p.last_activity,

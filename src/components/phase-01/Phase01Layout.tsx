@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import type { KiroDocumentType } from '@/types/feature'
 import { getPhaseAgents } from '@/lib/phase-workspace-config'
 import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
@@ -39,6 +40,7 @@ export function Phase01Layout({
   features: initialFeatures,
   discoverySummary,
 }: Phase01LayoutProps) {
+  const router = useRouter()
   const [features] = useState(initialFeatures)
   const [activeFeatureId, setActiveFeatureId] = useState<string | null>(null)
 
@@ -57,12 +59,13 @@ export function Phase01Layout({
   }, [])
 
   const handleBack = useCallback(() => {
-    window.location.reload()
-  }, [])
+    setActiveFeatureId(null)
+    router.refresh()
+  }, [router])
 
   const handleRefresh = useCallback(() => {
-    window.location.reload()
-  }, [])
+    router.refresh()
+  }, [router])
 
   // Feature workspace (selected feature) — full screen, bypasses tabs
   if (activeFeature) {

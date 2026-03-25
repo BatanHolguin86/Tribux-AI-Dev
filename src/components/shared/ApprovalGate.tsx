@@ -23,7 +23,7 @@ export function ApprovalGate({
   const [showRevision, setShowRevision] = useState(false)
 
   return (
-    <div className="mx-3 mb-2 rounded-lg border-l-4 border-emerald-600 bg-emerald-50 p-3 dark:bg-emerald-900/20">
+    <div className="mx-3 mb-2 rounded-lg border-l-4 border-emerald-600 bg-emerald-50 p-3 dark:border-emerald-400 dark:bg-emerald-900/20">
       <div className="flex items-center gap-2">
         <svg className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

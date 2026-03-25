@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { DesignStatus, DesignType } from '@/types/design'
 import { DESIGN_KIT_NEXT_STEPS } from '@/lib/design/design-tool-workflow'
@@ -38,6 +39,7 @@ const DEVICE_SIZES = {
 type DeviceSize = keyof typeof DEVICE_SIZES
 
 export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailProps) {
+  const router = useRouter()
   const [status, setStatus] = useState<DesignStatus>(artifact.status)
   const [refineInput, setRefineInput] = useState('')
   const [isRefining, setIsRefining] = useState(false)
@@ -100,7 +102,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
 
       setStatus('draft')
       setRefineInput('')
-      window.location.reload()
+      router.refresh()
     } finally {
       setIsRefining(false)
     }

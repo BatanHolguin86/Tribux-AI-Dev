@@ -37,6 +37,7 @@ export type ProjectWithProgress = Project & {
   progress_percentage: number
   next_action: string
   phases?: ProjectPhase[]
+  has_supabase_token?: boolean
 }
 
 export type DashboardSummary = {
