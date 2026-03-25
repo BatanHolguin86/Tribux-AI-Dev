@@ -35,7 +35,8 @@ export default async function Phase00Page({
       .from('agent_conversations')
       .select('section, messages')
       .eq('project_id', projectId)
-      .eq('phase_number', 0),
+      .eq('phase_number', 0)
+      .eq('agent_type', 'orchestrator'),
     supabase
       .from('project_documents')
       .select('id, section, content, version, status')

@@ -38,6 +38,7 @@ export default async function Phase01Page({
     .select('section, messages')
     .eq('project_id', projectId)
     .eq('phase_number', 1)
+    .eq('agent_type', 'orchestrator')
 
   // Fetch discovery docs for summary
   const { data: discoveryDocs } = await supabase
