@@ -336,6 +336,7 @@ Librerias, servicios externos, features previas necesarias.
 
 El orquestador puede delegar a estos agentes segun la tarea. En v1.0, al abrir el chat o un hilo vacio, el sistema muestra sugerencias proactivas (1–3 accionables) basadas en el estado del proyecto para orientar al usuario sin que tenga que preguntar.
 
+
 | Agente             | Responsabilidad                                                                                                                                                                                              |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Architect**      | Disenar sistemas, elegir tecnologias, revisar ADRs                                                                                                                                                           |
@@ -346,19 +347,27 @@ El orquestador puede delegar a estos agentes segun la tarea. En v1.0, al abrir e
 | **QA Engineer**    | Tests, reportes de calidad, regression testing                                                                                                                                                               |
 | **DevOps**         | CI/CD, deployment, monitoring, infraestructura                                                                                                                                                               |
 
+
 ---
 
 ## Checklist de Lanzamiento
 
-Antes de hacer deploy a produccion, verificar:
+Antes de hacer deploy a produccion, verificar (checklist ampliable con criterios y columnas de evidencia en **`docs/05-qa/v1-go-no-go.md`**):
 
-- [ ] Todos los tests pasan (`pnpm test`)
-- [ ] Build de produccion exitoso (`pnpm build`)
-- [ ] Variables de entorno configuradas en Vercel
-- [ ] RLS habilitado en todas las tablas de Supabase
-- [ ] Migraciones aplicadas en base de datos de produccion
-- [ ] Error tracking configurado (Sentry)
-- [ ] Analytics configurado (Vercel Analytics)
-- [ ] Dominio y SSL configurados
-- [ ] Lighthouse score > 90 en Performance, Accessibility, Best Practices
-- [ ] Spec KIRO marcado como completado
+- Todos los tests pasan (`pnpm test`)
+- Build de produccion exitoso (`pnpm build`)
+- Variables de entorno configuradas en Vercel
+- RLS habilitado en todas las tablas de Supabase
+- Migraciones aplicadas en base de datos de produccion
+- Error tracking configurado (Sentry)
+- Analytics configurado (Vercel Analytics)
+- Dominio y SSL configurados
+- Lighthouse score > 90 en Performance, Accessibility, Best Practices
+- Spec KIRO marcado como completado
+
+## Estado Actual del Proyecto
+
+No duplicar aquí el estado detallado: mantenerlo en **`docs/00-discovery/estatus-v1-y-roadmap.md`** (avance v1, módulos operativos) y en **`docs/05-qa/v1-go-no-go.md`** (criterios y evidencia de release). Actualizar esos documentos cuando cambie el alcance o el entorno.
+
+Al iniciar un feature nuevo, anotar en el spec KIRO correspondiente (`docs/01-specs/.../tasks.md`) el nombre del feature y los gates pendientes.
+
