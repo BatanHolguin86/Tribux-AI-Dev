@@ -169,7 +169,7 @@ export function OverageLedgerTable() {
         </div>
       ) : entries.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 py-16 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
-          No hay overages para {month}. Haz click en "Sincronizar mes" para calcular.
+          No hay overages para {month}. Haz click en &quot;Sincronizar mes&quot; para calcular.
         </div>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">

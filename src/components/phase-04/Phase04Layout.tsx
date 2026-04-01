@@ -14,6 +14,7 @@ import { Phase04FinalGate } from './Phase04FinalGate'
 import { Phase04ResourceBar, type Phase04ApprovedDesign } from './Phase04ResourceBar'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
+import { CIStatusWidget } from '@/components/phase-05/CIStatusWidget'
 
 const PHASE04_OBJECTIVE =
   'El Kanban es tu checklist de desarrollo: cada task KIRO persistida se mueve hasta Done. Parte del trabajo puede ser manual (IDE, PRs, repos externos).'
@@ -167,6 +168,7 @@ export function Phase04Layout({
               onGenerateCode={repoUrl ? handleGenerateCode : undefined}
               onAutoBuild={repoUrl ? handleAutoBuild : undefined}
             />
+            {repoUrl && <CIStatusWidget projectId={projectId} />}
           </>
         )}
       </div>

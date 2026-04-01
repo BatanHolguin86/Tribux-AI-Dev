@@ -113,7 +113,6 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 // ── Bloque 1: Summary Header ──────────────────────────────────────────────────
 
 function SummaryHeader({ data, infraMonthly }: { data: CostSummary; infraMonthly: number }) {
-  const totalAllTime = data.aiCostAllTime + infraMonthly // partial: infra is monthly, AI is one-time
   const annualInfra = infraMonthly * 12
   const breakevenMsg = infraMonthly > 0
     ? `Para recuperar costos de operación, cobra ≥ ${fmtUSD(infraMonthly)}/mes a tu cliente`
@@ -375,12 +374,12 @@ function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthl
     )
   }
 
-  let runningCumulative = 0
-  const rows = data.monthlyHistory.map((m) => {
+  const rows = data.monthlyHistory.reduce<Array<{ month: string; aiCostUsd: number; eventCount: number; infraCost: number; total: number; cumulative: number }>>((acc, m) => {
     const total = m.aiCostUsd + infraMonthly
-    runningCumulative += total
-    return { ...m, infraCost: infraMonthly, total, cumulative: runningCumulative }
-  })
+    const prev = acc.length > 0 ? acc[acc.length - 1].cumulative : 0
+    acc.push({ ...m, infraCost: infraMonthly, total, cumulative: prev + total })
+    return acc
+  }, [])
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">

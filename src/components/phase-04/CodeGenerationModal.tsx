@@ -27,7 +27,7 @@ export function CodeGenerationModal({
     url: string
     filesChanged: number
   } | null>(null)
-  const [hasStarted, setHasStarted] = useState(false)
+  const hasStartedRef = useRef(false)
   const contentRef = useRef<HTMLPreElement>(null)
 
   // Auto-scroll to bottom during streaming
@@ -42,7 +42,7 @@ export function CodeGenerationModal({
     setContent('')
     setError(null)
     setCommitResult(null)
-    setHasStarted(true)
+    hasStartedRef.current = true
 
     try {
       const res = await fetch(`/api/projects/${projectId}/phases/4/actions/generate-task-code`, {
@@ -93,20 +93,15 @@ export function CodeGenerationModal({
 
   // Start generation automatically when modal opens
   useEffect(() => {
-    if (isOpen && !hasStarted && !isStreaming) {
-      startGeneration()
-    }
-  }, [isOpen, hasStarted, isStreaming, startGeneration])
-
-  // Reset state when modal closes
-  useEffect(() => {
     if (!isOpen) {
-      setHasStarted(false)
-      setContent('')
-      setError(null)
-      setCommitResult(null)
+      hasStartedRef.current = false
+      return
     }
-  }, [isOpen])
+    if (hasStartedRef.current) return
+    hasStartedRef.current = true
+    const id = requestAnimationFrame(() => { startGeneration() })
+    return () => cancelAnimationFrame(id)
+  }, [isOpen, startGeneration])
 
   if (!isOpen) return null
 
