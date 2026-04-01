@@ -17,7 +17,7 @@ export default async function InfrastructurePage({
 
   const { data: project } = await supabase
     .from('projects')
-    .select('id, name')
+    .select('id, name, repo_url, supabase_project_ref')
     .eq('id', projectId)
     .eq('user_id', user.id)
     .single()
@@ -28,6 +28,8 @@ export default async function InfrastructurePage({
     <InfrastructureDashboard
       projectId={projectId}
       projectName={project.name}
+      initialRepoUrl={project.repo_url ?? ''}
+      initialSupabaseRef={project.supabase_project_ref ?? ''}
     />
   )
 }
