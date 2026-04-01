@@ -25,6 +25,15 @@ export default async function Phase04Page({
     )
   }
 
+  // Fetch project repo_url
+  const { data: project } = await supabase
+    .from('projects')
+    .select('repo_url')
+    .eq('id', projectId)
+    .single()
+
+  const repoUrl = project?.repo_url ?? null
+
   // Fetch tasks with feature names
   const { data: tasks } = await supabase
     .from('project_tasks')
@@ -77,6 +86,7 @@ export default async function Phase04Page({
       initialTasks={tasksWithFeatures}
       approvedDesigns={approvedDesigns}
       initialMessages={initialMessages}
+      repoUrl={repoUrl}
     />
   )
 }

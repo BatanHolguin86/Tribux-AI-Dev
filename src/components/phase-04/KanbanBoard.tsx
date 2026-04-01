@@ -29,9 +29,11 @@ const COLUMN_COLORS: Record<TaskStatus, string> = {
 type KanbanBoardProps = {
   tasks: TaskWithFeature[]
   onStatusChange: (taskId: string, newStatus: TaskStatus) => void
+  onGenerateCode?: (task: TaskWithFeature) => void
+  onAutoBuild?: (task: TaskWithFeature) => void
 }
 
-export function KanbanBoard({ tasks, onStatusChange }: KanbanBoardProps) {
+export function KanbanBoard({ tasks, onStatusChange, onGenerateCode, onAutoBuild }: KanbanBoardProps) {
   const [activeTask, setActiveTask] = useState<TaskWithFeature | null>(null)
 
   const sensors = useSensors(
@@ -98,6 +100,8 @@ export function KanbanBoard({ tasks, onStatusChange }: KanbanBoardProps) {
               colorClass={COLUMN_COLORS[status]}
               tasks={columnTasks}
               onStatusChange={onStatusChange}
+              onGenerateCode={onGenerateCode}
+              onAutoBuild={onAutoBuild}
             />
           )
         })}

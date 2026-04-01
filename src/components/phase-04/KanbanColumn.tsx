@@ -11,6 +11,8 @@ type KanbanColumnProps = {
   colorClass: string
   tasks: TaskWithFeature[]
   onStatusChange: (taskId: string, newStatus: TaskStatus) => void
+  onGenerateCode?: (task: TaskWithFeature) => void
+  onAutoBuild?: (task: TaskWithFeature) => void
 }
 
 export function KanbanColumn({
@@ -20,6 +22,8 @@ export function KanbanColumn({
   colorClass,
   tasks,
   onStatusChange,
+  onGenerateCode,
+  onAutoBuild,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status })
 
@@ -50,6 +54,8 @@ export function KanbanColumn({
             key={task.id}
             task={task}
             onStatusChange={onStatusChange}
+            onGenerateCode={onGenerateCode}
+            onAutoBuild={onAutoBuild}
           />
         ))}
       </div>

@@ -4,12 +4,15 @@ import { useState, useCallback } from 'react'
 import { toast } from 'sonner'
 import type { SectionStatus } from '@/types/conversation'
 import type { PhaseChecklistCategory } from '@/lib/phase-checklist-sections'
+import type { ActionExecution } from '@/types/action'
 import { PHASE07_SECTIONS, CATEGORY_CONFIGS } from '@/lib/ai/prompts/phase-07'
 import { getPhaseAgents } from '@/lib/phase-workspace-config'
+import { usePhaseActions } from '@/hooks/usePhaseActions'
 import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
 import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
-import { ChecklistCard } from '@/components/shared/ChecklistCard'
+import { AutomatedChecklistCard } from '@/components/shared/AutomatedChecklistCard'
+import { ActionStreamingPanel } from '@/components/shared/ActionStreamingPanel'
 import { Phase07FinalGate } from './Phase07FinalGate'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
@@ -21,12 +24,22 @@ type Phase07LayoutProps = {
   projectId: string
   categories: PhaseChecklistCategory[]
   initialMessages: Array<{ role: string; content: string; created_at?: string }>
+  initialExecutions?: ActionExecution[]
 }
 
 const phaseAgents = getPhaseAgents(7)
 
-export function Phase07Layout({ projectId, categories: initialCategories, initialMessages }: Phase07LayoutProps) {
+export function Phase07Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [] }: Phase07LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
+  const {
+    actions,
+    executions,
+    executingAction,
+    streamingContent,
+    executeAction,
+    commitGeneratedFiles,
+    resetStreaming,
+  } = usePhaseActions(projectId, 7, initialExecutions)
 
   const completedCount = categories.filter((c) => c.status === 'completed' || c.status === 'approved').length
   const totalCategories = categories.length
@@ -119,11 +132,25 @@ export function Phase07Layout({ projectId, categories: initialCategories, initia
             <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para Product Architect.
           </p>
 
+          {streamingContent && (
+            <div className="mb-4">
+              <ActionStreamingPanel
+                content={streamingContent}
+                isStreaming={!!executingAction}
+                onApplyToRepo={() => commitGeneratedFiles(executingAction ?? '')}
+                onClose={resetStreaming}
+                title="Resultado de automatizacion"
+              />
+            </div>
+          )}
+
           <div className="grid gap-4 md:grid-cols-2">
             {PHASE07_SECTIONS.map((sectionKey) => {
               const category = categories.find((c) => c.key === sectionKey)!
+              const action = actions.find((a) => a.section === sectionKey)
+              const sectionExecutions = executions.filter((e) => e.section === sectionKey)
               return (
-                <ChecklistCard
+                <AutomatedChecklistCard
                   key={sectionKey}
                   sectionKey={sectionKey}
                   config={CATEGORY_CONFIGS[sectionKey]}
@@ -131,6 +158,10 @@ export function Phase07Layout({ projectId, categories: initialCategories, initia
                   itemStates={category.itemStates}
                   onItemToggle={handleItemToggle}
                   onToggle={() => handleToggle(sectionKey)}
+                  action={action}
+                  executions={sectionExecutions}
+                  onActionExecute={executeAction}
+                  executingAction={executingAction}
                 />
               )
             })}

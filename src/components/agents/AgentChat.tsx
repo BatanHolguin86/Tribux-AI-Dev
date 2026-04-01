@@ -2,12 +2,13 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { useChat } from '@ai-sdk/react'
-import { TextStreamChatTransport } from 'ai'
-import type { UIMessage } from 'ai'
+import { DefaultChatTransport, isToolUIPart } from 'ai'
+import type { UIMessage, UIMessagePart, UIDataTypes, UITools } from 'ai'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { ToolCallRenderer } from '@/components/shared/chat/ToolCallRenderer'
 import { MessageActions } from './MessageActions'
 import { ProactiveSuggestions } from './ProactiveSuggestions'
 
@@ -57,7 +58,7 @@ export function AgentChat({
   }, [projectId, agentType, threadId])
 
   const { messages, sendMessage, status, stop, error } = useChat({
-    transport: new TextStreamChatTransport({
+    transport: new DefaultChatTransport({
       api: `/api/projects/${projectId}/agents/${agentType}/threads/${threadId}/chat`,
       fetch: async (input, init) => {
         // Adaptar el payload para enviar FormData con mensajes + adjuntos
@@ -72,14 +73,8 @@ export function AgentChat({
           pendingFiles.forEach((file) => {
             formData.append('attachments', file)
           })
-
           headers.delete('Content-Type')
-
-          return fetch(url, {
-            ...init,
-            headers,
-            body: formData,
-          })
+          return fetch(url, { ...init, headers, body: formData })
         }
 
         return fetch(input, init)
@@ -170,10 +165,30 @@ export function AgentChat({
 
         {messages.map((msg) => {
           const text = getTextContent(msg)
+          const allParts = msg.parts as UIMessagePart<UIDataTypes, UITools>[]
+          const toolParts = allParts.filter(isToolUIPart)
           return (
             <div key={msg.id} className="group">
-              <ChatMessage role={msg.role as 'user' | 'assistant'} content={text} projectId={projectId} />
-              {msg.role === 'assistant' && (
+              {/* Tool calls (visible only on assistant messages) */}
+              {msg.role === 'assistant' && toolParts.length > 0 && (
+                <div className="mb-1 pl-1">
+                  {toolParts.map((p) => (
+                    <ToolCallRenderer
+                      key={p.toolCallId}
+                      part={p}
+                    />
+                  ))}
+                </div>
+              )}
+              {/* Text content (only render if there's text) */}
+              {text && (
+                <ChatMessage
+                  role={msg.role as 'user' | 'assistant'}
+                  content={text}
+                  projectId={projectId}
+                />
+              )}
+              {msg.role === 'assistant' && text && (
                 <MessageActions
                   content={text}
                   projectId={projectId}

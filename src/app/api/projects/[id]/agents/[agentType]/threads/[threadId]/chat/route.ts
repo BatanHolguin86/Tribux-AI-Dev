@@ -1,4 +1,4 @@
-import { generateText, streamText } from 'ai'
+import { generateText, streamText, stepCountIs } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
@@ -15,6 +15,7 @@ import type { AgentType } from '@/types/agent'
 import type { AiUsageEventType } from '@/lib/ai/usage'
 import { extractTextFromMessage } from '@/lib/ai/extract-text-from-message'
 import { validateAgentOutput } from '@/lib/ai/output-validator'
+import { createAgentTools } from '@/lib/ai/agent-tools'
 
 export const maxDuration = 60
 
@@ -208,6 +209,14 @@ export async function POST(
         : []
 
     const allAttachments = [...existingAttachments, ...newAttachments]
+
+    // Fetch project credentials for tool use
+    const { data: projectData } = await supabase
+      .from('projects')
+      .select('repo_url, supabase_project_ref, supabase_access_token')
+      .eq('id', projectId)
+      .eq('user_id', userId)
+      .single()
 
     // Build context and prompt (including summary of recent attachments + KB memory)
     const [projectContext, knowledgeContext] = await Promise.all([
@@ -487,10 +496,21 @@ export async function POST(
       }
     }
 
+    // Create agent tools scoped to this project
+    const agentTools = createAgentTools({
+      projectId,
+      repoUrl: projectData?.repo_url ?? null,
+      supabaseProjectRef: projectData?.supabase_project_ref ?? null,
+      supabaseAccessToken: projectData?.supabase_access_token ?? null,
+      agentType: agentType as AgentType,
+    })
+
     const result = streamText({
       model: defaultModel,
       system: systemPrompt,
       messages: allMessages,
+      tools: agentTools,
+      stopWhen: stepCountIs(5),
       maxOutputTokens: AI_CONFIG.chat.maxOutputTokens,
       temperature: AI_CONFIG.chat.temperature,
       onFinish: async (response) => {
@@ -537,7 +557,7 @@ export async function POST(
       },
     })
 
-    return result.toTextStreamResponse()
+    return result.toUIMessageStreamResponse()
   } catch (error: unknown) {
     console.error('[Agents chat] Error', error)
     const { status, body } = formatChatErrorResponse(error)

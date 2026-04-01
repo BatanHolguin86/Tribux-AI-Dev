@@ -1,0 +1,267 @@
+import type { ActionDefinition } from '@/types/action'
+
+export const PHASE_ACTIONS: ActionDefinition[] = [
+  // ── Phase 03: Environment Setup ──
+  {
+    actionName: 'scaffold-project',
+    phaseNumber: 3,
+    section: 'repository',
+    itemIndices: [0, 1, 2, 3],
+    label: 'Generar estructura',
+    description: 'AI genera la estructura inicial del proyecto y la sube al repo.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+      { type: 'phase-completed', phase: 2 },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+  {
+    actionName: 'apply-database-schema',
+    phaseNumber: 3,
+    section: 'database',
+    itemIndices: [0, 1],
+    label: 'Aplicar schema',
+    description: 'AI genera SQL desde la arquitectura y lo ejecuta en Supabase.',
+    prerequisites: [
+      { type: 'field-exists', field: 'supabase_project_ref' },
+      { type: 'field-exists', field: 'supabase_access_token' },
+      { type: 'phase-completed', phase: 2 },
+    ],
+    type: 'ai-generate-sql',
+    streaming: true,
+    confirmRequired: true,
+  },
+  {
+    actionName: 'configure-auth',
+    phaseNumber: 3,
+    section: 'authentication',
+    itemIndices: [0, 1],
+    label: 'Configurar auth',
+    description: 'AI genera RLS policies y helpers de auth, los aplica al repo y DB.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'field-exists', field: 'supabase_project_ref' },
+      { type: 'field-exists', field: 'supabase_access_token' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+    confirmRequired: true,
+  },
+  {
+    actionName: 'generate-env-template',
+    phaseNumber: 3,
+    section: 'environment',
+    itemIndices: [0],
+    label: 'Generar .env',
+    description: 'AI genera .env.example basado en la arquitectura.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+
+  // ── Phase 04: Core Development ──
+  {
+    actionName: 'generate-task-code',
+    phaseNumber: 4,
+    section: 'kanban',
+    itemIndices: [],
+    label: 'Generar codigo',
+    description: 'AI genera el codigo para esta tarea basado en los specs.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+
+  // ── Phase 05: Testing & QA ──
+  {
+    actionName: 'generate-test-plan',
+    phaseNumber: 5,
+    section: 'test_plan',
+    itemIndices: [0, 1, 2],
+    label: 'Generar test plan',
+    description: 'AI genera plan de testing basado en los specs y acceptance criteria.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+      { type: 'phase-completed', phase: 4 },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+  {
+    actionName: 'generate-unit-tests',
+    phaseNumber: 5,
+    section: 'unit_tests',
+    itemIndices: [0, 1, 2],
+    label: 'Generar unit tests',
+    description: 'AI genera tests unitarios (Vitest) para logica de negocio y validaciones.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+  {
+    actionName: 'generate-e2e-tests',
+    phaseNumber: 5,
+    section: 'e2e_tests',
+    itemIndices: [0, 1, 2],
+    label: 'Generar E2E tests',
+    description: 'AI genera tests end-to-end (Playwright) para flujos criticos.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+  {
+    actionName: 'trigger-ci',
+    phaseNumber: 5,
+    section: 'unit_tests',
+    itemIndices: [3],
+    label: 'Ejecutar CI',
+    description: 'Trigger GitHub Actions para correr los tests.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'github-api',
+    streaming: false,
+  },
+  {
+    actionName: 'generate-qa-report',
+    phaseNumber: 5,
+    section: 'qa_report',
+    itemIndices: [0, 1, 2],
+    label: 'Generar QA report',
+    description: 'AI genera reporte de QA con resultados y recomendaciones.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-report',
+    streaming: true,
+  },
+
+  // ── Phase 06: Launch & Deployment ──
+  {
+    actionName: 'run-production-migrations',
+    phaseNumber: 6,
+    section: 'deploy_production',
+    itemIndices: [1],
+    label: 'Ejecutar migraciones',
+    description: 'Ejecuta las migraciones SQL pendientes en Supabase produccion.',
+    prerequisites: [
+      { type: 'field-exists', field: 'supabase_project_ref' },
+      { type: 'field-exists', field: 'supabase_access_token' },
+    ],
+    type: 'sql-execute',
+    streaming: false,
+    confirmRequired: true,
+  },
+  {
+    actionName: 'trigger-deploy',
+    phaseNumber: 6,
+    section: 'deploy_production',
+    itemIndices: [3],
+    label: 'Trigger deploy',
+    description: 'Crea un release en GitHub para triggerar deploy en Vercel.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'github-api',
+    streaming: false,
+  },
+  {
+    actionName: 'generate-ops-runbook',
+    phaseNumber: 6,
+    section: 'documentation',
+    itemIndices: [0, 1, 2],
+    label: 'Generar runbook',
+    description: 'AI genera runbook de deployment, arquitectura y troubleshooting.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+
+  // ── Phase 07: Iteration & Growth ──
+  {
+    actionName: 'collect-metrics',
+    phaseNumber: 7,
+    section: 'metrics',
+    itemIndices: [0, 1, 2],
+    label: 'Recolectar metricas',
+    description: 'Obtiene metricas de Vercel Analytics y Sentry.',
+    prerequisites: [],
+    type: 'external-api',
+    streaming: false,
+  },
+  {
+    actionName: 'generate-analysis-report',
+    phaseNumber: 7,
+    section: 'feedback',
+    itemIndices: [2],
+    label: 'Generar analisis',
+    description: 'AI analiza metricas y feedback para generar recomendaciones.',
+    prerequisites: [],
+    type: 'ai-report',
+    streaming: true,
+  },
+  {
+    actionName: 'generate-backlog',
+    phaseNumber: 7,
+    section: 'backlog',
+    itemIndices: [0, 1, 2],
+    label: 'Generar backlog',
+    description: 'AI genera backlog priorizado con framework RICE.',
+    prerequisites: [],
+    type: 'ai-report',
+    streaming: true,
+  },
+  {
+    actionName: 'generate-retrospective',
+    phaseNumber: 7,
+    section: 'retrospective',
+    itemIndices: [0, 1, 2, 3],
+    label: 'Generar retrospectiva',
+    description: 'AI genera retrospectiva del ciclo con wins, mejoras y action items.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-report',
+    streaming: true,
+  },
+]
+
+export function getActionsForPhase(phaseNumber: number): ActionDefinition[] {
+  return PHASE_ACTIONS.filter((a) => a.phaseNumber === phaseNumber)
+}
+
+export function getActionForSection(
+  phaseNumber: number,
+  section: string,
+): ActionDefinition | undefined {
+  return PHASE_ACTIONS.find(
+    (a) => a.phaseNumber === phaseNumber && a.section === section,
+  )
+}
+
+export function getActionByName(actionName: string): ActionDefinition | undefined {
+  return PHASE_ACTIONS.find((a) => a.actionName === actionName)
+}

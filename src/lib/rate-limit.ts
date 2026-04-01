@@ -108,3 +108,9 @@ export const SQL_EXECUTE_RATE_LIMIT: RateLimitConfig = {
   maxAttempts: 5,
   windowMs: 60 * 60 * 1000,
 }
+
+/** Preset: Phase action execution — 15 actions per hour */
+export const ACTION_RATE_LIMIT: RateLimitConfig = {
+  maxAttempts: 15,
+  windowMs: 60 * 60 * 1000,
+}

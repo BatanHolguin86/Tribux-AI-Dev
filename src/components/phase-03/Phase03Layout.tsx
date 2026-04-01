@@ -4,12 +4,15 @@ import { useState, useCallback } from 'react'
 import { toast } from 'sonner'
 import type { SectionStatus } from '@/types/conversation'
 import type { PhaseChecklistCategory } from '@/lib/phase-checklist-sections'
-import { PHASE03_SECTIONS } from '@/lib/ai/prompts/phase-03'
+import type { ActionExecution } from '@/types/action'
+import { PHASE03_SECTIONS, CATEGORY_CONFIGS } from '@/lib/ai/prompts/phase-03'
 import { getPhaseAgents } from '@/lib/phase-workspace-config'
+import { usePhaseActions } from '@/hooks/usePhaseActions'
 import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
 import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
-import { ChecklistCategory } from './ChecklistCategory'
+import { AutomatedChecklistCard } from '@/components/shared/AutomatedChecklistCard'
+import { ActionStreamingPanel } from '@/components/shared/ActionStreamingPanel'
 import { Phase03FinalGate } from './Phase03FinalGate'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
@@ -21,12 +24,22 @@ type Phase03LayoutProps = {
   projectId: string
   categories: PhaseChecklistCategory[]
   initialMessages: Array<{ role: string; content: string; created_at?: string }>
+  initialExecutions?: ActionExecution[]
 }
 
 const phaseAgents = getPhaseAgents(3)
 
-export function Phase03Layout({ projectId, categories: initialCategories, initialMessages }: Phase03LayoutProps) {
+export function Phase03Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [] }: Phase03LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
+  const {
+    actions,
+    executions,
+    executingAction,
+    streamingContent,
+    executeAction,
+    commitGeneratedFiles,
+    resetStreaming,
+  } = usePhaseActions(projectId, 3, initialExecutions)
 
   const completedCount = categories.filter(
     (c) => c.status === 'completed' || c.status === 'approved',
@@ -122,17 +135,36 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
             <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para CTO o DevOps.
           </p>
 
+          {streamingContent && (
+            <div className="mb-4">
+              <ActionStreamingPanel
+                content={streamingContent}
+                isStreaming={!!executingAction}
+                onApplyToRepo={() => commitGeneratedFiles(executingAction ?? '')}
+                onClose={resetStreaming}
+                title="Resultado de automatizacion"
+              />
+            </div>
+          )}
+
           <div className="grid gap-4 md:grid-cols-2">
             {PHASE03_SECTIONS.map((sectionKey) => {
               const category = categories.find((c) => c.key === sectionKey)!
+              const action = actions.find((a) => a.section === sectionKey)
+              const sectionExecutions = executions.filter((e) => e.section === sectionKey)
               return (
-                <ChecklistCategory
+                <AutomatedChecklistCard
                   key={sectionKey}
                   sectionKey={sectionKey}
+                  config={CATEGORY_CONFIGS[sectionKey]}
                   status={category.status}
                   itemStates={category.itemStates}
                   onItemToggle={handleItemToggle}
                   onToggle={() => handleToggle(sectionKey)}
+                  action={action}
+                  executions={sectionExecutions}
+                  onActionExecute={executeAction}
+                  executingAction={executingAction}
                 />
               )
             })}

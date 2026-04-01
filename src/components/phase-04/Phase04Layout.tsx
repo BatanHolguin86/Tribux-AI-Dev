@@ -7,6 +7,9 @@ import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
 import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
 import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { KanbanBoard } from './KanbanBoard'
+import { CodeGenerationModal } from './CodeGenerationModal'
+import { AutoBuildPanel } from './AutoBuildPanel'
+import { BuildSessionPanel } from './BuildSessionPanel'
 import { Phase04FinalGate } from './Phase04FinalGate'
 import { Phase04ResourceBar, type Phase04ApprovedDesign } from './Phase04ResourceBar'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
@@ -20,6 +23,7 @@ type Phase04LayoutProps = {
   initialTasks: TaskWithFeature[]
   approvedDesigns?: Phase04ApprovedDesign[]
   initialMessages: Array<{ role: string; content: string; created_at?: string }>
+  repoUrl?: string | null
 }
 
 const phaseAgents = getPhaseAgents(4)
@@ -29,8 +33,13 @@ export function Phase04Layout({
   initialTasks,
   approvedDesigns = [],
   initialMessages,
+  repoUrl,
 }: Phase04LayoutProps) {
   const [tasks, setTasks] = useState(initialTasks)
+  const [selectedTask, setSelectedTask] = useState<TaskWithFeature | null>(null)
+  const [showCodeGenModal, setShowCodeGenModal] = useState(false)
+  const [autoBuildTask, setAutoBuildTask] = useState<TaskWithFeature | null>(null)
+  const [showBuildSession, setShowBuildSession] = useState(false)
 
   const totalTasks = tasks.length
   const doneTasks = tasks.filter((t) => t.status === 'done').length
@@ -57,6 +66,40 @@ export function Phase04Layout({
     },
     [projectId, initialTasks],
   )
+
+  const handleGenerateCode = useCallback(
+    (task: TaskWithFeature) => {
+      setSelectedTask(task)
+      setShowCodeGenModal(true)
+    },
+    [],
+  )
+
+  const handleCodeGenClose = useCallback(() => {
+    setShowCodeGenModal(false)
+    setSelectedTask(null)
+  }, [])
+
+  const handleCodeGenTaskUpdate = useCallback(
+    (taskId: string, newStatus: 'review') => {
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t)))
+    },
+    [],
+  )
+
+  const handleAutoBuild = useCallback((task: TaskWithFeature) => {
+    setAutoBuildTask(task)
+  }, [])
+
+  const handleAutoBuildClose = useCallback(() => {
+    setAutoBuildTask(null)
+  }, [])
+
+  const handleAutoBuildTaskUpdate = useCallback((taskId: string, newStatus: 'review') => {
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t)))
+  }, [])
+
+  const pendingTasks = tasks.filter((t) => t.status === 'todo' || t.status === 'in_progress')
 
   const sectionsContent =
     totalTasks === 0 ? (
@@ -104,11 +147,26 @@ export function Phase04Layout({
           <Phase04FinalGate projectId={projectId} totalTasks={totalTasks} />
         ) : (
           <>
-            <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-              Mueve las tasks por el Kanban (estado persistido). Usa el tab{' '}
-              <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para Lead Developer o CTO.
-            </p>
-            <KanbanBoard tasks={tasks} onStatusChange={handleStatusChange} />
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Mueve las tasks por el Kanban (estado persistido). Usa el tab{' '}
+                <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para Lead Developer o CTO.
+              </p>
+              {repoUrl && pendingTasks.length > 1 && (
+                <button
+                  onClick={() => setShowBuildSession(true)}
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700 transition-colors hover:border-violet-400 hover:bg-violet-100 dark:border-violet-800 dark:bg-violet-900/20 dark:text-violet-400 dark:hover:border-violet-600"
+                >
+                  🏗️ Build All ({pendingTasks.length})
+                </button>
+              )}
+            </div>
+            <KanbanBoard
+              tasks={tasks}
+              onStatusChange={handleStatusChange}
+              onGenerateCode={repoUrl ? handleGenerateCode : undefined}
+              onAutoBuild={repoUrl ? handleAutoBuild : undefined}
+            />
           </>
         )}
       </div>
@@ -123,22 +181,53 @@ export function Phase04Layout({
   )
 
   return (
-    <PhaseWorkspaceTabs
-      phaseNumber={4}
-      projectId={projectId}
-      phaseAgents={phaseAgents}
-      hasTools
-      toolsContent={chatContent}
-      teamContent={(goToSecciones) => (
-        <PhaseTeamPanel
+    <>
+      <PhaseWorkspaceTabs
+        phaseNumber={4}
+        projectId={projectId}
+        phaseAgents={phaseAgents}
+        hasTools
+        toolsContent={chatContent}
+        teamContent={(goToSecciones) => (
+          <PhaseTeamPanel
+            projectId={projectId}
+            phaseNumber={4}
+            agentTypes={phaseAgents}
+            onGoToSecciones={goToSecciones}
+          />
+        )}
+      >
+        {sectionsContent}
+      </PhaseWorkspaceTabs>
+
+      {selectedTask && (
+        <CodeGenerationModal
           projectId={projectId}
-          phaseNumber={4}
-          agentTypes={phaseAgents}
-          onGoToSecciones={goToSecciones}
+          task={selectedTask}
+          isOpen={showCodeGenModal}
+          onClose={handleCodeGenClose}
+          onTaskStatusChange={handleCodeGenTaskUpdate}
         />
       )}
-    >
-      {sectionsContent}
-    </PhaseWorkspaceTabs>
+
+      {autoBuildTask && (
+        <AutoBuildPanel
+          projectId={projectId}
+          task={autoBuildTask}
+          isOpen={!!autoBuildTask}
+          onClose={handleAutoBuildClose}
+          onTaskStatusChange={handleAutoBuildTaskUpdate}
+        />
+      )}
+
+      {showBuildSession && (
+        <BuildSessionPanel
+          projectId={projectId}
+          tasks={pendingTasks}
+          onClose={() => setShowBuildSession(false)}
+          onTaskStatusChange={handleAutoBuildTaskUpdate}
+        />
+      )}
+    </>
   )
 }

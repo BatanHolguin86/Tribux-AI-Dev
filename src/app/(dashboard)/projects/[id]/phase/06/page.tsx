@@ -5,6 +5,7 @@ import { canAccessPhase } from '@/lib/plans/guards'
 import { PHASE06_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-06'
 import type { SectionStatus } from '@/types/conversation'
 import { parseItemStates, type PhaseChecklistCategory } from '@/lib/phase-checklist-sections'
+import type { ActionExecution } from '@/types/action'
 
 export default async function Phase06Page({
   params,
@@ -55,5 +56,14 @@ export default async function Phase06Page({
 
   const initialMessages = (chatRow?.messages as Array<{ role: string; content: string; created_at?: string }>) ?? []
 
-  return <Phase06Layout projectId={projectId} categories={categories} initialMessages={initialMessages} />
+  const { data: executionsData } = await supabase
+    .from('action_executions')
+    .select('*')
+    .eq('project_id', projectId)
+    .eq('phase_number', 6)
+    .order('created_at', { ascending: false })
+
+  const initialExecutions = (executionsData ?? []) as ActionExecution[]
+
+  return <Phase06Layout projectId={projectId} categories={categories} initialMessages={initialMessages} initialExecutions={initialExecutions} />
 }
