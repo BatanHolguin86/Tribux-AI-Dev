@@ -1,10 +1,11 @@
 import { streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
+import { defaultModel, DEFAULT_MODEL_ID, AI_CONFIG } from '@/lib/ai/anthropic'
 import { getApprovedFeatureSpecs } from '@/lib/ai/context-builder'
 import { autoCheckItems } from '@/lib/actions/auto-check'
 import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
+import { recordStreamUsage } from '@/lib/ai/usage'
 import { getActionByName } from '@/lib/actions/action-registry'
 import { generateBacklogPrompt } from '@/lib/ai/prompts/action-prompts'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
@@ -101,7 +102,8 @@ export async function POST(
         },
       ],
       ...AI_CONFIG.documentGeneration,
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
+        await recordStreamUsage({ userId: user.id, projectId, eventType: 'action_generate_backlog', model: DEFAULT_MODEL_ID, usage })
         try {
           // 9. Save backlog to knowledge_base_entries
           const adminSb = await createAdminClient()

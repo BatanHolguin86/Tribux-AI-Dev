@@ -29,6 +29,20 @@ type InfraCosts = {
   other: number
 }
 
+type PlanGoldenRecord = {
+  plan: string
+  planPriceUsd: number
+  monthlyBudgetUsd: number
+  targetMarginPct: number
+  totalUsersOnPlan: number
+  activeUsersOnPlan: number
+  totalCostForPlanUsd: number
+  avgCostPerUserUsd: number
+  budgetUsedPct: number
+  usersAboveBudget: number
+  atRisk: boolean
+}
+
 type OverviewResponse = {
   summary: {
     totalUsers: number
@@ -41,6 +55,7 @@ type OverviewResponse = {
     infraCosts: InfraCosts
   }
   users: UserRow[]
+  planGoldenRecord: PlanGoldenRecord[]
 }
 
 const INFRA_LABELS: Record<keyof InfraCosts, { name: string; desc: string }> = {
@@ -134,7 +149,7 @@ export function FinanceOverviewTable() {
     )
   }
 
-  const { summary, users } = data
+  const { summary, users, planGoldenRecord = [] } = data
   const now = new Date()
   const currentMonthLabel =
     month || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
@@ -233,6 +248,101 @@ export function FinanceOverviewTable() {
             <span className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">
               {formatUsd(summary.totalCostsUsd)}
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* Golden Record por Plan */}
+      {planGoldenRecord.length > 0 && (
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                Golden Record — Costo real vs presupuesto por plan
+              </h3>
+              <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+                Presupuesto = 30% del precio del plan. Meta: margen bruto ≥ 70%
+              </p>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[700px] text-left text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 dark:border-gray-800">
+                  {['Plan', 'Precio', 'Presupuesto IA/usuario', 'Costo promedio real', 'Uso del presupuesto', 'Usuarios sobre límite', 'Riesgo'].map((h) => (
+                    <th key={h} className="pb-2 pr-4 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                {planGoldenRecord.map((gr) => {
+                  const barColor =
+                    gr.budgetUsedPct >= 100 ? 'bg-red-500' :
+                    gr.budgetUsedPct >= 80  ? 'bg-amber-500' :
+                    gr.budgetUsedPct >= 50  ? 'bg-yellow-400' :
+                    'bg-emerald-500'
+                  const pctColor =
+                    gr.budgetUsedPct >= 100 ? 'text-red-600 dark:text-red-400' :
+                    gr.budgetUsedPct >= 80  ? 'text-amber-600 dark:text-amber-400' :
+                    'text-emerald-600 dark:text-emerald-400'
+
+                  return (
+                    <tr key={gr.plan} className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30">
+                      <td className="py-3 pr-4">
+                        <span className="inline-flex rounded-full bg-violet-100 dark:bg-violet-900/30 px-2.5 py-0.5 text-[11px] font-bold text-violet-700 dark:text-violet-400 uppercase">
+                          {gr.plan}
+                        </span>
+                        <span className="ml-2 text-xs text-gray-400">{gr.activeUsersOnPlan} activos</span>
+                      </td>
+                      <td className="py-3 pr-4 font-medium text-gray-700 dark:text-gray-300 tabular-nums">
+                        {gr.planPriceUsd > 0 ? formatUsd(gr.planPriceUsd) : 'Custom'}
+                      </td>
+                      <td className="py-3 pr-4 text-gray-600 dark:text-gray-400 tabular-nums">
+                        {formatUsd(gr.monthlyBudgetUsd)}
+                      </td>
+                      <td className="py-3 pr-4 font-semibold tabular-nums text-gray-900 dark:text-gray-100">
+                        {formatUsd(gr.avgCostPerUserUsd)}
+                      </td>
+                      <td className="py-3 pr-4">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-24 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                            <div
+                              className={`h-full rounded-full transition-all ${barColor}`}
+                              style={{ width: `${Math.min(100, gr.budgetUsedPct)}%` }}
+                            />
+                          </div>
+                          <span className={`text-xs font-bold tabular-nums ${pctColor}`}>
+                            {gr.budgetUsedPct}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3 pr-4">
+                        {gr.usersAboveBudget > 0 ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-red-50 dark:bg-red-900/20 px-2 py-0.5 text-xs font-semibold text-red-600 dark:text-red-400">
+                            🐋 {gr.usersAboveBudget} whale{gr.usersAboveBudget > 1 ? 's' : ''}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-400">—</span>
+                        )}
+                      </td>
+                      <td className="py-3">
+                        {gr.atRisk ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-400">
+                            ⚠️ En riesgo
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                            ✓ OK
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

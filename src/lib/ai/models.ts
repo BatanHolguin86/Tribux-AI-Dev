@@ -24,6 +24,15 @@ export function getDefaultModel(): LanguageModel {
   }
 }
 
+export function getDefaultModelId(): string {
+  switch (PROVIDER) {
+    case 'anthropic':
+      return 'claude-sonnet-4-6'
+    default:
+      return 'claude-sonnet-4-6'
+  }
+}
+
 export function getProviderName(): string {
   return PROVIDER
 }

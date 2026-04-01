@@ -1,9 +1,10 @@
 import { streamText, stepCountIs } from 'ai'
 import { createClient } from '@/lib/supabase/server'
-import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
+import { defaultModel, DEFAULT_MODEL_ID, AI_CONFIG } from '@/lib/ai/anthropic'
 import { createAgentTools } from '@/lib/ai/agent-tools'
 import { LEAD_DEVELOPER_PROMPT } from '@/lib/ai/agents/lead-developer'
 import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
+import { recordStreamUsage } from '@/lib/ai/usage'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
 import type { AgentType } from '@/types/agent'
 
@@ -125,7 +126,8 @@ REGLAS:
       stopWhen: stepCountIs(25),
       maxOutputTokens: AI_CONFIG.documentGeneration.maxOutputTokens,
       temperature: AI_CONFIG.documentGeneration.temperature,
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
+        await recordStreamUsage({ userId: user.id, projectId, eventType: 'action_auto_build_task', model: DEFAULT_MODEL_ID, usage })
         try {
           await supabase
             .from('project_tasks')

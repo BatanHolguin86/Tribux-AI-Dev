@@ -1,6 +1,6 @@
 import { streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
-import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
+import { defaultModel, DEFAULT_MODEL_ID, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildFullProjectContext } from '@/lib/ai/context-builder'
 import { extractCodeFiles } from '@/lib/ai/code-extractor'
 import { commitMultipleFiles } from '@/lib/github/commit'
@@ -8,6 +8,7 @@ import { executeSqlOnProject, validateSqlSafety } from '@/lib/supabase/managemen
 import { checkPrerequisites } from '@/lib/actions/prerequisites'
 import { autoCheckItems } from '@/lib/actions/auto-check'
 import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
+import { recordStreamUsage } from '@/lib/ai/usage'
 import { getActionByName } from '@/lib/actions/action-registry'
 import { configureAuthPrompt } from '@/lib/ai/prompts/action-prompts'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
@@ -98,7 +99,8 @@ export async function POST(
         },
       ],
       ...AI_CONFIG.documentGeneration,
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
+        await recordStreamUsage({ userId: user.id, projectId, eventType: 'action_configure_auth', model: DEFAULT_MODEL_ID, usage })
         try {
           // 8. Extract files (SQL + code)
           const extractedFiles = extractCodeFiles(text)

@@ -1,8 +1,9 @@
 import { streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
-import { defaultModel } from '@/lib/ai/anthropic'
+import { defaultModel, DEFAULT_MODEL_ID } from '@/lib/ai/anthropic'
 import { getGitHubRepoContext } from '@/lib/github/repo-context'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
+import { recordStreamUsage } from '@/lib/ai/usage'
 
 export const maxDuration = 60
 
@@ -109,6 +110,9 @@ ${tree}`
     messages: [{ role: 'user', content: userMessage }],
     maxOutputTokens: 800,
     temperature: 0.3,
+    onFinish: async ({ usage }) => {
+      await recordStreamUsage({ userId: user.id, projectId, eventType: 'action_analyze_task', model: DEFAULT_MODEL_ID, usage })
+    },
   })
 
   return result.toTextStreamResponse()

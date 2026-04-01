@@ -1,10 +1,11 @@
 import { streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
-import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
+import { defaultModel, DEFAULT_MODEL_ID, AI_CONFIG } from '@/lib/ai/anthropic'
 import { getGitHubRepoContext, formatRepoContext } from '@/lib/github/repo-context'
 import { fetchMultipleFiles } from '@/lib/github/file-content'
 import { extractCodeFiles } from '@/lib/ai/code-extractor'
 import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
+import { recordStreamUsage } from '@/lib/ai/usage'
 import { generateTaskCodePrompt } from '@/lib/ai/prompts/action-prompts'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
 
@@ -205,7 +206,8 @@ export async function POST(
         },
       ],
       ...AI_CONFIG.documentGeneration,
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
+        await recordStreamUsage({ userId: user.id, projectId, eventType: 'action_generate_task_code', model: DEFAULT_MODEL_ID, usage })
         try {
           // Extract files to record what was generated (commit happens via commit-task-files endpoint)
           const extractedFiles = extractCodeFiles(text)

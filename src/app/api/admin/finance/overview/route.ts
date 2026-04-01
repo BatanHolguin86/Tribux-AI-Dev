@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   const prevMonthStart =
     `${prevMonthEndDate.getFullYear()}-${String(prevMonthEndDate.getMonth() + 1).padStart(2, '0')}-01`
 
-  const [profilesRes, usageCurrentRes, usagePrevRes] = await Promise.all([
+  const [profilesRes, usageCurrentRes, usagePrevRes, costTargetsRes] = await Promise.all([
     supabase
       .from('user_profiles')
       .select('id, full_name, plan, subscription_status, trial_ends_at, created_at, role')
@@ -44,6 +44,9 @@ export async function GET(request: Request) {
       .select('user_id, estimated_cost_usd')
       .gte('created_at', prevMonthStart)
       .lt('created_at', currentMonthStart),
+    supabase
+      .from('plan_cost_targets')
+      .select('plan, monthly_ai_budget_usd, plan_price_usd, target_margin_pct'),
   ])
 
   if (profilesRes.error) {
@@ -56,6 +59,7 @@ export async function GET(request: Request) {
   const profiles = profilesRes.data ?? []
   const usageCurrent = usageCurrentRes.data ?? []
   const usagePrev = usagePrevRes.data ?? []
+  const costTargets = costTargetsRes.data ?? []
 
   const aggregateByUser = (rows: Array<{ user_id: string; estimated_cost_usd?: number; input_tokens?: number; output_tokens?: number }>) => {
     const map: Record<
@@ -135,8 +139,42 @@ export async function GET(request: Request) {
     infraCosts,
   }
 
+  // Golden Record: per-plan actual vs target cost comparison
+  const planGoldenRecord = costTargets.map((target) => {
+    const planUsers = rows.filter((r) => r.plan === target.plan)
+    const activeUsers = planUsers.filter(
+      (r) => r.subscriptionStatus === 'active' || r.subscriptionStatus === 'trialing',
+    )
+    const totalCostForPlan = planUsers.reduce((s, r) => s + r.costCurrentMonthUsd, 0)
+    const avgCostPerUser =
+      activeUsers.length > 0 ? totalCostForPlan / activeUsers.length : 0
+    const budgetUsedPct =
+      target.monthly_ai_budget_usd > 0
+        ? Math.round((avgCostPerUser / Number(target.monthly_ai_budget_usd)) * 100)
+        : 0
+    const usersAboveBudget = planUsers.filter(
+      (r) => r.costCurrentMonthUsd > Number(target.monthly_ai_budget_usd),
+    ).length
+
+    return {
+      plan: target.plan,
+      planPriceUsd: Number(target.plan_price_usd),
+      monthlyBudgetUsd: Number(target.monthly_ai_budget_usd),
+      targetMarginPct: Number(target.target_margin_pct),
+      totalUsersOnPlan: planUsers.length,
+      activeUsersOnPlan: activeUsers.length,
+      totalCostForPlanUsd: Math.round(totalCostForPlan * 100) / 100,
+      avgCostPerUserUsd: Math.round(avgCostPerUser * 10000) / 10000,
+      budgetUsedPct,
+      usersAboveBudget,
+      // Risk flag: avg cost > 80% of budget
+      atRisk: budgetUsedPct >= 80,
+    }
+  })
+
   return NextResponse.json({
     summary,
     users: rows,
+    planGoldenRecord,
   })
 }
