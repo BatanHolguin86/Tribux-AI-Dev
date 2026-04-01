@@ -27,13 +27,30 @@ export function ProactiveSuggestions({
     let cancelled = false
 
     async function load() {
+      // Cache suggestions in sessionStorage for 30 min — avoids API call on every page load
+      const cacheKey = `suggestions:${projectId}:${agentType}`
+      const cached = sessionStorage.getItem(cacheKey)
+      if (cached) {
+        try {
+          const { data, ts } = JSON.parse(cached)
+          if (Date.now() - ts < 30 * 60 * 1000) {
+            if (!cancelled) { setSuggestions(data); setLoading(false) }
+            return
+          }
+        } catch { /* ignore malformed cache */ }
+      }
+
       try {
         const res = await fetch(
           `/api/projects/${projectId}/agents/suggestions?agent_type=${agentType}`,
         )
         if (!res.ok) throw new Error()
         const data = await res.json()
-        if (!cancelled) setSuggestions(data.suggestions ?? [])
+        if (!cancelled) {
+          const suggestions = data.suggestions ?? []
+          setSuggestions(suggestions)
+          sessionStorage.setItem(cacheKey, JSON.stringify({ data: suggestions, ts: Date.now() }))
+        }
       } catch {
         // Silently fail — suggestions are optional
       } finally {
