@@ -152,6 +152,26 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
               Infraestructura
             </span>
           </Link>
+
+          <Link
+            href={`/projects/${projectId}/costs`}
+            className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
+              pathname?.includes('/costs')
+                ? 'bg-violet-50 dark:bg-violet-900/20'
+                : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+            }`}
+          >
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center text-sm">
+              💰
+            </div>
+            <span className={`text-xs font-medium ${
+              pathname?.includes('/costs')
+                ? 'text-violet-700 dark:text-violet-400'
+                : 'text-gray-700 dark:text-gray-300'
+            }`}>
+              Control de Costos
+            </span>
+          </Link>
         </div>
       </nav>
 
