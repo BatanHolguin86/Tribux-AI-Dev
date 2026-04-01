@@ -4,7 +4,7 @@ import { defaultModel, DEFAULT_MODEL_ID, AI_CONFIG } from '@/lib/ai/anthropic'
 import { extractCodeFiles } from '@/lib/ai/code-extractor'
 import { commitMultipleFiles } from '@/lib/github/commit'
 import { fetchFileContent } from '@/lib/github/file-content'
-import { getGitHubRepoContext } from '@/lib/github/repo-context'
+import { getGitHubRepoContext, formatRepoContext } from '@/lib/github/repo-context'
 import { checkPrerequisites } from '@/lib/actions/prerequisites'
 import { autoCheckItems } from '@/lib/actions/auto-check'
 import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
@@ -75,7 +75,7 @@ export async function POST(
 
     if (project.repo_url) {
       try {
-        repoContext = await getGitHubRepoContext(project.repo_url)
+        repoContext = formatRepoContext(await getGitHubRepoContext(project.repo_url))
       } catch { /* non-fatal */ }
 
       const fetched = await fetchFileContent(project.repo_url, 'package.json').catch(() => null)
