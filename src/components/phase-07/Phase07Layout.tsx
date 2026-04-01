@@ -14,6 +14,7 @@ import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { AutomatedChecklistCard } from '@/components/shared/AutomatedChecklistCard'
 import { ActionStreamingPanel } from '@/components/shared/ActionStreamingPanel'
 import { Phase07FinalGate } from './Phase07FinalGate'
+import { MetricsDashboard } from './MetricsDashboard'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
@@ -127,6 +128,10 @@ export function Phase07Layout({ projectId, categories: initialCategories, initia
               { label: 'Índice docs', path: 'docs/README.md' },
             ]}
           />
+          <div className="mb-6">
+            <MetricsDashboard projectId={projectId} executions={executions} />
+          </div>
+
           <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
             Marca items y categorias (persistente). Tab{' '}
             <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para Product Architect.
