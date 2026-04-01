@@ -132,7 +132,7 @@ export async function recordAiUsage(
   const { userId, projectId, eventType, model, inputTokens, outputTokens } = params
   const estimatedCostUsd = computeCostForModel(model, inputTokens, outputTokens)
 
-  await supabase.from('ai_usage_events').insert({
+  const { error } = await supabase.from('ai_usage_events').insert({
     user_id: userId,
     project_id: projectId ?? null,
     event_type: eventType,
@@ -141,12 +141,16 @@ export async function recordAiUsage(
     output_tokens: outputTokens,
     estimated_cost_usd: estimatedCostUsd,
   })
+
+  if (error) {
+    console.error(`[ai-usage] recordAiUsage failed (${eventType}):`, error.message, { userId, projectId, inputTokens, outputTokens })
+  }
 }
 
 /**
  * Fire-and-forget usage recording for streamText onFinish callbacks.
  * Uses admin client so it works even after the user session expires.
- * Silently ignores errors — usage tracking must never break the main flow.
+ * Logs errors to console but never throws — usage tracking must never break the main flow.
  */
 export async function recordStreamUsage(params: {
   userId: string
@@ -155,6 +159,10 @@ export async function recordStreamUsage(params: {
   model: string | null | undefined
   usage: { inputTokens?: number | undefined; outputTokens?: number | undefined }
 }): Promise<void> {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error('[ai-usage] recordStreamUsage: SUPABASE_SERVICE_ROLE_KEY is not set — usage not recorded', { eventType: params.eventType })
+    return
+  }
   try {
     const { createAdminClient } = await import('@/lib/supabase/server')
     const admin = await createAdminClient()
@@ -166,8 +174,8 @@ export async function recordStreamUsage(params: {
       inputTokens: params.usage.inputTokens ?? 0,
       outputTokens: params.usage.outputTokens ?? 0,
     })
-  } catch {
-    // Never throw — usage tracking is non-critical
+  } catch (err) {
+    console.error('[ai-usage] recordStreamUsage threw unexpectedly:', err instanceof Error ? err.message : err)
   }
 }
 

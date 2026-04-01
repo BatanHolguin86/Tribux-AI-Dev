@@ -7,7 +7,7 @@ import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { canAccessPhase } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
-import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
+import { recordStreamUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import { validateAgentOutput } from '@/lib/ai/output-validator'
 import { extractTextFromMessage } from '@/lib/ai/extract-text-from-message'
 import type { AgentType } from '@/types/agent'
@@ -160,14 +160,13 @@ export async function POST(
           usage?.inputTokens ??
           estimateTokensFromText(specialistSystem + instruction)
         const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-        recordAiUsage(supabase, {
+        recordStreamUsage({
           userId,
           projectId,
           eventType: PHASE_EVENT_TYPE[phaseNumber],
           model: defaultModel?.toString?.() ?? undefined,
-          inputTokens,
-          outputTokens,
-        }).catch(() => {})
+          usage: { inputTokens, outputTokens },
+        })
 
         return { agentType, text }
       }
@@ -216,17 +215,16 @@ export async function POST(
               { onConflict: 'project_id,phase_number,section,agent_type' }
             )
 
-          // Record AI usage
+          // Record AI usage (admin client — reliable in serverless, bypasses RLS)
           const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
           const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-          recordAiUsage(supabase, {
+          await recordStreamUsage({
             userId,
             projectId,
             eventType: PHASE_EVENT_TYPE[phaseNumber],
             model: defaultModel?.toString?.() ?? undefined,
-            inputTokens,
-            outputTokens,
-          }).catch(() => {})
+            usage: { inputTokens, outputTokens },
+          })
         } catch (error) {
           console.error(`[Phase-${String(phaseNumber).padStart(2, '0')} chat] Error persisting conversation`, error)
         }

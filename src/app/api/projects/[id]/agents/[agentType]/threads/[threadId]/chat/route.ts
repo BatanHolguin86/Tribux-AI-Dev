@@ -6,7 +6,7 @@ import { buildFullProjectContext, getProjectKnowledgeContext } from '@/lib/ai/co
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { generateThreadTitle } from '@/lib/ai/title-generator'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
-import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
+import { recordStreamUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import { uploadChatAttachment } from '@/lib/storage/chat-attachments'
 import { canUseAgent } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
@@ -257,14 +257,13 @@ export async function POST(
         const inputTokens =
           usage?.inputTokens ?? estimateTokensFromText(specialistSystem + instruction)
         const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-        recordAiUsage(supabase, {
+        recordStreamUsage({
           userId,
           projectId,
           eventType,
           model: defaultModel?.toString?.() ?? undefined,
-          inputTokens,
-          outputTokens,
-        }).catch(() => {})
+          usage: { inputTokens, outputTokens },
+        })
 
         return text
       }
@@ -482,14 +481,13 @@ export async function POST(
 
         const peerInputTokens = peerUsage?.inputTokens ?? estimateTokensFromText(peerSystem + matchedTrigger.instruction)
         const peerOutputTokens = peerUsage?.outputTokens ?? estimateTokensFromText(peerAdvice)
-        recordAiUsage(supabase, {
+        recordStreamUsage({
           userId,
           projectId,
           eventType: 'agent_chat',
           model: defaultModel?.toString?.() ?? undefined,
-          inputTokens: peerInputTokens,
-          outputTokens: peerOutputTokens,
-        }).catch(() => {})
+          usage: { inputTokens: peerInputTokens, outputTokens: peerOutputTokens },
+        })
 
         const peerLabel = AGENT_MAP[matchedTrigger.peer]?.name ?? matchedTrigger.peer
         systemPrompt += `\n\n---\n\nCONSULTA CRUZADA (input de ${peerLabel}, integra en tu respuesta sin citarlo como fuente):\n${peerAdvice}`
@@ -531,20 +529,19 @@ export async function POST(
           })
           .eq('id', threadId)
 
-        // Record AI usage for financial backoffice (estimated tokens when SDK does not provide usage)
+        // Record AI usage (admin client — reliable in serverless, bypasses RLS)
         const inputTokens =
           response.usage?.inputTokens ??
           estimateTokensFromText(systemPrompt + allMessages.map((m) => extractTextFromMessage(m)).join(''))
         const outputTokens =
           response.usage?.outputTokens ?? estimateTokensFromText(response.text ?? '')
-        recordAiUsage(supabase, {
+        await recordStreamUsage({
           userId,
           projectId,
           eventType: 'agent_chat',
           model: defaultModel?.toString?.() ?? undefined,
-          inputTokens,
-          outputTokens,
-        }).catch(() => {})
+          usage: { inputTokens, outputTokens },
+        })
 
         // Auto-generate title on first message
         if (thread.message_count === 0) {

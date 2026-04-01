@@ -5,7 +5,7 @@ import { buildFullProjectContext, buildProjectContext } from '@/lib/ai/context-b
 import { buildPhase00Prompt } from '@/lib/ai/prompts/phase-00'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
-import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
+import { recordStreamUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase00Section } from '@/types/conversation'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { extractTextFromMessage } from '@/lib/ai/extract-text-from-message'
@@ -145,14 +145,13 @@ export async function POST(
       const inputTokens =
         usage?.inputTokens ?? estimateTokensFromText(specialistSystem + sectionKey)
       const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-      recordAiUsage(supabase, {
+      recordStreamUsage({
         userId,
         projectId,
         eventType: 'phase00_chat',
         model: defaultModel?.toString?.() ?? undefined,
-        inputTokens,
-        outputTokens,
-      }).catch(() => {})
+        usage: { inputTokens, outputTokens },
+      })
 
       systemPrompt += `\n\n---\n\nCONSULTA INTERNA (SOLO CTO, NO MOSTRAR TAL CUAL):\n## Product Architect\n${text}\n\nINSTRUCCION CTO:\n- Integra estas notas en tu respuesta.\n- Puedes decir \"Consulté internamente al Product Architect\" pero NO pegues estas notas literalmente.\n- Mantén el estilo CTO y guía a cerrar esta sección.\n`
     }
@@ -196,17 +195,16 @@ export async function POST(
               { onConflict: 'project_id,phase_number,section,agent_type' }
             )
 
-          // Record AI usage for financial backoffice
+          // Record AI usage (admin client — reliable in serverless, bypasses RLS)
           const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
           const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-          recordAiUsage(supabase, {
+          await recordStreamUsage({
             userId,
             projectId,
             eventType: 'phase00_chat',
             model: defaultModel?.toString?.() ?? undefined,
-            inputTokens,
-            outputTokens,
-          }).catch(() => {})
+            usage: { inputTokens, outputTokens },
+          })
         } catch (error) {
           console.error('[Phase-00 chat] Error persisting conversation', error)
         }

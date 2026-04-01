@@ -6,7 +6,7 @@ import { buildPhase02Prompt } from '@/lib/ai/prompts/phase-02'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
 import { canAccessPhase } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
-import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
+import { recordStreamUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase02Section } from '@/types/conversation'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import type { AgentType } from '@/types/agent'
@@ -149,14 +149,13 @@ export async function POST(
           usage?.inputTokens ??
           estimateTokensFromText(specialistSystem + instruction + sectionKey)
         const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-        recordAiUsage(supabase, {
+        recordStreamUsage({
           userId,
           projectId,
           eventType: 'phase02_chat',
           model: defaultModel?.toString?.() ?? undefined,
-          inputTokens,
-          outputTokens,
-        }).catch(() => {})
+          usage: { inputTokens, outputTokens },
+        })
 
         return text
       }
@@ -234,17 +233,16 @@ export async function POST(
               { onConflict: 'project_id,phase_number,section,agent_type' }
             )
 
-          // Record AI usage for financial backoffice
+          // Record AI usage (admin client — reliable in serverless, bypasses RLS)
           const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + coreMessages.map(m => m.content).join(''))
           const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-          recordAiUsage(supabase, {
+          await recordStreamUsage({
             userId,
             projectId,
             eventType: 'phase02_chat',
             model: defaultModel?.toString?.() ?? undefined,
-            inputTokens,
-            outputTokens,
-          }).catch(() => {})
+            usage: { inputTokens, outputTokens },
+          })
         } catch (error) {
           console.error('[Phase-02 chat] Error persisting conversation', error)
         }
