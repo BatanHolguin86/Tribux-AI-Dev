@@ -76,9 +76,23 @@ export async function POST(
     const triggerResult = await triggerWorkflowDispatch(project.repo_url!, 'ci.yml')
 
     if (!triggerResult.success) {
-      await recordActionComplete(executionId, 'failed', undefined, undefined, triggerResult.error)
+      // Detect missing workflow vs other errors
+      const isNotFound =
+        triggerResult.error?.includes('404') ||
+        triggerResult.error?.toLowerCase().includes('not found') ||
+        triggerResult.error?.toLowerCase().includes('no workflows')
+
+      const userMessage = isNotFound
+        ? 'El workflow ci.yml no existe en el repositorio. Ejecuta primero "Configurar CI" para generarlo automáticamente.'
+        : triggerResult.error
+
+      await recordActionComplete(executionId, 'failed', undefined, undefined, userMessage)
       return Response.json(
-        { error: 'workflow_trigger_failed', message: triggerResult.error },
+        {
+          error: isNotFound ? 'workflow_not_found' : 'workflow_trigger_failed',
+          message: userMessage,
+          hint: isNotFound ? 'Ejecuta la acción "Configurar CI" para crear el archivo .github/workflows/ci.yml' : undefined,
+        },
         { status: 400 },
       )
     }

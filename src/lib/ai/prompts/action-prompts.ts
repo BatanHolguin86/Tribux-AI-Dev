@@ -210,6 +210,46 @@ Output format — EVERY file must have a filepath comment:
 Generate implementation + tests together. Do not generate unnecessary boilerplate.`
 }
 
+export function setupCiWorkflowPrompt(context: {
+  projectName: string
+  repoContext: string
+  packageJson: string
+  architectureDocs: string
+}): string {
+  return `You are a DevOps engineer setting up a GitHub Actions CI workflow.
+
+## Project: ${context.projectName}
+
+## Repository Structure
+${context.repoContext}
+
+## package.json
+${context.packageJson}
+
+## Architecture Overview
+${context.architectureDocs}
+
+## Task
+Generate a GitHub Actions CI workflow file at \`.github/workflows/ci.yml\`.
+
+Requirements:
+- Triggers: \`push\` to main, \`pull_request\` to main, and \`workflow_dispatch\` (manual trigger — required)
+- Detect the package manager from package.json (pnpm lockfile → pnpm, yarn.lock → yarn, else npm)
+- Install dependencies with the correct package manager
+- Run: lint → type-check (tsc --noEmit) → unit tests → build
+- If Playwright is in devDependencies, add an E2E job that installs browsers and runs \`pnpm test:e2e\`
+- Use Node.js 20 + ubuntu-latest
+- Use caching for the package manager
+- Keep it clean and minimal — no unnecessary steps
+
+Output ONLY the workflow file with filepath:
+\`\`\`yaml
+// filepath: .github/workflows/ci.yml
+name: CI
+...
+\`\`\``
+}
+
 export function generateTestPlanPrompt(context: {
   projectName: string
   featureSpecs: string

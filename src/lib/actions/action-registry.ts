@@ -83,6 +83,20 @@ export const PHASE_ACTIONS: ActionDefinition[] = [
 
   // ── Phase 05: Testing & QA ──
   {
+    actionName: 'setup-ci-workflow',
+    phaseNumber: 5,
+    section: 'unit_tests',
+    itemIndices: [3],
+    label: 'Configurar CI',
+    description: 'AI genera y commitea .github/workflows/ci.yml adaptado al stack del proyecto.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+  {
     actionName: 'generate-test-plan',
     phaseNumber: 5,
     section: 'test_plan',
