@@ -250,6 +250,45 @@ name: CI
 \`\`\``
 }
 
+export function setupDeployWorkflowPrompt(context: {
+  projectName: string
+  repoContext: string
+  packageJson: string
+}): string {
+  return `You are a DevOps engineer setting up a GitHub Actions deployment workflow for Vercel.
+
+## Project: ${context.projectName}
+
+## Repository Structure
+${context.repoContext}
+
+## package.json
+${context.packageJson}
+
+## Task
+Generate a GitHub Actions deployment workflow at \`.github/workflows/deploy.yml\`.
+
+Requirements:
+- Triggers: \`release\` (types: [published]) AND \`workflow_dispatch\` (manual trigger)
+- Detect the package manager from package.json (pnpm lockfile → pnpm, yarn.lock → yarn, else npm)
+- Install dependencies with the correct package manager and caching
+- Deploy to Vercel using the Vercel CLI: \`npx vercel --prod --token \${{ secrets.VERCEL_TOKEN }} --yes\`
+- Required GitHub secrets (add a comment block explaining each):
+  - \`VERCEL_TOKEN\`: Personal access token from vercel.com/account/tokens
+  - \`VERCEL_ORG_ID\`: Found in vercel.com → Team Settings → General
+  - \`VERCEL_PROJECT_ID\`: Found in vercel.com → Project Settings → General
+- Set \`VERCEL_ORG_ID\` and \`VERCEL_PROJECT_ID\` as env vars from secrets
+- Use Node.js 20 + ubuntu-latest
+- Create a GitHub Deployment before and after (using environment: Production)
+
+Output ONLY the workflow file with filepath:
+\`\`\`yaml
+// filepath: .github/workflows/deploy.yml
+name: Deploy
+...
+\`\`\``
+}
+
 export function generateTestPlanPrompt(context: {
   projectName: string
   featureSpecs: string

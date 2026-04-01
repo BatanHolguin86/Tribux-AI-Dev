@@ -14,6 +14,7 @@ import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { AutomatedChecklistCard } from '@/components/shared/AutomatedChecklistCard'
 import { ActionStreamingPanel } from '@/components/shared/ActionStreamingPanel'
 import { Phase06FinalGate } from './Phase06FinalGate'
+import { DeployStatusWidget } from './DeployStatusWidget'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
@@ -151,19 +152,23 @@ export function Phase06Layout({ projectId, categories: initialCategories, initia
               const action = actions.find((a) => a.section === sectionKey)
               const sectionExecutions = executions.filter((e) => e.section === sectionKey)
               return (
-                <AutomatedChecklistCard
-                  key={sectionKey}
-                  sectionKey={sectionKey}
-                  config={CATEGORY_CONFIGS[sectionKey]}
-                  status={category.status}
-                  itemStates={category.itemStates}
-                  onItemToggle={handleItemToggle}
-                  onToggle={() => handleToggle(sectionKey)}
-                  action={action}
-                  executions={sectionExecutions}
-                  onActionExecute={executeAction}
-                  executingAction={executingAction}
-                />
+                <div key={sectionKey}>
+                  <AutomatedChecklistCard
+                    sectionKey={sectionKey}
+                    config={CATEGORY_CONFIGS[sectionKey]}
+                    status={category.status}
+                    itemStates={category.itemStates}
+                    onItemToggle={handleItemToggle}
+                    onToggle={() => handleToggle(sectionKey)}
+                    action={action}
+                    executions={sectionExecutions}
+                    onActionExecute={executeAction}
+                    executingAction={executingAction}
+                  />
+                  {sectionKey === 'deploy_production' && (
+                    <DeployStatusWidget projectId={projectId} />
+                  )}
+                </div>
               )
             })}
           </div>

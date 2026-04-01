@@ -228,6 +228,57 @@ export async function getCIJobLogs(
 }
 
 /**
+ * Gets the latest GitHub Deployment for a repo (environment: Production).
+ * Vercel creates these automatically when it deploys via GitHub integration.
+ */
+export async function getLatestGitHubDeployment(
+  repoUrl: string,
+  environment = 'Production',
+): Promise<{
+  id: number
+  status: string
+  environmentUrl: string | null
+  createdAt: string
+} | null> {
+  const parsed = parseGitHubUrl(repoUrl)
+  if (!parsed) return null
+
+  const { owner, repo } = parsed
+
+  try {
+    // 1. Get latest deployment for environment
+    const deplRes = await fetch(
+      `${GITHUB_API}/repos/${owner}/${repo}/deployments?environment=${encodeURIComponent(environment)}&per_page=1`,
+      { headers: getHeaders() },
+    )
+    if (!deplRes.ok) return null
+
+    const deplData = await deplRes.json()
+    const deployment = deplData[0]
+    if (!deployment) return null
+
+    // 2. Get its latest status
+    const statusRes = await fetch(
+      `${GITHUB_API}/repos/${owner}/${repo}/deployments/${deployment.id}/statuses?per_page=1`,
+      { headers: getHeaders() },
+    )
+    if (!statusRes.ok) return null
+
+    const statuses = await statusRes.json()
+    const latest = statuses[0]
+
+    return {
+      id: deployment.id,
+      status: latest?.state ?? 'pending',
+      environmentUrl: latest?.environment_url ?? null,
+      createdAt: deployment.created_at,
+    }
+  } catch {
+    return null
+  }
+}
+
+/**
  * Creates a GitHub release (triggers Vercel auto-deploy).
  */
 export async function createGitHubRelease(

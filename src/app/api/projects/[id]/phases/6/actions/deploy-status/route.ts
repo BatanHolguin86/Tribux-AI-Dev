@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { getLatestWorkflowRun } from '@/lib/github/workflows'
-import { parseGitHubUrl } from '@/lib/github/repo-context'
+import { getLatestWorkflowRun, getLatestGitHubDeployment } from '@/lib/github/workflows'
 
 export const maxDuration = 60
 
@@ -36,56 +35,33 @@ export async function GET(
       )
     }
 
-    // 3. Try Vercel API first if VERCEL_TOKEN is available
-    if (process.env.VERCEL_TOKEN && process.env.VERCEL_TEAM_ID) {
-      try {
-        const parsed = project.repo_url ? parseGitHubUrl(project.repo_url) : null
-        const repoName = parsed ? parsed.repo : null
-
-        if (repoName) {
-          const vercelRes = await fetch(
-            `https://api.vercel.com/v6/deployments?projectId=${encodeURIComponent(repoName)}&limit=1&teamId=${process.env.VERCEL_TEAM_ID}`,
-            {
-              headers: {
-                Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
-              },
-            },
-          )
-
-          if (vercelRes.ok) {
-            const data = await vercelRes.json()
-            const deployment = data.deployments?.[0]
-
-            if (deployment) {
-              return Response.json({
-                status: deployment.readyState ?? deployment.state,
-                url: deployment.url ? `https://${deployment.url}` : null,
-                source: 'vercel',
-                createdAt: deployment.created,
-              })
-            }
-          }
-        }
-      } catch (vercelError) {
-        console.error('[deploy-status] Vercel API error (non-fatal):', vercelError)
-      }
+    if (!project.repo_url) {
+      return Response.json({ status: 'no_repo', url: null, source: null })
     }
 
-    // 4. Fallback to GitHub Actions deploy workflow
-    if (project.repo_url) {
-      const run = await getLatestWorkflowRun(project.repo_url, 'deploy.yml')
+    // 3. Primary: GitHub Deployments API (Vercel creates these automatically)
+    const ghDeployment = await getLatestGitHubDeployment(project.repo_url, 'Production')
+    if (ghDeployment) {
+      return Response.json({
+        status: ghDeployment.status,
+        url: ghDeployment.environmentUrl,
+        source: 'github_deployment',
+        createdAt: ghDeployment.createdAt,
+      })
+    }
 
-      if (run) {
-        return Response.json({
-          status: run.status === 'completed' ? run.conclusion : run.status,
-          url: run.html_url,
-          source: 'github_actions',
-        })
-      }
+    // 4. Fallback: GitHub Actions deploy.yml workflow run
+    const run = await getLatestWorkflowRun(project.repo_url, 'deploy.yml')
+    if (run) {
+      return Response.json({
+        status: run.status === 'completed' ? (run.conclusion ?? 'completed') : run.status,
+        url: run.html_url,
+        source: 'github_actions',
+      })
     }
 
     return Response.json({
-      status: 'unknown',
+      status: 'not_started',
       url: null,
       source: null,
     })

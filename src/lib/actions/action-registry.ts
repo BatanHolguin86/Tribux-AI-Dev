@@ -170,6 +170,20 @@ export const PHASE_ACTIONS: ActionDefinition[] = [
 
   // ── Phase 06: Launch & Deployment ──
   {
+    actionName: 'setup-deploy-workflow',
+    phaseNumber: 6,
+    section: 'deploy_production',
+    itemIndices: [3],
+    label: 'Configurar deploy',
+    description: 'AI genera .github/workflows/deploy.yml con Vercel CLI. Luego configura 3 secrets en GitHub.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: true,
+  },
+  {
     actionName: 'run-production-migrations',
     phaseNumber: 6,
     section: 'deploy_production',
