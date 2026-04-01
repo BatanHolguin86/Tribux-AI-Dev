@@ -12,16 +12,21 @@ export function Phase04FinalGate({ projectId, totalTasks }: Phase04FinalGateProp
   const router = useRouter()
   const [isApproving, setIsApproving] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleApprove() {
     setIsApproving(true)
+    setError(null)
 
     const res = await fetch(`/api/projects/${projectId}/phases/4/approve`, {
       method: 'POST',
     })
 
     if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      setError(body.error ?? 'No se pudo aprobar la fase. Intenta nuevamente.')
       setIsApproving(false)
+      setShowConfirm(false)
       return
     }
 
@@ -50,6 +55,12 @@ export function Phase04FinalGate({ projectId, totalTasks }: Phase04FinalGateProp
       <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
         Al aprobar, Phase 05 (Testing & QA) se desbloqueara automaticamente.
       </p>
+
+      {error && (
+        <div className="mx-auto mt-4 max-w-sm rounded-md bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300">
+          {error}
+        </div>
+      )}
 
       {!showConfirm ? (
         <button
