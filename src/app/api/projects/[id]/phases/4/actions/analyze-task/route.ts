@@ -2,6 +2,7 @@ import { streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, DEFAULT_MODEL_ID } from '@/lib/ai/anthropic'
 import { getGitHubRepoContext } from '@/lib/github/repo-context'
+import { checkHeavyQuota } from '@/lib/plans/quota'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordStreamUsage } from '@/lib/ai/usage'
 
@@ -39,6 +40,10 @@ export async function POST(
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return new Response('Unauthorized', { status: 401 })
+
+  // Quota check — block heavy AI ops if budget exceeded
+  const quotaBlock = await checkHeavyQuota(user.id)
+  if (quotaBlock) return quotaBlock
 
   const body = await request.json()
   const taskId: string = body.taskId

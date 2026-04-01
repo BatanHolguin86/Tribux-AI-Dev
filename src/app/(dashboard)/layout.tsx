@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { TrialBanner } from '@/components/shared/TrialBanner'
+import { UsageQuotaBanner } from '@/components/shared/UsageQuotaBanner'
 import { getTrialDaysRemaining } from '@/lib/plans/guards'
 
 export default async function DashboardLayout({
@@ -93,6 +94,7 @@ export default async function DashboardLayout({
       </header>
       <main className="mx-auto max-w-7xl px-6 py-8">
         <div className="mb-6">
+          <UsageQuotaBanner />
           <TrialBanner
             daysRemaining={getTrialDaysRemaining(profile.trial_ends_at)}
             subscriptionStatus={profile.subscription_status ?? 'free'}

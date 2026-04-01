@@ -5,6 +5,7 @@ import { createAgentTools } from '@/lib/ai/agent-tools'
 import { LEAD_DEVELOPER_PROMPT } from '@/lib/ai/agents/lead-developer'
 import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
 import { recordStreamUsage } from '@/lib/ai/usage'
+import { checkHeavyQuota } from '@/lib/plans/quota'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
 import type { AgentType } from '@/types/agent'
 
@@ -24,6 +25,10 @@ export async function POST(
       data: { user },
     } = await supabase.auth.getUser()
     if (!user) return new Response('Unauthorized', { status: 401 })
+
+    // Quota check — block heavy AI ops if budget exceeded
+    const quotaBlock = await checkHeavyQuota(user.id)
+    if (quotaBlock) return quotaBlock
 
     // Accept both messages (from useChat transport) and taskId
     const body = await request.json()

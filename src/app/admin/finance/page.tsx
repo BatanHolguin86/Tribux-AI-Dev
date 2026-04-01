@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { FinanceOverviewTable } from '@/components/admin/FinanceOverviewTable'
+import { OverageLedgerTable } from '@/components/admin/OverageLedgerTable'
 
 export default async function AdminFinancePage() {
   const supabase = await createClient()
@@ -40,6 +41,10 @@ export default async function AdminFinancePage() {
       >
         <FinanceOverviewTable />
       </Suspense>
+
+      <div className="border-t border-gray-200 pt-6 dark:border-gray-700">
+        <OverageLedgerTable />
+      </div>
     </div>
   )
 }

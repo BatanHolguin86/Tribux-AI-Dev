@@ -12,6 +12,7 @@ import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
 import { recordStreamUsage } from '@/lib/ai/usage'
 import { getActionByName } from '@/lib/actions/action-registry'
 import { generateQaReportPrompt } from '@/lib/ai/prompts/action-prompts'
+import { checkHeavyQuota } from '@/lib/plans/quota'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
 
 export const maxDuration = 60
@@ -35,6 +36,10 @@ export async function POST(
     if (!user) {
       return new Response('Unauthorized', { status: 401 })
     }
+
+    // Quota check — block heavy AI ops if budget exceeded
+    const quotaBlock = await checkHeavyQuota(user.id)
+    if (quotaBlock) return quotaBlock
 
     // 2. Verify project belongs to user
     const { data: project } = await supabase
