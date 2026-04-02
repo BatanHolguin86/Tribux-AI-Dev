@@ -72,6 +72,10 @@ export function canAccessPhase(
   // Phase 00 and 01 are always accessible
   if (phaseNumber <= 1) return true
 
+  // TEMPORARY: unlock all phases for production testing
+  // TODO: remove this after testing is complete
+  return true
+
   const status = getUserPlanStatus(profile)
 
   // Trial or paid users can access all phases
