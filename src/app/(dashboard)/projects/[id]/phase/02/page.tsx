@@ -113,23 +113,22 @@ export default async function Phase02Page({
     created_at: a.created_at as string,
   }))
 
-  // Auto-sync: if document is approved but phase_section isn't, fix it in-memory
-  // (DB may have stale status from earlier save without approval)
-  for (const doc of documents) {
-    if (doc.status === 'approved') {
-      const sectionRow = sections.find((s) => s.section === doc.section)
-      if (sectionRow && sectionRow.status !== 'approved') {
-        sectionRow.status = 'approved'
-        sectionRow.approved_at = new Date().toISOString()
-        // Best-effort DB sync (fire and forget)
-        supabase
-          .from('phase_sections')
-          .update({ status: 'approved', approved_at: new Date().toISOString() })
-          .eq('project_id', projectId)
-          .eq('phase_number', 2)
-          .eq('section', doc.section)
-          .then(() => {})
-      }
+  // Build a map of approved documents for status override
+  const approvedDocs = new Set(
+    documents.filter((d) => d.status === 'approved').map((d) => d.section),
+  )
+
+  // Best-effort DB sync: update phase_sections for approved documents
+  for (const sectionKey of approvedDocs) {
+    const row = sections.find((s) => s.section === sectionKey)
+    if (row && row.status !== 'approved') {
+      supabase
+        .from('phase_sections')
+        .update({ status: 'approved', approved_at: new Date().toISOString() })
+        .eq('project_id', projectId)
+        .eq('phase_number', 2)
+        .eq('section', sectionKey)
+        .then(() => {})
     }
   }
 
@@ -138,10 +137,14 @@ export default async function Phase02Page({
     const conv = conversations.find((c) => c.section === key)
     const doc = documents.find((d) => d.section === key)
 
+    // If document is approved, override section status to 'approved'
+    const rawStatus = (sectionRow?.status ?? 'pending') as SectionStatus
+    const effectiveStatus = approvedDocs.has(key) ? 'approved' as SectionStatus : rawStatus
+
     return {
       key,
       label: SECTION_LABELS[key],
-      status: (sectionRow?.status ?? 'pending') as SectionStatus,
+      status: effectiveStatus,
       messages: (conv?.messages as Array<{ role: string; content: string; created_at: string }>) ?? [],
       document: doc
         ? { id: doc.id, content: doc.content, version: doc.version, status: doc.status }
