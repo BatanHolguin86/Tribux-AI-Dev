@@ -17,8 +17,11 @@ export async function GET(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
+  const { searchParams } = new URL(request.url)
+  const agentType = searchParams.get('agent_type') ?? undefined
+
   const projectContext = await buildFullProjectContext(projectId)
-  const prompt = buildSuggestionsPrompt(projectContext)
+  const prompt = buildSuggestionsPrompt(projectContext, agentType)
 
   try {
     const { text, usage } = await generateText({

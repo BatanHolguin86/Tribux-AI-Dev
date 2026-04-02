@@ -139,13 +139,16 @@ Reglas:
   return prompt
 }
 
-export function buildSuggestionsPrompt(context: FullProjectContext): string {
+export function buildSuggestionsPrompt(context: FullProjectContext, agentType?: string): string {
+  const agentLine = agentType
+    ? `\nAGENTE ACTIVO: ${agentType} — prioriza sugerencias relevantes para este tipo de agente.`
+    : ''
   return `ROL: Eres el asistente de AI Squad Command Center. Analiza el estado del proyecto y genera 1-3 sugerencias proactivas.
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.name}
 - Fase actual: Phase ${String(context.currentPhase).padStart(2, '0')} — ${context.phaseName}
-- Industria: ${context.industry || 'No especificada'}
+- Industria: ${context.industry || 'No especificada'}${agentLine}
 
 DISCOVERY: ${context.discoveryDocs ? 'Aprobado' : 'No completado'}
 SPECS: ${context.featureSpecs ? 'Existen specs aprobados' : 'Sin specs aprobados'}

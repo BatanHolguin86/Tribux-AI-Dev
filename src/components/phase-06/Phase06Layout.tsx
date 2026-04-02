@@ -15,6 +15,7 @@ import { AutomatedChecklistCard } from '@/components/shared/AutomatedChecklistCa
 import { ActionStreamingPanel } from '@/components/shared/ActionStreamingPanel'
 import { Phase06FinalGate } from './Phase06FinalGate'
 import { DeployStatusWidget } from './DeployStatusWidget'
+import { ReadinessCheckWidget } from './ReadinessCheckWidget'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
@@ -128,6 +129,8 @@ export function Phase06Layout({ projectId, categories: initialCategories, initia
               { label: 'Go/No-go v1 (pre-lanzamiento)', path: 'docs/05-qa/v1-go-no-go.md' },
             ]}
           />
+          <ReadinessCheckWidget projectId={projectId} />
+
           <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
             Items y categorias se guardan por proyecto. Parte del deploy puede ser manual (Vercel, DNS, etc.); usa los
             runbooks y el tab{' '}

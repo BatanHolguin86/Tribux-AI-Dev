@@ -14,6 +14,7 @@ import { PhaseProgressHeader } from '@/components/shared/PhaseProgressHeader'
 import { AutomatedChecklistCard } from '@/components/shared/AutomatedChecklistCard'
 import { ActionStreamingPanel } from '@/components/shared/ActionStreamingPanel'
 import { Phase03FinalGate } from './Phase03FinalGate'
+import { InfraReadinessBanner } from './InfraReadinessBanner'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
@@ -117,6 +118,7 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
         <Phase03FinalGate projectId={projectId} />
       ) : (
         <>
+          <InfraReadinessBanner projectId={projectId} />
           <PhaseDocsCallout
             title="Documentación en el repositorio"
             description="Runbooks e infraestructura (clona el repo o ábrelo en el IDE)."
