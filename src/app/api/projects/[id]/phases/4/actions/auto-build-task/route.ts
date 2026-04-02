@@ -106,10 +106,17 @@ ${task.acceptance_criteria ? `Criterios de aceptacion:\n${task.acceptance_criter
 
 TU MISION: Implementar esta task completamente de forma autonoma. Sigue este flujo exacto:
 
-1. Llama a read_spec con feature_name="${featureName}" para obtener requirements y design docs KIRO
-2. Llama a list_files (sin directorio) para ver la estructura completa del repo
-3. Lee 3-5 archivos clave relacionados a esta feature (componentes, API routes, tipos, utilidades)
-4. Llama a write_files con TODOS los archivos en un solo commit: implementacion + tests
+PASO 0 — CONTEXTO (obligatorio antes de escribir codigo):
+- Llama a get_knowledge_base con query="${featureName} ${task.title}" para leer decisiones previas, patrones y bugs corregidos
+- Si hay entradas relevantes, usarlas para guiar tu implementacion (no repetir errores anteriores)
+
+PASO 1 — ENTENDER:
+- Llama a read_spec con feature_name="${featureName}" para obtener requirements y design docs KIRO
+- Llama a list_files (sin directorio) para ver la estructura completa del repo
+- Lee 3-5 archivos clave relacionados a esta feature (componentes, API routes, tipos, utilidades)
+
+PASO 2 — IMPLEMENTAR:
+- Llama a write_files con TODOS los archivos en un solo commit: implementacion + tests
    - Archivos de feature: src/components/, src/app/api/, src/lib/, src/hooks/
    - Tests obligatorios:
      * Components → tests/unit/components/Name.test.tsx (React Testing Library)
@@ -117,15 +124,33 @@ TU MISION: Implementar esta task completamente de forma autonoma. Sigue este flu
      * Lib/utils   → tests/unit/lib/name.test.ts (Vitest)
      * Hooks       → tests/unit/hooks/useName.test.ts (Vitest + renderHook)
    - Commit message: "feat(${task.task_key}): ${task.title}"
-5. Confirma con un resumen: archivos creados, tests escritos, que se verifica
-6. Llama a get_ci_status para verificar que el codigo + tests pasan CI
-7. Si CI falla, llama get_ci_logs, usa edit_file para corregir los errores especificos, reverifica
+
+PASO 3 — VERIFICAR (loop obligatorio, max 3 ciclos):
+- Llama a get_ci_status para verificar que CI pasa
+- Si CI status es "not_found" (no hay CI configurado), llama trigger_ci para intentar correrlo
+- Si CI falla:
+  a. Llama get_ci_logs para leer los errores exactos
+  b. Lee los archivos afectados con read_file
+  c. Corrige con edit_file (NO reescribir todo — solo los errores)
+  d. Vuelve a verificar con get_ci_status
+  e. Repite hasta max 3 ciclos o hasta que CI pase
+- Si CI pasa: continua al paso 4
+
+PASO 4 — GUARDAR MEMORIA:
+- Llama a save_to_memory con un resumen de:
+  - Que se implemento y como
+  - Decisiones tecnicas tomadas
+  - Cualquier bug encontrado y como se resolvio
+  - Patrones especificos del proyecto descubiertos
+  - Category: "auto_build"
+- Confirma con un resumen final al usuario
 
 REGLAS:
 - Lee los archivos existentes ANTES de escribir para seguir los patrones exactos
 - Implementa backend Y frontend segun sea necesario
 - TypeScript strict, Tailwind CSS, patrones del proyecto
-- Tests deben verificar comportamiento real, no solo que el codigo existe`
+- Tests deben verificar comportamiento real, no solo que el codigo existe
+- SIEMPRE lee el knowledge base primero (paso 0) y guarda al final (paso 4)`
 
     const AGENT_PROMPTS: Record<string, string> = {
       lead_developer: LEAD_DEVELOPER_PROMPT,
