@@ -7,18 +7,29 @@ export async function GET() {
   const auth = await requireSuperAdmin()
   if (!auth.allowed) return Response.json(auth.body, { status: auth.status })
 
-  const supabase = await createAdminClient()
-  const { data: rows } = await supabase
-    .from('platform_config')
-    .select('provider, is_connected, last_tested_at, test_result, metadata')
-    .order('provider')
+  try {
+    const supabase = await createAdminClient()
+    const { data: rows, error } = await supabase
+      .from('platform_config')
+      .select('provider, is_connected, last_tested_at, test_result, metadata')
+      .order('provider')
 
-  return Response.json({
-    providers: (rows ?? []).map((r) => ({
-      ...r,
-      has_token: true,
-    })),
-  })
+    if (error) {
+      // Table might not exist yet (migration not applied)
+      console.error('[platform-config] Query error:', error.message)
+      return Response.json({ providers: [] })
+    }
+
+    return Response.json({
+      providers: (rows ?? []).map((r) => ({
+        ...r,
+        has_token: true,
+      })),
+    })
+  } catch (err) {
+    console.error('[platform-config] Error:', err)
+    return Response.json({ providers: [] })
+  }
 }
 
 export async function PUT(request: Request) {

@@ -55,6 +55,17 @@ export default async function AdminLayout({
             </span>
           </Link>
 
+          <nav className="flex items-center gap-1">
+            <Link href="/admin/finance" className="rounded-md px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
+              Finanzas
+            </Link>
+            {profile?.role === 'super_admin' && (
+              <Link href="/admin/platform-setup" className="rounded-md px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
+                Plataforma
+              </Link>
+            )}
+          </nav>
+
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-[11px] font-bold text-white shadow-sm">
