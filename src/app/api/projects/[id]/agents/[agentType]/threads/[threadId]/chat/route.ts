@@ -1,7 +1,8 @@
 import { generateText, streamText, stepCountIs } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
+import { AI_CONFIG } from '@/lib/ai/anthropic'
+import { getModelForAgent, getModelIdStringForUsage } from '@/lib/ai/agent-models'
 import { buildFullProjectContext, getProjectKnowledgeContext } from '@/lib/ai/context-builder'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
 import { generateThreadTitle } from '@/lib/ai/title-generator'
@@ -82,6 +83,9 @@ export async function POST(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const userId = user.id
+    const typedAgent = agentType as AgentType
+    const agentModel = getModelForAgent(typedAgent)
+    const agentModelId = getModelIdStringForUsage(typedAgent)
 
     // Plan guard: check agent access
     const agentMeta = AGENT_MAP[agentType as AgentType]
@@ -241,8 +245,10 @@ export async function POST(
           ...projectContext,
           attachmentsSummary,
         })
+        const specialistModel = getModelForAgent(a)
+        const specialistModelId = getModelIdStringForUsage(a)
         const { text, usage } = await generateText({
-          model: defaultModel,
+          model: specialistModel,
           system: specialistSystem,
           messages: [
             {
@@ -261,7 +267,7 @@ export async function POST(
           userId,
           projectId,
           eventType,
-          model: defaultModel?.toString?.() ?? undefined,
+          model: specialistModelId,
           usage: { inputTokens, outputTokens },
         })
 
@@ -466,8 +472,10 @@ export async function POST(
           ...projectContext,
           knowledgeContext,
         })
+        const peerModel = getModelForAgent(matchedTrigger.peer)
+        const peerModelId = getModelIdStringForUsage(matchedTrigger.peer)
         const { text: peerAdvice, usage: peerUsage } = await generateText({
-          model: defaultModel,
+          model: peerModel,
           system: peerSystem,
           messages: [
             {
@@ -485,7 +493,7 @@ export async function POST(
           userId,
           projectId,
           eventType: 'agent_chat',
-          model: defaultModel?.toString?.() ?? undefined,
+          model: peerModelId,
           usage: { inputTokens: peerInputTokens, outputTokens: peerOutputTokens },
         })
 
@@ -504,7 +512,7 @@ export async function POST(
     })
 
     const result = streamText({
-      model: defaultModel,
+      model: agentModel,
       system: systemPrompt,
       messages: allMessages,
       tools: agentTools,
@@ -539,13 +547,19 @@ export async function POST(
           userId,
           projectId,
           eventType: 'agent_chat',
-          model: defaultModel?.toString?.() ?? undefined,
+          model: agentModelId,
           usage: { inputTokens, outputTokens },
         })
 
         // Auto-generate title on first message
         if (thread.message_count === 0) {
-          const title = await generateThreadTitle(userMessage, { supabase, userId, projectId })
+          const title = await generateThreadTitle(userMessage, {
+            supabase,
+            userId,
+            projectId,
+            model: agentModel,
+            modelId: agentModelId,
+          })
           await supabase
             .from('conversation_threads')
             .update({ title })

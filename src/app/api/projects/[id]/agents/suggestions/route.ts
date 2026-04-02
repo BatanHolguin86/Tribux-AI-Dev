@@ -1,7 +1,8 @@
 import { generateText } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
+import { AI_CONFIG } from '@/lib/ai/anthropic'
+import { getModelForAgent, getModelIdStringForUsage, parseAgentTypeParam } from '@/lib/ai/agent-models'
 import { buildFullProjectContext } from '@/lib/ai/context-builder'
 
 export const maxDuration = 60
@@ -18,14 +19,17 @@ export async function GET(
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
   const { searchParams } = new URL(request.url)
-  const agentType = searchParams.get('agent_type') ?? undefined
+  const agentTypeRaw = searchParams.get('agent_type') ?? undefined
+  const resolvedAgent = parseAgentTypeParam(agentTypeRaw)
+  const suggestionsModel = getModelForAgent(resolvedAgent)
+  const suggestionsModelId = getModelIdStringForUsage(resolvedAgent)
 
   const projectContext = await buildFullProjectContext(projectId)
-  const prompt = buildSuggestionsPrompt(projectContext, agentType)
+  const prompt = buildSuggestionsPrompt(projectContext, agentTypeRaw)
 
   try {
     const { text, usage } = await generateText({
-      model: defaultModel,
+      model: suggestionsModel,
       prompt,
       maxOutputTokens: AI_CONFIG.featureSuggestions.maxOutputTokens,
       temperature: AI_CONFIG.featureSuggestions.temperature,
@@ -38,7 +42,7 @@ export async function GET(
       userId: user.id,
       projectId,
       eventType: 'suggestions',
-      model: defaultModel?.toString?.() ?? undefined,
+      model: suggestionsModelId,
       inputTokens,
       outputTokens,
     }).catch(() => {})
