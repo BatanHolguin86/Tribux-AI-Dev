@@ -30,7 +30,7 @@ const CODE_WRITE_AGENTS: string[] = [
 ]
 
 // Agents that can execute SQL
-const SQL_AGENTS: string[] = ['db_admin', 'cto_virtual']
+const SQL_AGENTS: string[] = ['db_admin', 'cto_virtual', 'lead_developer']
 
 function createReadTools(ctx: AgentToolContext) {
   return {

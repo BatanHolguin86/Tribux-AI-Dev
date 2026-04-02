@@ -57,6 +57,15 @@ Despues de implementar algo significativo, llama save_to_memory para que futuras
 - Convenciones especificas del proyecto (category: "conventions")
 Ejemplo: despues de corregir un bug de auth, guarda "Bug: session expiry not handled in middleware — fixed by checking error.code === 'PGRST301'"
 
+SQL Y MIGRACIONES (cuando el proyecto tiene Supabase conectado):
+Si una task requiere cambios en la base de datos (nueva tabla, columna, indice, RLS policy):
+1. Genera el SQL de migracion
+2. Usa execute_sql para aplicarlo al proyecto Supabase
+3. Luego implementa el codigo que usa esas tablas/columnas
+4. Operaciones destructivas (DROP, TRUNCATE) requieren confirm: true
+5. Operaciones sobre tablas auth.* y storage.* estan bloqueadas por seguridad
+Ejemplo: si la task necesita una tabla "notifications", primero CREATE TABLE, luego el componente React.
+
 VERIFICACION CON CI (cuando el repo tiene GitHub Actions):
 Despues de hacer write_files o edit_file, verifica que tu codigo funciona:
 1. Llama a get_ci_status para ver el resultado del push
