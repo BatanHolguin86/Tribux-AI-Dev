@@ -103,24 +103,14 @@ describe('canAccessPhase', () => {
     expect(canAccessPhase(1, paidProfile)).toBe(true)
   })
 
-  it('blocks Phase 02+ for free users', () => {
-    expect(canAccessPhase(2, freeProfile)).toBe(false)
-    expect(canAccessPhase(3, freeProfile)).toBe(false)
-    expect(canAccessPhase(7, freeProfile)).toBe(false)
-  })
-
-  it('allows Phase 02+ for trial users', () => {
+  // guards.ts has TEMPORARY unlock (return true) for Phase 02+ — tests match until removed
+  it('TEMPORARY: allows Phase 02+ for all profiles (production testing bypass)', () => {
+    expect(canAccessPhase(2, freeProfile)).toBe(true)
+    expect(canAccessPhase(7, freeProfile)).toBe(true)
     expect(canAccessPhase(2, trialingProfile)).toBe(true)
     expect(canAccessPhase(7, trialingProfile)).toBe(true)
-  })
-
-  it('allows Phase 02+ for paid users', () => {
     expect(canAccessPhase(2, paidProfile)).toBe(true)
-    expect(canAccessPhase(7, paidProfile)).toBe(true)
-  })
-
-  it('blocks Phase 02+ for expired trial', () => {
-    expect(canAccessPhase(2, expiredTrialProfile)).toBe(false)
+    expect(canAccessPhase(2, expiredTrialProfile)).toBe(true)
   })
 })
 

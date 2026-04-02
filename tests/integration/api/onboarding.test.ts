@@ -114,9 +114,9 @@ describe('PATCH /api/onboarding/step', () => {
     expect(body.error).toContain('Step invalido')
   })
 
-  it('devuelve 400 con step invalido (mayor a 4)', async () => {
+  it('devuelve 400 con step invalido (mayor al maximo permitido)', async () => {
     const { PATCH } = await import('@/app/api/onboarding/step/route')
-    const res = await PATCH(jsonRequest({ step: 5 }, 'PATCH'))
+    const res = await PATCH(jsonRequest({ step: 6 }, 'PATCH'))
 
     expect(res.status).toBe(400)
     const body = await res.json()
@@ -172,13 +172,13 @@ describe('PATCH /api/onboarding/step', () => {
     expect(body.step).toBe(0)
   })
 
-  it('devuelve 200 con step 4 (valor maximo valido)', async () => {
+  it('devuelve 200 con step 5 (valor maximo valido)', async () => {
     const { PATCH } = await import('@/app/api/onboarding/step/route')
-    const res = await PATCH(jsonRequest({ step: 4 }, 'PATCH'))
+    const res = await PATCH(jsonRequest({ step: 5 }, 'PATCH'))
 
     expect(res.status).toBe(200)
     const body = await res.json()
-    expect(body.step).toBe(4)
+    expect(body.step).toBe(5)
   })
 
   it('devuelve 200 y actualiza step correctamente', async () => {
@@ -337,7 +337,7 @@ describe('POST /api/onboarding/complete', () => {
     expect(mockUpdate).toHaveBeenCalledWith({
       persona: 'emprendedor',
       onboarding_completed: true,
-      onboarding_step: 4,
+      onboarding_step: 5,
     })
   })
 
@@ -355,6 +355,9 @@ describe('POST /api/onboarding/complete', () => {
       name: 'Minimal Project',
       description: null,
       industry: null,
+      repo_url: null,
+      supabase_project_ref: null,
+      supabase_access_token: null,
       current_phase: 0,
       status: 'active',
     })
@@ -397,6 +400,9 @@ describe('POST /api/onboarding/complete', () => {
       name: 'Full Project',
       description: 'Detailed description',
       industry: 'Fintech',
+      repo_url: null,
+      supabase_project_ref: null,
+      supabase_access_token: null,
       current_phase: 0,
       status: 'active',
     })

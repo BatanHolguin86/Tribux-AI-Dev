@@ -204,7 +204,7 @@ function stripHtmlForPreview(html: string, maxLen: number): string {
 /**
  * Lists design_artifacts for the project with short text previews for Phase 02 prompts.
  */
-async function getDesignArtifactsSummaryForPhase02(projectId: string): Promise<string> {
+export async function getDesignArtifactsSummaryForPhase02(projectId: string): Promise<string> {
   const supabase = await createClient()
   const { data: rows } = await supabase
     .from('design_artifacts')

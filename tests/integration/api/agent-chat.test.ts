@@ -59,6 +59,24 @@ const createMockFrom = (options?: {
         update: mockUpdateThread,
       }
     }
+    if (table === 'projects') {
+      return {
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: {
+                  repo_url: null,
+                  supabase_project_ref: null,
+                  supabase_access_token: null,
+                },
+                error: null,
+              }),
+            }),
+          }),
+        }),
+      }
+    }
     return {}
   })
 }
@@ -81,6 +99,9 @@ vi.mock('@/lib/rate-limit', () => ({
 }))
 vi.mock('@/lib/plans/guards', () => ({
   canUseAgent: vi.fn().mockReturnValue(true),
+}))
+vi.mock('@/lib/ai/agent-tools', () => ({
+  createAgentTools: vi.fn().mockReturnValue({}),
 }))
 vi.mock('@/lib/ai/agents', () => ({
   AGENT_MAP: {
@@ -105,6 +126,7 @@ vi.mock('@/lib/ai/context-builder', () => ({
     featureSpecs: '',
     artifacts: '',
   }),
+  getProjectKnowledgeContext: vi.fn().mockResolvedValue(''),
 }))
 vi.mock('@/lib/ai/agents/prompt-builder', () => ({
   buildAgentPrompt: vi.fn().mockReturnValue('You are the CTO Virtual.'),
@@ -118,6 +140,7 @@ vi.mock('@/lib/ai/anthropic', () => ({
 }))
 vi.mock('@/lib/ai/usage', () => ({
   recordAiUsage: vi.fn().mockResolvedValue(undefined),
+  recordStreamUsage: vi.fn().mockResolvedValue(undefined),
   estimateTokensFromText: vi.fn().mockReturnValue(100),
 }))
 vi.mock('ai', () => ({
@@ -126,11 +149,16 @@ vi.mock('ai', () => ({
       new Response('mocked stream', {
         headers: { 'content-type': 'text/plain; charset=utf-8' },
       }),
+    toUIMessageStreamResponse: () =>
+      new Response('mocked stream', {
+        headers: { 'content-type': 'text/plain; charset=utf-8' },
+      }),
   })),
   generateText: vi.fn().mockResolvedValue({
     text: 'Internal specialist note',
     usage: { inputTokens: 50, outputTokens: 50 },
   }),
+  stepCountIs: vi.fn(() => () => false),
 }))
 
 describe('POST /api/projects/[id]/agents/[agentType]/threads/[threadId]/chat', () => {

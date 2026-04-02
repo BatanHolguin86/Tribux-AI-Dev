@@ -41,6 +41,7 @@ vi.mock('@/lib/rate-limit', () => ({
 
 vi.mock('@/lib/ai/chat-errors', () => ({
   formatChatErrorResponse: vi.fn().mockReturnValue({ status: 500, body: { error: 'Error' } }),
+  wrapStreamWithErrorHandling: (stream: ReadableStream<Uint8Array>) => stream,
 }))
 
 vi.mock('@/lib/ai/anthropic', () => ({

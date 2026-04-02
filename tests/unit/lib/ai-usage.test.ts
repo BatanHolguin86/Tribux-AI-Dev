@@ -99,8 +99,9 @@ describe('AI_USAGE_EVENT_TYPES', () => {
     expect(AI_USAGE_EVENT_TYPES).toContain('suggestions')
   })
 
-  it('has the correct number of event types', () => {
-    expect(AI_USAGE_EVENT_TYPES).toHaveLength(18)
+  it('has a stable event-type registry (update count when adding types)', () => {
+    expect(AI_USAGE_EVENT_TYPES).toHaveLength(33)
+    expect(new Set(AI_USAGE_EVENT_TYPES).size).toBe(AI_USAGE_EVENT_TYPES.length)
   })
 
   it('contains all phase chat types', () => {
