@@ -65,12 +65,9 @@ export default async function Phase03Page({
 
   const initialExecutions = (executionsData ?? []) as ActionExecution[]
 
-  // Check platform tokens for one-click setup
-  const platformReady = !!(
-    process.env.PLATFORM_GITHUB_TOKEN &&
-    process.env.PLATFORM_SUPABASE_TOKEN &&
-    process.env.PLATFORM_VERCEL_TOKEN
-  )
+  // Check platform tokens for one-click setup (DB or env vars)
+  const { isPlatformReady } = await import('@/lib/platform/config')
+  const platformReady = await isPlatformReady()
 
   // Check existing setup status
   const { data: project } = await supabase

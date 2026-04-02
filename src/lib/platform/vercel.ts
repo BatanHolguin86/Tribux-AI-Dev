@@ -1,12 +1,11 @@
 import { parseGitHubUrl } from '@/lib/github/repo-context'
+import { getPlatformToken } from './config'
 
 const VERCEL_API = 'https://api.vercel.com'
 
-function getConfig() {
-  const token = process.env.PLATFORM_VERCEL_TOKEN
-  const teamId = process.env.PLATFORM_VERCEL_TEAM_ID
-  if (!token) throw new Error('PLATFORM_VERCEL_TOKEN is required')
-  return { token, teamId }
+async function getConfig() {
+  const { token, metadata } = await getPlatformToken('vercel')
+  return { token, teamId: metadata.team_id }
 }
 
 function headers(token: string) {
@@ -20,7 +19,7 @@ export async function createProject(
   projectSlug: string,
   repoUrl: string,
 ): Promise<{ projectId: string; url: string }> {
-  const { token, teamId } = getConfig()
+  const { token, teamId } = await getConfig()
 
   const parsed = parseGitHubUrl(repoUrl)
   if (!parsed) throw new Error('Invalid GitHub repo URL for Vercel project')

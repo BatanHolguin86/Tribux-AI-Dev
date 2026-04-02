@@ -243,6 +243,17 @@ export const PHASE_ACTIONS: ActionDefinition[] = [
     confirmRequired: true,
   },
   {
+    actionName: 'export-transfer-bundle',
+    phaseNumber: 6,
+    section: 'documentation',
+    itemIndices: [],
+    label: 'Exportar proyecto',
+    description: 'Descarga ZIP con docs, disenos, schema y guia de transferencia.',
+    prerequisites: [],
+    type: 'external-api',
+    streaming: false,
+  },
+  {
     actionName: 'generate-ops-runbook',
     phaseNumber: 6,
     section: 'documentation',

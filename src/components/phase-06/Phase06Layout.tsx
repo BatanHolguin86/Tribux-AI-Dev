@@ -18,6 +18,7 @@ import { DeployStatusWidget } from './DeployStatusWidget'
 import { ReadinessCheckWidget } from './ReadinessCheckWidget'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
+import { ExportTransferButton } from '@/components/shared/ExportTransferButton'
 
 const PHASE_OBJECTIVE =
   'Verifica checklist de lanzamiento: deploy, monitoring, dominios y documentación operacional.'
@@ -174,6 +175,10 @@ export function Phase06Layout({ projectId, categories: initialCategories, initia
                 </div>
               )
             })}
+          </div>
+
+          <div className="mt-6">
+            <ExportTransferButton projectId={projectId} />
           </div>
         </>
       )}

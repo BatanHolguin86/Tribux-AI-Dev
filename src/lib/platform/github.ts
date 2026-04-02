@@ -1,11 +1,12 @@
 import crypto from 'crypto'
+import { getPlatformToken } from './config'
 
 const GITHUB_API = 'https://api.github.com'
 
-function getConfig() {
-  const token = process.env.PLATFORM_GITHUB_TOKEN
-  const org = process.env.PLATFORM_GITHUB_ORG
-  if (!token || !org) throw new Error('PLATFORM_GITHUB_TOKEN and PLATFORM_GITHUB_ORG are required')
+async function getConfig() {
+  const { token, metadata } = await getPlatformToken('github')
+  const org = metadata.org
+  if (!org) throw new Error('GitHub org not configured (metadata.org or PLATFORM_GITHUB_ORG)')
   return { token, org }
 }
 
@@ -32,7 +33,7 @@ export async function createRepository(
   slug: string,
   description: string,
 ): Promise<{ repoUrl: string; cloneUrl: string; defaultBranch: string }> {
-  const { token, org } = getConfig()
+  const { token, org } = await getConfig()
 
   const res = await fetch(`${GITHUB_API}/orgs/${org}/repos`, {
     method: 'POST',

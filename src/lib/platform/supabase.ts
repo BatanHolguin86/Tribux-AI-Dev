@@ -1,11 +1,12 @@
 import crypto from 'crypto'
+import { getPlatformToken } from './config'
 
 const SUPABASE_API = 'https://api.supabase.com'
 
-function getConfig() {
-  const token = process.env.PLATFORM_SUPABASE_TOKEN
-  const orgId = process.env.PLATFORM_SUPABASE_ORG_ID
-  if (!token || !orgId) throw new Error('PLATFORM_SUPABASE_TOKEN and PLATFORM_SUPABASE_ORG_ID are required')
+async function getConfig() {
+  const { token, metadata } = await getPlatformToken('supabase')
+  const orgId = metadata.org_id
+  if (!orgId) throw new Error('Supabase org ID not configured (metadata.org_id or PLATFORM_SUPABASE_ORG_ID)')
   return { token, orgId }
 }
 
@@ -20,7 +21,7 @@ export async function createProject(
   projectName: string,
   region: string = 'us-east-1',
 ): Promise<{ projectRef: string; dbPassword: string }> {
-  const { token, orgId } = getConfig()
+  const { token, orgId } = await getConfig()
   const dbPassword = crypto.randomBytes(24).toString('base64url')
 
   const res = await fetch(`${SUPABASE_API}/v1/projects`, {
@@ -49,7 +50,7 @@ export async function pollUntilReady(
   onProgress?: (message: string) => void,
   maxWaitMs: number = 180_000,
 ): Promise<void> {
-  const { token } = getConfig()
+  const { token } = await getConfig()
   const start = Date.now()
   let attempt = 0
 
@@ -78,7 +79,7 @@ export async function pollUntilReady(
 export async function getProjectApiKeys(
   projectRef: string,
 ): Promise<{ anonKey: string; serviceRoleKey: string }> {
-  const { token } = getConfig()
+  const { token } = await getConfig()
 
   const res = await fetch(`${SUPABASE_API}/v1/projects/${projectRef}/api-keys`, {
     headers: headers(token),
