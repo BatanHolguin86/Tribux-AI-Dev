@@ -45,6 +45,7 @@ type ChatPanelProps = {
   sectionStatus: SectionStatus
   initialMessages: Array<{ role: string; content: string; created_at?: string }>
   hasDocument: boolean
+  documentStatus?: string | null
   onSectionApproved: () => void
   onDocumentGenerated: () => void
 }
@@ -55,6 +56,7 @@ export function ChatPanel({
   sectionStatus,
   initialMessages,
   hasDocument,
+  documentStatus,
   onSectionApproved,
   onDocumentGenerated,
 }: ChatPanelProps) {
@@ -63,7 +65,7 @@ export function ChatPanel({
   const [input, setInput] = useState('')
   const [generating, setGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
-  const isApproved = sectionStatus === 'approved'
+  const isApproved = sectionStatus === 'approved' || documentStatus === 'approved'
 
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new TextStreamChatTransport({

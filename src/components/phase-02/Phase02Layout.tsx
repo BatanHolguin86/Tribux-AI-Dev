@@ -165,6 +165,7 @@ export function Phase02Layout({
                 sectionStatus={currentSection.status}
                 initialMessages={currentSection.messages}
                 hasDocument={currentSection.document !== null}
+                documentStatus={currentSection.document?.status ?? null}
                 onSectionApproved={handleSectionApproved}
                 onDocumentGenerated={handleDocumentGenerated}
               />
