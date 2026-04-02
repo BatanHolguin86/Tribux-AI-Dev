@@ -16,13 +16,13 @@ La carpeta `docs/` está ordenada según la **metodología IA DLC** (AI-Driven D
 | **05-qa**           | Phase 05 — Testing & QA               | Reportes de calidad, criterios de aceptación, documentación de QA.                                    |
 | **06-ops**          | Phase 06 — Launch & Deployment        | Runbooks operacionales, checklist de lanzamiento, monitoring.                                         |
 
-**Phase 07 — Iteration & Growth** (retrospectiva, backlog) no tiene carpeta dedicada en `docs/`; se documenta en el ciclo de producto y en el brief.
+**Phase 07 — Iteration & Growth:** specs KIRO en `docs/01-specs/11-phase-07-iteration/`; visión de roadmap en `docs/00-discovery/estatus-v1-y-roadmap.md`.
 
 ---
 
 ## Rutas rápidas
 
-- **Estado del producto alineado con el código (revisar primero si mantienes docs):** `ESTADO-DEL-PRODUCTO.md`
+- **Estado del producto alineado con el código (revisar primero si mantienes docs):** [`ESTADO-DEL-PRODUCTO.md`](./ESTADO-DEL-PRODUCTO.md)
 - **Checklists de implementación por feature/fase:** `01-specs/*/tasks.md` (todos sincronizados marzo 2026 con el código)
 - **Empezar por el problema y la propuesta:** `00-discovery/01-brief.md`
 - **Ver qué features está especificando el producto:** `01-specs/` (carpetas por feature: 01-auth-onboarding, 04-kiro-generator, 05-orchestrator, etc.)

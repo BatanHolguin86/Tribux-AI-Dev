@@ -1,7 +1,9 @@
 -- ============================================================
 -- PENDING MIGRATIONS — AI Squad Command Center
--- Apply in Supabase Dashboard > SQL Editor
--- URL: https://supabase.com/dashboard/project/xsvnzhnpbgkbuqgvplcf/sql
+-- ⚠️  Preferir aplicar los archivos numerados en orden desde:
+--     infrastructure/supabase/migrations/
+--     Este script puede quedar desfasado respecto a esa carpeta.
+-- Apply in Supabase Dashboard > SQL Editor (solo si operas sin CLI)
 -- ============================================================
 
 -- ============================================================

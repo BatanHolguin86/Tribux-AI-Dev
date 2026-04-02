@@ -11,7 +11,7 @@ pnpm dev
 ```
 
 - **Documentación del producto y del repo:** [`docs/README.md`](./docs/README.md)
-- **Estado actual vs código (marzo 2026):** [`docs/ESTADO-DEL-PRODUCTO.md`](./docs/ESTADO-DEL-PRODUCTO.md)
+- **Estado actual vs código (2026):** [`docs/ESTADO-DEL-PRODUCTO.md`](./docs/ESTADO-DEL-PRODUCTO.md) · roadmap v1 [`docs/00-discovery/estatus-v1-y-roadmap.md`](./docs/00-discovery/estatus-v1-y-roadmap.md)
 - **Orquestación / convenciones para IA:** [`CLAUDE.md`](./CLAUDE.md)
 
 ## Comandos útiles
@@ -27,4 +27,4 @@ pnpm dev
 
 Migraciones y seed: `infrastructure/supabase/`. CI: `infrastructure/github/workflows/`.
 
-**Release / producción:** variables, migraciones (incl. `021` para checklists por ítem), buckets y checklist previo al deploy en [`docs/06-ops/v1-release.md`](./docs/06-ops/v1-release.md).
+**Release / producción:** variables, **todas** las migraciones numeradas en `infrastructure/supabase/migrations/` (la **021** es crítica para `item_states` en checklists), buckets y checklist en [`docs/06-ops/v1-release.md`](./docs/06-ops/v1-release.md).

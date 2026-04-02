@@ -25,7 +25,7 @@
 | 10  | **Variables de entorno**                | `.env.example` al día; Vercel/staging con vars mínimas (Supabase, app URL, opcional Stripe).                                               | ⬜      |
 
 
-**Nota:** Los ítems **1, 1b, 2 y 2b** tienen evidencia **local** en el registro siguiente (2026-03-24). Los ítems **3–10** dependen de **staging/prod** o de una **sesión con usuario de prueba**; mantener ⬜ hasta registrar evidencia allí.
+**Nota:** Los ítems **1, 1b, 2 y 2b** tienen evidencia **local** en el **registro baseline 2026-04-01** (abajo). Los ítems **3–10** dependen de **staging/prod** o de una **sesión con usuario de prueba**; mantener ⬜ hasta registrar evidencia allí.
 
 ---
 
@@ -37,7 +37,7 @@ Ajustar según acuerdo del equipo; punto de partida:
 | Prioridad | Spec / flujo                                                                    | Notas                                |
 | --------- | ------------------------------------------------------------------------------- | ------------------------------------ |
 | P0        | `auth.spec.ts`, `protected-routes.spec.ts`                                      | Sin credenciales extra               |
-| P0        | `phase-00.spec.ts`, `phase-01.spec.ts`                                          | Redirects / acceso sin auth completo |
+| P0        | `phase-00.spec.ts`, `phase-01.spec.ts`, `api-routes.spec.ts` (401 en APIs críticas) | Redirects / acceso; APIs sin sesión |
 | P1        | `smoke-staging.authenticated.spec.ts` o equivalente local con sesión            | Requiere `TEST_USER_`*               |
 | P1        | `agents-paywall.authenticated.spec.ts`                                          | Requiere usuario Starter en BD       |
 | P2        | `agents.authenticated.spec.ts`, `agents-with-attachments.authenticated.spec.ts` | Requieren Anthropic / créditos       |
@@ -57,23 +57,34 @@ Listado completo: `docs/05-qa/e2e-tests.md`.
 
 Los ítems de la tabla **Criterios (bloqueantes)** siguen marcándose con evidencia por entorno (staging/prod) antes del release.
 
-### Registro baseline — 2026-03-24
+### Registro baseline — 2026-04-01 (actual)
+
+
+| Comando                  | Resultado                                                                                                                                                                                                                                                                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm exec tsc --noEmit` | ✅ OK                                                                                                                                                                                                                                                                                                                                    |
+| `pnpm test`              | ✅ **695** tests (**53** archivos) — incl. integración API (`integrations`, `costs`, `agent-chat`/`onboarding` alineados a rutas)                                                                                                                                                                                                                                                                        |
+| `pnpm lint`              | ✅ 0 errores / **~31** warnings (principalmente `no-unused-vars`; no fallan el comando)                                                                                                                                                                                                                                                  |
+| `pnpm build`             | ✅ OK (Next.js, rutas dinámicas incl. phase 03–07)                                                                                                                                                                                                                                                                                       |
+| `pnpm test:e2e`          | **Re-ejecutar** antes del corte de release. Si `localhost:3000` está ocupado: `CI= pnpm test:e2e` o `reuseExistingServer` en config. Último run **completo** documentado: ver histórico **2026-03-24** (13 passed / 26 skipped / 0 failed). Nuevo spec `api-routes.spec.ts` añadido en commit `c6a561e` — incluir en la corrida de QA. |
+
+
+#### Revisión automatizada (2026-04-01)
+
+- **Commit de referencia (tests + gates locales):** `c6a561e` — tests integración/E2E API, fixes suites (`onboarding`, `agent-chat`, `phase-00`), export testeable en `context-builder`.
+- **Commits históricos (contexto):** `48baa68` (checklists/API), `7f17134` (docs v1-release / migraciones).
+- **Decisión:** criterios **1–2b** siguen ✅ con evidencia local; **3–10** pendientes de **staging** y evidencia manual/CI.
+
+#### Histórico — registro baseline 2026-03-24
 
 
 | Comando                  | Resultado                                                                                                                                                                                                                                                                                                                               |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm exec tsc --noEmit` | ✅ OK                                                                                                                                                                                                                                                                                                                                    |
 | `pnpm test`              | ✅ **676** tests (**48** archivos) — incl. integración `phase-section-item`                                                                                                                                                                                                                                                              |
-| `pnpm lint`              | ✅ 0 errores / **23** warnings (`no-unused-vars`, etc.; no fallan el comando)                                                                                                                                                                                                                                                            |
-| `pnpm build`             | ✅ OK (Next.js, rutas dinámicas incl. phase 03–07)                                                                                                                                                                                                                                                                                       |
-| `pnpm test:e2e`          | Ejecutar con `CI` desactivado si `localhost:3000` está ocupado (`reuseExistingServer`). Último run documentado en esta fecha: **13 passed**, **26 skipped**, **0 failed** (home: link «Comenzar gratis» acotado a `navigation` por strict mode de Playwright). **Re-ejecutar** antes del corte de release si hubo cambios en UI o auth. |
-
-
-#### Revisión automatizada (post Fase C + guía `v1-release`)
-
-- **Commit de referencia (código):** `48baa68` — checklists por ítem, API, narrativa cierre.
-- **Commit de referencia (docs):** `7f17134` — roadmap Fase C cerrada, `docs/06-ops/v1-release.md`, `pending-migrations` con **021**.
-- **Decisión:** gates **locales** OK para seguir con validación **staging** (criterios 3–10) y E2E completo según credenciales.
+| `pnpm lint`              | ✅ 0 errores / **23** warnings                                                                                                                                                                                                                                                                                                          |
+| `pnpm build`             | ✅ OK                                                                                                                                                                                                                                                                                                                                    |
+| `pnpm test:e2e`          | **13 passed**, **26 skipped**, **0 failed** (home: link «Comenzar gratis» acotado a `navigation` por strict mode de Playwright).                                                                                                                                                                                                          |
 
 **Notas E2E**
 
@@ -97,6 +108,7 @@ Los ítems de la tabla **Criterios (bloqueantes)** siguen marcándose con eviden
 
 | Fecha      | Resultado            | Notas                                                                                                                                               |
 | ---------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-01 | Baseline (local)     | `tsc` + `lint` (0 errores) + `test` (**695**) + `build` OK; doc actualizada; criterios 1–2b ✅; 3–10 siguen ⬜ staging; commit `c6a561e`              |
 | 2026-03-24 | Baseline             | TS + Vitest + E2E (suite local) verdes; checklist creada; ESLint 0 errores                                                                          |
 | 2026-03-24 | Lint                 | Eliminados `no-explicit-any` en rutas chat/generate; `set-state-in-effect` vía ref/microtask; Playwright `import` dotenv; ignore `scripts/**/*.cjs` |
 | 2026-03-24 | Fase A               | Roadmap Fase A cerrada: errores IA + checklist + E2E local estable (ver tabla «Entregables roadmap Fase A»)                                         |

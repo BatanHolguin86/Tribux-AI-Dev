@@ -10,7 +10,7 @@
 
 ### Stack y Compatibilidad
 
-- **C-TECH-01:** El producto debe construirse sobre el stack definido en CLAUDE.md: Next.js 14+ (App Router), TypeScript strict, Tailwind CSS, shadcn/ui, Supabase, Vercel. No se puede cambiar el stack sin una ADR aprobada.
+- **C-TECH-01:** El producto debe construirse sobre el stack definido en CLAUDE.md: Next.js 16+ (App Router), TypeScript strict, Tailwind CSS, shadcn/ui, Supabase, Vercel. No se puede cambiar el stack sin una ADR aprobada.
 - **C-TECH-02:** Todo el codigo debe ser TypeScript con `strict: true`. Prohibido el uso de `any` — usar `unknown` con narrowing explicitamente.
 - **C-TECH-03:** El sistema debe funcionar correctamente en los ultimos 2 major versions de Chrome, Firefox, Safari y Edge.
 - **C-TECH-04:** El frontend debe ser completamente funcional en mobile (min 375px de ancho) — mobile-first por convencion de Tailwind.

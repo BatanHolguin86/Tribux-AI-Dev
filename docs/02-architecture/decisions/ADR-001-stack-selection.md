@@ -8,7 +8,7 @@
 
 ## Decision
 
-Usar **Next.js 14 (App Router) + TypeScript + Supabase + Vercel + Tailwind/shadcn/ui** como stack del MVP.
+Usar **Next.js (App Router) + TypeScript + Supabase + Vercel + Tailwind/shadcn/ui** como stack del MVP. **Versión en repo (2026):** Next.js 16.x; la decisión sigue siendo App Router + ecosistema Vercel.
 
 ## Contexto
 
@@ -34,7 +34,7 @@ Se necesita un stack que permita:
 
 ## Justificacion
 
-- **Next.js 14**: Server Components eliminan waterfall de datos, App Router da estructura clara, `useOptimistic` mejora UX. Vercel AI SDK da streaming out-of-the-box.
+- **Next.js (App Router):** Server Components eliminan waterfall de datos, App Router da estructura clara; Vercel AI SDK da streaming out-of-the-box.
 - **Supabase**: Auth + DB + Storage + RLS en un solo servicio. Elimina la necesidad de configurar auth custom, S3, y middleware de seguridad. Free tier generoso para MVP.
 - **Vercel**: Deploy automatico desde GitHub, previews por PR, Edge Network global, zero-config para Next.js.
 - **Tailwind + shadcn/ui**: Componentes accesibles, themeable y copiados (no instalados), evitando lock-in a libreria de UI.

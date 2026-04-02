@@ -27,6 +27,7 @@ pnpm exec playwright test --ui
 | `tests/e2e/auth.setup.ts`                                             | Setup: login y guardado de sesión (requiere credenciales)                                                                 |
 | `tests/e2e/auth.spec.ts`                                              | Login, registro, forgot-password; páginas cargan y muestran formularios                                                   |
 | `tests/e2e/protected-routes.spec.ts`                                  | Redirección a login cuando no hay sesión                                                                                  |
+| `tests/e2e/api-routes.spec.ts`                                        | APIs críticas sin sesión: respuestas **401** (Playwright `request`, sin navegador)                                         |
 | `tests/e2e/phase-00.spec.ts`                                          | Phase 00: redirect sin auth (usuario no autenticado)                                                                      |
 | `tests/e2e/phase-00.authenticated.spec.ts`                            | Phase 00 con sesión: carga y muestra chat input (happy path mínimo)                                                       |
 | `tests/e2e/phase-01.spec.ts`                                          | Phase 01: acceso y redirects básicos (sin sesión / sin Phase 00 aprobada)                                                 |
@@ -35,7 +36,11 @@ pnpm exec playwright test --ui
 | `tests/e2e/agents.authenticated.spec.ts`                              | Agentes con sesión: cargar, crear conversación, enviar mensaje, flujo con artifact (requiere créditos Anthropic)          |
 | `tests/e2e/smoke-staging.authenticated.spec.ts`                       | Smoke TASK-176: dashboard → Phase 00 → Phase 01; comprueba carga de páginas clave (local o staging)                       |
 | `tests/e2e/agents-paywall.authenticated.spec.ts`                      | TASK-222: usuario Starter ve agentes Builder bloqueados (candado/disabled); asume plan starter en BD                      |
-| `tests/e2e/agents-with-attachments.authenticated.spec.ts` (propuesto) | TASK-710/712: chat de agentes con adjuntos: subir archivo, ver listado compacto en el hilo, recibir respuesta sin errores |
+| `tests/e2e/agents-with-attachments.authenticated.spec.ts`             | Chat de agentes con adjuntos (subida, listado en hilo; requiere créditos para respuesta completa)                         |
+| `tests/e2e/phase-02.authenticated.spec.ts` … `phase-07.authenticated.spec.ts` | Cobertura por fase con sesión (según proyecto de prueba)                                                          |
+| `tests/e2e/billing.authenticated.spec.ts`                             | Billing / Stripe (si está habilitado en el entorno)                                                                      |
+
+Listado de archivos en repo: `tests/e2e/*.spec.ts` (puede crecer; esta tabla es orientativa).
 
 ## Flujos autenticados
 

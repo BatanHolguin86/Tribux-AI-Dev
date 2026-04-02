@@ -1,7 +1,7 @@
 # Folder Structure — AI Squad Command Center
 
 **Phase:** 02 — Architecture & Design
-**Fecha:** 2026-03-08 (actualizado marzo 2026)
+**Fecha:** 2026-04-01 (actualizado; validar árbol contra el repo)
 **Status:** Referencia viva — validar rutas de archivo contra el repo; ver también `docs/ESTADO-DEL-PRODUCTO.md`
 
 ---
@@ -69,7 +69,7 @@
 │   │   ├── design-tokens.md
 │   │   ├── analisis-comparativo-claude-code-project.md
 │   │   ├── folder-structure.md            # Este archivo
-│   │   └── decisions/                     # ADR-001 … ADR-007 + README
+│   │   └── decisions/                     # ADR-001 … ADR-009 + README
 │   │
 │   ├── 03-environment/                    # Phase 03 — ver /infrastructure
 │   ├── 04-development/                    # Phase 04 — ver /src
@@ -386,14 +386,7 @@
 │   │       ├── agent-chat.test.ts
 │   │       └── artifacts.test.ts
 │   │
-│   └── e2e/                               # Playwright E2E tests
-│       ├── auth.spec.ts
-│       ├── onboarding.spec.ts
-│       ├── dashboard.spec.ts
-│       ├── phase-00.spec.ts
-│       ├── phase-01.spec.ts
-│       ├── agents.spec.ts
-│       └── agents-paywall.spec.ts
+│   └── e2e/                               # Playwright E2E (lista viva: auth, protected-routes, phase-00/01, agents, smoke-staging, paywall, fases 02–07 authenticated, api-routes, etc.)
 │
 ├── infrastructure/                        # Infrastructure config
 │   ├── supabase/
@@ -409,7 +402,7 @@
 │   │   │   ├── 009_create_conversation_threads.sql
 │   │   │   ├── 010_create_design_artifacts.sql
 │   │   │   ├── 011_create_updated_at_triggers.sql
-│   │   │   └── …                          # 012–020+ (adjuntos, planes, design content, knowledge_base, etc.)
+│   │   │   └── …                          # 012–033+ (adjuntos, planes, AI usage, integraciones, Stripe, costes, etc.) — aplicar todas en orden
 │   │   └── seed.sql                       # Datos iniciales (industries, etc.)
 │   │
 │   ├── github/

@@ -44,9 +44,11 @@ Nunca commitear `.env.local` ni secretos.
 
 Aplicar **todas** las migraciones bajo `infrastructure/supabase/migrations/` al proyecto de Supabase de **staging** y luego **producción**, en orden (CLI `supabase db push`, o SQL Editor copiando cada archivo).
 
-**Importante para checklists por ítem (Fase C):** la migración **`021_phase_sections_item_states.sql`** añade la columna `item_states` (jsonb) en `phase_sections`. Sin ella, los endpoints que persisten ítems fallarán.
+**Importante para checklists por ítem:** la migración **`021_phase_sections_item_states.sql`** añade la columna `item_states` (jsonb) en `phase_sections`. Sin ella, los endpoints que persisten ítems fallarán.
 
-Resumen manual acumulado (operadores): [`scripts/pending-migrations.sql`](../../scripts/pending-migrations.sql) — mantener alineado con migraciones numeradas del repo o preferir solo la carpeta `migrations/`.
+Tras el **021**, el repo sigue acumulando cambios (integraciones, Stripe, costes/infra, etc.). Aplicar **hasta la última migración numerada** en `infrastructure/supabase/migrations/` (p. ej. **033** o superior según el branch).
+
+El archivo [`scripts/pending-migrations.sql`](../../scripts/pending-migrations.sql) es un **resumen histórico/manual** y puede quedar desfasado; la fuente de verdad para operadores es la **carpeta `migrations/`** en orden ascendente.
 
 Guía histórica staging (ejemplo de flujo): [`apply-migrations-staging.md`](./apply-migrations-staging.md).
 

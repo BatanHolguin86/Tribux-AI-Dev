@@ -11,3 +11,5 @@ Registro de decisiones técnicas relevantes para AI Squad Command Center. Cada A
 | [ADR-005](./ADR-005-agent-architecture.md)     | Arquitectura de agentes y conversaciones                               |
 | [ADR-006](./ADR-006-provider-abstraction.md)   | Abstracción de proveedor de IA                                         |
 | [ADR-007](./ADR-007-design-hub-two-path-ux.md) | Hub Diseño & UX: dos caminos (generación persistida vs kit con agente) |
+| [ADR-008](./ADR-008-external-design-tools.md)  | Herramientas de diseño externas (p. ej. Figma)                         |
+| [ADR-009](./ADR-009-one-click-setup.md)        | Setup guiado / one-click hacia entorno productivo                      |
