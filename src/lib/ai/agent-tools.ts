@@ -131,6 +131,49 @@ function createReadTools(ctx: AgentToolContext) {
       },
     }),
 
+    read_design_artifact: tool({
+      description:
+        'Read approved design artifacts (wireframes, mockups) for this project. Returns HTML content that shows the intended UI design. Use before implementing frontend components to match the approved visual design.',
+      inputSchema: z.object({
+        screen_name: z
+          .string()
+          .optional()
+          .describe('Screen name to filter by (e.g., "Dashboard", "Login"). Leave empty to list all.'),
+      }),
+      execute: async ({ screen_name }) => {
+        const supabase = await createAdminClient()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let query: any = supabase
+          .from('design_artifacts')
+          .select('screen_name, type, source, content, external_url, status')
+          .eq('project_id', ctx.projectId)
+          .eq('status', 'approved')
+
+        if (screen_name) query = query.ilike('screen_name', `%${screen_name}%`)
+
+        const { data } = await query.limit(5)
+        if (!data?.length) return { message: 'No approved design artifacts found. Check Phase 02 Design Hub.' }
+        return {
+          designs: (
+            data as Array<{
+              screen_name: string
+              type: string
+              source: string
+              content?: string
+              external_url?: string
+              status: string
+            }>
+          ).map((d) => ({
+            screen: d.screen_name,
+            type: d.type,
+            source: d.source,
+            external_url: d.external_url ?? null,
+            html: d.content?.slice(0, 8000) ?? null,
+          })),
+        }
+      },
+    }),
+
     search_code: tool({
       description:
         'Search for code patterns, function names, or text across all files in the project repository. Use this to find where something is defined or used before reading specific files.',

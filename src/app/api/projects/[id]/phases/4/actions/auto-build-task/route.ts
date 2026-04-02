@@ -112,6 +112,9 @@ PASO 0 — CONTEXTO (obligatorio antes de escribir codigo):
 
 PASO 1 — ENTENDER:
 - Llama a read_spec con feature_name="${featureName}" para obtener requirements y design docs KIRO
+- Llama a read_design_artifact con screen_name relevante para ver el diseno visual aprobado (wireframes/mockups HTML)
+  * Si hay disenos, usa el HTML como referencia para estructura, layout, colores y componentes
+  * Replica la jerarquia visual, espaciado y patron de componentes del diseno aprobado
 - Llama a list_files (sin directorio) para ver la estructura completa del repo
 - Lee 3-5 archivos clave relacionados a esta feature (componentes, API routes, tipos, utilidades)
 
