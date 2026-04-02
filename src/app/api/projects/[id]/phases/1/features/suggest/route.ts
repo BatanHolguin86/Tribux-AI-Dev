@@ -39,7 +39,18 @@ export async function POST(
     )
   }
 
-  const prompt = buildFeatureSuggestionsPrompt(project?.name ?? '', discoveryDocs)
+  // Check for backlog from previous cycle (knowledge_base)
+  const { data: backlogEntries } = await supabase
+    .from('knowledge_base_entries')
+    .select('content')
+    .eq('project_id', projectId)
+    .eq('category', 'backlog')
+    .order('created_at', { ascending: false })
+    .limit(1)
+
+  const previousBacklog = backlogEntries?.[0]?.content?.slice(0, 4000) ?? undefined
+
+  const prompt = buildFeatureSuggestionsPrompt(project?.name ?? '', discoveryDocs, previousBacklog)
 
   try {
     const { text, usage } = await generateText({
