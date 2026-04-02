@@ -9,6 +9,7 @@ import { QA_ENGINEER_PROMPT } from './qa-engineer'
 import { DEVOPS_ENGINEER_PROMPT } from './devops-engineer'
 import { OPERATOR_PROMPT } from './operator'
 import { truncateText } from '@/lib/ai/context-builder'
+import { getAgentPhaseSpecializationBlock } from './agent-phase-specialization'
 
 /**
  * Agent-specific context budgets (chars).
@@ -111,6 +112,11 @@ ${context.repoContext || 'No hay repositorio conectado.'}`
   // Warn agent when context was truncated
   if (context.wasTruncated) {
     prompt += `\n\nNOTA: El contexto del proyecto fue recortado por tamano. Algunos specs o artifacts antiguos pueden no estar completos. Si necesitas informacion especifica que no aparece, pidele al usuario que la comparta.`
+  }
+
+  const phaseSpec = getAgentPhaseSpecializationBlock(agentType, context.currentPhase)
+  if (phaseSpec) {
+    prompt += `\n\n${phaseSpec}`
   }
 
   // Structured action suggestions
