@@ -129,8 +129,10 @@ export default async function Phase02Page({
     }
   })
 
-  // Find the first non-approved section as default active
-  const activeSection = sectionData.find((s) => s.status !== 'approved')?.key ?? 'system_architecture'
+  // Find the first section that still needs work (not approved, and no document yet)
+  const activeSection = sectionData.find((s) => s.status !== 'approved' && s.document === null)?.key
+    ?? sectionData.find((s) => s.status !== 'approved')?.key
+    ?? 'system_architecture'
 
   return (
     <Phase02Layout
