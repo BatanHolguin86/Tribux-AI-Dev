@@ -33,25 +33,29 @@ export async function POST(
     console.error('[Phase02 save] uploadDocument failed', err)
   }
 
-  // Upsert document record
-  const { error: upsertError } = await supabase
+  // Delete existing document for this section (if any), then insert fresh
+  await supabase
     .from('project_documents')
-    .upsert(
-      {
-        project_id: projectId,
-        phase_number: 2,
-        section,
-        document_type: section,
-        storage_path: `projects/${projectId}/${storagePath}`,
-        content,
-        version: 1,
-        status: 'draft',
-      },
-      { onConflict: 'project_id,phase_number,section,document_type' },
-    )
+    .delete()
+    .eq('project_id', projectId)
+    .eq('phase_number', 2)
+    .eq('section', section)
 
-  if (upsertError) {
-    console.error('[Phase02 save] upsert failed', upsertError)
+  const { error: insertError } = await supabase
+    .from('project_documents')
+    .insert({
+      project_id: projectId,
+      phase_number: 2,
+      section,
+      document_type: section,
+      storage_path: `projects/${projectId}/${storagePath}`,
+      content,
+      version: 1,
+      status: 'draft',
+    })
+
+  if (insertError) {
+    console.error('[Phase02 save] insert failed', insertError)
     return Response.json({ error: 'Failed to save document' }, { status: 500 })
   }
 
