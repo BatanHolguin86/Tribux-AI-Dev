@@ -113,33 +113,24 @@ export default async function Phase02Page({
     created_at: a.created_at as string,
   }))
 
-  // Auto-sync: if document is approved but phase_section isn't, fix it
-  const sectionsToSync: string[] = []
-  for (const key of PHASE02_SECTIONS) {
-    const sectionRow = sections.find((s) => s.section === key)
-    const doc = documents.find((d) => d.section === key)
-    if (doc?.status === 'approved' && sectionRow?.status !== 'approved') {
-      sectionsToSync.push(key)
-    }
-  }
-  if (sectionsToSync.length > 0) {
-    await Promise.all(
-      sectionsToSync.map((key) =>
+  // Auto-sync: if document is approved but phase_section isn't, fix it in-memory
+  // (DB may have stale status from earlier save without approval)
+  for (const doc of documents) {
+    if (doc.status === 'approved') {
+      const sectionRow = sections.find((s) => s.section === doc.section)
+      if (sectionRow && sectionRow.status !== 'approved') {
+        sectionRow.status = 'approved'
+        sectionRow.approved_at = new Date().toISOString()
+        // Best-effort DB sync (fire and forget)
         supabase
           .from('phase_sections')
-          .upsert(
-            { project_id: projectId, phase_number: 2, section: key, status: 'approved', approved_at: new Date().toISOString() },
-            { onConflict: 'project_id,phase_number,section' },
-          ),
-      ),
-    )
-    // Re-fetch sections after sync
-    const { data: refreshedSections } = await supabase
-      .from('phase_sections')
-      .select('*')
-      .eq('project_id', projectId)
-      .eq('phase_number', 2)
-    if (refreshedSections) sections.splice(0, sections.length, ...refreshedSections)
+          .update({ status: 'approved', approved_at: new Date().toISOString() })
+          .eq('project_id', projectId)
+          .eq('phase_number', 2)
+          .eq('section', doc.section)
+          .then(() => {})
+      }
+    }
   }
 
   const sectionData: SectionData[] = PHASE02_SECTIONS.map((key) => {
