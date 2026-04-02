@@ -133,17 +133,38 @@ export function ChatPanel({
         return
       }
 
-      // Consume the stream to completion (backend saves on finish)
+      // Collect streamed text
       const reader = res.body?.getReader()
+      const decoder = new TextDecoder()
+      let fullText = ''
       if (reader) {
         while (true) {
-          const { done } = await reader.read()
+          const { done, value } = await reader.read()
           if (done) break
+          fullText += decoder.decode(value, { stream: true })
         }
       }
 
-      // Wait for backend onFinish to persist the document to DB
-      await new Promise((resolve) => setTimeout(resolve, 3000))
+      if (!fullText.trim()) {
+        setGenerateError('La generacion no produjo contenido.')
+        return
+      }
+
+      // Save the document via dedicated endpoint (reliable, no serverless timeout)
+      const saveRes = await fetch(
+        `/api/projects/${projectId}/phases/2/sections/${section}/save`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: fullText }),
+        },
+      )
+
+      if (!saveRes.ok) {
+        setGenerateError('Documento generado pero no se pudo guardar. Intenta de nuevo.')
+        return
+      }
+
       onDocumentGenerated()
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
