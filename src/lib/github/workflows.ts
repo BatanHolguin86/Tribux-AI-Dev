@@ -279,6 +279,54 @@ export async function getLatestGitHubDeployment(
 }
 
 /**
+ * Get the latest preview deployment for a branch (Vercel creates these for PRs).
+ */
+export async function getPreviewDeployment(
+  repoUrl: string,
+  branch: string,
+): Promise<{ url: string; status: string; createdAt: string } | null> {
+  const parsed = parseGitHubUrl(repoUrl)
+  if (!parsed) return null
+
+  const { owner, repo } = parsed
+
+  try {
+    // Fetch recent deployments for Preview environment
+    const res = await fetch(
+      `${GITHUB_API}/repos/${owner}/${repo}/deployments?environment=Preview&per_page=10`,
+      { headers: getHeaders() },
+    )
+    if (!res.ok) return null
+
+    const deployments = await res.json()
+
+    // Find one matching the branch
+    const match = (deployments as Array<{ id: number; ref: string; created_at: string }>)
+      .find((d) => d.ref === branch)
+
+    if (!match) return null
+
+    // Get status
+    const statusRes = await fetch(
+      `${GITHUB_API}/repos/${owner}/${repo}/deployments/${match.id}/statuses?per_page=1`,
+      { headers: getHeaders() },
+    )
+    if (!statusRes.ok) return null
+
+    const statuses = await statusRes.json()
+    const latest = statuses[0] as { state: string; environment_url?: string } | undefined
+
+    return {
+      url: latest?.environment_url ?? '',
+      status: latest?.state ?? 'pending',
+      createdAt: match.created_at,
+    }
+  } catch {
+    return null
+  }
+}
+
+/**
  * Creates a GitHub release (triggers Vercel auto-deploy).
  */
 export async function createGitHubRelease(
