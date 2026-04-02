@@ -16,6 +16,11 @@ export const updateProjectSchema = z.object({
   repo_url: z.string().url().max(200).nullable().optional(),
   supabase_project_ref: z.string().max(50).nullable().optional(),
   supabase_access_token: z.string().max(200).nullable().optional(),
+  supabase_api_url: z.string().url().max(200).nullable().optional(),
+  supabase_anon_key: z.string().max(500).nullable().optional(),
+  supabase_db_password: z.string().max(200).nullable().optional(),
+  vercel_project_id: z.string().max(100).nullable().optional(),
+  vercel_project_url: z.string().url().max(300).nullable().optional(),
 })
 
 export type CreateProjectInput = z.infer<typeof createProjectSchema>

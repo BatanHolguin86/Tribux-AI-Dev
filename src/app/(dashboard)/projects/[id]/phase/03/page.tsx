@@ -65,5 +65,35 @@ export default async function Phase03Page({
 
   const initialExecutions = (executionsData ?? []) as ActionExecution[]
 
-  return <Phase03Layout projectId={projectId} categories={categories} initialMessages={initialMessages} initialExecutions={initialExecutions} />
+  // Check platform tokens for one-click setup
+  const platformReady = !!(
+    process.env.PLATFORM_GITHUB_TOKEN &&
+    process.env.PLATFORM_SUPABASE_TOKEN &&
+    process.env.PLATFORM_VERCEL_TOKEN
+  )
+
+  // Check existing setup status
+  const { data: project } = await supabase
+    .from('projects')
+    .select('repo_url, supabase_project_ref, vercel_project_id')
+    .eq('id', projectId)
+    .eq('user_id', user!.id)
+    .single()
+
+  const existingSetup = {
+    hasRepo: !!project?.repo_url,
+    hasSupabase: !!project?.supabase_project_ref,
+    hasVercel: !!project?.vercel_project_id,
+  }
+
+  return (
+    <Phase03Layout
+      projectId={projectId}
+      categories={categories}
+      initialMessages={initialMessages}
+      initialExecutions={initialExecutions}
+      platformReady={platformReady}
+      existingSetup={existingSetup}
+    />
+  )
 }

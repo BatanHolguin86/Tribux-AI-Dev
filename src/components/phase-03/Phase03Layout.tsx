@@ -15,6 +15,7 @@ import { AutomatedChecklistCard } from '@/components/shared/AutomatedChecklistCa
 import { ActionStreamingPanel } from '@/components/shared/ActionStreamingPanel'
 import { Phase03FinalGate } from './Phase03FinalGate'
 import { InfraReadinessBanner } from './InfraReadinessBanner'
+import { OneClickSetupCard } from './OneClickSetupCard'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
@@ -26,11 +27,13 @@ type Phase03LayoutProps = {
   categories: PhaseChecklistCategory[]
   initialMessages: Array<{ role: string; content: string; created_at?: string }>
   initialExecutions?: ActionExecution[]
+  platformReady?: boolean
+  existingSetup?: { hasRepo: boolean; hasSupabase: boolean; hasVercel: boolean }
 }
 
 const phaseAgents = getPhaseAgents(3)
 
-export function Phase03Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [] }: Phase03LayoutProps) {
+export function Phase03Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [], platformReady = false, existingSetup = { hasRepo: false, hasSupabase: false, hasVercel: false } }: Phase03LayoutProps) {
   const [categories, setCategories] = useState(initialCategories)
   const {
     actions,
@@ -118,6 +121,11 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
         <Phase03FinalGate projectId={projectId} />
       ) : (
         <>
+          <OneClickSetupCard
+            projectId={projectId}
+            platformReady={platformReady}
+            existingSetup={existingSetup}
+          />
           <InfraReadinessBanner projectId={projectId} />
           <PhaseDocsCallout
             title="Documentación en el repositorio"

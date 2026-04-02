@@ -3,6 +3,21 @@ import type { ActionDefinition } from '@/types/action'
 export const PHASE_ACTIONS: ActionDefinition[] = [
   // ── Phase 03: Environment Setup ──
   {
+    actionName: 'one-click-setup',
+    phaseNumber: 3,
+    section: 'repository',
+    itemIndices: [],
+    label: 'Configurar todo automaticamente',
+    description: 'Crea repositorio GitHub, proyecto Supabase y proyecto Vercel con un solo clic.',
+    prerequisites: [
+      { type: 'env-exists', env: 'PLATFORM_GITHUB_TOKEN' },
+      { type: 'env-exists', env: 'PLATFORM_SUPABASE_TOKEN' },
+      { type: 'env-exists', env: 'PLATFORM_VERCEL_TOKEN' },
+    ],
+    type: 'external-api',
+    streaming: false,
+  },
+  {
     actionName: 'scaffold-project',
     phaseNumber: 3,
     section: 'repository',
