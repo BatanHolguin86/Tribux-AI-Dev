@@ -13,7 +13,7 @@ import { SectionNav } from './SectionNav'
 import { ChatPanel } from './ChatPanel'
 import { DocumentPanel } from './DocumentPanel'
 import { Phase02FinalGate } from './Phase02FinalGate'
-import { DesignHubSectionCallout } from './DesignHubSectionCallout'
+import { Phase02WorkflowGuide } from './Phase02WorkflowGuide'
 
 type SectionData = {
   key: Phase02Section
@@ -121,10 +121,12 @@ export function Phase02Layout({
         )}
       </div>
 
-      <DesignHubSectionCallout
+      <Phase02WorkflowGuide
         projectId={projectId}
+        activeSection={activeSection}
+        sections={sections.map((s) => ({ key: s.key, status: s.status }))}
         artifactCount={designArtifacts.length}
-        approvedCount={approvedDesigns.length}
+        approvedVisualCount={approvedDesigns.length}
       />
 
       {allApproved ? (
@@ -213,6 +215,8 @@ export function Phase02Layout({
       phaseNumber={2}
       projectId={projectId}
       hasTools={true}
+      toolsTabLabel="Diseño & UX"
+      toolsTabIcon="🎨"
       phaseAgents={phaseAgents}
       teamContent={(goToSecciones) => (
         <PhaseTeamPanel

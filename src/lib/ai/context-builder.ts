@@ -139,6 +139,8 @@ export type Phase02Context = {
   approvedSections: string[]
   discoveryDocs: string
   featureSpecs: string
+  /** Summarized design hub artifacts (screens, types, text preview) for architecture ↔ UX correlation */
+  designArtifactsSummary: string
 }
 
 export async function buildPhase02Context(projectId: string): Promise<Phase02Context> {
@@ -174,6 +176,8 @@ export async function buildPhase02Context(projectId: string): Promise<Phase02Con
   const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
   const featureSpecs = await getApprovedFeatureSpecs(projectId)
 
+  const designArtifactsSummary = await getDesignArtifactsSummaryForPhase02(projectId)
+
   return {
     name: project.name,
     description: project.description,
@@ -182,7 +186,51 @@ export async function buildPhase02Context(projectId: string): Promise<Phase02Con
     approvedSections,
     discoveryDocs: truncateText(discoveryDocs, 8000),
     featureSpecs: truncateText(featureSpecs, 12000),
+    designArtifactsSummary,
   }
+}
+
+function stripHtmlForPreview(html: string, maxLen: number): string {
+  const plain = html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (plain.length <= maxLen) return plain
+  return `${plain.slice(0, maxLen)}…`
+}
+
+/**
+ * Lists design_artifacts for the project with short text previews for Phase 02 prompts.
+ */
+async function getDesignArtifactsSummaryForPhase02(projectId: string): Promise<string> {
+  const supabase = await createClient()
+  const { data: rows } = await supabase
+    .from('design_artifacts')
+    .select('screen_name, type, status, flow_name, content')
+    .eq('project_id', projectId)
+    .order('created_at', { ascending: true })
+
+  if (!rows?.length) return ''
+
+  const lines: string[] = []
+  for (const raw of rows) {
+    const r = raw as {
+      screen_name: string
+      type: string
+      status: string
+      flow_name: string | null
+      content: string | null
+    }
+    const preview = r.content ? stripHtmlForPreview(r.content, 650) : ''
+    const flow = r.flow_name ? ` · flujo: ${r.flow_name}` : ''
+    lines.push(
+      `- **${r.screen_name}** (${r.type}, ${r.status})${flow}` +
+        (preview ? `\n  Resumen visual: ${preview}` : ''),
+    )
+  }
+  return truncateText(lines.join('\n\n'), 8000)
 }
 
 export async function buildFullProjectContext(projectId: string): Promise<{

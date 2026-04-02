@@ -41,6 +41,7 @@ type Phase02Context = {
   approvedSections: string[]
   discoveryDocs: string
   featureSpecs: string
+  designArtifactsSummary: string
 }
 
 const basePhase02Context: Phase02Context = {
@@ -51,6 +52,7 @@ const basePhase02Context: Phase02Context = {
   approvedSections: [],
   discoveryDocs: '### Discovery\nBrief aprobado del proyecto...',
   featureSpecs: '### Feature Auth\nUser can login...',
+  designArtifactsSummary: '',
 }
 
 // =============================================================================
@@ -180,6 +182,22 @@ describe('buildPhase02Prompt', () => {
     expect(prompt).toContain('Architecture Decision')
     expect(prompt).toContain('ADR-001')
     expect(prompt).toContain('Opciones Consideradas')
+  })
+
+  it('includes design hub correlation when no artifacts yet', () => {
+    const prompt = buildPhase02Prompt('system_architecture', basePhase02Context)
+    expect(prompt).toMatch(/CORRELACION CON DISEÑO|DISEÑO & UX/i)
+  })
+
+  it('includes design artifact summary when provided', () => {
+    const ctx: Phase02Context = {
+      ...basePhase02Context,
+      designArtifactsSummary:
+        '- **Login** (wireframe, draft)\n  Resumen visual: form email password',
+    }
+    const prompt = buildPhase02Prompt('api_design', ctx)
+    expect(prompt).toContain('ARTEFACTOS DE DISEÑO')
+    expect(prompt).toContain('Login')
   })
 })
 

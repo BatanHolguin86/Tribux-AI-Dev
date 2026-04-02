@@ -23,6 +23,9 @@ type PhaseWorkspaceTabsProps = {
   toolsContent?: React.ReactNode
   /** Optional: initial tab override */
   initialTab?: PhaseTab
+  /** Override Herramientas tab label/icon (e.g. Phase 02 — Diseño & UX) */
+  toolsTabLabel?: string
+  toolsTabIcon?: string
 }
 
 const TAB_CONFIG: Array<{ key: PhaseTab; label: string; icon: string }> = [
@@ -37,6 +40,8 @@ export function PhaseWorkspaceTabs({
   teamContent,
   toolsContent,
   initialTab = 'secciones',
+  toolsTabLabel,
+  toolsTabIcon,
 }: PhaseWorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<PhaseTab>(initialTab)
 
@@ -68,6 +73,8 @@ export function PhaseWorkspaceTabs({
       <div className="mb-4 flex gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 dark:border-gray-700 dark:bg-gray-900">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key
+          const label = tab.key === 'herramientas' && toolsTabLabel ? toolsTabLabel : tab.label
+          const icon = tab.key === 'herramientas' && toolsTabIcon ? toolsTabIcon : tab.icon
           return (
             <button
               key={tab.key}
@@ -78,8 +85,8 @@ export function PhaseWorkspaceTabs({
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
-              <span className="text-base">{tab.icon}</span>
-              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="text-base">{icon}</span>
+              <span className="hidden sm:inline">{label}</span>
             </button>
           )
         })}

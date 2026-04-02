@@ -9,6 +9,7 @@ type ProjectContext = {
   approvedSections: string[]
   discoveryDocs: string
   featureSpecs: string
+  designArtifactsSummary: string
 }
 
 const SECTION_CONFIGS: Record<
@@ -241,6 +242,42 @@ const SECTION_CONFIGS: Record<
   },
 }
 
+/**
+ * Ties technical architecture sections to Design & UX hub artifacts (single Phase 02 workflow).
+ */
+export function buildPhase02DesignCorrelationBlock(
+  section: Phase02Section,
+  designSummary: string,
+): string {
+  const whenEmpty = `CORRELACION CON DISEÑO & UX (HUB — pestaña Herramientas):
+Aun no hay artefactos visuales en este proyecto. Explica con tono didactico que el **mismo Phase 02** incluye el hub **Diseño & UX**: wireframes y mockups que luego alimentaran este contexto y validaran alcance frente a APIs y datos. No presiones a avanzar de fase; invita a generar al menos borradores cuando tenga sentido.`
+
+  if (!designSummary.trim()) {
+    return whenEmpty
+  }
+
+  const bySection: Record<Phase02Section, string> = {
+    system_architecture:
+      'Mapea cada pantalla o flujo listado a **limites de sistema** (modulos, bounded contexts) y al flujo de datos entre UI y backend. Si el diseno exige capacidades no contempladas en specs, dilo y propón ajuste.',
+    database_design:
+      'Deriva **entidades, tablas y campos** a partir de lo que las pantallas muestran, formularios y listados. Incluye datos sensibles visibles en UI y politicas RLS acordes.',
+    api_design:
+      'Define **endpoints y contratos** (request/response) que las pantallas necesitan: carga inicial, mutaciones, listados, filtros y paginacion si los mockups lo muestran.',
+    architecture_decisions:
+      'Documenta **ADRs** donde el diseno visual imponga restricciones (latencia, consistencia eventual, tiempo real, estados vacios complejos). Incluye alternativas y trade-offs.',
+  }
+
+  const sectionTitle = SECTION_CONFIGS[section].title
+
+  return `ARTEFACTOS DE DISEÑO & UX (hub — referencia visual para esta misma fase)
+${designSummary}
+
+INSTRUCCION DE CORRELACION PARA **${sectionTitle}**:
+${bySection[section]}
+
+Regla: Manten **coherencia** entre este documento y las pantallas; si hay conflicto con specs o con el diseno, nombralo y propón correccion en el documento adecuado (KIRO, ADR o iteracion en el hub).`
+}
+
 export function buildPhase02Prompt(
   section: Phase02Section,
   context: ProjectContext,
@@ -259,11 +296,16 @@ export function buildPhase02Prompt(
     ? `\n\nSPECS DE FEATURES (Phase 01 — KIRO aprobados):\n${context.featureSpecs}`
     : ''
 
+  const designCorrelation = buildPhase02DesignCorrelationBlock(
+    section,
+    context.designArtifactsSummary ?? '',
+  )
+
   return `${CTO_VIRTUAL_PROMPT}
 
 ---
 
-FASE ACTIVA: Phase 02 — Architecture & Design
+FASE ACTIVA: Phase 02 — Architecture & Design (un solo flujo: documentacion tecnica en Secciones + entregables visuales en la pestaña **Diseño & UX**)
 SECCION: ${config.title}
 OBJETIVO: ${config.objective}
 
@@ -275,6 +317,8 @@ CONTEXTO DEL PROYECTO:
 ${approvedContext}
 ${discoveryContext}
 ${featureContext}
+
+${designCorrelation}
 
 ${config.approach}
 
@@ -300,6 +344,11 @@ export function buildDocumentGenerationPrompt(
     ? `\n\nSPECS DE FEATURES APROBADOS:\n${context.featureSpecs}`
     : ''
 
+  const designCorrelation = buildPhase02DesignCorrelationBlock(
+    section,
+    context.designArtifactsSummary ?? '',
+  )
+
   return `ROL: Eres el CTO Virtual de AI Squad. Genera un documento formal de arquitectura basado en la conversacion.
 
 CONTEXTO DEL PROYECTO:
@@ -308,6 +357,8 @@ CONTEXTO DEL PROYECTO:
 - Industria: ${context.industry || 'No especificada'}
 ${discoveryContext}
 ${featureContext}
+
+${designCorrelation}
 
 SECCION: ${config.title}
 
