@@ -14,7 +14,7 @@ export default async function PlatformSetupPage() {
     .eq('id', user.id)
     .single()
 
-  if (profile?.role !== 'super_admin') redirect('/admin/login')
+  if (profile?.role !== 'super_admin' && profile?.role !== 'financial_admin') redirect('/admin/login')
 
   return <PlatformSetupWizard />
 }

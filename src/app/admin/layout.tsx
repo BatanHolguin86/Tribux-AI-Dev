@@ -59,7 +59,7 @@ export default async function AdminLayout({
             <Link href="/admin/finance" className="rounded-md px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
               Finanzas
             </Link>
-            {profile?.role === 'super_admin' && (
+            {isAdmin && (
               <Link href="/admin/platform-setup" className="rounded-md px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
                 Plataforma
               </Link>

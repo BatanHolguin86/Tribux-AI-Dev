@@ -28,7 +28,7 @@ export async function requireSuperAdmin(): Promise<SuperAdminResult> {
     .eq('id', user.id)
     .single()
 
-  if (profile?.role !== 'super_admin') {
+  if (profile?.role !== 'super_admin' && profile?.role !== 'financial_admin') {
     return {
       allowed: false,
       status: 403,
