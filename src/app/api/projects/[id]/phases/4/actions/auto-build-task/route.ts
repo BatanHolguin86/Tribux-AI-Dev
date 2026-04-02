@@ -125,6 +125,18 @@ PASO 2 — IMPLEMENTAR:
      * Hooks       → tests/unit/hooks/useName.test.ts (Vitest + renderHook)
    - Commit message: "feat(${task.task_key}): ${task.title}"
 
+PASO 2.5 — SELF-REVIEW (obligatorio antes de verificar CI):
+- Lee CADA archivo que acabas de escribir con read_file
+- Verifica contra las convenciones del proyecto:
+  * TypeScript strict: no 'any', tipos explicitos en props y returns
+  * Naming: camelCase variables, PascalCase componentes, kebab-case archivos
+  * Imports: rutas con @/ alias, no rutas relativas largas
+  * React: Server Components por defecto, 'use client' solo si necesario
+  * Supabase: RLS considerado, no exponer service_role en cliente
+  * Tests: mock Supabase con vi.mock(), no hardcodear datos de test
+- Si encuentras violaciones, corrige con edit_file ANTES de que CI corra
+- Esto previene regresiones: es mas barato corregir antes de CI que despues
+
 PASO 3 — VERIFICAR (loop obligatorio, max 3 ciclos):
 - Llama a get_ci_status para verificar que CI pasa
 - Si CI status es "not_found" (no hay CI configurado), llama trigger_ci para intentar correrlo
@@ -134,6 +146,10 @@ PASO 3 — VERIFICAR (loop obligatorio, max 3 ciclos):
   c. Corrige con edit_file (NO reescribir todo — solo los errores)
   d. Vuelve a verificar con get_ci_status
   e. Repite hasta max 3 ciclos o hasta que CI pase
+- ROLLBACK SI FALLA 3 VECES: si despues de 3 ciclos CI sigue fallando:
+  a. Guarda en save_to_memory: "TASK FALLIDA: ${task.task_key} — errores persistentes: [lista de errores]" con category="bugs_fixed"
+  b. Informa al usuario: "No pude resolver los errores de CI despues de 3 intentos. Los errores son: [errores]. Revisa manualmente o pide ayuda al equipo."
+  c. NO hagas mas commits — deja el codigo en el ultimo estado para revision manual
 - Si CI pasa: continua al paso 4
 
 PASO 4 — GUARDAR MEMORIA:
