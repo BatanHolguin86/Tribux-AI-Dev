@@ -3,6 +3,9 @@ import { createClient } from '@/lib/supabase/server'
 import { defaultModel, DEFAULT_MODEL_ID, AI_CONFIG } from '@/lib/ai/anthropic'
 import { createAgentTools } from '@/lib/ai/agent-tools'
 import { LEAD_DEVELOPER_PROMPT } from '@/lib/ai/agents/lead-developer'
+import { DB_ADMIN_PROMPT } from '@/lib/ai/agents/db-admin'
+import { QA_ENGINEER_PROMPT } from '@/lib/ai/agents/qa-engineer'
+import { DEVOPS_ENGINEER_PROMPT } from '@/lib/ai/agents/devops-engineer'
 import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
 import { recordStreamUsage } from '@/lib/ai/usage'
 import { checkHeavyQuota } from '@/lib/plans/quota'
@@ -33,6 +36,7 @@ export async function POST(
     // Accept both messages (from useChat transport) and taskId
     const body = await request.json()
     const taskId: string = body.taskId
+    const requestedAgent: AgentType = body.agentType ?? 'lead_developer'
 
     if (!taskId) {
       return Response.json({ error: 'taskId required' }, { status: 400 })
@@ -75,13 +79,13 @@ export async function POST(
     const featureName =
       (task.project_features as unknown as { name: string })?.name ?? 'Unknown Feature'
 
-    // Create lead_developer tools (read + write access)
+    // Create tools based on requested agent type
     const agentTools = createAgentTools({
       projectId,
       repoUrl: project.repo_url,
       supabaseProjectRef: project.supabase_project_ref ?? null,
       supabaseAccessToken: project.supabase_access_token ?? null,
-      agentType: 'lead_developer' as AgentType,
+      agentType: requestedAgent,
     })
 
     // Record execution start
@@ -123,9 +127,16 @@ REGLAS:
 - TypeScript strict, Tailwind CSS, patrones del proyecto
 - Tests deben verificar comportamiento real, no solo que el codigo existe`
 
+    const AGENT_PROMPTS: Record<string, string> = {
+      lead_developer: LEAD_DEVELOPER_PROMPT,
+      db_admin: DB_ADMIN_PROMPT,
+      qa_engineer: QA_ENGINEER_PROMPT,
+      devops_engineer: DEVOPS_ENGINEER_PROMPT,
+    }
+
     const result = streamText({
       model: defaultModel,
-      system: LEAD_DEVELOPER_PROMPT,
+      system: AGENT_PROMPTS[requestedAgent] ?? LEAD_DEVELOPER_PROMPT,
       messages: [{ role: 'user', content: buildGoal }],
       tools: agentTools,
       stopWhen: stepCountIs(25),

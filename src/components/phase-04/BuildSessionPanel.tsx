@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useChat } from '@ai-sdk/react'
 import {
   DefaultChatTransport,
@@ -12,23 +12,24 @@ import {
 import { ToolCallRenderer } from '@/components/shared/chat/ToolCallRenderer'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import type { TaskWithFeature } from '@/types/task'
+import type { AgentType } from '@/types/agent'
+import { buildExecutionPlan, type ExecutionPlan, type PlannedTask } from '@/lib/build/orchestrator'
 
-type SessionStatus = 'waiting' | 'building' | 'done' | 'failed'
-
-type TaskBuildState = {
-  task: TaskWithFeature
-  status: SessionStatus
-}
+type TaskStatus = 'waiting' | 'building' | 'done' | 'failed'
 
 // ─── Sub-component: runs one task via useChat ────────────────────────────────
 
-type ActiveTaskRunnerProps = {
+function ActiveTaskRunner({
+  projectId,
+  task,
+  agentType,
+  onDone,
+}: {
   projectId: string
   task: TaskWithFeature
-  onDone: (success: boolean) => void
-}
-
-function ActiveTaskRunner({ projectId, task, onDone }: ActiveTaskRunnerProps) {
+  agentType: AgentType
+  onDone: (taskId: string, success: boolean) => void
+}) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const startedRef = useRef(false)
 
@@ -39,16 +40,12 @@ function ActiveTaskRunner({ projectId, task, onDone }: ActiveTaskRunnerProps) {
         const body = init?.body ? JSON.parse(init.body as string) : {}
         return fetch(url as string, {
           ...init,
-          body: JSON.stringify({ ...body, taskId: task.id }),
+          body: JSON.stringify({ ...body, taskId: task.id, agentType }),
         })
       },
     }),
-    onFinish() {
-      onDone(true)
-    },
-    onError() {
-      onDone(false)
-    },
+    onFinish() { onDone(task.id, true) },
+    onError() { onDone(task.id, false) },
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
@@ -61,21 +58,19 @@ function ActiveTaskRunner({ projectId, task, onDone }: ActiveTaskRunnerProps) {
   }, [task.task_key, sendMessage])
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-    }
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, isLoading])
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+      <div className="rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
         Error: {error.message}
       </div>
     )
   }
 
   return (
-    <div ref={scrollRef} className="max-h-64 space-y-1.5 overflow-y-auto">
+    <div ref={scrollRef} className="max-h-48 space-y-1 overflow-y-auto">
       {messages.map((msg) => {
         const allParts = msg.parts as UIMessagePart<UIDataTypes, UITools>[]
         const toolParts = allParts.filter(isToolUIPart)
@@ -91,7 +86,7 @@ function ActiveTaskRunner({ projectId, task, onDone }: ActiveTaskRunnerProps) {
             ))}
             {text && msg.role === 'assistant' && (
               <div className="rounded-md border border-gray-100 bg-gray-50 p-2 text-xs text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
-                <p className="line-clamp-3 whitespace-pre-wrap">{text}</p>
+                <p className="line-clamp-2 whitespace-pre-wrap">{text}</p>
               </div>
             )}
           </div>
@@ -100,6 +95,22 @@ function ActiveTaskRunner({ projectId, task, onDone }: ActiveTaskRunnerProps) {
       {isLoading && <StreamingIndicator />}
     </div>
   )
+}
+
+// ─── Agent badge ─────────────────────────────────────────────────────────────
+
+const AGENT_LABELS: Record<string, { label: string; cls: string }> = {
+  lead_developer: { label: 'Dev', cls: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400' },
+  db_admin: { label: 'DB', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
+  qa_engineer: { label: 'QA', cls: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
+  devops_engineer: { label: 'Ops', cls: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
+}
+
+const STATUS_CONFIG: Record<TaskStatus, { icon: string; cls: string }> = {
+  waiting: { icon: '◦', cls: 'text-gray-400' },
+  building: { icon: '●', cls: 'text-violet-500 animate-pulse' },
+  done: { icon: '✓', cls: 'text-green-500' },
+  failed: { icon: '✗', cls: 'text-red-500' },
 }
 
 // ─── Main panel ──────────────────────────────────────────────────────────────
@@ -117,64 +128,65 @@ export function BuildSessionPanel({
   onClose,
   onTaskStatusChange,
 }: BuildSessionPanelProps) {
+  const plan = useMemo(() => buildExecutionPlan(tasks), [tasks])
   const [started, setStarted] = useState(false)
-  const [currentIdx, setCurrentIdx] = useState(0)
-  const [states, setStates] = useState<TaskBuildState[]>(
-    () => tasks.map((task) => ({ task, status: 'waiting' })),
+  const [currentTierIdx, setCurrentTierIdx] = useState(0)
+  const [taskStatuses, setTaskStatuses] = useState<Record<string, TaskStatus>>(() =>
+    Object.fromEntries(tasks.map((t) => [t.id, 'waiting' as TaskStatus])),
   )
 
-  const doneCount = states.filter((s) => s.status === 'done' || s.status === 'failed').length
-  const successCount = states.filter((s) => s.status === 'done').length
+  const doneCount = Object.values(taskStatuses).filter((s) => s === 'done' || s === 'failed').length
+  const successCount = Object.values(taskStatuses).filter((s) => s === 'done').length
   const allFinished = started && doneCount === tasks.length
 
-  const handleStart = () => {
+  const currentTier = plan.tiers[currentTierIdx]
+  const tierTaskIds = new Set(currentTier?.tasks.map((t) => t.task.id) ?? [])
+  const tierDone = currentTier?.tasks.every((t) => {
+    const s = taskStatuses[t.task.id]
+    return s === 'done' || s === 'failed'
+  }) ?? false
+
+  // Auto-advance to next tier when current is done
+  useEffect(() => {
+    if (started && tierDone && currentTierIdx < plan.tiers.length - 1) {
+      const id = requestAnimationFrame(() => {
+        const nextIdx = currentTierIdx + 1
+        setCurrentTierIdx(nextIdx)
+        const nextTier = plan.tiers[nextIdx]
+        setTaskStatuses((prev) => {
+          const updated = { ...prev }
+          for (const t of nextTier.tasks) updated[t.task.id] = 'building'
+          return updated
+        })
+      })
+      return () => cancelAnimationFrame(id)
+    }
+  }, [started, tierDone, currentTierIdx, plan.tiers])
+
+  function handleStart() {
     setStarted(true)
-    setStates((prev) =>
-      prev.map((s, i) => (i === 0 ? { ...s, status: 'building' } : s)),
-    )
+    // Mark first tier tasks as building (parallel)
+    setTaskStatuses((prev) => {
+      const updated = { ...prev }
+      for (const t of plan.tiers[0].tasks) updated[t.task.id] = 'building'
+      return updated
+    })
   }
 
   const handleTaskDone = useCallback(
-    (success: boolean) => {
-      setStates((prev) => {
-        const updated = [...prev]
-        updated[currentIdx] = { ...updated[currentIdx], status: success ? 'done' : 'failed' }
-        return updated
-      })
-
-      if (success) {
-        onTaskStatusChange(tasks[currentIdx].id, 'review')
-      }
-
-      // Advance to next task
-      const next = currentIdx + 1
-      if (next < tasks.length) {
-        setCurrentIdx(next)
-        setStates((prev) =>
-          prev.map((s, i) => (i === next ? { ...s, status: 'building' } : s)),
-        )
-      }
+    (taskId: string, success: boolean) => {
+      setTaskStatuses((prev) => ({ ...prev, [taskId]: success ? 'done' : 'failed' }))
+      if (success) onTaskStatusChange(taskId, 'review')
     },
-    [currentIdx, tasks, onTaskStatusChange],
+    [onTaskStatusChange],
   )
 
-  const currentTask =
-    started &&
-    currentIdx < tasks.length &&
-    states[currentIdx]?.status === 'building'
-      ? tasks[currentIdx]
-      : null
-
-  const STATUS_CONFIG: Record<SessionStatus, { label: string; cls: string; icon: string }> = {
-    waiting: { label: 'Esperando', cls: 'text-gray-400 dark:text-gray-500', icon: '◦' },
-    building: { label: 'Construyendo', cls: 'text-violet-600 dark:text-violet-400', icon: '●' },
-    done: { label: 'Listo', cls: 'text-green-600 dark:text-green-400', icon: '✓' },
-    failed: { label: 'Fallo', cls: 'text-red-500 dark:text-red-400', icon: '✗' },
-  }
+  // Get active (building) tasks for current tier
+  const activeTasks = currentTier?.tasks.filter((t) => taskStatuses[t.task.id] === 'building') ?? []
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center">
-      <div className="flex h-[85vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-900 sm:rounded-2xl">
+      <div className="flex h-[85vh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-900 sm:rounded-2xl">
 
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-3 dark:border-gray-700">
@@ -183,28 +195,21 @@ export function BuildSessionPanel({
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-              Build Session — {tasks.length} tasks
+              Build Session — {tasks.length} tasks en {plan.tiers.length} tiers
             </p>
             {started && (
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                {successCount} completadas · {doneCount - successCount} fallidas · {tasks.length - doneCount} restantes
+                {successCount} completadas · {doneCount - successCount} fallidas · Tier {currentTierIdx + 1}/{plan.tiers.length}
               </p>
             )}
           </div>
-          {!started && (
-            <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-              Listo para iniciar
-            </span>
-          )}
           {allFinished && (
-            <span className="shrink-0 text-xs font-medium text-green-600 dark:text-green-400">
-              ✓ Sesion completada
-            </span>
+            <span className="text-xs font-medium text-green-600 dark:text-green-400">✓ Completada</span>
           )}
           <button
             onClick={onClose}
             disabled={started && !allFinished}
-            className="shrink-0 rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-30 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+            className="shrink-0 rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-30 dark:hover:bg-gray-700"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -212,7 +217,7 @@ export function BuildSessionPanel({
           </button>
         </div>
 
-        {/* Progress bar */}
+        {/* Progress */}
         {started && (
           <div className="h-1 w-full bg-gray-100 dark:bg-gray-800">
             <div
@@ -224,80 +229,100 @@ export function BuildSessionPanel({
 
         {/* Body */}
         <div className="flex flex-1 gap-0 overflow-hidden">
-          {/* Task list */}
-          <div className="w-64 shrink-0 overflow-y-auto border-r border-gray-100 p-3 dark:border-gray-800">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
-              Tasks
-            </p>
-            <div className="space-y-1">
-              {states.map(({ task, status }, i) => {
-                const cfg = STATUS_CONFIG[status]
-                return (
-                  <div
-                    key={task.id}
-                    className={`flex items-start gap-2 rounded-md px-2 py-1.5 text-xs transition-colors ${
-                      i === currentIdx && started
-                        ? 'bg-violet-50 dark:bg-violet-900/20'
-                        : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                    }`}
-                  >
-                    <span className={`mt-0.5 shrink-0 font-bold ${cfg.cls}`}>{cfg.icon}</span>
-                    <div className="min-w-0">
-                      <span className="block truncate font-medium text-gray-700 dark:text-gray-300">
-                        {task.task_key}
-                      </span>
-                      <span className="block truncate text-[10px] text-gray-400 dark:text-gray-500">
-                        {task.title}
-                      </span>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+          {/* Left: Execution plan */}
+          <div className="w-72 shrink-0 overflow-y-auto border-r border-gray-100 p-3 dark:border-gray-800">
+            {plan.tiers.map((tier, tierIdx) => (
+              <div key={tier.tier} className="mb-4">
+                <p className={`mb-1.5 text-[10px] font-bold uppercase tracking-wide ${
+                  tierIdx === currentTierIdx && started
+                    ? 'text-violet-600 dark:text-violet-400'
+                    : tierIdx < currentTierIdx
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-gray-400 dark:text-gray-500'
+                }`}>
+                  Tier {tierIdx + 1}: {tier.label}
+                  {tier.parallel && <span className="ml-1 text-[9px] font-normal">(paralelo)</span>}
+                </p>
+                <div className="space-y-0.5">
+                  {tier.tasks.map((pt) => {
+                    const status = taskStatuses[pt.task.id]
+                    const cfg = STATUS_CONFIG[status]
+                    const agentCfg = AGENT_LABELS[pt.agent] ?? AGENT_LABELS['lead_developer']
+                    return (
+                      <div
+                        key={pt.task.id}
+                        className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-xs ${
+                          status === 'building' ? 'bg-violet-50 dark:bg-violet-900/20' : ''
+                        }`}
+                      >
+                        <span className={`shrink-0 font-bold ${cfg.cls}`}>{cfg.icon}</span>
+                        <div className="min-w-0 flex-1">
+                          <span className="block truncate font-medium text-gray-700 dark:text-gray-300">
+                            {pt.task.task_key}
+                          </span>
+                          <span className="block truncate text-[10px] text-gray-400">{pt.task.title}</span>
+                        </div>
+                        <span className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-bold ${agentCfg.cls}`}>
+                          {agentCfg.label}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* Active task output */}
-          <div className="flex flex-1 flex-col overflow-hidden p-4">
+          {/* Right: Active task runners */}
+          <div className="flex flex-1 flex-col overflow-y-auto p-4">
             {!started && (
               <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
                 <div className="text-4xl">🤖</div>
                 <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  {tasks.length} tasks listas para construirse
+                  {tasks.length} tasks organizadas en {plan.tiers.length} tiers
                 </p>
-                <p className="max-w-xs text-xs text-gray-500 dark:text-gray-400">
-                  El Lead Developer implementará cada task en orden: leerá specs, explorará el repo, escribirá código y commiteará automáticamente.
+                <p className="max-w-sm text-xs text-gray-500 dark:text-gray-400">
+                  Cada tier se ejecuta en paralelo. El siguiente tier empieza cuando el anterior termina.
+                  Los agentes se asignan automaticamente segun el tipo de tarea.
                 </p>
               </div>
             )}
 
-            {currentTask && (
-              <div className="flex flex-1 flex-col gap-2 overflow-hidden">
-                <div className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
-                  <p className="text-xs font-medium text-violet-600 dark:text-violet-400">
-                    {currentTask.task_key} — {currentTask.title}
-                  </p>
-                </div>
-                <div className="flex-1 overflow-y-auto">
-                  <ActiveTaskRunner
-                    key={currentTask.id}
-                    projectId={projectId}
-                    task={currentTask}
-                    onDone={handleTaskDone}
-                  />
-                </div>
+            {started && activeTasks.length > 0 && (
+              <div className="space-y-4">
+                <p className="text-xs font-semibold text-violet-600 dark:text-violet-400">
+                  Tier {currentTierIdx + 1}: {currentTier?.label} — {activeTasks.length} task(s) en paralelo
+                </p>
+                {activeTasks.map((pt) => (
+                  <div key={pt.task.id} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
+                      <span className="text-xs font-medium text-gray-900 dark:text-gray-100">
+                        {pt.task.task_key} — {pt.task.title}
+                      </span>
+                      <span className={`ml-auto rounded px-1.5 py-0.5 text-[9px] font-bold ${
+                        (AGENT_LABELS[pt.agent] ?? AGENT_LABELS['lead_developer']).cls
+                      }`}>
+                        {(AGENT_LABELS[pt.agent] ?? AGENT_LABELS['lead_developer']).label}
+                      </span>
+                    </div>
+                    <ActiveTaskRunner
+                      key={pt.task.id}
+                      projectId={projectId}
+                      task={pt.task}
+                      agentType={pt.agent}
+                      onDone={handleTaskDone}
+                    />
+                  </div>
+                ))}
               </div>
             )}
 
             {allFinished && (
               <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
                 <div className="text-4xl">{successCount === tasks.length ? '🎉' : '⚠️'}</div>
-                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  Sesion completada
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {successCount} de {tasks.length} tasks implementadas exitosamente
-                </p>
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Sesion completada</p>
+                <p className="text-xs text-gray-500">{successCount} de {tasks.length} tasks implementadas</p>
               </div>
             )}
           </div>
@@ -308,23 +333,19 @@ export function BuildSessionPanel({
           {!started && (
             <button
               onClick={handleStart}
-              disabled={tasks.length === 0}
-              className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-violet-700 disabled:opacity-50"
+              className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-medium text-white hover:bg-violet-700"
             >
-              Iniciar Build Session — {tasks.length} tasks
+              Iniciar Build Session — {plan.tiers.length} tiers, {tasks.length} tasks
             </button>
           )}
           {allFinished && (
-            <button
-              onClick={onClose}
-              className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-violet-700"
-            >
+            <button onClick={onClose} className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-medium text-white hover:bg-violet-700">
               Cerrar
             </button>
           )}
           {started && !allFinished && (
-            <p className="text-center text-xs text-gray-400 dark:text-gray-500">
-              Construyendo task {currentIdx + 1} de {tasks.length}... no cerrar esta ventana
+            <p className="text-center text-xs text-gray-400">
+              Tier {currentTierIdx + 1}/{plan.tiers.length} en progreso... no cerrar esta ventana
             </p>
           )}
         </div>
