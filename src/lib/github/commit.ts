@@ -143,3 +143,110 @@ export async function commitMultipleFiles(
     filesChanged: files.length,
   }
 }
+
+/**
+ * Create a branch from main (or another base branch).
+ * If branch already exists, returns silently.
+ */
+export async function createBranch(
+  repoUrl: string,
+  branchName: string,
+  baseBranch = 'main',
+): Promise<{ created: boolean; error?: string }> {
+  const parsed = parseGitHubUrl(repoUrl)
+  if (!parsed) return { created: false, error: 'Invalid repo URL' }
+
+  const { owner, repo } = parsed
+  const headers = getHeaders()
+  const base = `${GITHUB_API}/repos/${owner}/${repo}`
+
+  // Get base branch SHA
+  const refRes = await fetch(`${base}/git/ref/heads/${baseBranch}`, { headers })
+  if (!refRes.ok) return { created: false, error: `Base branch ${baseBranch} not found` }
+  const refData = await refRes.json()
+  const sha = refData.object.sha
+
+  // Create new branch ref
+  const createRes = await fetch(`${base}/git/refs`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ ref: `refs/heads/${branchName}`, sha }),
+  })
+
+  if (createRes.status === 422) {
+    // Branch already exists — not an error
+    return { created: true }
+  }
+
+  if (!createRes.ok) {
+    const text = await createRes.text()
+    return { created: false, error: `Create branch failed: ${text.slice(0, 200)}` }
+  }
+
+  return { created: true }
+}
+
+/**
+ * Create a Pull Request from a feature branch to main.
+ */
+export async function createPullRequest(
+  repoUrl: string,
+  head: string,
+  title: string,
+  body: string,
+  baseBranch = 'main',
+): Promise<{ success: boolean; pr_number?: number; html_url?: string; error?: string }> {
+  const parsed = parseGitHubUrl(repoUrl)
+  if (!parsed) return { success: false, error: 'Invalid repo URL' }
+
+  const { owner, repo } = parsed
+  const headers = getHeaders()
+
+  const res = await fetch(`${GITHUB_API}/repos/${owner}/${repo}/pulls`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      title,
+      body,
+      head,
+      base: baseBranch,
+    }),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    return { success: false, error: `Create PR failed (${res.status}): ${text.slice(0, 200)}` }
+  }
+
+  const data = await res.json()
+  return { success: true, pr_number: data.number, html_url: data.html_url }
+}
+
+/**
+ * Merge a Pull Request.
+ */
+export async function mergePullRequest(
+  repoUrl: string,
+  prNumber: number,
+  mergeMethod: 'merge' | 'squash' | 'rebase' = 'squash',
+): Promise<{ success: boolean; sha?: string; error?: string }> {
+  const parsed = parseGitHubUrl(repoUrl)
+  if (!parsed) return { success: false, error: 'Invalid repo URL' }
+
+  const { owner, repo } = parsed
+  const headers = getHeaders()
+
+  const res = await fetch(`${GITHUB_API}/repos/${owner}/${repo}/pulls/${prNumber}/merge`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({ merge_method: mergeMethod }),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    return { success: false, error: `Merge failed (${res.status}): ${text.slice(0, 200)}` }
+  }
+
+  const data = await res.json()
+  return { success: true, sha: data.sha }
+}
