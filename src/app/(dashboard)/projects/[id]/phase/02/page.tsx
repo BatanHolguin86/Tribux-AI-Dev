@@ -113,6 +113,35 @@ export default async function Phase02Page({
     created_at: a.created_at as string,
   }))
 
+  // Auto-sync: if document is approved but phase_section isn't, fix it
+  const sectionsToSync: string[] = []
+  for (const key of PHASE02_SECTIONS) {
+    const sectionRow = sections.find((s) => s.section === key)
+    const doc = documents.find((d) => d.section === key)
+    if (doc?.status === 'approved' && sectionRow?.status !== 'approved') {
+      sectionsToSync.push(key)
+    }
+  }
+  if (sectionsToSync.length > 0) {
+    await Promise.all(
+      sectionsToSync.map((key) =>
+        supabase
+          .from('phase_sections')
+          .upsert(
+            { project_id: projectId, phase_number: 2, section: key, status: 'approved', approved_at: new Date().toISOString() },
+            { onConflict: 'project_id,phase_number,section' },
+          ),
+      ),
+    )
+    // Re-fetch sections after sync
+    const { data: refreshedSections } = await supabase
+      .from('phase_sections')
+      .select('*')
+      .eq('project_id', projectId)
+      .eq('phase_number', 2)
+    if (refreshedSections) sections.splice(0, sections.length, ...refreshedSections)
+  }
+
   const sectionData: SectionData[] = PHASE02_SECTIONS.map((key) => {
     const sectionRow = sections.find((s) => s.section === key)
     const conv = conversations.find((c) => c.section === key)
@@ -130,10 +159,7 @@ export default async function Phase02Page({
   })
 
   // Find the first section that still needs work
-  // A section is "done" if its phase_sections status is 'approved' OR its document is approved
-  const activeSection = sectionData.find((s) =>
-    s.status !== 'approved' && s.document?.status !== 'approved'
-  )?.key ?? 'system_architecture'
+  const activeSection = sectionData.find((s) => s.status !== 'approved')?.key ?? 'system_architecture'
 
   return (
     <Phase02Layout
