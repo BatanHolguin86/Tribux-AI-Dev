@@ -11,6 +11,7 @@ import {
   getDesignToolFlowForUi,
 } from '@/lib/design/design-tool-workflow'
 import { DesignChat } from './DesignChat'
+import { ExternalToolImportModal } from './ExternalToolImportModal'
 
 const ORDERED_KIT_TEMPLATES = DESIGN_KIT_TOOL_SEQUENCE.filter((id) => id !== 'custom')
   .map((id) => DESIGN_TEMPLATES.find((t) => t.id === id))
@@ -35,12 +36,14 @@ type DesignGeneratorProps = {
   projectId: string
   existingArtifacts: Artifact[]
   workflowContext: DesignWorkflowContext
+  connectedTools?: { figma: boolean; v0: boolean }
 }
 
 export function DesignGenerator({
   projectId,
   existingArtifacts,
   workflowContext,
+  connectedTools = { figma: false, v0: false },
 }: DesignGeneratorProps) {
   const [activeTemplate, setActiveTemplate] = useState<string | null>(null)
   const [threadId, setThreadId] = useState<string | null>(null)
@@ -50,6 +53,8 @@ export function DesignGenerator({
   const [refinement, setRefinement] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
+  const [showExternalImport, setShowExternalImport] = useState(false)
+  const [externalTab, setExternalTab] = useState<'figma' | 'v0' | 'lovable'>('figma')
 
   const mapArtifactRow = useCallback((a: Record<string, unknown>): Artifact => {
     return {
@@ -518,6 +523,96 @@ export function DesignGenerator({
           </button>
         </div>
       </section>
+
+      {/* Camino C */}
+      <section
+        className="mb-10 rounded-2xl border-2 border-emerald-200/80 bg-gradient-to-b from-emerald-50/40 to-white p-5 dark:border-emerald-900/50 dark:from-emerald-950/20 dark:to-gray-900 md:p-6"
+        aria-labelledby="camino-c-title"
+      >
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
+            Camino C
+          </span>
+          <h2 id="camino-c-title" className="text-base font-bold text-gray-900 dark:text-gray-100">
+            Herramientas externas
+          </h2>
+        </div>
+        <p className="mb-5 max-w-3xl text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+          Importa diseños profesionales de herramientas externas. Los artefactos importados se integran al mismo flujo de
+          aprobacion y alimentan Phase 04 (desarrollo).
+        </p>
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          {([
+            {
+              id: 'figma' as const,
+              label: 'Figma',
+              description: 'Importar frames de un archivo Figma como imagenes PNG.',
+              icon: (
+                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+                  <path d="M8 24c2.2 0 4-1.8 4-4v-4H8c-2.2 0-4 1.8-4 4s1.8 4 4 4zM4 12c0-2.2 1.8-4 4-4h4v8H8c-2.2 0-4-1.8-4-4zM4 4c0-2.2 1.8-4 4-4h4v8H8C5.8 8 4 6.2 4 4zM12 0h4c2.2 0 4 1.8 4 4s-1.8 4-4 4h-4V0zM20 12c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4 4 1.8 4 4z" />
+                </svg>
+              ),
+              connected: connectedTools.figma,
+            },
+            {
+              id: 'v0' as const,
+              label: 'V0 by Vercel',
+              description: 'Pegar codigo React+Tailwind generado en V0.',
+              icon: (
+                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+                  <path d="M12 1L24 22H0L12 1z" />
+                </svg>
+              ),
+              connected: connectedTools.v0,
+            },
+            {
+              id: 'lovable' as const,
+              label: 'Lovable',
+              description: 'Vincular un proyecto de Lovable como referencia de diseño.',
+              icon: <span className="text-lg">💜</span>,
+              connected: true,
+            },
+          ]).map((tool) => (
+            <button
+              key={tool.id}
+              type="button"
+              onClick={() => {
+                setExternalTab(tool.id)
+                setShowExternalImport(true)
+              }}
+              className="group flex flex-col rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-emerald-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-emerald-600"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
+                  {tool.icon}
+                </span>
+                {tool.connected && (
+                  <span className="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                  </span>
+                )}
+              </div>
+              <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">{tool.label}</h3>
+              <p className="mt-1 flex-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+                {tool.description}
+              </p>
+              <p className="mt-3 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                {tool.id === 'lovable' ? 'Vincular proyecto →' : 'Importar →'}
+              </p>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <ExternalToolImportModal
+        projectId={projectId}
+        isOpen={showExternalImport}
+        initialTab={externalTab}
+        connectedTools={connectedTools}
+        onClose={() => setShowExternalImport(false)}
+        onImported={() => refreshArtifactsWithThumbs()}
+      />
 
       {/* Artefactos Camino A */}
       <div className="mt-8">

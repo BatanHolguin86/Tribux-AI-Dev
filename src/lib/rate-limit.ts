@@ -114,3 +114,9 @@ export const ACTION_RATE_LIMIT: RateLimitConfig = {
   maxAttempts: 15,
   windowMs: 60 * 60 * 1000,
 }
+
+/** External design imports — 15 imports per hour */
+export const EXTERNAL_IMPORT_RATE_LIMIT: RateLimitConfig = {
+  maxAttempts: 15,
+  windowMs: 60 * 60 * 1000,
+}

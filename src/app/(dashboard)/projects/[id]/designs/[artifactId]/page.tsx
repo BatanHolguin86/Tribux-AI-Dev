@@ -44,6 +44,8 @@ export default async function ArtifactDetailPage({
         type: artifact.type,
         screen_name: artifact.screen_name,
         status: artifact.status,
+        source: artifact.source ?? 'internal',
+        external_url: artifact.external_url ?? null,
         created_at: artifact.created_at,
       }}
       content={content}

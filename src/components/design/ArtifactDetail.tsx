@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import type { DesignStatus, DesignType } from '@/types/design'
+import type { DesignStatus, DesignType, DesignSource } from '@/types/design'
 import { DESIGN_KIT_NEXT_STEPS } from '@/lib/design/design-tool-workflow'
 
 type ArtifactDetailProps = {
@@ -13,9 +13,17 @@ type ArtifactDetailProps = {
     type: DesignType
     screen_name: string
     status: DesignStatus
+    source?: DesignSource
+    external_url?: string | null
     created_at: string
   }
   content: string | null
+}
+
+const SOURCE_BADGES: Record<string, { label: string; cls: string }> = {
+  figma: { label: 'Figma', cls: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' },
+  v0: { label: 'V0', cls: 'bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900' },
+  lovable: { label: 'Lovable', cls: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300' },
 }
 
 const TYPE_LABELS: Record<DesignType, string> = {
@@ -134,6 +142,21 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
           >
             {STATUS_LABELS[status]}
           </span>
+          {artifact.source && artifact.source !== 'internal' && SOURCE_BADGES[artifact.source] && (
+            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${SOURCE_BADGES[artifact.source].cls}`}>
+              {SOURCE_BADGES[artifact.source].label}
+            </span>
+          )}
+          {artifact.external_url && (
+            <a
+              href={artifact.external_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-violet-600 underline hover:text-violet-700 dark:text-violet-400"
+            >
+              Abrir original →
+            </a>
+          )}
         </div>
 
         {status !== 'approved' && (

@@ -24,8 +24,8 @@ export async function GET(
     .from('design_artifacts')
     .select(
       thumb
-        ? 'id, type, screen_name, flow_name, status, mime_type, created_at, updated_at, content'
-        : 'id, type, screen_name, flow_name, status, mime_type, created_at, updated_at',
+        ? 'id, type, screen_name, flow_name, status, mime_type, source, external_url, created_at, updated_at, content'
+        : 'id, type, screen_name, flow_name, status, mime_type, source, external_url, created_at, updated_at',
     )
     .eq('project_id', projectId)
     .order('created_at', { ascending: false })

@@ -55,6 +55,19 @@ export default async function Phase02Page({
     )
   }
 
+  // Fetch project integration tokens for connected tools
+  const { data: projectTokens } = await supabase
+    .from('projects')
+    .select('figma_token, v0_api_key')
+    .eq('id', projectId)
+    .eq('user_id', user!.id)
+    .single()
+
+  const connectedTools = {
+    figma: !!projectTokens?.figma_token,
+    v0: !!projectTokens?.v0_api_key,
+  }
+
   // Fetch sections, conversations, documents, approved designs, all artifacts, and workflow context
   const [sectionsRes, conversationsRes, documentsRes, designsRes, allArtifactsRes, workflowContext] = await Promise.all([
     supabase
@@ -127,6 +140,7 @@ export default async function Phase02Page({
       approvedDesigns={approvedDesigns}
       designArtifacts={allArtifacts}
       workflowContext={workflowContext}
+      connectedTools={connectedTools}
     />
   )
 }

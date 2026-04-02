@@ -48,6 +48,7 @@ type Phase02LayoutProps = {
   }>
   designArtifacts?: Artifact[]
   workflowContext?: DesignWorkflowContext
+  connectedTools?: { figma: boolean; v0: boolean }
 }
 
 const phaseAgents = getPhaseAgents(2)
@@ -59,6 +60,7 @@ export function Phase02Layout({
   approvedDesigns,
   designArtifacts = [],
   workflowContext,
+  connectedTools,
 }: Phase02LayoutProps) {
   const router = useRouter()
   const [sections, setSections] = useState(initialSections)
@@ -189,6 +191,7 @@ export function Phase02Layout({
       projectId={projectId}
       existingArtifacts={designArtifacts}
       workflowContext={workflowContext}
+      connectedTools={connectedTools}
     />
   ) : (
     <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50/70 px-4 py-12 text-center dark:border-gray-600 dark:bg-gray-900/40">
