@@ -174,6 +174,23 @@ export function ChatPanel({
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <AgentParticipationHeader agents={PHASE_00_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
+      {(() => {
+        const lastMsg = messages[messages.length - 1]
+        const text = lastMsg?.role === 'assistant'
+          ? (lastMsg.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { text?: string }) => p.text ?? '').join('') ?? '')
+          : ''
+        const match = text.match(/__STREAM_ERROR__:([\s\S]+)/)
+        if (!match) return null
+        let parsed: { error: string; message: string } | null = null
+        try { parsed = JSON.parse(match[1]) } catch { return null }
+        if (!parsed) return null
+        return (
+          <div className="mx-3 my-2 rounded-lg border-l-4 border-amber-500 bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-300" role="alert">
+            <p className="text-xs font-medium">{parsed.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}</p>
+            <p className="mt-0.5 text-xs opacity-80">{parsed.message}</p>
+          </div>
+        )
+      })()}
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3" role="log" aria-live="polite">
         {messages.length === 0 && !isLoading && (

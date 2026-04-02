@@ -102,6 +102,23 @@ export function DesignChat({
   return (
     <div className="flex h-full min-h-0 flex-col">
       {error && <ChatErrorBanner error={error} />}
+      {(() => {
+        const lastMsg = messages[messages.length - 1]
+        const text = lastMsg?.role === 'assistant'
+          ? (lastMsg.parts?.filter((p) => p.type === 'text').map((p) => ('text' in p && typeof p.text === 'string') ? p.text : '').join('') ?? '')
+          : ''
+        const match = text.match(/__STREAM_ERROR__:([\s\S]+)/)
+        if (!match) return null
+        let parsed: { error: string; message: string } | null = null
+        try { parsed = JSON.parse(match[1]) } catch { return null }
+        if (!parsed) return null
+        return (
+          <div className="mx-3 my-2 rounded-lg border-l-4 border-amber-500 bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-300" role="alert">
+            <p className="text-xs font-medium">{parsed.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}</p>
+            <p className="mt-0.5 text-xs opacity-80">{parsed.message}</p>
+          </div>
+        )
+      })()}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" role="log" aria-live="polite">
         {messages.length === 0 && isLoading && (
           <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-dashed border-violet-200 bg-violet-50/40 px-6 py-10 text-center dark:border-violet-900/40 dark:bg-violet-950/20">

@@ -119,6 +119,23 @@ export function AgentChat({
   return (
     <div className="flex flex-1 flex-col">
       {error && <ChatErrorBanner error={error} />}
+      {(() => {
+        const lastMsg = messages[messages.length - 1]
+        const text = lastMsg?.role === 'assistant'
+          ? (lastMsg.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { text?: string }) => p.text ?? '').join('') ?? '')
+          : ''
+        const match = text.match(/__STREAM_ERROR__:([\s\S]+)/)
+        if (!match) return null
+        let parsed: { error: string; message: string } | null = null
+        try { parsed = JSON.parse(match[1]) } catch { return null }
+        if (!parsed) return null
+        return (
+          <div className="mx-3 my-2 rounded-lg border-l-4 border-amber-500 bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-300" role="alert">
+            <p className="text-xs font-medium">{parsed.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}</p>
+            <p className="mt-0.5 text-xs opacity-80">{parsed.message}</p>
+          </div>
+        )
+      })()}
       {attachments.length > 0 && (
         <div className="border-b border-gray-100 dark:border-gray-800 px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
           <div className="mb-1 font-medium text-gray-700 dark:text-gray-300">

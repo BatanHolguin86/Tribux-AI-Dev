@@ -7,7 +7,7 @@ import {
   truncateText,
 } from '@/lib/ai/context-builder'
 import { buildKiroPrompt } from '@/lib/ai/prompts/phase-01'
-import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
+import { formatChatErrorResponse, wrapStreamWithErrorHandling } from '@/lib/ai/chat-errors'
 import { recordAiUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { KiroDocumentType } from '@/types/feature'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
@@ -274,7 +274,10 @@ export async function POST(
       },
     })
 
-    return result.toTextStreamResponse()
+    const response = result.toTextStreamResponse()
+    return new Response(wrapStreamWithErrorHandling(response.body!), {
+      headers: response.headers,
+    })
   } catch (error: unknown) {
     console.error('[Phase-01 feature chat] Error', error)
     const { status, body } = formatChatErrorResponse(error)

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildFullProjectContext, buildPhase02Context } from '@/lib/ai/context-builder'
 import { buildPhase02Prompt } from '@/lib/ai/prompts/phase-02'
-import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
+import { formatChatErrorResponse, wrapStreamWithErrorHandling } from '@/lib/ai/chat-errors'
 import { canAccessPhase } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordStreamUsage, estimateTokensFromText } from '@/lib/ai/usage'
@@ -249,7 +249,10 @@ export async function POST(
       },
     })
 
-    return result.toTextStreamResponse()
+    const response = result.toTextStreamResponse()
+    return new Response(wrapStreamWithErrorHandling(response.body!), {
+      headers: response.headers,
+    })
   } catch (error: unknown) {
     console.error('[Phase-02 chat] Error', error)
     const { status, body } = formatChatErrorResponse(error)

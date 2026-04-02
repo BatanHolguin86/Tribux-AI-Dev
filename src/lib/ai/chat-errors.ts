@@ -59,3 +59,39 @@ export function formatChatErrorResponse(error: unknown): {
     },
   }
 }
+
+/**
+ * Wraps a ReadableStream to catch mid-stream errors (e.g. Anthropic credit exhaustion)
+ * and append an error marker that the client can detect.
+ *
+ * Error format appended to stream: \n\n__STREAM_ERROR__:{"error":"...","message":"..."}\n
+ */
+export function wrapStreamWithErrorHandling(stream: ReadableStream<Uint8Array>): ReadableStream<Uint8Array> {
+  const reader = stream.getReader()
+  const encoder = new TextEncoder()
+
+  return new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      try {
+        const { done, value } = await reader.read()
+        if (done) {
+          controller.close()
+          return
+        }
+        controller.enqueue(value)
+      } catch (error) {
+        console.error('[stream-error-handler] Mid-stream error caught:', error)
+        const errorPayload = isCreditsError(error)
+          ? { error: CREDITS_ERROR_CODE, message: CREDITS_USER_MESSAGE }
+          : { error: 'stream_error', message: error instanceof Error ? error.message : 'Error durante la generacion' }
+
+        const marker = `\n\n__STREAM_ERROR__:${JSON.stringify(errorPayload)}\n`
+        controller.enqueue(encoder.encode(marker))
+        controller.close()
+      }
+    },
+    cancel() {
+      reader.cancel()
+    },
+  })
+}

@@ -112,6 +112,13 @@ export function ChatPanel({
     hasDocument ||
     (lastMessage?.role === 'assistant' && lastText.includes('[SECTION_READY]'))
 
+  // Detect mid-stream errors (e.g. credits exhausted during streaming)
+  const streamError = (() => {
+    const match = lastText.match(/__STREAM_ERROR__:([\s\S]+)/)
+    if (!match) return null
+    try { return JSON.parse(match[1]) as { error: string; message: string } } catch { return null }
+  })()
+
   // Extract quick-reply options from the last assistant message
   const lastAssistantText = lastMessage?.role === 'assistant' ? lastText : ''
   const { options: quickOptions } = extractOptions(lastAssistantText)
@@ -198,6 +205,14 @@ export function ChatPanel({
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <AgentParticipationHeader agents={PHASE_02_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
+      {streamError && (
+        <div className="mx-3 my-2 rounded-lg border-l-4 border-amber-500 bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-300" role="alert">
+          <p className="text-xs font-medium">
+            {streamError.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}
+          </p>
+          <p className="mt-0.5 text-xs opacity-80">{streamError.message}</p>
+        </div>
+      )}
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
         {messages.length === 0 && !isLoading && (

@@ -4,7 +4,7 @@ import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildFullProjectContext, getProjectKnowledgeContext } from '@/lib/ai/context-builder'
 import { buildPhaseChatPrompt, PHASE_SPECIALIST_MAP } from '@/lib/ai/prompts/phase-chat-builders'
 import { buildAgentPrompt } from '@/lib/ai/agents/prompt-builder'
-import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
+import { formatChatErrorResponse, wrapStreamWithErrorHandling } from '@/lib/ai/chat-errors'
 import { canAccessPhase } from '@/lib/plans/guards'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordStreamUsage, estimateTokensFromText } from '@/lib/ai/usage'
@@ -231,7 +231,10 @@ export async function POST(
       },
     })
 
-    return result.toTextStreamResponse()
+    const response = result.toTextStreamResponse()
+    return new Response(wrapStreamWithErrorHandling(response.body!), {
+      headers: response.headers,
+    })
   } catch (error: unknown) {
     console.error('[Phase chat] Error', error)
     const { status, body } = formatChatErrorResponse(error)

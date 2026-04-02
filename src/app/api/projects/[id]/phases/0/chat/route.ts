@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildFullProjectContext, buildProjectContext } from '@/lib/ai/context-builder'
 import { buildPhase00Prompt } from '@/lib/ai/prompts/phase-00'
-import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
+import { formatChatErrorResponse, wrapStreamWithErrorHandling } from '@/lib/ai/chat-errors'
 import { checkRateLimit, getClientIp, AGENT_CHAT_RATE_LIMIT } from '@/lib/rate-limit'
 import { recordStreamUsage, estimateTokensFromText } from '@/lib/ai/usage'
 import type { Phase00Section } from '@/types/conversation'
@@ -211,7 +211,10 @@ export async function POST(
       },
     })
 
-    return result.toTextStreamResponse()
+    const response = result.toTextStreamResponse()
+    return new Response(wrapStreamWithErrorHandling(response.body!), {
+      headers: response.headers,
+    })
   } catch (error: unknown) {
     console.error('[Phase-00 chat] Error calling Anthropic or building response', error)
     const { status, body } = formatChatErrorResponse(error)
