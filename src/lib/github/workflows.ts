@@ -317,3 +317,89 @@ export async function createGitHubRelease(
     return { success: false, error: String(e) }
   }
 }
+
+/**
+ * Get the two most recent releases to identify rollback target.
+ * Returns [current, previous] or null if not enough releases.
+ */
+export async function getRollbackTarget(
+  repoUrl: string,
+): Promise<{ tag: string; commitSha: string; name: string; publishedAt: string } | null> {
+  const parsed = parseGitHubUrl(repoUrl)
+  if (!parsed) return null
+
+  const { owner, repo } = parsed
+  const url = `${GITHUB_API}/repos/${owner}/${repo}/releases?per_page=2`
+
+  try {
+    const res = await fetch(url, { headers: getHeaders() })
+    if (!res.ok) return null
+
+    const releases = (await res.json()) as Array<{
+      tag_name: string
+      target_commitish: string
+      name: string
+      published_at: string
+    }>
+
+    if (releases.length < 2) return null
+
+    // Previous release is the rollback target (index 1)
+    const prev = releases[1]
+    return {
+      tag: prev.tag_name,
+      commitSha: prev.target_commitish,
+      name: prev.name,
+      publishedAt: prev.published_at,
+    }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Create a GitHub release targeting a specific commit SHA (for rollback).
+ */
+export async function createRollbackRelease(
+  repoUrl: string,
+  targetCommitSha: string,
+  originalTag: string,
+): Promise<{ success: boolean; html_url?: string; tagName?: string; error?: string }> {
+  const parsed = parseGitHubUrl(repoUrl)
+  if (!parsed) return { success: false, error: 'URL de repo invalida' }
+
+  const { owner, repo } = parsed
+  const now = new Date()
+  const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '')
+  const timeStr = now.toISOString().slice(11, 16).replace(':', '')
+  const tagName = `rollback-${dateStr}-${timeStr}`
+  const releaseName = `Rollback to ${originalTag}`
+  const body = `Rollback deployment to previous release \`${originalTag}\`.\n\nTarget commit: \`${targetCommitSha}\`\nTriggered at: ${now.toISOString()}`
+
+  const url = `${GITHUB_API}/repos/${owner}/${repo}/releases`
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        tag_name: tagName,
+        target_commitish: targetCommitSha,
+        name: releaseName,
+        body,
+        draft: false,
+        prerelease: false,
+      }),
+    })
+
+    if (!res.ok) {
+      const text = await res.text()
+      return { success: false, error: `GitHub API error (${res.status}): ${text}` }
+    }
+
+    const data = await res.json()
+    return { success: true, html_url: data.html_url, tagName }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}

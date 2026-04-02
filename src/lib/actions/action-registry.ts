@@ -213,6 +213,21 @@ export const PHASE_ACTIONS: ActionDefinition[] = [
     streaming: false,
   },
   {
+    actionName: 'rollback-deploy',
+    phaseNumber: 6,
+    section: 'deploy_production',
+    itemIndices: [],
+    label: 'Rollback deploy',
+    description: 'Revierte a la version anterior creando un release apuntando al commit previo.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'github-api',
+    streaming: false,
+    confirmRequired: true,
+  },
+  {
     actionName: 'generate-ops-runbook',
     phaseNumber: 6,
     section: 'documentation',
