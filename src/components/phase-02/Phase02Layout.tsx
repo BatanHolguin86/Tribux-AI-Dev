@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Phase02Section, SectionStatus } from '@/types/conversation'
+import { PHASE02_SECTIONS } from '@/lib/ai/prompts/phase-02'
 import type { DesignWorkflowContext } from '@/lib/ai/context-builder'
 import { getPhaseAgents } from '@/lib/phase-workspace-config'
 import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
@@ -76,6 +77,11 @@ export function Phase02Layout({
         s.key === activeSection ? { ...s, status: 'approved' as SectionStatus } : s
       )
     )
+    // Auto-advance to next section
+    const currentIdx = PHASE02_SECTIONS.indexOf(activeSection)
+    if (currentIdx < PHASE02_SECTIONS.length - 1) {
+      setActiveSection(PHASE02_SECTIONS[currentIdx + 1])
+    }
   }, [activeSection])
 
   const handleDocumentGenerated = useCallback(() => {
