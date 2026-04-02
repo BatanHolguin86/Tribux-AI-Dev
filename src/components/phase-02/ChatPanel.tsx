@@ -142,6 +142,8 @@ export function ChatPanel({
         }
       }
 
+      // Wait for backend onFinish to persist the document to DB
+      await new Promise((resolve) => setTimeout(resolve, 3000))
       onDocumentGenerated()
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Error de conexion')
