@@ -87,9 +87,12 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
         <div className="relative space-y-0.5">
           {PHASES_META.map((meta, index) => {
             const phaseData = phases.find((p) => p.phase_number === meta.number)
-            const status = phaseData?.status ?? 'locked'
+            const rawStatus = phaseData?.status ?? 'locked'
+            // TEMPORARY: unlock all phases for production testing
+            // TODO: revert after testing — restore: const status = rawStatus
+            const status = rawStatus === 'locked' ? 'active' as PhaseStatus : rawStatus
             const isCurrentPath = activePathPhase === meta.number
-            const isClickable = status !== 'locked'
+            const isClickable = true
             const phaseNum = String(meta.number).padStart(2, '0')
             const isLast = index === PHASES_META.length - 1
             const canReset = status === 'completed' || status === 'active'
