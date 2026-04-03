@@ -45,7 +45,7 @@ export default async function Phase02Page({
         .single()
     : { data: null }
 
-  const isFounder = profile?.persona === 'founder' || profile?.persona === 'emprendedor'
+  const isFounder = profile?.persona === 'founder' || profile?.persona === 'emprendedor' || profile?.persona === 'ceo'
 
   const hasAccess = profile ? canAccessPhase(2, profile) : false
 

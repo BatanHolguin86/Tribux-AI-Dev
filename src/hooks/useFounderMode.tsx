@@ -42,7 +42,7 @@ export function FounderModeProvider({
   persona: string | null
   children: React.ReactNode
 }) {
-  const isFounder = persona === 'founder' || persona === 'emprendedor'
+  const isFounder = persona === 'founder' || persona === 'emprendedor' || persona === 'ceo'
   const isPM = persona === 'pm'
   const isConsultor = persona === 'consultor'
 

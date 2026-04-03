@@ -20,7 +20,7 @@ export default async function Phase05Page({
     ? await supabase.from('user_profiles').select('plan, subscription_status, trial_ends_at, persona').eq('id', user.id).single()
     : { data: null }
 
-  const isFounder = profile?.persona === 'founder' || profile?.persona === 'emprendedor'
+  const isFounder = profile?.persona === 'founder' || profile?.persona === 'emprendedor' || profile?.persona === 'ceo'
 
   if (!profile || !canAccessPhase(5, profile)) {
     return (
