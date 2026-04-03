@@ -8,6 +8,7 @@ import { EmptyState } from './EmptyState'
 import { DashboardHeader } from './DashboardHeader'
 import { DlcClosingNarrative } from '@/components/projects/DlcClosingNarrative'
 import { CreateProjectModal } from './CreateProjectModal'
+import { useFounderMode } from '@/hooks/useFounderMode'
 import { EditProjectModal } from './EditProjectModal'
 import { ArchiveConfirmDialog } from './ArchiveConfirmDialog'
 import type { DashboardSummary } from '@/types/project'
@@ -15,6 +16,76 @@ import type { DashboardSummary } from '@/types/project'
 type ProjectsGridProps = {
   projects: ProjectWithProgress[]
   summary?: DashboardSummary
+}
+
+function ProjectGrid({
+  projects,
+  onEdit,
+  onArchive,
+}: {
+  projects: ProjectWithProgress[]
+  onEdit: (p: ProjectWithProgress) => void
+  onArchive: (p: ProjectWithProgress) => void
+}) {
+  const { isConsultor } = useFounderMode()
+
+  // For consultors: group by client_name
+  if (isConsultor) {
+    const grouped = new Map<string, ProjectWithProgress[]>()
+    for (const p of projects) {
+      const client = (p as ProjectWithProgress & { client_name?: string }).client_name || 'Sin cliente'
+      const list = grouped.get(client) ?? []
+      list.push(p)
+      grouped.set(client, list)
+    }
+
+    const groups = Array.from(grouped.entries()).sort(([a], [b]) => {
+      if (a === 'Sin cliente') return 1
+      if (b === 'Sin cliente') return -1
+      return a.localeCompare(b)
+    })
+
+    return (
+      <div className="mt-6 space-y-6">
+        {groups.map(([client, clientProjects]) => (
+          <div key={client}>
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-xs font-display font-semibold uppercase tracking-wider text-[#94A3B8]">
+                {client}
+              </span>
+              <span className="rounded-full bg-[#E8F4F8] px-2 py-0.5 text-[10px] font-medium text-[#0F2B46]">
+                {clientProjects.length}
+              </span>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {clientProjects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onEdit={onEdit}
+                  onArchive={onArchive}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Default: flat grid
+  return (
+    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {projects.map((project) => (
+        <ProjectCard
+          key={project.id}
+          project={project}
+          onEdit={onEdit}
+          onArchive={onArchive}
+        />
+      ))}
+    </div>
+  )
 }
 
 export function ProjectsGrid({ projects: initialProjects }: ProjectsGridProps) {
@@ -114,18 +185,13 @@ export function ProjectsGrid({ projects: initialProjects }: ProjectsGridProps) {
         </div>
       </div>
 
-      {/* Grid */}
+      {/* Grid — grouped by client for consultors */}
       {filtered.length > 0 ? (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onEdit={setEditProject}
-              onArchive={setArchiveProject}
-            />
-          ))}
-        </div>
+        <ProjectGrid
+          projects={filtered}
+          onEdit={setEditProject}
+          onArchive={setArchiveProject}
+        />
       ) : (
         <div className="mt-6">
           {currentTab === 'archived' ? (
