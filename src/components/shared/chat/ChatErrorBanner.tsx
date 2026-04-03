@@ -1,6 +1,7 @@
 'use client'
 
 import { CREDITS_ERROR_CODE } from '@/lib/ai/chat-errors'
+import { toFriendlyMessage } from '@/lib/errors/friendly-messages'
 
 type ChatErrorBannerProps = {
   error: unknown
@@ -26,10 +27,10 @@ function getDisplayMessage(error: unknown, payload: { code?: string; message?: s
 
   const msg = error instanceof Error ? error.message : String(error)
   if (msg.toLowerCase().includes('credit') || msg.toLowerCase().includes('credits')) {
-    return 'Tu saldo de créditos del proveedor de IA es insuficiente. Añade créditos para continuar.'
+    return 'Creditos de IA insuficientes. Contacta al administrador para recargar.'
   }
 
-  return 'No se pudo conectar con el asistente. Intenta de nuevo más tarde.'
+  return toFriendlyMessage(error)
 }
 
 export function ChatErrorBanner({ error }: ChatErrorBannerProps) {

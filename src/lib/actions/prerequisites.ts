@@ -29,23 +29,38 @@ export async function checkPrerequisites(
         const value = project[prereq.field]
         if (!value) {
           const labels: Record<string, string> = {
-            repo_url: 'URL del repositorio GitHub',
-            supabase_project_ref: 'Referencia del proyecto Supabase',
-            supabase_access_token: 'Access token de Supabase',
+            repo_url: 'Tu proyecto necesita un repositorio de codigo. Ve a Infraestructura para configurarlo.',
+            supabase_project_ref: 'Tu proyecto necesita una base de datos. Ve a Infraestructura para configurarla.',
+            supabase_access_token: 'Falta conectar la base de datos. Ve a Infraestructura para completar la configuracion.',
           }
-          missing.push(`Falta: ${labels[prereq.field] ?? prereq.field}. Configuralo en las integraciones del proyecto.`)
+          missing.push(labels[prereq.field] ?? `Falta configurar: ${prereq.field}`)
         }
         break
       }
 
       case 'env-exists': {
         if (!process.env[prereq.env]) {
-          missing.push(`Variable de entorno ${prereq.env} no configurada en el servidor.`)
+          const envLabels: Record<string, string> = {
+            GITHUB_TOKEN: 'El repositorio de codigo no esta conectado. Contacta al administrador.',
+            ANTHROPIC_API_KEY: 'El servicio de inteligencia artificial no esta disponible. Contacta al administrador.',
+            PLATFORM_GITHUB_TOKEN: 'La plataforma no esta configurada. El administrador debe completar la configuracion.',
+            PLATFORM_SUPABASE_TOKEN: 'La plataforma no esta configurada. El administrador debe completar la configuracion.',
+            PLATFORM_VERCEL_TOKEN: 'La plataforma no esta configurada. El administrador debe completar la configuracion.',
+          }
+          missing.push(envLabels[prereq.env] ?? 'Falta una configuracion del servidor. Contacta al administrador.')
         }
         break
       }
 
       case 'phase-completed': {
+        const phaseNames: Record<number, string> = {
+          0: 'Discovery (definir tu idea)',
+          1: 'Specs (especificar features)',
+          2: 'Arquitectura (disenar el sistema)',
+          3: 'Infraestructura (configurar el entorno)',
+          4: 'Desarrollo (construir la app)',
+          5: 'Testing (verificar calidad)',
+        }
         const { data: phases } = await supabase
           .from('project_phases')
           .select('status')
@@ -54,7 +69,7 @@ export async function checkPrerequisites(
           .single()
 
         if (!phases || phases.status !== 'completed') {
-          missing.push(`Phase ${String(prereq.phase).padStart(2, '0')} debe estar completada.`)
+          missing.push(`Primero completa: ${phaseNames[prereq.phase] ?? `Fase ${prereq.phase}`}`)
         }
         break
       }
