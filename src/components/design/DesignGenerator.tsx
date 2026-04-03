@@ -32,7 +32,7 @@ const TYPE_LABELS: Record<string, string> = {
   mockup_highfi: 'Mockup High-Fi',
 }
 
-type FeatureOption = { id: string; name: string }
+type FeatureOption = { id: string; name: string; isComplete: boolean; hasRequirements: boolean; hasDesign: boolean; hasTasks: boolean }
 
 type DesignGeneratorProps = {
   projectId: string
@@ -389,30 +389,58 @@ export function DesignGenerator({
               Selecciona features para disenar
             </label>
             {completedFeatures.length > 0 ? (
-              <div className="mt-2 space-y-1.5 rounded-lg border border-[#E2E8F0] p-3 dark:border-[#1E3A55]">
-                {completedFeatures.map((feature) => (
-                  <label key={feature.id} className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-[#E8F4F8] dark:hover:bg-[#0F2B46]/30">
-                    <input
-                      type="checkbox"
-                      checked={selectedFeatures.has(feature.id)}
-                      onChange={() => {
-                        setSelectedFeatures((prev) => {
-                          const next = new Set(prev)
-                          next.has(feature.id) ? next.delete(feature.id) : next.add(feature.id)
-                          return next
-                        })
-                      }}
-                      className="rounded border-gray-300 text-[#0EA5A3] focus:ring-[#0EA5A3]"
-                    />
-                    <span className="text-[#0F2B46] dark:text-gray-200">{feature.name}</span>
-                  </label>
-                ))}
+              <div className="mt-2 space-y-1 rounded-lg border border-[#E2E8F0] p-3 dark:border-[#1E3A55]">
+                {completedFeatures.map((feature) => {
+                  const missing: string[] = []
+                  if (!feature.hasRequirements) missing.push('Requisitos')
+                  if (!feature.hasDesign) missing.push('Diseno')
+                  if (!feature.hasTasks) missing.push('Tasks')
+
+                  return (
+                    <label
+                      key={feature.id}
+                      className={`flex items-center gap-2 rounded-md px-2 py-2 text-sm ${
+                        feature.isComplete
+                          ? 'cursor-pointer hover:bg-[#E8F4F8] dark:hover:bg-[#0F2B46]/30'
+                          : 'cursor-not-allowed opacity-50'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedFeatures.has(feature.id)}
+                        disabled={!feature.isComplete}
+                        onChange={() => {
+                          if (!feature.isComplete) return
+                          setSelectedFeatures((prev) => {
+                            const next = new Set(prev)
+                            next.has(feature.id) ? next.delete(feature.id) : next.add(feature.id)
+                            return next
+                          })
+                        }}
+                        className="rounded border-gray-300 text-[#0EA5A3] focus:ring-[#0EA5A3] disabled:opacity-30"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <span className={`${feature.isComplete ? 'text-[#0F2B46] dark:text-gray-200' : 'text-gray-400'}`}>
+                          {feature.name}
+                        </span>
+                        {!feature.isComplete && (
+                          <p className="text-[10px] text-red-500">
+                            Falta: {missing.join(', ')}
+                          </p>
+                        )}
+                      </div>
+                      {feature.isComplete && (
+                        <span className="shrink-0 text-[10px] text-[#10B981]">✓ Completo</span>
+                      )}
+                    </label>
+                  )
+                })}
                 {selectedFeatures.size > 0 && (
                   <p className="mt-1 text-[10px] text-[#0EA5A3]">{selectedFeatures.size} feature(s) seleccionado(s)</p>
                 )}
               </div>
             ) : (
-              <p className="mt-1 text-xs text-[#94A3B8]">No hay features completados. Completa specs en Phase 01 primero.</p>
+              <p className="mt-1 text-xs text-[#94A3B8]">No hay features. Crea specs en Phase 01 primero.</p>
             )}
             <label className="mt-3 block text-xs font-medium text-gray-700 dark:text-gray-300">
               Pantallas adicionales (opcional)

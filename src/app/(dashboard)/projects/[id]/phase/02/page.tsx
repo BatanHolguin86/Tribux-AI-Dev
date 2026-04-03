@@ -102,16 +102,36 @@ export default async function Phase02Page({
     getDesignWorkflowContext(projectId),
   ])
 
-  // Fetch completed features from Phase 01
+  // Fetch features with their document completion status
   const { data: featuresData } = await supabase
     .from('project_features')
-    .select('id, name, spec_complete')
+    .select('id, name, status')
     .eq('project_id', projectId)
     .order('created_at')
 
-  const completedFeatures = (featuresData ?? [])
-    .filter((f) => f.spec_complete)
-    .map((f) => ({ id: f.id as string, name: f.name as string }))
+  const { data: featureDocsData } = await supabase
+    .from('feature_documents')
+    .select('feature_id, doc_type, status')
+    .eq('project_id', projectId)
+
+  const allFeatures = (featuresData ?? []).map((f) => {
+    const docs = (featureDocsData ?? []).filter((d) => d.feature_id === f.id)
+    const hasRequirements = docs.some((d) => d.doc_type === 'requirements' && (d.status === 'approved' || d.status === 'draft'))
+    const hasDesign = docs.some((d) => d.doc_type === 'design' && (d.status === 'approved' || d.status === 'draft'))
+    const hasTasks = docs.some((d) => d.doc_type === 'tasks' && (d.status === 'approved' || d.status === 'draft'))
+    const isComplete = hasRequirements && hasDesign && hasTasks
+
+    return {
+      id: f.id as string,
+      name: f.name as string,
+      isComplete,
+      hasRequirements,
+      hasDesign,
+      hasTasks,
+    }
+  })
+
+  const completedFeatures = allFeatures
 
   const sections = sectionsRes.data ?? []
   const conversations = conversationsRes.data ?? []

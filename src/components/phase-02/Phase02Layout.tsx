@@ -52,7 +52,7 @@ type Phase02LayoutProps = {
   designArtifacts?: Artifact[]
   workflowContext?: DesignWorkflowContext
   connectedTools?: { figma: boolean; v0: boolean }
-  completedFeatures?: Array<{ id: string; name: string }>
+  completedFeatures?: Array<{ id: string; name: string; isComplete: boolean; hasRequirements: boolean; hasDesign: boolean; hasTasks: boolean }>
 }
 
 const phaseAgents = getPhaseAgents(2)
