@@ -68,6 +68,24 @@
   --font-sans: var(--font-inter);
   --font-display: var(--font-dm-sans);
   --font-mono: var(--font-jetbrains-mono);
+
+  /* Remap violet scale → Command Blue/Teal brand palette */
+  /* This makes all existing bg-violet-*, text-violet-*, etc. use brand colors */
+  --color-violet-50: #E8F4F8;
+  --color-violet-100: #C5E4EC;
+  --color-violet-200: #93C9D6;
+  --color-violet-300: #5BABB9;
+  --color-violet-400: #0EA5A3;
+  --color-violet-500: #0C8C8A;
+  --color-violet-600: #0F2B46;
+  --color-violet-700: #0A1F33;
+  --color-violet-800: #071826;
+  --color-violet-900: #040E17;
+  --color-violet-950: #020810;
+
+  /* Remap emerald → brand success */
+  --color-emerald-500: #10B981;
+  --color-emerald-600: #059669;
 }
 
 @media (prefers-color-scheme: dark) {
