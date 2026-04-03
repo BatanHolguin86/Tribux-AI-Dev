@@ -25,7 +25,7 @@ export function KnowledgeEntryCard({
       onClick={onClick}
       className={`w-full border-b border-gray-50 px-4 py-3 text-left transition-colors dark:border-gray-800 ${
         isSelected
-          ? 'bg-violet-50 dark:bg-violet-900/20'
+          ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
           : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
       }`}
     >
@@ -39,7 +39,7 @@ export function KnowledgeEntryCard({
             )}
             <h3 className={`truncate text-sm font-medium ${
               isSelected
-                ? 'text-violet-700 dark:text-violet-300'
+                ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
                 : 'text-gray-900 dark:text-gray-100'
             }`}>
               {entry.title}

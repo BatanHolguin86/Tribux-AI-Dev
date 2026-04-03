@@ -66,23 +66,23 @@ export function ProactiveSuggestions({
 
   if (loading) {
     return (
-      <div className="mx-4 mb-4 animate-pulse rounded-lg border border-violet-100 bg-violet-50 p-4">
-        <div className="h-3 w-40 rounded bg-violet-200" />
+      <div className="mx-4 mb-4 animate-pulse rounded-lg border border-[#E8F4F8] bg-[#E8F4F8] p-4">
+        <div className="h-3 w-40 rounded bg-[#0EA5A3]/30" />
         <div className="mt-3 space-y-2">
-          <div className="h-8 rounded bg-violet-100" />
-          <div className="h-8 rounded bg-violet-100" />
+          <div className="h-8 rounded bg-[#E8F4F8]" />
+          <div className="h-8 rounded bg-[#E8F4F8]" />
         </div>
       </div>
     )
   }
 
   return (
-    <div className="mx-4 mb-4 rounded-lg border border-violet-200 bg-violet-50 p-4">
+    <div className="mx-4 mb-4 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] p-4">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-violet-700">Sugerencias basadas en tu proyecto</p>
+        <p className="text-xs font-semibold text-[#0F2B46]">Sugerencias basadas en tu proyecto</p>
         <button
           onClick={() => setDismissed(true)}
-          className="rounded p-1 text-violet-400 hover:text-violet-600"
+          className="rounded p-1 text-[#0EA5A3] hover:text-[#0F2B46]"
           aria-label="Descartar sugerencias"
         >
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,7 +95,7 @@ export function ProactiveSuggestions({
           <button
             key={s.id}
             onClick={() => onSuggestionClick(s.text)}
-            className="w-full rounded-lg bg-white px-3 py-2 text-left text-sm text-gray-700 shadow-sm transition-colors hover:bg-violet-100 hover:text-violet-800"
+            className="w-full rounded-lg bg-white px-3 py-2 text-left text-sm text-gray-700 shadow-sm transition-colors hover:bg-[#E8F4F8] hover:text-[#0F2B46]"
           >
             {s.text}
           </button>

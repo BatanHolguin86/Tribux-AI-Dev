@@ -46,7 +46,7 @@ export function ApprovalGate({
           <button
             onClick={onRegenerate}
             disabled={isRegenerating || isApproving}
-            className="rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 disabled:opacity-50 dark:border-violet-800 dark:bg-violet-900/30 dark:text-violet-300 dark:hover:bg-violet-900/50"
+            className="rounded-lg border border-[#E2E8F0] bg-[#E8F4F8] px-3 py-2 text-sm font-medium text-[#0F2B46] transition-colors hover:bg-[#E8F4F8] disabled:opacity-50 dark:border-[#0EA5A3] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3] dark:hover:bg-[#0F2B46]/30"
           >
             {isRegenerating ? 'Regenerando...' : 'Regenerar con cambios'}
           </button>

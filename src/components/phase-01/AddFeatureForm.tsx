@@ -38,21 +38,21 @@ export function AddFeatureForm({ projectId, onCreated, onCancel }: AddFeatureFor
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2 rounded-lg border border-violet-200 bg-violet-50 p-2">
+    <form onSubmit={handleSubmit} className="space-y-2 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] p-2">
       <input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Nombre del feature"
         autoFocus
-        className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+        className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
       />
       {error && <p className="text-xs text-red-600">{error}</p>}
       <div className="flex gap-1">
         <button
           type="submit"
           disabled={loading || !name.trim()}
-          className="flex-1 rounded bg-violet-600 px-2 py-1 text-xs font-medium text-white disabled:opacity-50"
+          className="flex-1 rounded bg-[#0F2B46] px-2 py-1 text-xs font-medium text-white disabled:opacity-50"
         >
           {loading ? '...' : 'Crear'}
         </button>

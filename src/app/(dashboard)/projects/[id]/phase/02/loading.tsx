@@ -16,7 +16,7 @@ export default function Phase02Loading() {
           <div className="flex-1 space-y-4 px-4 py-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className={`flex ${i % 2 === 0 ? 'justify-end' : 'justify-start'}`}>
-                <div className={`h-16 animate-pulse rounded-lg ${i % 2 === 0 ? 'w-2/3 bg-violet-50 dark:bg-violet-900/20' : 'w-3/4 bg-gray-100 dark:bg-gray-800'}`} />
+                <div className={`h-16 animate-pulse rounded-lg ${i % 2 === 0 ? 'w-2/3 bg-[#E8F4F8] dark:bg-[#0F2B46]/20' : 'w-3/4 bg-gray-100 dark:bg-gray-800'}`} />
               </div>
             ))}
           </div>

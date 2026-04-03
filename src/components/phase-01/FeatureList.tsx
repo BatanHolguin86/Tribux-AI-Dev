@@ -56,7 +56,7 @@ export function FeatureList({
       ) : (
         <button
           onClick={() => setShowAdd(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 px-4 py-3 text-sm font-medium text-violet-600 transition-colors hover:border-violet-300 hover:bg-violet-50/50 dark:border-gray-700 dark:text-violet-400 dark:hover:border-violet-800 dark:hover:bg-violet-950/20"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 px-4 py-3 text-sm font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8]/50 dark:border-gray-700 dark:text-[#0EA5A3] dark:hover:border-[#0F2B46] dark:hover:bg-[#0A1F33]/20"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

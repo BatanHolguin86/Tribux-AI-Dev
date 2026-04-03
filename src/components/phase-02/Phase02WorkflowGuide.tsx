@@ -60,8 +60,8 @@ export function Phase02WorkflowGuide({
 
   return (
     <div className="mb-6 space-y-4">
-      <div className="rounded-2xl border border-violet-200/80 bg-gradient-to-br from-violet-50/95 via-white to-indigo-50/60 p-5 shadow-sm dark:border-violet-900/35 dark:from-violet-950/25 dark:via-gray-950 dark:to-indigo-950/20">
-        <p className="text-[11px] font-bold uppercase tracking-wide text-violet-700 dark:text-violet-300">
+      <div className="rounded-2xl border border-[#0EA5A3]/30/80 bg-gradient-to-br from-[#E8F4F8]/95 via-white to-indigo-50/60 p-5 shadow-sm dark:border-[#0F2B46]/35 dark:from-[#0A1F33]/25 dark:via-gray-950 dark:to-indigo-950/20">
+        <p className="text-[11px] font-bold uppercase tracking-wide text-[#0F2B46] dark:text-[#0EA5A3]">
           Phase 02 — Un solo flujo: Arquitectura &amp; Diseño
         </p>
         <h2 className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -94,7 +94,7 @@ export function Phase02WorkflowGuide({
               key={step.id}
               className={`flex flex-col rounded-xl border p-3 text-left transition-shadow ${
                 step.status === 'current'
-                  ? 'border-violet-400 shadow-md shadow-violet-100/50 dark:border-violet-600 dark:shadow-violet-900/20'
+                  ? 'border-[#0EA5A3] shadow-md shadow-[#E8F4F8]/50 dark:border-[#0EA5A3] dark:shadow-[#0F2B46]/20'
                   : 'border-gray-200 dark:border-gray-700'
               } ${isDesign ? 'bg-gradient-to-b from-fuchsia-50/80 to-white dark:from-fuchsia-950/20 dark:to-gray-950' : 'bg-white dark:bg-gray-900'}`}
             >

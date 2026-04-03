@@ -87,7 +87,7 @@ export function LivePreviewWidget({
             Preview en vivo
           </span>
           {preview.type === 'preview' && preview.branch && (
-            <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[9px] font-medium text-violet-700 dark:bg-violet-900/30 dark:text-violet-400">
+            <span className="rounded bg-[#E8F4F8] px-1.5 py-0.5 text-[9px] font-medium text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3]">
               {preview.branch}
             </span>
           )}
@@ -108,7 +108,7 @@ export function LivePreviewWidget({
                   onClick={() => setDevice(key)}
                   className={`rounded px-1.5 py-0.5 text-xs ${
                     device === key
-                      ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'
+                      ? 'bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3]'
                       : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
@@ -122,7 +122,7 @@ export function LivePreviewWidget({
             href={preview.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-violet-600 underline hover:text-violet-700 dark:text-violet-400"
+            className="text-xs text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
           >
             Abrir →
           </a>

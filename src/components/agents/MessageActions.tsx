@@ -96,7 +96,7 @@ export function MessageActions({ content, projectId, repoUrl, supabaseProjectRef
         className={`rounded p-1 transition-colors ${
           savedKB
             ? 'text-emerald-500'
-            : 'text-gray-400 hover:bg-gray-100 hover:text-violet-600 dark:hover:bg-gray-800 dark:hover:text-violet-400'
+            : 'text-gray-400 hover:bg-gray-100 hover:text-[#0F2B46] dark:hover:bg-gray-800 dark:hover:text-[#0EA5A3]'
         } disabled:opacity-50`}
         title={savedKB ? 'Guardado en Base de Conocimiento' : 'Guardar en Base de Conocimiento'}
       >

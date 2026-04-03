@@ -12,7 +12,7 @@ export function AgentHeader({ icon, name, specialty, onNewThread, isCreating }: 
   return (
     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-100 text-lg">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E8F4F8] text-lg">
           {icon}
         </div>
         <div>

@@ -100,7 +100,7 @@ function ActiveTaskRunner({
 // ─── Agent badge ─────────────────────────────────────────────────────────────
 
 const AGENT_LABELS: Record<string, { label: string; cls: string }> = {
-  lead_developer: { label: 'Dev', cls: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400' },
+  lead_developer: { label: 'Dev', cls: 'bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3]' },
   db_admin: { label: 'DB', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
   qa_engineer: { label: 'QA', cls: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
   devops_engineer: { label: 'Ops', cls: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
@@ -108,7 +108,7 @@ const AGENT_LABELS: Record<string, { label: string; cls: string }> = {
 
 const STATUS_CONFIG: Record<TaskStatus, { icon: string; cls: string }> = {
   waiting: { icon: '◦', cls: 'text-gray-400' },
-  building: { icon: '●', cls: 'text-violet-500 animate-pulse' },
+  building: { icon: '●', cls: 'text-[#0EA5A3] animate-pulse' },
   done: { icon: '✓', cls: 'text-green-500' },
   failed: { icon: '✗', cls: 'text-red-500' },
 }
@@ -190,7 +190,7 @@ export function BuildSessionPanel({
 
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-3 dark:border-gray-700">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/40">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#E8F4F8] dark:bg-[#0F2B46]/40">
             <span className="text-base">🏗️</span>
           </div>
           <div className="min-w-0 flex-1">
@@ -221,7 +221,7 @@ export function BuildSessionPanel({
         {started && (
           <div className="h-1 w-full bg-gray-100 dark:bg-gray-800">
             <div
-              className="h-full bg-violet-500 transition-all duration-500"
+              className="h-full bg-[#E8F4F8]0 transition-all duration-500"
               style={{ width: `${(doneCount / tasks.length) * 100}%` }}
             />
           </div>
@@ -235,7 +235,7 @@ export function BuildSessionPanel({
               <div key={tier.tier} className="mb-4">
                 <p className={`mb-1.5 text-[10px] font-bold uppercase tracking-wide ${
                   tierIdx === currentTierIdx && started
-                    ? 'text-violet-600 dark:text-violet-400'
+                    ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
                     : tierIdx < currentTierIdx
                       ? 'text-green-600 dark:text-green-400'
                       : 'text-gray-400 dark:text-gray-500'
@@ -252,7 +252,7 @@ export function BuildSessionPanel({
                       <div
                         key={pt.task.id}
                         className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-xs ${
-                          status === 'building' ? 'bg-violet-50 dark:bg-violet-900/20' : ''
+                          status === 'building' ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20' : ''
                         }`}
                       >
                         <span className={`shrink-0 font-bold ${cfg.cls}`}>{cfg.icon}</span>
@@ -290,13 +290,13 @@ export function BuildSessionPanel({
 
             {started && activeTasks.length > 0 && (
               <div className="space-y-4">
-                <p className="text-xs font-semibold text-violet-600 dark:text-violet-400">
+                <p className="text-xs font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">
                   Tier {currentTierIdx + 1}: {currentTier?.label} — {activeTasks.length} task(s) en paralelo
                 </p>
                 {activeTasks.map((pt) => (
                   <div key={pt.task.id} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
                     <div className="mb-2 flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#E8F4F8]0" />
                       <span className="text-xs font-medium text-gray-900 dark:text-gray-100">
                         {pt.task.task_key} — {pt.task.title}
                       </span>
@@ -333,13 +333,13 @@ export function BuildSessionPanel({
           {!started && (
             <button
               onClick={handleStart}
-              className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-medium text-white hover:bg-violet-700"
+              className="w-full rounded-lg bg-[#0F2B46] py-2.5 text-sm font-medium text-white hover:bg-[#0A1F33]"
             >
               Iniciar Build Session — {plan.tiers.length} tiers, {tasks.length} tasks
             </button>
           )}
           {allFinished && (
-            <button onClick={onClose} className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-medium text-white hover:bg-violet-700">
+            <button onClick={onClose} className="w-full rounded-lg bg-[#0F2B46] py-2.5 text-sm font-medium text-white hover:bg-[#0A1F33]">
               Cerrar
             </button>
           )}

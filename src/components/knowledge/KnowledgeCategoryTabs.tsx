@@ -22,7 +22,7 @@ export function KnowledgeCategoryTabs({
         onClick={() => onChange(null)}
         className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
           active === null
-            ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300'
+            ? 'bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46]/40 dark:text-[#0EA5A3]'
             : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
         }`}
       >
@@ -38,7 +38,7 @@ export function KnowledgeCategoryTabs({
             onClick={() => onChange(cat)}
             className={`flex shrink-0 items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
               active === cat
-                ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300'
+                ? 'bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46]/40 dark:text-[#0EA5A3]'
                 : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
             }`}
           >

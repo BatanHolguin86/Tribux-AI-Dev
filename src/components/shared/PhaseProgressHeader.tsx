@@ -2,7 +2,7 @@
 
 /**
  * Shared progress header for phases 03–07.
- * Uses design tokens: primary (violet), muted (gray) per docs/02-architecture/design-tokens.md.
+ * Uses design tokens: primary (Command Blue #0F2B46), secondary (Squad Teal #0EA5A3), muted (gray).
  */
 type PhaseProgressHeaderProps = {
   title: string
@@ -31,13 +31,13 @@ export function PhaseProgressHeader({
     <div className="mb-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{title}</h2>
+          <h2 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">{title}</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">{progressLine}</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
             <div
-              className="h-1.5 rounded-full bg-violet-600 transition-all dark:bg-violet-500"
+              className="h-1.5 rounded-full bg-[#0F2B46] transition-all dark:bg-[#0EA5A3]"
               style={{ width: `${pct}%` }}
             />
           </div>

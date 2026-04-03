@@ -195,8 +195,8 @@ export function ChatPanel({
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3" role="log" aria-live="polite">
         {messages.length === 0 && !isLoading && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/30">
-              <svg className="h-5 w-5 text-violet-500 dark:text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30">
+              <svg className="h-5 w-5 text-[#0EA5A3] dark:text-[#0EA5A3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
@@ -234,7 +234,7 @@ export function ChatPanel({
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-violet-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:from-violet-700 hover:to-violet-800 disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0F2B46] to-[#0A1F33] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:from-[#0A1F33] hover:to-[#0F2B46] disabled:opacity-50"
           >
             {generating ? (
               <>

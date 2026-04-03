@@ -76,12 +76,12 @@ export function IntegrationSetupInline({
           value={token}
           onChange={(e) => setToken(e.target.value)}
           placeholder={config.placeholder}
-          className="flex-1 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs text-gray-900 placeholder:text-gray-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+          className="flex-1 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs text-gray-900 placeholder:text-gray-400 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
         />
         <button
           onClick={handleSave}
           disabled={saving || !token.trim()}
-          className="rounded-md bg-violet-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-violet-700 disabled:opacity-50"
+          className="rounded-md bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
         >
           {saving ? '...' : 'Conectar'}
         </button>
@@ -91,7 +91,7 @@ export function IntegrationSetupInline({
         href={config.helpUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[10px] text-violet-600 underline dark:text-violet-400"
+        className="text-[10px] text-[#0F2B46] underline dark:text-[#0EA5A3]"
       >
         Como obtener tu token de {config.label} →
       </a>

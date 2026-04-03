@@ -82,7 +82,7 @@ export function ReadinessCheckWidget({ projectId }: { projectId: string }) {
             {isReady ? '🟢' : data.score >= 50 ? '🟡' : '🔴'}
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <h3 className="text-sm font-semibold font-display text-gray-900 dark:text-gray-100">
               Go / No-Go — {data.score}%
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">{data.summary}</p>
@@ -138,7 +138,7 @@ export function ReadinessCheckWidget({ projectId }: { projectId: string }) {
                       href={check.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-violet-600 underline hover:text-violet-700 dark:text-violet-400"
+                      className="text-xs text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
                     >
                       Ver →
                     </a>

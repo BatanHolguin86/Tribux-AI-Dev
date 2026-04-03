@@ -26,7 +26,7 @@ export function Phase04ResourceBar({ projectId, approvedDesigns = [] }: Phase04R
         <span className="font-medium text-gray-500 dark:text-gray-400">Referencias en la app</span>
         <Link
           href={`/projects/${projectId}/phase/01`}
-          className="font-semibold text-violet-600 hover:underline dark:text-violet-400"
+          className="font-semibold text-[#0F2B46] hover:underline dark:text-[#0EA5A3]"
         >
           Phase 01 — KIRO
         </Link>
@@ -35,7 +35,7 @@ export function Phase04ResourceBar({ projectId, approvedDesigns = [] }: Phase04R
         </span>
         <Link
           href={`/projects/${projectId}/phase/02`}
-          className="font-semibold text-violet-600 hover:underline dark:text-violet-400"
+          className="font-semibold text-[#0F2B46] hover:underline dark:text-[#0EA5A3]"
         >
           Phase 02 — Diseño &amp; UX (hub)
         </Link>

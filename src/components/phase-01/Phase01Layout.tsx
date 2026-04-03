@@ -98,7 +98,7 @@ export function Phase01Layout({
             <div className="hidden items-center gap-2 sm:flex">
               <div className="h-1.5 w-24 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                 <div
-                  className="h-1.5 rounded-full bg-violet-600 transition-all"
+                  className="h-1.5 rounded-full bg-[#0F2B46] transition-all"
                   style={{ width: `${(completedFeatures / features.length) * 100}%` }}
                 />
               </div>

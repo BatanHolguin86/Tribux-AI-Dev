@@ -66,7 +66,7 @@ export function ArchiveConfirmDialog({ project, onClose, onConfirmed }: ArchiveC
             disabled={loading}
             className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors disabled:opacity-50 ${
               isArchived
-                ? 'bg-violet-600 hover:bg-violet-700'
+                ? 'bg-[#0F2B46] hover:bg-[#0A1F33]'
                 : 'bg-red-600 hover:bg-red-700'
             }`}
           >

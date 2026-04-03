@@ -219,8 +219,8 @@ export function ChatPanel({
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
         {messages.length === 0 && !isLoading && (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
-            <p className="text-sm text-violet-600 font-medium">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#0EA5A3]/30 border-t-[#0F2B46]" />
+            <p className="text-sm text-[#0F2B46] font-medium">
               El CTO esta analizando {SECTION_LABELS[section]}...
             </p>
             <p className="text-xs text-gray-400">

@@ -206,7 +206,7 @@ export function AgentsAdvancedLayout({
                   <button
                     onClick={handleNewThread}
                     disabled={isCreatingThread || !activeAgentInfo.accessible}
-                    className="mt-4 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm dark:shadow-gray-900/20 hover:bg-violet-700 disabled:opacity-50"
+                    className="mt-4 rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white shadow-sm dark:shadow-gray-900/20 hover:bg-[#0A1F33] disabled:opacity-50"
                   >
                     {activeAgentInfo.accessible ? (isCreatingThread ? 'Creando...' : 'Iniciar conversacion') : 'Bloqueado por plan'}
                   </button>

@@ -81,7 +81,7 @@ export function PhaseWorkspaceTabs({
               onClick={() => setActiveTab(tab.key)}
               className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-white text-violet-700 shadow-sm dark:bg-gray-800 dark:text-violet-300'
+                  ? 'bg-white text-[#0F2B46] shadow-sm dark:bg-gray-800 dark:text-[#0EA5A3]'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >

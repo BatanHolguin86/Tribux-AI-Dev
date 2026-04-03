@@ -26,7 +26,7 @@ export function DashboardHeader({ summary, onCreateProject }: DashboardHeaderPro
       {onCreateProject && (
         <button
           onClick={onCreateProject}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

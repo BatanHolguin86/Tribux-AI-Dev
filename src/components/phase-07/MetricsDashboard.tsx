@@ -120,7 +120,7 @@ export function MetricsDashboard({
         <button
           onClick={handleCollect}
           disabled={collecting}
-          className="inline-flex items-center gap-2 rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-md bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
         >
           {collecting && (
             <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -147,7 +147,7 @@ export function MetricsDashboard({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          <h3 className="text-sm font-semibold font-display text-gray-900 dark:text-gray-100">
             Metricas del Producto
           </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -210,7 +210,7 @@ export function MetricsDashboard({
                         href={`https://${d.url}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="truncate text-violet-600 underline hover:text-violet-700 dark:text-violet-400"
+                        className="truncate text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
                         title={d.url}
                       >
                         {d.url.length > 30 ? d.url.slice(0, 30) + '…' : d.url}

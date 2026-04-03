@@ -117,16 +117,16 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
                 onClick={() => isUpgrade && setSelectedPlan(plan.key)}
                 className={`rounded-lg border-2 p-4 text-left transition-colors ${
                   isSelected
-                    ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20 ring-2 ring-violet-300'
+                    ? 'border-[#0EA5A3] bg-[#E8F4F8] dark:bg-[#0F2B46]/20 ring-2 ring-[#0EA5A3]'
                     : isCurrent
-                      ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20'
+                      ? 'border-[#0EA5A3] bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
                       : isUpgrade
-                        ? 'border-gray-200 dark:border-gray-700 hover:border-violet-400 cursor-pointer'
+                        ? 'border-gray-200 dark:border-gray-700 hover:border-[#0EA5A3] cursor-pointer'
                         : 'border-gray-200 dark:border-gray-700 opacity-50'
                 }`}
               >
                 <p className="font-semibold text-gray-900 dark:text-gray-100">{plan.name}</p>
-                <p className="text-sm font-medium text-violet-600 dark:text-violet-400">{plan.price}</p>
+                <p className="text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">{plan.price}</p>
                 <ul className="mt-2 space-y-1">
                   {plan.features.map((f) => (
                     <li key={f} className="text-xs text-gray-500 dark:text-gray-400">
@@ -135,12 +135,12 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
                   ))}
                 </ul>
                 {isCurrent && (
-                  <span className="mt-2 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
+                  <span className="mt-2 inline-block text-xs font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
                     Plan actual
                   </span>
                 )}
                 {isSelected && (
-                  <span className="mt-2 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
+                  <span className="mt-2 inline-block text-xs font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
                     Seleccionado
                   </span>
                 )}
@@ -163,7 +163,7 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
           <button
             onClick={handleUpgrade}
             disabled={!selectedPlan || loading}
-            className="flex-1 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg bg-[#0F2B46] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Procesando...' : 'Upgrade'}
           </button>

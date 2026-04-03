@@ -165,28 +165,28 @@ export function BillingSection({
                     key={plan}
                     className={`rounded-lg border-2 p-4 ${
                       isCurrent
-                        ? 'border-violet-600 bg-violet-50 dark:bg-violet-900/20'
+                        ? 'border-[#0EA5A3] bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
                         : isUpgrade
                           ? 'border-gray-200 dark:border-gray-700'
                           : 'border-gray-200 dark:border-gray-700 opacity-50'
                     }`}
                   >
                     <p className="font-semibold text-gray-900 dark:text-gray-100">{detail.name}</p>
-                    <p className="text-sm font-medium text-violet-600 dark:text-violet-400">{detail.price}</p>
+                    <p className="text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">{detail.price}</p>
                     <ul className="mt-2 space-y-1">
                       {detail.features.map((f) => (
                         <li key={f} className="text-xs text-gray-500 dark:text-gray-400">{f}</li>
                       ))}
                     </ul>
                     {isCurrent ? (
-                      <span className="mt-3 inline-block text-xs font-medium text-violet-600 dark:text-violet-400">
+                      <span className="mt-3 inline-block text-xs font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
                         Plan actual
                       </span>
                     ) : isUpgrade ? (
                       <button
                         onClick={() => handleUpgrade(plan)}
                         disabled={loading === plan}
-                        className="mt-3 w-full rounded-md bg-violet-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-violet-700 disabled:opacity-50"
+                        className="mt-3 w-full rounded-md bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
                       >
                         {loading === plan ? 'Procesando...' : 'Upgrade'}
                       </button>

@@ -88,7 +88,7 @@ export function KnowledgeEntryDetail({
               {entry.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-600 dark:bg-violet-900/20 dark:text-violet-400"
+                  className="rounded-full bg-[#E8F4F8] px-2 py-0.5 text-[10px] font-medium text-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3]"
                 >
                   {tag}
                 </span>

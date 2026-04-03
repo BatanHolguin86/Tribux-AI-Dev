@@ -83,7 +83,7 @@ function isCurrentMonth(m: string): boolean {
 // ── Category color ────────────────────────────────────────────────────────────
 
 const CAT_COLORS: Record<string, string> = {
-  chat:   'bg-violet-500',
+  chat:   'bg-[#E8F4F8]0',
   code:   'bg-blue-500',
   tests:  'bg-emerald-500',
   data:   'bg-amber-500',
@@ -96,9 +96,9 @@ const CAT_COLORS: Record<string, string> = {
 
 function StatCard({ label, value, sub, highlight }: { label: string; value: string; sub?: string; highlight?: boolean }) {
   return (
-    <div className={`rounded-xl border p-4 ${highlight ? 'border-violet-200 bg-violet-50 dark:border-violet-700/40 dark:bg-violet-900/10' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'}`}>
+    <div className={`rounded-xl border p-4 ${highlight ? 'border-[#0EA5A3]/30 bg-[#E8F4F8] dark:border-[#0A1F33]/40 dark:bg-[#0F2B46]/10' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'}`}>
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-      <p className={`text-2xl font-bold tabular-nums ${highlight ? 'text-violet-700 dark:text-violet-400' : 'text-gray-900 dark:text-gray-100'}`}>{value}</p>
+      <p className={`text-2xl font-bold tabular-nums ${highlight ? 'text-[#0F2B46] dark:text-[#0EA5A3]' : 'text-gray-900 dark:text-gray-100'}`}>{value}</p>
       {sub && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{sub}</p>}
     </div>
   )
@@ -173,14 +173,14 @@ function PlanUsageBar({ data, projectId }: { data: CostSummary; projectId: strin
       <div className="flex items-center justify-between mb-3">
         <SectionTitle>Consumo del plan este mes</SectionTitle>
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-          Plan <span className="text-violet-600 dark:text-violet-400 font-semibold">{planLabel}</span> · {fmtUSD(data.planBudgetUsd)}/mes
+          Plan <span className="text-[#0F2B46] dark:text-[#0EA5A3] font-semibold">{planLabel}</span> · {fmtUSD(data.planBudgetUsd)}/mes
         </span>
       </div>
 
       {/* Stacked progress bar */}
       <div className="mb-3 h-3 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800 flex">
         {thisPct > 0 && (
-          <div className="h-full bg-violet-500 transition-all duration-700" style={{ width: `${thisPct}%` }} title={`Este proyecto: ${fmtUSD(thisProjectCost)}`} />
+          <div className="h-full bg-[#E8F4F8]0 transition-all duration-700" style={{ width: `${thisPct}%` }} title={`Este proyecto: ${fmtUSD(thisProjectCost)}`} />
         )}
         {otherPct > 0 && (
           <div className="h-full bg-gray-400 dark:bg-gray-600 transition-all duration-700" style={{ width: `${otherPct}%` }} title={`Otros proyectos: ${fmtUSD(otherCost)}`} />
@@ -189,7 +189,7 @@ function PlanUsageBar({ data, projectId }: { data: CostSummary; projectId: strin
 
       <div className="grid grid-cols-3 gap-2 text-xs">
         <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-violet-500" />
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#E8F4F8]0" />
           <div>
             <p className="font-medium text-gray-700 dark:text-gray-300">Este proyecto</p>
             <p className="text-gray-400">{fmtUSD(thisProjectCost)} · {Math.round(thisPct)}%</p>
@@ -334,7 +334,7 @@ function InfraConfig({
               <select
                 value={currentTier}
                 onChange={(e) => handleChange(id, e.target.value)}
-                className="flex-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs text-gray-700 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                className="flex-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs text-gray-700 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
               >
                 {Object.entries(svc.tiers).map(([key, t]) => (
                   <option key={key} value={key}>{t.label}</option>
@@ -399,16 +399,16 @@ function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthl
             {rows.map((row) => {
               const isCurrent = isCurrentMonth(row.month)
               return (
-                <tr key={row.month} className={isCurrent ? 'bg-violet-50/50 dark:bg-violet-900/10' : ''}>
+                <tr key={row.month} className={isCurrent ? 'bg-[#E8F4F8]/50 dark:bg-[#0F2B46]/10' : ''}>
                   <td className="py-2 font-medium text-gray-700 dark:text-gray-300">
                     {fmtMonth(row.month)}
                     {isCurrent && (
-                      <span className="ml-1.5 rounded bg-violet-100 px-1 py-0.5 text-[9px] font-semibold text-violet-600 dark:bg-violet-900/30 dark:text-violet-400 uppercase tracking-wide">
+                      <span className="ml-1.5 rounded bg-[#E8F4F8] px-1 py-0.5 text-[9px] font-semibold text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3] uppercase tracking-wide">
                         en curso
                       </span>
                     )}
                   </td>
-                  <td className="py-2 text-right tabular-nums text-violet-600 dark:text-violet-400 font-medium">{fmtUSD(row.aiCostUsd)}</td>
+                  <td className="py-2 text-right tabular-nums text-[#0F2B46] dark:text-[#0EA5A3] font-medium">{fmtUSD(row.aiCostUsd)}</td>
                   <td className="py-2 text-right tabular-nums text-gray-500 dark:text-gray-400">{fmtUSD(row.infraCost)}</td>
                   <td className="py-2 text-right tabular-nums font-semibold text-gray-800 dark:text-gray-200">{fmtUSD(row.total)}</td>
                   <td className="py-2 text-right tabular-nums text-gray-500 dark:text-gray-400">{fmtUSD(row.cumulative)}</td>
@@ -419,7 +419,7 @@ function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthl
           <tfoot>
             <tr className="border-t-2 border-gray-200 dark:border-gray-700">
               <td className="pt-2 font-semibold text-gray-700 dark:text-gray-300">Total</td>
-              <td className="pt-2 text-right tabular-nums font-semibold text-violet-600 dark:text-violet-400">{fmtUSD(data.aiCostAllTime)}</td>
+              <td className="pt-2 text-right tabular-nums font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">{fmtUSD(data.aiCostAllTime)}</td>
               <td className="pt-2 text-right tabular-nums text-gray-500">—</td>
               <td className="pt-2 text-right tabular-nums font-bold text-gray-900 dark:text-gray-100">{fmtUSD(rows[rows.length - 1]?.cumulative ?? 0)}</td>
               <td />

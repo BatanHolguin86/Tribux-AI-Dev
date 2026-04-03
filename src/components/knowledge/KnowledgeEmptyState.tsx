@@ -37,7 +37,7 @@ export function KnowledgeEmptyState({ projectId, onSeeded }: KnowledgeEmptyState
   return (
     <div className="flex h-[var(--content-height)] items-center justify-center">
       <div className="mx-auto max-w-md rounded-2xl border border-dashed border-gray-300 bg-gray-50/50 px-8 py-12 text-center dark:border-gray-600 dark:bg-gray-900/40">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-3xl dark:bg-violet-900/30">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E8F4F8] text-3xl dark:bg-[#0F2B46]/30">
           📚
         </div>
         <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
@@ -58,7 +58,7 @@ export function KnowledgeEmptyState({ projectId, onSeeded }: KnowledgeEmptyState
           <button
             onClick={handleSeed}
             disabled={seeding}
-            className="flex items-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-[#0F2B46] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
           >
             {seeding ? (
               <>

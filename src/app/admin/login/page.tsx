@@ -60,9 +60,9 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left panel — brand */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center bg-violet-950 px-12">
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center bg-[#0A1F33] px-12">
         <div className="max-w-md">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25 mb-8">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#0F2B46] to-indigo-600 shadow-lg shadow-[#0EA5A3]/25 mb-8">
             <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -70,10 +70,10 @@ export default function AdminLoginPage() {
           <h2 className="text-3xl font-bold text-white tracking-tight">
             AI Squad
           </h2>
-          <p className="mt-2 text-lg text-violet-200">
+          <p className="mt-2 text-lg text-[#0EA5A3]/30">
             Control financiero
           </p>
-          <p className="mt-6 text-sm text-violet-300/70 leading-relaxed">
+          <p className="mt-6 text-sm text-[#0EA5A3]/70 leading-relaxed">
             Panel de administracion para monitorear costos de IA, infraestructura, ingresos y margenes por usuario.
           </p>
         </div>
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
         <div className="w-full max-w-sm space-y-8">
           {/* Mobile logo */}
           <div className="lg:hidden text-center">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-indigo-600 shadow-lg shadow-[#0EA5A3]/25">
               <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -117,7 +117,7 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
                 placeholder="admin@aisquad.com"
               />
             </div>
@@ -132,7 +132,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2.5 text-sm text-gray-900 dark:text-gray-100 shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
                 placeholder="••••••••"
               />
             </div>
@@ -140,7 +140,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-lg bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#0EA5A3] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Verificando...' : 'Ingresar al backoffice'}
             </button>

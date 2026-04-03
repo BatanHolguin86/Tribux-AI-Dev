@@ -113,8 +113,8 @@ export function CodeGenerationModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-5 py-3 dark:border-gray-700 dark:bg-gray-800">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/40">
-              <svg className="h-4 w-4 text-violet-600 dark:text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#E8F4F8] dark:bg-[#0F2B46]/40">
+              <svg className="h-4 w-4 text-[#0F2B46] dark:text-[#0EA5A3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
@@ -129,8 +129,8 @@ export function CodeGenerationModal({
           </div>
           <div className="flex items-center gap-2">
             {isStreaming && (
-              <span className="flex items-center gap-1.5 text-xs text-violet-600 dark:text-violet-400">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
+              <span className="flex items-center gap-1.5 text-xs text-[#0F2B46] dark:text-[#0EA5A3]">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#E8F4F8]0" />
                 Generando...
               </span>
             )}
@@ -177,7 +177,7 @@ export function CodeGenerationModal({
           {!content && isStreaming && (
             <div className="flex items-center justify-center py-12">
               <div className="flex flex-col items-center gap-3">
-                <svg className="h-8 w-8 animate-spin text-violet-500" fill="none" viewBox="0 0 24 24">
+                <svg className="h-8 w-8 animate-spin text-[#0EA5A3]" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
@@ -211,7 +211,7 @@ export function CodeGenerationModal({
                 href={commitResult.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-2 text-violet-600 underline dark:text-violet-400"
+                className="ml-2 text-[#0F2B46] underline dark:text-[#0EA5A3]"
               >
                 Ver commit
               </a>

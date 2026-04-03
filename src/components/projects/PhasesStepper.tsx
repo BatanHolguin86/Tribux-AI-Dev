@@ -59,10 +59,10 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
       <nav className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
         {/* Header with progress */}
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+          <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
             Fases del proyecto
           </h3>
-          <span className="rounded-full bg-violet-100 dark:bg-violet-900/30 px-2 py-0.5 text-[10px] font-bold text-violet-700 dark:text-violet-400">
+          <span className="rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2 py-0.5 text-[10px] font-bold text-[#0F2B46] dark:text-[#0EA5A3]">
             {progress}%
           </span>
         </div>
@@ -70,7 +70,7 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
         {/* Progress bar */}
         <div className="mb-3 h-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
           <div
-            className="h-1 rounded-full bg-gradient-to-r from-violet-500 to-violet-600 transition-all duration-500"
+            className="h-1 rounded-full gradient-phase transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -120,16 +120,16 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             href={`/projects/${projectId}/knowledge`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/knowledge')
-                ? 'bg-violet-50 dark:bg-violet-900/20'
+                ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
                 : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
             }`}
           >
             <div className="flex h-5 w-5 shrink-0 items-center justify-center text-sm">
               📚
             </div>
-            <span className={`text-xs font-medium ${
+            <span className={`text-sm font-medium ${
               pathname?.includes('/knowledge')
-                ? 'text-violet-700 dark:text-violet-400'
+                ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
                 : 'text-gray-700 dark:text-gray-300'
             }`}>
               Base de Conocimiento
@@ -140,16 +140,16 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             href={`/projects/${projectId}/infrastructure`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/infrastructure')
-                ? 'bg-violet-50 dark:bg-violet-900/20'
+                ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
                 : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
             }`}
           >
             <div className="flex h-5 w-5 shrink-0 items-center justify-center text-sm">
               🔌
             </div>
-            <span className={`text-xs font-medium ${
+            <span className={`text-sm font-medium ${
               pathname?.includes('/infrastructure')
-                ? 'text-violet-700 dark:text-violet-400'
+                ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
                 : 'text-gray-700 dark:text-gray-300'
             }`}>
               Infraestructura
@@ -160,16 +160,16 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             href={`/projects/${projectId}/costs`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/costs')
-                ? 'bg-violet-50 dark:bg-violet-900/20'
+                ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
                 : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
             }`}
           >
             <div className="flex h-5 w-5 shrink-0 items-center justify-center text-sm">
               💰
             </div>
-            <span className={`text-xs font-medium ${
+            <span className={`text-sm font-medium ${
               pathname?.includes('/costs')
-                ? 'text-violet-700 dark:text-violet-400'
+                ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
                 : 'text-gray-700 dark:text-gray-300'
             }`}>
               Control de Costos
@@ -214,22 +214,36 @@ function StepperItem({
   canReset: boolean
   onReset: () => void
 }) {
+  // Phase colors: 00=#6366F1, 01=#8B5CF6, 02=#0EA5A3, 03=#0EA5A3, 04=#10B981, 05=#F59E0B, 06=#F97316, 07=#EF4444
+  const PHASE_COLORS: Record<string, string> = {
+    '00': '#6366F1',
+    '01': '#8B5CF6',
+    '02': '#0EA5A3',
+    '03': '#0EA5A3',
+    '04': '#10B981',
+    '05': '#F59E0B',
+    '06': '#F97316',
+    '07': '#EF4444',
+  }
+
+  const phaseColor = PHASE_COLORS[phaseNum] ?? '#6B7280'
+
   const content = (
     <div
       className={`group relative flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
         isActive
-          ? 'bg-violet-50 dark:bg-violet-900/20'
+          ? 'bg-[#0EA5A3]/15'
           : status === 'completed'
             ? 'hover:bg-green-50/50 dark:hover:bg-green-900/10'
             : status === 'active'
-              ? 'hover:bg-violet-50/50 dark:hover:bg-violet-900/10'
+              ? 'hover:bg-[#E8F4F8]/50 dark:hover:bg-[#0F2B46]/10'
               : ''
       }`}
     >
       {/* Vertical connector line */}
       {!isLast && (
         <div
-          className={`absolute left-[1.19rem] top-[2.25rem] h-[calc(100%-0.5rem)] w-px ${
+          className={`absolute left-[1.55rem] top-[2.75rem] h-[calc(100%-1rem)] w-px ${
             status === 'completed'
               ? 'bg-green-300 dark:bg-green-800'
               : 'bg-gray-200 dark:bg-gray-700'
@@ -237,24 +251,24 @@ function StepperItem({
         />
       )}
 
-      {/* Status indicator */}
-      <div className="relative z-10 flex h-5 w-5 shrink-0 items-center justify-center">
+      {/* Phase number square */}
+      <div className="relative z-10 flex shrink-0 items-center justify-center">
         {status === 'completed' ? (
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500">
-            <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500">
+            <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
         ) : status === 'active' ? (
-          <div className="relative flex h-5 w-5 items-center justify-center">
-            <div className="absolute h-5 w-5 animate-ping rounded-full bg-violet-400/30" />
-            <div className="h-3 w-3 rounded-full bg-violet-500 ring-2 ring-violet-200 dark:ring-violet-800" />
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-lg"
+            style={{ backgroundColor: phaseColor }}
+          >
+            <span className="font-mono text-sm font-bold text-white">{phaseNum}</span>
           </div>
         ) : (
-          <div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800">
-            <svg className="h-2.5 w-2.5 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
-            </svg>
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700">
+            <span className="font-mono text-sm font-bold text-gray-400 dark:text-gray-500">{phaseNum}</span>
           </div>
         )}
       </div>
@@ -264,13 +278,13 @@ function StepperItem({
         <span className="text-sm leading-none">{icon}</span>
         <div className="min-w-0 flex-1">
           <span
-            className={`block truncate text-xs font-medium leading-tight ${
+            className={`block truncate text-sm font-medium leading-tight ${
               isActive
-                ? 'text-violet-700 dark:text-violet-400'
+                ? 'text-[#0EA5A3] font-semibold'
                 : status === 'completed'
                   ? 'text-gray-700 dark:text-gray-300'
                   : status === 'active'
-                    ? 'text-gray-700 dark:text-gray-300'
+                    ? 'text-[#0F2B46] dark:text-gray-300'
                     : 'text-gray-400 dark:text-gray-500'
             }`}
           >
@@ -279,7 +293,7 @@ function StepperItem({
           <span
             className={`text-[10px] leading-tight ${
               isActive
-                ? 'text-violet-500 dark:text-violet-500'
+                ? 'text-[#0EA5A3] dark:text-[#0EA5A3]'
                 : status === 'completed'
                   ? 'text-green-600 dark:text-green-500'
                   : 'text-gray-400 dark:text-gray-600'
@@ -307,9 +321,9 @@ function StepperItem({
         </button>
       )}
 
-      {/* Active indicator */}
+      {/* Active indicator (teal dot) */}
       {isActive && !canReset && (
-        <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+        <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#0EA5A3]" />
       )}
     </div>
   )

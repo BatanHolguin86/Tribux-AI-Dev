@@ -28,7 +28,7 @@ export function FeatureItem({ name, status, documents, onClick }: FeatureItemPro
         isComplete
           ? 'border-emerald-200 bg-emerald-50/40 dark:border-emerald-900/40 dark:bg-emerald-950/10'
           : isInProgress
-            ? 'border-violet-200 bg-white hover:border-violet-300 dark:border-violet-800/60 dark:bg-gray-900 dark:hover:border-violet-700'
+            ? 'border-[#0EA5A3]/30 bg-white hover:border-[#0EA5A3] dark:border-[#0F2B46]/60 dark:bg-gray-900 dark:hover:border-[#0A1F33]'
             : 'border-gray-200 bg-white hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-gray-600'
       }`}
     >
@@ -52,7 +52,7 @@ export function FeatureItem({ name, status, documents, onClick }: FeatureItemPro
                     approved
                       ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                       : draft
-                        ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'
+                        ? 'bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3]'
                         : 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
                   }`}
                 >
@@ -74,7 +74,7 @@ export function FeatureItem({ name, status, documents, onClick }: FeatureItemPro
             isComplete
               ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
               : isInProgress
-                ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'
+                ? 'bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3]'
                 : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
           }`}
         >
@@ -83,7 +83,7 @@ export function FeatureItem({ name, status, documents, onClick }: FeatureItemPro
       </div>
 
       {/* CTA */}
-      <div className="mt-3 flex items-center gap-1 text-xs font-medium text-violet-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-violet-400">
+      <div className="mt-3 flex items-center gap-1 text-xs font-medium text-[#0F2B46] opacity-0 transition-opacity group-hover:opacity-100 dark:text-[#0EA5A3]">
         {isComplete ? 'Ver spec' : 'Trabajar en spec'}
         <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

@@ -72,7 +72,7 @@ export default async function HomePage() {
       <nav className="sticky top-0 z-40 border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-indigo-600">
               <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -88,7 +88,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/register"
-              className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
+              className="rounded-lg bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
             >
               Comenzar gratis
             </Link>
@@ -98,16 +98,16 @@ export default async function HomePage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-indigo-50 dark:from-violet-950/20 dark:via-gray-950 dark:to-indigo-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#E8F4F8] via-white to-indigo-50 dark:from-[#0A1F33]/20 dark:via-gray-950 dark:to-indigo-950/20" />
         <div className="relative mx-auto max-w-6xl px-6 py-24 sm:py-32 lg:py-40">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-900/20 px-4 py-1.5 text-sm font-medium text-violet-700 dark:text-violet-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse" />
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#0EA5A3]/30 dark:border-[#0F2B46] bg-[#E8F4F8] dark:bg-[#0F2B46]/20 px-4 py-1.5 text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#E8F4F8]0 animate-pulse" />
               7 dias gratis — sin tarjeta de credito
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
               Tu idea, tu decision.{' '}
-              <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#0F2B46] to-indigo-600 bg-clip-text text-transparent">
                 Tu producto.
               </span>
             </h1>
@@ -118,7 +118,7 @@ export default async function HomePage() {
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Link
                 href="/register"
-                className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:brightness-110 sm:w-auto"
+                className="w-full rounded-xl bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110 sm:w-auto"
               >
                 Comenzar gratis
               </Link>
@@ -160,7 +160,7 @@ export default async function HomePage() {
       <section id="como-funciona" className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">Metodologia IA DLC</p>
+            <p className="text-sm font-semibold uppercase tracking-wider text-[#0F2B46] dark:text-[#0EA5A3]">Metodologia IA DLC</p>
             <h2 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
               8 fases, de la idea al lanzamiento
             </h2>
@@ -173,11 +173,11 @@ export default async function HomePage() {
             {PHASES.map((phase) => (
               <div
                 key={phase.num}
-                className="group rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-violet-300 dark:hover:border-violet-700"
+                className="group rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-[#0EA5A3] dark:hover:border-[#0A1F33]"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{phase.icon}</span>
-                  <span className="rounded-full bg-violet-100 dark:bg-violet-900/30 px-2 py-0.5 text-[10px] font-bold text-violet-700 dark:text-violet-400">
+                  <span className="rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2 py-0.5 text-[10px] font-bold text-[#0F2B46] dark:text-[#0EA5A3]">
                     {phase.num}
                   </span>
                 </div>
@@ -193,7 +193,7 @@ export default async function HomePage() {
       <section className="border-t border-gray-100 dark:border-gray-800 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">Tu equipo</p>
+            <p className="text-sm font-semibold uppercase tracking-wider text-[#0F2B46] dark:text-[#0EA5A3]">Tu equipo</p>
             <h2 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
               9 agentes IA especializados
             </h2>
@@ -206,7 +206,7 @@ export default async function HomePage() {
             {AGENTS.map((agent) => (
               <div
                 key={agent.name}
-                className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-violet-300 dark:hover:border-violet-700"
+                className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-[#0EA5A3] dark:hover:border-[#0A1F33]"
               >
                 <span className="text-3xl">{agent.icon}</span>
                 <h3 className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100">{agent.name}</h3>
@@ -221,7 +221,7 @@ export default async function HomePage() {
       <section className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 py-24">
         <div className="mx-auto max-w-5xl px-6">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">Planes</p>
+            <p className="text-sm font-semibold uppercase tracking-wider text-[#0F2B46] dark:text-[#0EA5A3]">Planes</p>
             <h2 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
               Elige tu plan
             </h2>
@@ -236,12 +236,12 @@ export default async function HomePage() {
                 key={plan.name}
                 className={`relative rounded-2xl border-2 bg-white dark:bg-gray-900 p-8 transition-shadow hover:shadow-lg ${
                   plan.popular
-                    ? 'border-violet-600 shadow-md'
+                    ? 'border-[#0F2B46] shadow-md'
                     : 'border-gray-200 dark:border-gray-700'
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-1 text-xs font-semibold text-white">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-4 py-1 text-xs font-semibold text-white">
                     Mas popular
                   </div>
                 )}
@@ -253,7 +253,7 @@ export default async function HomePage() {
                 <ul className="mt-6 space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                      <svg className="h-4 w-4 shrink-0 text-violet-600 dark:text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg className="h-4 w-4 shrink-0 text-[#0F2B46] dark:text-[#0EA5A3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {feature}
@@ -264,7 +264,7 @@ export default async function HomePage() {
                   href="/register"
                   className={`mt-8 block w-full rounded-xl py-3 text-center text-sm font-semibold transition-all ${
                     plan.popular
-                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm hover:shadow-md hover:brightness-110'
+                      ? 'bg-gradient-to-r from-[#0F2B46] to-indigo-600 text-white shadow-sm hover:shadow-md hover:brightness-110'
                       : 'border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                   }`}
                 >
@@ -276,9 +276,9 @@ export default async function HomePage() {
 
           <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
             Necesitas mas?{' '}
-            <span className="font-medium text-violet-600 dark:text-violet-400">Enterprise</span>{' '}
+            <span className="font-medium text-[#0F2B46] dark:text-[#0EA5A3]">Enterprise</span>{' '}
             — proyectos ilimitados, agentes dedicados, soporte 24/7.{' '}
-            <Link href="/register" className="underline hover:text-violet-700 dark:hover:text-violet-300">
+            <Link href="/register" className="underline hover:text-[#0F2B46] dark:hover:text-[#0EA5A3]">
               Contactar
             </Link>
           </p>
@@ -296,7 +296,7 @@ export default async function HomePage() {
           </p>
           <Link
             href="/register"
-            className="mt-8 inline-block rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-10 py-4 text-base font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:brightness-110"
+            className="mt-8 inline-block rounded-xl bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-10 py-4 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110"
           >
             Comenzar gratis — 7 dias sin costo
           </Link>
@@ -308,7 +308,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-indigo-600">
                 <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>

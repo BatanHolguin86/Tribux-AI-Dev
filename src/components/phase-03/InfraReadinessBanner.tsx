@@ -72,7 +72,7 @@ export function InfraReadinessBanner({ projectId }: { projectId: string }) {
       </div>
       <Link
         href={`/projects/${projectId}/infrastructure`}
-        className="shrink-0 text-xs font-medium text-violet-600 underline hover:text-violet-700 dark:text-violet-400"
+        className="shrink-0 text-xs font-medium text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
       >
         Configurar →
       </Link>

@@ -63,19 +63,19 @@ const stepPillClass = (
     approved
       ? 'bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-200 dark:ring-emerald-800'
       : current
-        ? 'bg-violet-100 text-violet-800 ring-violet-200 dark:bg-violet-900/40 dark:text-violet-200 dark:ring-violet-700'
+        ? 'bg-[#E8F4F8] text-[#0F2B46] ring-[#0EA5A3]/30 dark:bg-[#0F2B46]/40 dark:text-[#0EA5A3]/30 dark:ring-[#0A1F33]'
         : locked
           ? 'bg-gray-50 text-gray-400 ring-gray-200 dark:bg-gray-800 dark:text-gray-500 dark:ring-gray-700'
           : 'bg-white text-gray-600 ring-gray-200 dark:bg-gray-900 dark:text-gray-400 dark:ring-gray-700'
-  } ${interactive ? 'cursor-pointer hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-900' : ''}`
+  } ${interactive ? 'cursor-pointer hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0EA5A3] focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-900' : ''}`
 
 export function KiroWorkflowRail({ documents, activeDocType, onStepClick }: KiroWorkflowRailProps) {
   const hint = actionHint(documents, activeDocType)
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-gradient-to-r from-violet-50/80 to-white px-3 py-2.5 dark:border-gray-700 dark:from-violet-950/25 dark:to-gray-900">
+    <div className="rounded-xl border border-gray-200 bg-gradient-to-r from-[#E8F4F8]/80 to-white px-3 py-2.5 dark:border-gray-700 dark:from-[#0A1F33]/25 dark:to-gray-900">
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F2B46] dark:text-[#0EA5A3]">
           Spec KIRO
         </span>
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">

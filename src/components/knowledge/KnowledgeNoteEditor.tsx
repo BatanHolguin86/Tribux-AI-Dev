@@ -72,7 +72,7 @@ export function KnowledgeNoteEditor({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Titulo de la nota..."
               autoFocus
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-violet-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-violet-400 dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-[#0EA5A3] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
             />
           </div>
 
@@ -83,7 +83,7 @@ export function KnowledgeNoteEditor({
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as KBCategory)}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:border-violet-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-violet-400 dark:border-gray-700 dark:bg-gray-800 dark:focus:bg-gray-900"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:border-[#0EA5A3] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:focus:bg-gray-900"
             >
               {KB_CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
@@ -102,7 +102,7 @@ export function KnowledgeNoteEditor({
               onChange={(e) => setContent(e.target.value)}
               placeholder="Escribe tu nota... (soporta Markdown)"
               rows={8}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-violet-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-violet-400 dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-[#0EA5A3] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
             />
           </div>
 
@@ -122,7 +122,7 @@ export function KnowledgeNoteEditor({
           <button
             onClick={handleSave}
             disabled={saving || !title.trim() || !content.trim()}
-            className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700 disabled:opacity-50"
+            className="rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
           >
             {saving ? 'Guardando...' : 'Guardar'}
           </button>

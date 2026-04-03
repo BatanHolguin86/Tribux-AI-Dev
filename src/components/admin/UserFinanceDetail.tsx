@@ -44,7 +44,7 @@ type DetailResponse = {
 
 const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   active: { label: 'Activo', classes: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' },
-  trialing: { label: 'Trial', classes: 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400' },
+  trialing: { label: 'Trial', classes: 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20 text-[#0F2B46] dark:text-[#0EA5A3]' },
   canceled: { label: 'Cancelado', classes: 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' },
   free: { label: 'Free', classes: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' },
   past_due: { label: 'Pendiente', classes: 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400' },
@@ -108,13 +108,13 @@ function KpiCard({
 }) {
   const valueColor = {
     default: 'text-gray-900 dark:text-white',
-    revenue: 'text-violet-700 dark:text-violet-400',
+    revenue: 'text-[#0F2B46] dark:text-[#0EA5A3]',
     cost: 'text-red-600 dark:text-red-400',
     profit: 'text-emerald-600 dark:text-emerald-400',
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-violet-300 dark:hover:border-violet-700">
+    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-[#0EA5A3] dark:hover:border-[#0A1F33]">
       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
       <p className={`mt-2 text-2xl font-bold ${valueColor[variant]}`}>{value}</p>
       {subtitle && <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{subtitle}</p>}
@@ -149,7 +149,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
   if (loading || !data) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-500" />
+        <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0EA5A3]" />
       </div>
     )
   }
@@ -173,7 +173,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
       {/* User profile header */}
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-sm font-bold text-white shadow-lg shadow-violet-500/25 shrink-0">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#0EA5A3] to-indigo-500 text-sm font-bold text-white shadow-lg shadow-[#0EA5A3]/25 shrink-0">
             {initials}
           </div>
           <div className="min-w-0 flex-1">
@@ -181,7 +181,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
               <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                 {user.fullName || 'Usuario'}
               </h1>
-              <span className="inline-flex rounded-full bg-violet-100 dark:bg-violet-900/30 px-2.5 py-0.5 text-[11px] font-bold text-violet-700 dark:text-violet-400 uppercase">
+              <span className="inline-flex rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2.5 py-0.5 text-[11px] font-bold text-[#0F2B46] dark:text-[#0EA5A3] uppercase">
                 {user.plan}
               </span>
               <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-medium ${status.classes}`}>
@@ -340,7 +340,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
                         <span className="font-medium text-gray-900 dark:text-gray-100 text-[13px]">
                           {EVENT_LABELS[row.eventType] || row.eventType}
                         </span>
-                        <span className="inline-flex rounded-full bg-violet-100 dark:bg-violet-900/30 px-2 py-0.5 text-[10px] font-bold text-violet-700 dark:text-violet-400 tabular-nums">
+                        <span className="inline-flex rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2 py-0.5 text-[10px] font-bold text-[#0F2B46] dark:text-[#0EA5A3] tabular-nums">
                           {pct.toFixed(0)}%
                         </span>
                       </div>
@@ -370,7 +370,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
             </tbody>
             {eventTypeBreakdown.length > 0 && (
               <tfoot>
-                <tr className="border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-violet-50 via-white to-indigo-50 dark:from-violet-950/20 dark:via-gray-900 dark:to-indigo-950/20">
+                <tr className="border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-[#E8F4F8] via-white to-indigo-50 dark:from-[#0A1F33]/20 dark:via-gray-900 dark:to-indigo-950/20">
                   <td className="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Total</td>
                   <td className="px-4 py-3 text-right text-sm font-bold text-gray-900 dark:text-white tabular-nums">
                     {formatUsd(totalCostAllTimeUsd)}
@@ -445,7 +445,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right text-[13px] text-gray-600 dark:text-gray-400 tabular-nums whitespace-nowrap">
-                      <span className="text-violet-600 dark:text-violet-400">{e.inputTokens.toLocaleString()}</span>
+                      <span className="text-[#0F2B46] dark:text-[#0EA5A3]">{e.inputTokens.toLocaleString()}</span>
                       <span className="text-gray-300 dark:text-gray-600 mx-1">/</span>
                       <span>{e.outputTokens.toLocaleString()}</span>
                     </td>

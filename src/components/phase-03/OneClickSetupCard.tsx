@@ -14,7 +14,7 @@ const STEP_META = [
 function StepIcon({ status }: { status: StepStatus }) {
   if (status === 'running' || status === 'polling') {
     return (
-      <svg className="h-5 w-5 animate-spin text-violet-500" fill="none" viewBox="0 0 24 24">
+      <svg className="h-5 w-5 animate-spin text-[#0EA5A3]" fill="none" viewBox="0 0 24 24">
         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
       </svg>
@@ -61,7 +61,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
         <div className="flex items-center gap-3">
           <span className="text-2xl">✅</span>
           <div>
-            <h3 className="text-sm font-semibold text-green-800 dark:text-green-300">
+            <h3 className="text-sm font-semibold font-display text-green-800 dark:text-green-300">
               Infraestructura configurada
             </h3>
             <p className="text-xs text-green-600 dark:text-green-400">
@@ -79,11 +79,11 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
   }
 
   return (
-    <div className="mb-6 rounded-xl border-2 border-violet-200 bg-gradient-to-b from-violet-50/60 to-white p-6 dark:border-violet-900/50 dark:from-violet-950/30 dark:to-gray-900">
+    <div className="mb-6 rounded-xl border-2 border-[#0EA5A3]/30 bg-gradient-to-b from-[#E8F4F8]/60 to-white p-6 dark:border-[#0F2B46] dark:from-[#0F2B46]/30 dark:to-gray-900">
       <div className="flex items-start gap-4">
         <span className="text-3xl">⚡</span>
         <div className="flex-1">
-          <h3 className="text-base font-bold text-gray-900 dark:text-gray-100">
+          <h3 className="text-base font-bold font-display text-gray-900 dark:text-gray-100">
             Configuracion Automatica
           </h3>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -113,7 +113,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
                         href={step.data.repoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-violet-600 underline dark:text-violet-400"
+                        className="text-xs text-[#0F2B46] underline dark:text-[#0EA5A3]"
                       >
                         Ver →
                       </a>
@@ -140,7 +140,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
             <button
               onClick={handleClick}
               disabled={isRunning}
-              className="mt-4 rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
+              className="mt-4 rounded-lg bg-[#0F2B46] px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
             >
               Configurar todo automaticamente
             </button>
@@ -149,7 +149,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
           {(error && !isRunning) && (
             <button
               onClick={handleClick}
-              className="mt-2 text-xs font-medium text-violet-600 underline hover:text-violet-700 dark:text-violet-400"
+              className="mt-2 text-xs font-medium text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
             >
               Reintentar
             </button>

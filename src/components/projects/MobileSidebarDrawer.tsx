@@ -34,7 +34,7 @@ export function MobileSidebarDrawer({ projectId, phases, currentPhase }: MobileS
       {/* Floating toggle button — visible only on mobile */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-20 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25 transition-transform hover:scale-105 lg:hidden"
+        className="fixed bottom-20 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#0F2B46] to-indigo-600 text-white shadow-lg shadow-[#0EA5A3]/25 transition-transform hover:scale-105 lg:hidden"
         aria-label="Abrir menu de fases y herramientas"
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

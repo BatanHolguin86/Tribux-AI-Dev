@@ -40,7 +40,7 @@ export function ThreadItem({
   return (
     <div
       className={`group flex items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
-        isActive ? 'bg-violet-50 text-violet-700' : 'hover:bg-gray-50'
+        isActive ? 'bg-[#E8F4F8] text-[#0F2B46]' : 'hover:bg-gray-50'
       }`}
     >
       <button onClick={onClick} className="min-w-0 flex-1 text-left">

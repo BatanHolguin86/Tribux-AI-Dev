@@ -39,13 +39,13 @@ export function TrialBanner({ daysRemaining, subscriptionStatus }: TrialBannerPr
       className={`flex items-center justify-between gap-3 rounded-lg border-l-4 px-3 py-2 ${
         urgency
           ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
-          : 'border-violet-500 bg-violet-50 dark:bg-violet-900/20'
+          : 'border-[#0EA5A3] bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
       }`}
     >
       <div className="flex items-center gap-2">
         <span className="text-sm">{urgency ? '⏳' : '✨'}</span>
         <p className={`text-sm font-medium ${
-          urgency ? 'text-amber-800 dark:text-amber-300' : 'text-violet-700 dark:text-violet-300'
+          urgency ? 'text-amber-800 dark:text-amber-300' : 'text-[#0F2B46] dark:text-[#0EA5A3]'
         }`}>
           {daysRemaining === 1
             ? 'Tu prueba gratuita termina manana.'

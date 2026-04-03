@@ -58,7 +58,7 @@ export function Phase03FinalGate({ projectId }: Phase03FinalGateProps) {
       {!showConfirm ? (
         <button
           onClick={() => setShowConfirm(true)}
-          className="mt-4 rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700"
+          className="mt-4 rounded-lg bg-[#0F2B46] px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33]"
         >
           Aprobar Phase 03 y avanzar
         </button>
@@ -75,7 +75,7 @@ export function Phase03FinalGate({ projectId }: Phase03FinalGateProps) {
             <button
               onClick={handleApprove}
               disabled={isApproving}
-              className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-700 disabled:opacity-50"
+              className="rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#0A1F33] disabled:opacity-50"
             >
               {isApproving ? 'Aprobando...' : 'Confirmar'}
             </button>

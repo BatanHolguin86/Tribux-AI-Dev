@@ -20,7 +20,7 @@ function StatusIcon({ status }: { status: SectionStatus }) {
     case 'completed':
     case 'in_progress':
       return (
-        <svg className="h-3.5 w-3.5 animate-pulse text-violet-600" fill="currentColor" viewBox="0 0 24 24">
+        <svg className="h-3.5 w-3.5 animate-pulse text-[#0F2B46]" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z" />
         </svg>
       )
@@ -54,7 +54,7 @@ export function SectionNav({ sections, activeSection, onSelect }: SectionNavProp
             disabled={isLocked}
             className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
               isActive
-                ? 'bg-violet-100 text-violet-700'
+                ? 'bg-[#E8F4F8] text-[#0F2B46]'
                 : isLocked
                   ? 'cursor-not-allowed text-gray-300'
                   : 'text-gray-600 hover:bg-gray-100'

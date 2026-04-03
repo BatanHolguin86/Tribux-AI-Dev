@@ -38,14 +38,14 @@ export function ActionStreamingPanel({
   }
 
   return (
-    <div className="rounded-lg border-2 border-violet-200 dark:border-violet-800 bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="rounded-lg border-2 border-[#0EA5A3]/30 dark:border-[#0F2B46] bg-white dark:bg-gray-900 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-2">
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
           {isStreaming && (
-            <span className="flex items-center gap-1 text-xs text-violet-600 dark:text-violet-400">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
+            <span className="flex items-center gap-1 text-xs text-[#0F2B46] dark:text-[#0EA5A3]">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#E8F4F8]0" />
               Generando...
             </span>
           )}
@@ -100,7 +100,7 @@ export function ActionStreamingPanel({
                   href={commitUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-violet-600 dark:text-violet-400 underline"
+                  className="text-[#0F2B46] dark:text-[#0EA5A3] underline"
                 >
                   Ver commit
                 </a>

@@ -14,7 +14,7 @@ const tools = [
     description: 'Pantallas guardadas + kit con agente',
     icon: '🎨',
     path: 'designs',
-    gradient: 'from-pink-500/10 to-violet-500/10 dark:from-pink-500/5 dark:to-violet-500/5',
+    gradient: 'from-pink-500/10 to-[#0EA5A3]/10 dark:from-pink-500/5 dark:to-[#0EA5A3]/5',
     iconBg: 'bg-pink-100 dark:bg-pink-900/30',
   },
   {
@@ -23,8 +23,8 @@ const tools = [
     description: 'CTO, Architect, QA y mas',
     icon: '🤖',
     path: 'experts',
-    gradient: 'from-violet-500/10 to-blue-500/10 dark:from-violet-500/5 dark:to-blue-500/5',
-    iconBg: 'bg-violet-100 dark:bg-violet-900/30',
+    gradient: 'from-[#0EA5A3]/10 to-blue-500/10 dark:from-[#0EA5A3]/5 dark:to-blue-500/5',
+    iconBg: 'bg-[#E8F4F8] dark:bg-[#0F2B46]/30',
   },
 ]
 
@@ -47,20 +47,20 @@ export function ProjectTools({ projectId }: ProjectToolsProps) {
               href={href}
               className={`group relative overflow-hidden rounded-xl border p-3 transition-all ${
                 isActive
-                  ? 'border-violet-300 dark:border-violet-700 bg-gradient-to-br from-violet-50 to-violet-100/50 dark:from-violet-900/20 dark:to-violet-900/10 shadow-sm'
+                  ? 'border-[#0EA5A3] dark:border-[#0A1F33] bg-gradient-to-br from-[#E8F4F8] to-[#E8F4F8]/50 dark:from-[#0F2B46]/20 dark:to-[#0F2B46]/10 shadow-sm'
                   : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
               }`}
             >
               <div
                 className={`mb-2 flex h-8 w-8 items-center justify-center rounded-lg text-sm ${
-                  isActive ? 'bg-violet-100 dark:bg-violet-900/30' : tool.iconBg
+                  isActive ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/30' : tool.iconBg
                 }`}
               >
                 {tool.icon}
               </div>
               <p
                 className={`text-xs font-semibold leading-tight ${
-                  isActive ? 'text-violet-700 dark:text-violet-400' : 'text-gray-800 dark:text-gray-200'
+                  isActive ? 'text-[#0F2B46] dark:text-[#0EA5A3]' : 'text-gray-800 dark:text-gray-200'
                 }`}
               >
                 {tool.label}

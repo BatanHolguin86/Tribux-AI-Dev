@@ -35,7 +35,7 @@ export default async function AdminFinancePage() {
       <Suspense
         fallback={
           <div className="flex items-center justify-center py-20">
-            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-500" />
+            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0EA5A3]" />
           </div>
         }
       >

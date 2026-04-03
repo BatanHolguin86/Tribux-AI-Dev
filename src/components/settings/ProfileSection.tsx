@@ -54,12 +54,12 @@ export function ProfileSection({ fullName, email, persona }: ProfileSectionProps
               type="text"
               value={name}
               onChange={(e) => { setName(e.target.value); setSaved(false) }}
-              className="block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 dark:bg-gray-800 dark:text-gray-100"
+              className="block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:bg-gray-800 dark:text-gray-100"
             />
             <button
               onClick={handleSave}
               disabled={saving || name === fullName}
-              className="rounded-md bg-violet-600 px-3 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-50"
+              className="rounded-md bg-[#0F2B46] px-3 py-2 text-sm font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
             >
               {saving ? '...' : 'Guardar'}
             </button>

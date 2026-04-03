@@ -110,7 +110,7 @@ export default function OnboardingPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#0F2B46] border-t-transparent" />
       </div>
     )
   }
@@ -124,12 +124,12 @@ export default function OnboardingPage() {
             <div key={label} className="flex flex-1 flex-col items-center gap-1.5">
               <div
                 className={`h-1.5 w-full rounded-full transition-colors ${
-                  i <= step ? 'bg-violet-600' : 'bg-gray-200 dark:bg-gray-700'
+                  i <= step ? 'bg-[#0F2B46]' : 'bg-gray-200 dark:bg-gray-700'
                 }`}
               />
               <span
                 className={`text-xs ${
-                  i <= step ? 'font-medium text-violet-600' : 'text-gray-400 dark:text-gray-500'
+                  i <= step ? 'font-medium text-[#0F2B46]' : 'text-gray-400 dark:text-gray-500'
                 }`}
               >
                 {label}

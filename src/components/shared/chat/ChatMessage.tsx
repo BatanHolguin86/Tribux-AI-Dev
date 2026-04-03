@@ -41,7 +41,7 @@ function renderInline(text: string): React.ReactNode[] {
     if (code <= bold && code <= italic && codeMatch) {
       if (codeMatch.index! > 0) parts.push(remaining.slice(0, codeMatch.index!))
       parts.push(
-        <code key={keyIdx++} className="rounded bg-violet-50 px-2 py-0.5 font-mono text-xs text-violet-700 dark:bg-violet-900/20 dark:text-violet-300">
+        <code key={keyIdx++} className="rounded bg-[#E8F4F8] px-2 py-0.5 font-mono text-xs text-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3]">
           {codeMatch[1]}
         </code>
       )
@@ -118,7 +118,7 @@ function HtmlPreview({ content }: { content: string }) {
         <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vista previa</span>
         <button
           onClick={() => setShowCode(!showCode)}
-          className="text-[10px] font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+          className="text-[10px] font-medium text-[#0F2B46] dark:text-[#0EA5A3] hover:text-[#0F2B46] dark:hover:text-[#0EA5A3]"
         >
           {showCode ? 'Ver diseño' : 'Ver código'}
         </button>
@@ -301,7 +301,7 @@ function renderTextContent(text: string, isUser: boolean, keyPrefix: string): Re
         <Tag
           key={`${keyPrefix}-${pi}`}
           className={`my-1.5 space-y-1 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${
-            isUser ? 'marker:text-violet-300' : 'marker:text-violet-500 dark:marker:text-violet-400'
+            isUser ? 'marker:text-[#0EA5A3]' : 'marker:text-[#0EA5A3] dark:marker:text-[#0EA5A3]'
           }`}
         >
           {items.map((item, li) => {
@@ -369,7 +369,7 @@ function ActionButton({ action, projectId }: { action: ActionSuggestion; project
   return (
     <button
       onClick={handleClick}
-      className="mt-2 flex items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:border-violet-800 dark:bg-violet-900/30 dark:text-violet-300 dark:hover:bg-violet-900/50"
+      className="mt-2 flex items-center gap-1.5 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] px-3 py-1.5 text-xs font-medium text-[#0F2B46] transition-colors hover:bg-[#E8F4F8] dark:border-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3] dark:hover:bg-[#0F2B46]/50"
     >
       {action.type === 'navigate' ? (
         <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

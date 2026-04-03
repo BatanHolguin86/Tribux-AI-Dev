@@ -81,7 +81,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
 
         {/* Active phase + progress */}
         <div className="mt-3 flex items-center gap-2">
-          <span className="rounded-full bg-violet-100 dark:bg-violet-900/20 px-2 py-0.5 text-[10px] font-semibold text-violet-700 dark:text-violet-400">
+          <span className="rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/20 px-2 py-0.5 text-[10px] font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">
             Phase {String(project.active_phase).padStart(2, '0')}
           </span>
           <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{phaseName}</span>
@@ -130,7 +130,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
             </button>
             <Link
               href={`/projects/${project.id}/phase/${String(project.active_phase).padStart(2, '0')}`}
-              className="rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
+              className="rounded-lg bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
             >
               Continuar
             </Link>

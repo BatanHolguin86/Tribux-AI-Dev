@@ -184,7 +184,7 @@ export function DesignGenerator({
       <div>
         <button
           onClick={handleBack}
-          className="mb-4 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400"
+          className="mb-4 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-[#0F2B46] dark:hover:text-[#0EA5A3]"
           aria-label="Volver al hub de Diseño y UX"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -195,11 +195,11 @@ export function DesignGenerator({
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/30 text-xl shadow-sm">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#E8F4F8] dark:bg-[#0F2B46]/30 text-xl shadow-sm">
               {resolvedTemplate.icon}
             </span>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-violet-600 dark:text-violet-400">
+              <p className="text-[10px] font-bold uppercase tracking-wide text-[#0F2B46] dark:text-[#0EA5A3]">
                 Camino B · Agente UI/UX
               </p>
               <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{resolvedTemplate.title}</h2>
@@ -219,7 +219,7 @@ export function DesignGenerator({
           </summary>
           <div className="space-y-3 border-t border-gray-200 px-4 py-3 text-xs dark:border-gray-700">
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-violet-800 shadow-sm ring-1 ring-violet-200 dark:bg-gray-900 dark:text-violet-200 dark:ring-violet-800">
+              <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-[#0F2B46] shadow-sm ring-1 ring-[#0EA5A3]/30 dark:bg-gray-900 dark:text-[#0EA5A3]/30 dark:ring-[#0F2B46]">
                 1 · Alineación CTO
               </span>
               <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-fuchsia-800 shadow-sm ring-1 ring-fuchsia-200 dark:bg-gray-900 dark:text-fuchsia-200 dark:ring-fuchsia-800">
@@ -280,7 +280,7 @@ export function DesignGenerator({
           </div>
         </details>
 
-        <div className="flex flex-col rounded-xl border-2 border-violet-200/80 bg-white shadow-sm dark:border-violet-900/50 dark:bg-gray-900">
+        <div className="flex flex-col rounded-xl border-2 border-[#0EA5A3]/30/80 bg-white shadow-sm dark:border-[#0F2B46]/50 dark:bg-gray-900">
           <div className="border-b border-gray-100 px-3 py-2 dark:border-gray-800">
             <p className="text-center text-[11px] font-medium text-gray-500 dark:text-gray-400">
               Conversación · UI/UX Designer
@@ -313,8 +313,8 @@ export function DesignGenerator({
         </p>
 
         <ol className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="Resumen del flujo">
-          <li className="flex gap-3 rounded-xl border border-violet-200 bg-violet-50/50 p-4 dark:border-violet-900/40 dark:bg-violet-950/20">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-600 text-sm font-bold text-white">
+          <li className="flex gap-3 rounded-xl border border-[#0EA5A3]/30 bg-[#E8F4F8]/50 p-4 dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/20">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46] text-sm font-bold text-white">
               A
             </span>
             <div>
@@ -351,7 +351,7 @@ export function DesignGenerator({
             role="status"
             aria-live="polite"
           >
-            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-600" />
+            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0F2B46]" />
             <p className="mt-4 text-sm font-semibold text-gray-900 dark:text-gray-100">Generando diseños…</p>
             <p className="mt-2 max-w-sm text-xs leading-relaxed text-gray-600 dark:text-gray-400">
               La IA está creando HTML+Tailwind por cada pantalla en el servidor. Suele tardar entre unos segundos y un
@@ -360,7 +360,7 @@ export function DesignGenerator({
           </div>
         )}
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-violet-800 dark:bg-violet-900/40 dark:text-violet-200">
+          <span className="rounded-full bg-[#E8F4F8] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#0F2B46] dark:bg-[#0F2B46]/40 dark:text-[#0EA5A3]/30">
             Camino A
           </span>
           <h2 id="camino-a-title" className="text-base font-bold text-gray-900 dark:text-gray-100">
@@ -383,7 +383,7 @@ export function DesignGenerator({
               value={screensInput}
               onChange={(e) => setScreensInput(e.target.value)}
               placeholder="Login, Dashboard, Detalle de presupuesto..."
-              className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             />
           </div>
           <div>
@@ -424,7 +424,7 @@ export function DesignGenerator({
               onChange={(e) => setRefinement(e.target.value)}
               placeholder="Ej: estilo minimalista, enfasis en CTA principal..."
               rows={2}
-              className="mt-1 w-full resize-none rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="mt-1 w-full resize-none rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             />
           </div>
           {generateError && (
@@ -437,7 +437,7 @@ export function DesignGenerator({
               type="button"
               onClick={handleGenerateFromSpecs}
               disabled={!screensInput.trim() || isGenerating}
-              className="rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm dark:shadow-gray-900/20 transition-colors hover:bg-violet-700 disabled:opacity-50"
+              className="rounded-lg bg-[#0F2B46] px-5 py-2.5 text-sm font-semibold text-white shadow-sm dark:shadow-gray-900/20 transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
             >
               {isGenerating ? 'Generando…' : 'Generar y guardar en el proyecto'}
             </button>
@@ -638,7 +638,7 @@ export function DesignGenerator({
               <Link
                 key={artifact.id}
                 href={`/projects/${projectId}/designs/${artifact.id}`}
-                className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2.5 transition-colors hover:border-violet-300 hover:bg-gray-50 dark:hover:bg-gray-800 sm:px-4 sm:py-3"
+                className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2.5 transition-colors hover:border-[#0EA5A3] hover:bg-gray-50 dark:hover:bg-gray-800 sm:px-4 sm:py-3"
               >
                 <div className="flex min-w-0 flex-1 items-center gap-3">
                   <div className="relative h-20 w-[5.5rem] shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
@@ -650,7 +650,7 @@ export function DesignGenerator({
                         srcDoc={artifact.thumb_srcdoc}
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-100 to-indigo-100 text-xl dark:from-violet-950 dark:to-indigo-950">
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#E8F4F8] to-indigo-100 text-xl dark:from-[#0A1F33] dark:to-indigo-950">
                         🎨
                       </div>
                     )}

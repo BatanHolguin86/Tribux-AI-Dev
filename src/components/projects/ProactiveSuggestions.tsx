@@ -117,14 +117,14 @@ export function ProactiveSuggestions({ projectId, phases, currentPhase }: Proact
               href={s.href}
               className={`group flex items-center gap-3 rounded-xl border p-3 transition-all ${
                 isHigh
-                  ? 'border-violet-200 dark:border-violet-800 bg-gradient-to-r from-violet-50 to-white dark:from-violet-900/20 dark:to-gray-900 hover:shadow-md hover:shadow-violet-100/50 dark:hover:shadow-violet-900/20 hover:border-violet-300 dark:hover:border-violet-700'
+                  ? 'border-[#0EA5A3]/30 dark:border-[#0F2B46] bg-gradient-to-r from-[#E8F4F8] to-white dark:from-[#0F2B46]/20 dark:to-gray-900 hover:shadow-md hover:shadow-[#E8F4F8]/50 dark:hover:shadow-[#0F2B46]/20 hover:border-[#0EA5A3] dark:hover:border-[#0A1F33]'
                   : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
               }`}
             >
               <div
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-base ${
                   isHigh
-                    ? 'bg-violet-100 dark:bg-violet-900/30'
+                    ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/30'
                     : 'bg-gray-100 dark:bg-gray-800'
                 }`}
               >
@@ -134,21 +134,21 @@ export function ProactiveSuggestions({ projectId, phases, currentPhase }: Proact
                 <span
                   className={`block text-xs font-semibold leading-snug ${
                     isHigh
-                      ? 'text-violet-800 dark:text-violet-300'
+                      ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
                       : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   {s.text}
                 </span>
                 {isHigh && (
-                  <span className="mt-0.5 block text-[10px] text-violet-500 dark:text-violet-500">
+                  <span className="mt-0.5 block text-[10px] text-[#0EA5A3] dark:text-[#0EA5A3]">
                     Donde sigue tu proceso
                   </span>
                 )}
               </div>
               <svg
                 className={`h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                  isHigh ? 'text-violet-400 dark:text-violet-500' : 'text-gray-300 dark:text-gray-600'
+                  isHigh ? 'text-[#0EA5A3] dark:text-[#0EA5A3]' : 'text-gray-300 dark:text-gray-600'
                 }`}
                 fill="none"
                 viewBox="0 0 24 24"

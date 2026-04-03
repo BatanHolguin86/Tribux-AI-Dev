@@ -22,8 +22,8 @@ export function PhaseDocsCallout({
   commands,
 }: PhaseDocsCalloutProps) {
   return (
-    <div className="mb-4 rounded-lg border border-violet-200 bg-violet-50/90 px-4 py-3 text-sm dark:border-violet-800 dark:bg-violet-950/35">
-      <p className="font-medium text-violet-900 dark:text-violet-100">{title}</p>
+    <div className="mb-4 rounded-lg border border-[#E2E8F0] bg-[#E8F4F8] px-4 py-3 text-sm dark:border-[#0EA5A3] dark:bg-[#0F2B46]/20">
+      <p className="font-display font-medium text-[#0F2B46] dark:text-[#0EA5A3]">{title}</p>
       {description && (
         <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">{description}</p>
       )}

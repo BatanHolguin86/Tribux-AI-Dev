@@ -58,7 +58,7 @@ export function PersonaStep({ selected, onSelect, onNext, onBack }: PersonaStepP
             onClick={() => onSelect(option.value)}
             className={`flex items-start gap-4 rounded-lg border-2 p-4 text-left transition-colors ${
               selected === option.value
-                ? 'border-violet-600 bg-violet-50'
+                ? 'border-[#0EA5A3] bg-[#E8F4F8]'
                 : 'border-gray-200 hover:border-gray-300'
             }`}
           >
@@ -81,7 +81,7 @@ export function PersonaStep({ selected, onSelect, onNext, onBack }: PersonaStepP
         <button
           onClick={onNext}
           disabled={!selected}
-          className="flex-1 rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700 disabled:opacity-50"
+          className="flex-1 rounded-lg bg-[#0F2B46] px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
         >
           Continuar
         </button>

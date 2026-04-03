@@ -26,7 +26,7 @@ export function ProjectBreadcrumb({
 }: ProjectBreadcrumbProps) {
   const pathname = usePathname()
   const phaseHref = `/projects/${projectId}/phase/${String(currentPhase).padStart(2, '0')}`
-  const linkClass = 'hover:text-violet-600 dark:hover:text-violet-400 transition-colors'
+  const linkClass = 'hover:text-[#0F2B46] dark:hover:text-[#0EA5A3] transition-colors'
 
   const parts = pathname?.split('/').filter(Boolean) ?? []
   const isThisProject = parts[0] === 'projects' && parts[1] === projectId

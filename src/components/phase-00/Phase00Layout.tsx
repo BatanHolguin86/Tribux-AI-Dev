@@ -71,7 +71,7 @@ export function Phase00Layout({
                   s.status === 'approved'
                     ? 'bg-emerald-500'
                     : s.key === activeSection
-                      ? 'bg-violet-400'
+                      ? 'bg-[#0EA5A3]'
                       : 'bg-gray-200 dark:bg-gray-700'
                 }`}
               />
@@ -94,7 +94,7 @@ export function Phase00Layout({
               onClick={() => setMobileTab('chat')}
               className={`flex-1 py-2 text-sm font-medium transition-colors ${
                 mobileTab === 'chat'
-                  ? 'border-b-2 border-violet-600 text-violet-700 dark:text-violet-300'
+                  ? 'border-b-2 border-[#0EA5A3] text-[#0F2B46] dark:text-[#0EA5A3]'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
@@ -104,7 +104,7 @@ export function Phase00Layout({
               onClick={() => setMobileTab('document')}
               className={`flex-1 py-2 text-sm font-medium transition-colors ${
                 mobileTab === 'document'
-                  ? 'border-b-2 border-violet-600 text-violet-700 dark:text-violet-300'
+                  ? 'border-b-2 border-[#0EA5A3] text-[#0F2B46] dark:text-[#0EA5A3]'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >

@@ -25,7 +25,7 @@ const COLOR_CLASSES: Record<string, string> = {
   green: 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300',
   orange: 'border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-300',
   purple: 'border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300',
-  violet: 'border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-300',
+  violet: 'border-[#0EA5A3]/30 dark:border-[#0F2B46] bg-[#E8F4F8] dark:bg-[#0A1F33]/30 text-[#0F2B46] dark:text-[#0EA5A3]',
   error: 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300',
   gray: 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400',
 }

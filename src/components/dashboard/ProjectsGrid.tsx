@@ -87,7 +87,7 @@ export function ProjectsGrid({ projects: initialProjects }: ProjectsGridProps) {
             value={search}
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Buscar proyectos..."
-            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pl-10 pr-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 sm:w-72"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pl-10 pr-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] sm:w-72"
           />
         </div>
         <div className="flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1">

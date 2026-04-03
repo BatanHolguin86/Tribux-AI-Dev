@@ -48,25 +48,17 @@ function getProgressMessage(progress: number): string {
   return 'Tu app esta lista!'
 }
 
-function getProgressColor(progress: number): string {
-  if (progress < 25) return 'from-red-400 to-orange-400'
-  if (progress < 50) return 'from-orange-400 to-yellow-400'
-  if (progress < 75) return 'from-yellow-400 to-green-400'
-  return 'from-green-400 to-emerald-500'
-}
-
 export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDashboardProps) {
   const completedCount = phases.filter((p) => p.status === 'completed').length
   const totalPhases = 8
   const progress = Math.round((completedCount / totalPhases) * 100)
-  const activePhase = phases.find((p) => p.status === 'active')
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-white to-violet-50/30 p-5 dark:border-gray-700 dark:from-gray-900 dark:to-violet-950/10">
+    <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-white to-[#E8F4F8]/30 p-5 dark:border-gray-700 dark:from-gray-900 dark:to-[#0A1F33]/10">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="font-display text-lg font-bold text-[#0F2B46] dark:text-gray-100">
             {progress === 100 ? '🎉' : '🚀'} Tu app esta {progress}% lista
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -74,32 +66,32 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
           </p>
         </div>
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm dark:bg-gray-800">
-          <span className="text-lg font-bold text-violet-600 dark:text-violet-400">{progress}%</span>
+          <span className="text-lg font-bold text-[#0F2B46] dark:text-[#0EA5A3]">{progress}%</span>
         </div>
       </div>
 
       {/* Progress bar */}
       <div className="mb-5 h-3 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
         <div
-          className={`h-full rounded-full bg-gradient-to-r ${getProgressColor(progress)} transition-all duration-700`}
+          className="h-full rounded-full gradient-phase transition-all duration-700"
           style={{ width: `${Math.max(progress, 3)}%` }}
         />
       </div>
 
       {/* Task stats (if in dev phase) */}
       {taskStats && taskStats.total > 0 && (
-        <div className="mb-4 rounded-lg bg-violet-50 px-4 py-2.5 dark:bg-violet-900/20">
+        <div className="mb-4 rounded-lg bg-[#E8F4F8] px-4 py-2.5 dark:bg-[#0F2B46]/20">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-violet-700 dark:text-violet-300">
+            <span className="text-xs font-medium text-[#0F2B46] dark:text-[#C5E4EC]">
               Tasks de desarrollo
             </span>
-            <span className="text-xs font-bold text-violet-700 dark:text-violet-300">
+            <span className="text-xs font-bold text-[#0F2B46] dark:text-[#C5E4EC]">
               {taskStats.done}/{taskStats.total}
             </span>
           </div>
-          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-violet-200 dark:bg-violet-800">
+          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#C5E4EC] dark:bg-[#0A1F33]">
             <div
-              className="h-full rounded-full bg-violet-500"
+              className="h-full rounded-full gradient-phase"
               style={{ width: `${(taskStats.done / taskStats.total) * 100}%` }}
             />
           </div>
@@ -120,7 +112,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
               key={phaseNum}
               className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                 isActive
-                  ? 'bg-violet-100/60 dark:bg-violet-900/20'
+                  ? 'bg-[#0EA5A3]/10 dark:bg-[#0F2B46]/20'
                   : status === 'completed'
                     ? 'opacity-70'
                     : 'opacity-40'
@@ -129,7 +121,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
               <span className="text-base">{icon}</span>
               <span className={`font-medium ${
                 isActive
-                  ? 'text-violet-700 dark:text-violet-300'
+                  ? 'text-[#0EA5A3] dark:text-[#0EA5A3]'
                   : status === 'completed'
                     ? 'text-gray-600 line-through dark:text-gray-400'
                     : 'text-gray-400 dark:text-gray-500'
@@ -137,7 +129,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
                 {label}
               </span>
               {isActive && (
-                <span className="ml-auto h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
+                <span className="ml-auto h-1.5 w-1.5 animate-pulse rounded-full bg-[#0EA5A3]" />
               )}
             </div>
           )

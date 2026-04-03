@@ -7,8 +7,8 @@ type WelcomeStepProps = {
 export function WelcomeStep({ onNext }: WelcomeStepProps) {
   return (
     <div className="mx-auto max-w-lg text-center">
-      <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100">
-        <svg className="h-8 w-8 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E8F4F8]">
+        <svg className="h-8 w-8 text-[#0F2B46]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -39,7 +39,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
           },
         ].map((item) => (
           <div key={item.title} className="flex gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4">
-            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs text-white">
+            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#0F2B46] text-xs text-white">
               ✓
             </div>
             <div>
@@ -52,7 +52,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
 
       <button
         onClick={onNext}
-        className="mt-8 w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-violet-700"
+        className="mt-8 w-full rounded-lg bg-[#0F2B46] px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33]"
       >
         Comenzar
       </button>

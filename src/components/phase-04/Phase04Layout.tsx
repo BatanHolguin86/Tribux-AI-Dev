@@ -125,7 +125,7 @@ export function Phase04Layout({
         />
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 py-16 dark:border-gray-700">
           <div className="mb-3 text-4xl">📋</div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          <h3 className="text-lg font-semibold font-display text-gray-900 dark:text-gray-100">
             No hay tasks aun
           </h3>
           <p className="mt-1 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400">
@@ -157,7 +157,7 @@ export function Phase04Layout({
               {repoUrl && pendingTasks.length > 1 && (
                 <button
                   onClick={() => setShowBuildSession(true)}
-                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700 transition-colors hover:border-violet-400 hover:bg-violet-100 dark:border-violet-800 dark:bg-violet-900/20 dark:text-violet-400 dark:hover:border-violet-600"
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] px-3 py-1.5 text-xs font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3] dark:hover:border-[#0EA5A3]"
                 >
                   🏗️ Build All ({pendingTasks.length})
                 </button>

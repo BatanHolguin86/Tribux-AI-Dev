@@ -25,7 +25,7 @@ export function AgentCard({
       disabled={isLocked}
       className={`flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors ${
         isActive
-          ? 'border border-violet-300 bg-violet-50'
+          ? 'border border-[#0EA5A3] bg-[#E8F4F8]'
           : isLocked
             ? 'cursor-not-allowed opacity-50'
             : 'hover:bg-gray-50'
@@ -45,7 +45,7 @@ export function AgentCard({
         <p className="truncate text-xs text-gray-500">{specialty}</p>
       </div>
       {threadCount > 0 && !isLocked && (
-        <span className="shrink-0 rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700">
+        <span className="shrink-0 rounded-full bg-[#E8F4F8] px-2 py-0.5 text-xs font-medium text-[#0F2B46]">
           {threadCount}
         </span>
       )}

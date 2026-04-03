@@ -92,7 +92,7 @@ export function ChecklistCategory({
         className={`w-full rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
           isCompleted
             ? 'border border-green-300 bg-white text-green-700 hover:bg-green-50'
-            : 'bg-violet-600 text-white shadow-sm hover:bg-violet-700'
+            : 'bg-[#0F2B46] text-white shadow-sm hover:bg-[#0A1F33]'
         }`}
       >
         {isCompleted ? 'Desmarcar categoria' : 'Marcar como completada'}

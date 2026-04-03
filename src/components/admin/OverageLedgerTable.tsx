@@ -130,7 +130,7 @@ export function OverageLedgerTable() {
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="rounded-md bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-50"
+            className="rounded-md bg-[#0F2B46] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
           >
             {syncing ? 'Calculando...' : 'Sincronizar mes'}
           </button>
@@ -165,7 +165,7 @@ export function OverageLedgerTable() {
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="h-7 w-7 animate-spin rounded-full border-[3px] border-violet-500/30 border-t-violet-500" />
+          <div className="h-7 w-7 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0EA5A3]" />
         </div>
       ) : entries.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 py-16 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
@@ -194,7 +194,7 @@ export function OverageLedgerTable() {
                       <div className="text-xs text-gray-400">{e.user_id.slice(0, 8)}</div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium capitalize text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">
+                      <span className="rounded-full bg-[#E8F4F8] px-2 py-0.5 text-xs font-medium capitalize text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3]">
                         {e.plan}
                       </span>
                     </td>

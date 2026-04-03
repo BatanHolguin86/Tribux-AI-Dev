@@ -31,7 +31,7 @@ export function KanbanColumn({
     <div
       ref={setNodeRef}
       className={`flex flex-col rounded-lg border border-gray-200 border-t-4 bg-gray-50 ${colorClass} ${
-        isOver ? 'ring-2 ring-violet-300' : ''
+        isOver ? 'ring-2 ring-[#0EA5A3]' : ''
       }`}
     >
       {/* Header */}
