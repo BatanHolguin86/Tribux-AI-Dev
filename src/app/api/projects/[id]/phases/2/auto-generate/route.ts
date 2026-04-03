@@ -16,7 +16,7 @@ export const maxDuration = 300
  * Generates sequentially to avoid rate limits.
  */
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: projectId } = await params
@@ -24,6 +24,14 @@ export async function POST(
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new Response('Unauthorized', { status: 401 })
+
+  // Rate limit — expensive operation (4 AI calls)
+  const { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } = await import('@/lib/rate-limit')
+  const ip = getClientIp(request)
+  const rateResult = checkRateLimit(`auto-generate:${user.id}:${ip}`, ACTION_RATE_LIMIT)
+  if (!rateResult.allowed) {
+    return Response.json({ error: 'rate_limited' }, { status: 429 })
+  }
 
   const adminClient = await createAdminClient()
 

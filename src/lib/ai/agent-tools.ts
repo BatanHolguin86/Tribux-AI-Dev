@@ -104,26 +104,34 @@ function createReadTools(ctx: AgentToolContext) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let query: any = supabase
           .from('feature_documents')
-          .select('feature_name, doc_type, content, status')
+          .select('feature_id, document_type, content, status, project_features(name)')
           .eq('project_id', ctx.projectId)
           .in('status', ['approved', 'draft'])
 
-        if (feature_name) query = query.ilike('feature_name', `%${feature_name}%`)
-        if (doc_type) query = query.eq('doc_type', doc_type)
+        if (doc_type) query = query.eq('document_type', doc_type)
 
-        const { data } = await query.limit(5)
+        const { data } = await query.limit(10)
         if (!data?.length) return { message: 'No specs found for this project' }
+
+        let filtered = data as Array<{
+          feature_id: string
+          document_type: string
+          content?: string
+          status: string
+          project_features: { name: string } | null
+        }>
+
+        if (feature_name) {
+          const search = feature_name.toLowerCase()
+          filtered = filtered.filter((d) =>
+            d.project_features?.name?.toLowerCase().includes(search),
+          )
+        }
+
         return {
-          specs: (
-            data as Array<{
-              feature_name: string
-              doc_type: string
-              content?: string
-              status: string
-            }>
-          ).map((d) => ({
-            feature: d.feature_name,
-            type: d.doc_type,
+          specs: filtered.slice(0, 5).map((d) => ({
+            feature: d.project_features?.name ?? 'Unknown',
+            type: d.document_type,
             status: d.status,
             content: d.content?.slice(0, 6000),
           })),
