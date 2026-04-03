@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Phase02Section, SectionStatus } from '@/types/conversation'
 import { PHASE02_SECTIONS } from '@/lib/ai/prompts/phase-02'
@@ -67,6 +67,7 @@ export function Phase02Layout({
 }: Phase02LayoutProps) {
   const router = useRouter()
   const { isFounder } = useFounderMode()
+  const docPanelRef = useRef<HTMLDivElement>(null)
   const [sections, setSections] = useState(initialSections)
   const [activeSection, setActiveSection] = useState<Phase02Section>(initialActiveSection)
 
@@ -133,7 +134,13 @@ export function Phase02Layout({
         sections={sections.map((s) => ({ key: s.key, status: s.status, hasDocument: s.document !== null, documentPreview: s.document?.content?.slice(0, 150) ?? null }))}
         artifactCount={designArtifacts.length}
         approvedVisualCount={approvedDesigns.length}
-        onSectionClick={setActiveSection}
+        onSectionClick={(section) => {
+          setActiveSection(section)
+          setMobileTab('document')
+          setTimeout(() => {
+            docPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }, 100)
+        }}
       />
 
       {/* Founder Mode: auto-generate docs if missing */}
@@ -170,7 +177,7 @@ export function Phase02Layout({
           </div>
 
           {/* Desktop: split view */}
-          <div className="flex h-[var(--content-height)] gap-4">
+          <div ref={docPanelRef} className="flex h-[var(--content-height)] gap-4">
             <div className={`flex min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 lg:flex-1 ${
               mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'
             }`}>
