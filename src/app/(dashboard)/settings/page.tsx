@@ -34,7 +34,7 @@ export default async function SettingsPage({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Configuracion</h1>
+        <h1 className="text-2xl font-display font-bold text-gray-900">Configuracion</h1>
         <p className="mt-1 text-sm text-gray-500">Administra tu cuenta y plan de suscripcion.</p>
       </div>
 

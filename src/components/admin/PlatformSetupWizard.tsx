@@ -69,7 +69,7 @@ export function PlatformSetupWizard() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+        <h1 className="text-xl font-display font-bold text-gray-900 dark:text-gray-100">
           Configuracion de Plataforma
         </h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">

@@ -123,7 +123,7 @@ export function DesignChat({
         {messages.length === 0 && isLoading && (
           <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-dashed border-[#0EA5A3]/30 bg-[#E8F4F8]/40 px-6 py-10 text-center dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/20">
             <div
-              className="h-11 w-11 animate-pulse rounded-full bg-gradient-to-br from-[#0EA5A3] to-indigo-500 opacity-80"
+              className="h-11 w-11 animate-pulse rounded-full bg-gradient-to-br from-[#0EA5A3] to-[#0EA5A3] opacity-80"
               aria-hidden
             />
             <p className="mt-4 text-sm font-semibold text-gray-900 dark:text-gray-100">

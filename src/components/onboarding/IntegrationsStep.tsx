@@ -31,7 +31,7 @@ export function IntegrationsStep({ defaultValues, onSubmit, onBack, onSkip }: In
 
   return (
     <div className="mx-auto max-w-lg">
-      <h2 className="text-2xl font-bold text-gray-900">Conecta tus herramientas</h2>
+      <h2 className="text-2xl font-display font-bold text-gray-900">Conecta tus herramientas</h2>
       <p className="mt-2 text-sm text-gray-600">
         Conecta GitHub y Supabase para que los agentes puedan ver tu codigo y ejecutar migraciones.
         Todo es opcional — puedes configurarlo despues.

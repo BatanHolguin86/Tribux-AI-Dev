@@ -71,7 +71,7 @@ export function PlanLimitModal({ open, currentPlan, onClose }: PlanLimitModalPro
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
       <div ref={trapRef} role="dialog" aria-modal="true" className="relative z-10 w-full max-w-lg rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Limite de proyectos alcanzado</h2>
+        <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">Limite de proyectos alcanzado</h2>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Tu plan actual no permite mas proyectos. Elige un plan superior para continuar.
         </p>

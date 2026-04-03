@@ -118,7 +118,7 @@ export function OverageLedgerTable() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-white">
             Overage Billing
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -156,7 +156,7 @@ export function OverageLedgerTable() {
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800">
               <p className="text-xs text-gray-500 dark:text-gray-400">{s.label}</p>
-              <p className="mt-0.5 text-xl font-bold text-gray-900 dark:text-white">{s.value}</p>
+              <p className="mt-0.5 text-xl font-display font-bold text-gray-900 dark:text-white">{s.value}</p>
             </div>
           ))}
         </div>

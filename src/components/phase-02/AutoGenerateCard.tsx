@@ -54,7 +54,7 @@ export function AutoGenerateCard({ projectId, missingCount }: AutoGenerateCardPr
     return (
       <div className="mb-6 rounded-xl border-2 border-[#10B981] bg-[#10B981]/10 p-6 text-center">
         <div className="mb-2 text-4xl">✅</div>
-        <h3 className="font-display text-lg font-bold text-[#0F2B46] dark:text-white">
+        <h3 className="font-display text-lg font-display font-bold text-[#0F2B46] dark:text-white">
           Documentacion tecnica generada
         </h3>
         <p className="mt-1 text-sm text-[#94A3B8]">

@@ -95,7 +95,7 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
       <div ref={trapRef} role="dialog" aria-modal="true" className="relative z-10 w-full max-w-2xl rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">
           {feature
             ? `Upgrade para acceder a ${feature}`
             : 'Upgrade tu plan'}

@@ -647,7 +647,7 @@ function SummaryBar({ services }: { services: InfraService[] }) {
 
   return (
     <div className="mb-6 flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
-      <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold ${
+      <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-display font-bold ${
         score >= 80 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
         score >= 50 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                       'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'
@@ -736,7 +736,7 @@ export function InfrastructureDashboard({
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Infraestructura & Herramientas</h1>
+          <h1 className="text-xl font-display font-bold text-gray-900 dark:text-gray-100">Infraestructura & Herramientas</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Estado de las integraciones necesarias para operar{' '}
             <span className="font-medium text-gray-700 dark:text-gray-300">{projectName}</span>{' '}

@@ -51,7 +51,7 @@ export default function RegisterPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Revisa tu email</h2>
+        <h2 className="text-xl font-display font-bold text-gray-900 dark:text-gray-100">Revisa tu email</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Te enviamos un link de confirmacion. Haz clic en el para activar tu cuenta.
         </p>
@@ -68,7 +68,7 @@ export default function RegisterPage() {
   return (
     <>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Crea tu cuenta</h2>
+        <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-gray-100">Crea tu cuenta</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Empieza a construir tu producto con AI Squad
         </p>

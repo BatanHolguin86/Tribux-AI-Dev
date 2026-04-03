@@ -49,7 +49,7 @@ export function DocumentViewer({ content }: DocumentViewerProps) {
     // Headings
     if (line.startsWith('### ')) return <h3 key={i} className="mt-5 mb-1.5 text-sm font-bold text-gray-900 dark:text-gray-100">{renderInline(line.slice(4))}</h3>
     if (line.startsWith('## ')) return <h2 key={i} className="mt-6 mb-2 text-base font-bold text-gray-900 dark:text-gray-100">{renderInline(line.slice(3))}</h2>
-    if (line.startsWith('# ')) return <h1 key={i} className="mt-6 mb-2 text-lg font-bold text-gray-900 dark:text-gray-100">{renderInline(line.slice(2))}</h1>
+    if (line.startsWith('# ')) return <h1 key={i} className="mt-6 mb-2 text-lg font-display font-bold text-gray-900 dark:text-gray-100">{renderInline(line.slice(2))}</h1>
 
     // List items with bold
     if (line.startsWith('- ')) {

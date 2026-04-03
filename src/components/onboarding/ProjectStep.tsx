@@ -30,7 +30,7 @@ export function ProjectStep({ defaultValues, onSubmit, onBack }: ProjectStepProp
 
   return (
     <div className="mx-auto max-w-lg">
-      <h2 className="text-2xl font-bold text-gray-900">Tu primer proyecto</h2>
+      <h2 className="text-2xl font-display font-bold text-gray-900">Tu primer proyecto</h2>
       <p className="mt-2 text-sm text-gray-600">
         Dale un nombre a lo que quieres construir. Podras cambiarlo despues.
       </p>

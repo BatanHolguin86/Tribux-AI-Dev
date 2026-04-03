@@ -58,7 +58,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="font-display text-lg font-bold text-[#0F2B46] dark:text-gray-100">
+          <h2 className="font-display text-lg font-display font-bold text-[#0F2B46] dark:text-gray-100">
             {progress === 100 ? '🎉' : '🚀'} Tu app esta {progress}% lista
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -66,7 +66,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
           </p>
         </div>
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm dark:bg-gray-800">
-          <span className="text-lg font-bold text-[#0F2B46] dark:text-[#0EA5A3]">{progress}%</span>
+          <span className="text-lg font-display font-bold text-[#0F2B46] dark:text-[#0EA5A3]">{progress}%</span>
         </div>
       </div>
 

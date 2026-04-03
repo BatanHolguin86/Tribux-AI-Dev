@@ -243,7 +243,7 @@ export function MetricsDashboard({
           ) : sentry?.errorStats ? (
             <>
               <div className="mb-3">
-                <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <span className="text-2xl font-display font-bold text-gray-900 dark:text-gray-100">
                   {totalSentryErrors}
                 </span>
                 <span className="ml-1.5 text-xs text-gray-500 dark:text-gray-400">

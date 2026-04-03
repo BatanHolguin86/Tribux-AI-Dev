@@ -87,7 +87,7 @@ const CAT_COLORS: Record<string, string> = {
   code:   'bg-blue-500',
   tests:  'bg-emerald-500',
   data:   'bg-amber-500',
-  docs:   'bg-indigo-400',
+  docs:   'bg-[#0EA5A3]',
   deploy: 'bg-orange-500',
   growth: 'bg-pink-500',
 }
@@ -98,7 +98,7 @@ function StatCard({ label, value, sub, highlight }: { label: string; value: stri
   return (
     <div className={`rounded-xl border p-4 ${highlight ? 'border-[#0EA5A3]/30 bg-[#E8F4F8] dark:border-[#0A1F33]/40 dark:bg-[#0F2B46]/10' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'}`}>
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-      <p className={`text-2xl font-bold tabular-nums ${highlight ? 'text-[#0F2B46] dark:text-[#0EA5A3]' : 'text-gray-900 dark:text-gray-100'}`}>{value}</p>
+      <p className={`text-2xl font-display font-bold tabular-nums ${highlight ? 'text-[#0F2B46] dark:text-[#0EA5A3]' : 'text-gray-900 dark:text-gray-100'}`}>{value}</p>
       {sub && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{sub}</p>}
     </div>
   )
@@ -351,7 +351,7 @@ function InfraConfig({
       <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-800">
         <div>
           <p className="text-xs text-gray-500 dark:text-gray-400">Total mensual</p>
-          <p className="text-xl font-bold tabular-nums text-gray-900 dark:text-gray-100">{fmtUSD(monthly)}<span className="text-xs font-normal text-gray-400 ml-1">/mes</span></p>
+          <p className="text-xl font-display font-bold tabular-nums text-gray-900 dark:text-gray-100">{fmtUSD(monthly)}<span className="text-xs font-normal text-gray-400 ml-1">/mes</span></p>
         </div>
         <div className="text-right">
           <p className="text-xs text-gray-500 dark:text-gray-400">Proyección anual</p>
@@ -472,7 +472,7 @@ export function ProjectCostDashboard({
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Control de Costos</h1>
+          <h1 className="text-xl font-display font-bold text-gray-900 dark:text-gray-100">Control de Costos</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Pipeline financiero de{' '}
             <span className="font-medium text-gray-700 dark:text-gray-300">{projectName}</span>

@@ -41,7 +41,7 @@ export function ProfileSection({ fullName, email, persona }: ProfileSectionProps
 
   return (
     <section className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Perfil</h2>
+      <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">Perfil</h2>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>

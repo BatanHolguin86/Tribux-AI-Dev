@@ -19,7 +19,7 @@ export function DocumentViewer({ content }: DocumentViewerProps) {
     // Headings
     if (line.startsWith('### ')) return <h3 key={i} className="mt-4 mb-2 text-sm font-semibold text-gray-900">{line.slice(4)}</h3>
     if (line.startsWith('## ')) return <h2 key={i} className="mt-5 mb-2 text-base font-bold text-gray-900">{line.slice(3)}</h2>
-    if (line.startsWith('# ')) return <h1 key={i} className="mt-6 mb-3 text-lg font-bold text-gray-900">{line.slice(2)}</h1>
+    if (line.startsWith('# ')) return <h1 key={i} className="mt-6 mb-3 text-lg font-display font-bold text-gray-900">{line.slice(2)}</h1>
 
     // List items
     if (line.startsWith('- **')) {

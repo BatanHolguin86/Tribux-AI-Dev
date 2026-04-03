@@ -51,7 +51,7 @@ export default function LoginPage() {
   return (
     <>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Inicia sesion</h2>
+        <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-gray-100">Inicia sesion</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Accede a tu equipo de agentes IA
         </p>

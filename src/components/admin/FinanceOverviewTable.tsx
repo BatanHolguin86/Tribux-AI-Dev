@@ -106,7 +106,7 @@ function KpiCard({
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-[#0EA5A3] dark:hover:border-[#0A1F33]">
       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
-      <p className={`mt-2 text-2xl font-bold ${valueColor[variant]}`}>{value}</p>
+      <p className={`mt-2 text-2xl font-display font-bold ${valueColor[variant]}`}>{value}</p>
       {subtitle && <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{subtitle}</p>}
     </div>
   )
@@ -243,9 +243,9 @@ export function FinanceOverviewTable() {
               </span>
             </div>
           </div>
-          <div className="mt-4 flex items-center justify-between rounded-lg bg-gradient-to-r from-[#E8F4F8] via-white to-indigo-50 dark:from-[#0A1F33]/20 dark:via-gray-900 dark:to-indigo-950/20 px-4 py-3 border border-[#0EA5A3]/30 dark:border-[#0F2B46]">
+          <div className="mt-4 flex items-center justify-between rounded-lg bg-gradient-to-r from-[#E8F4F8] via-white to-[#E8F4F8] dark:from-[#0A1F33]/20 dark:via-gray-900 dark:to-[#0A1F33]/20 px-4 py-3 border border-[#0EA5A3]/30 dark:border-[#0F2B46]">
             <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">Total costos del mes</span>
-            <span className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">
+            <span className="text-lg font-display font-bold text-gray-900 dark:text-white tabular-nums">
               {formatUsd(summary.totalCostsUsd)}
             </span>
           </div>
@@ -388,7 +388,7 @@ export function FinanceOverviewTable() {
                   >
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#0EA5A3] to-indigo-500 text-[11px] font-bold text-white shadow-sm shrink-0">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#0EA5A3] to-[#0EA5A3] text-[11px] font-bold text-white shadow-sm shrink-0">
                           {(u.fullName || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
                         </div>
                         <div>
@@ -458,7 +458,7 @@ export function FinanceOverviewTable() {
                     <td className="px-4 py-3.5">
                       <Link
                         href={`/admin/finance/users/${u.userId}`}
-                        className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-3 py-1.5 text-[12px] font-semibold text-white shadow-sm shadow-[#0EA5A3]/25 transition-all hover:shadow-md hover:shadow-[#0EA5A3]/30 hover:brightness-110"
+                        className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-3 py-1.5 text-[12px] font-semibold text-white shadow-sm shadow-[#0EA5A3]/25 transition-all hover:shadow-md hover:shadow-[#0EA5A3]/30 hover:brightness-110"
                       >
                         Detalle
                         <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

@@ -46,7 +46,7 @@ export function ArchiveConfirmDialog({ project, onClose, onConfirmed }: ArchiveC
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
       <div ref={trapRef} role="dialog" aria-modal="true" className="relative z-10 w-full max-w-sm rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">
           {isArchived ? 'Restaurar' : 'Archivar'} proyecto
         </h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">

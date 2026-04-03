@@ -24,7 +24,7 @@ export default function ProjectError({
           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
         />
       </svg>
-      <h2 className="text-lg font-semibold text-gray-900">Error al cargar el proyecto</h2>
+      <h2 className="text-lg font-display font-semibold text-gray-900">Error al cargar el proyecto</h2>
       <p className="mt-1 text-sm text-gray-500">No se pudo cargar la informacion del proyecto.</p>
       <div className="mt-4 flex gap-3">
         <button

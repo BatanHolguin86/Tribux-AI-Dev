@@ -72,12 +72,12 @@ export default async function HomePage() {
       <nav className="sticky top-0 z-40 border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-indigo-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3]">
               <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <span className="text-lg font-bold text-gray-900 dark:text-white">AI Squad</span>
+            <span className="text-lg font-display font-bold text-gray-900 dark:text-white">AI Squad</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
@@ -88,7 +88,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/register"
-              className="rounded-lg bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
+              className="rounded-lg bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
             >
               Comenzar gratis
             </Link>
@@ -98,7 +98,7 @@ export default async function HomePage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#E8F4F8] via-white to-indigo-50 dark:from-[#0A1F33]/20 dark:via-gray-950 dark:to-indigo-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#E8F4F8] via-white to-[#E8F4F8] dark:from-[#0A1F33]/20 dark:via-gray-950 dark:to-[#0A1F33]/20" />
         <div className="relative mx-auto max-w-6xl px-6 py-24 sm:py-32 lg:py-40">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#0EA5A3]/30 dark:border-[#0F2B46] bg-[#E8F4F8] dark:bg-[#0F2B46]/20 px-4 py-1.5 text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
@@ -107,7 +107,7 @@ export default async function HomePage() {
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
               Tu idea, tu decision.{' '}
-              <span className="bg-gradient-to-r from-[#0F2B46] to-indigo-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] bg-clip-text text-transparent">
                 Tu producto.
               </span>
             </h1>
@@ -118,7 +118,7 @@ export default async function HomePage() {
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Link
                 href="/register"
-                className="w-full rounded-xl bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110 sm:w-auto"
+                className="w-full rounded-xl bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110 sm:w-auto"
               >
                 Comenzar gratis
               </Link>
@@ -241,11 +241,11 @@ export default async function HomePage() {
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-4 py-1 text-xs font-semibold text-white">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-4 py-1 text-xs font-semibold text-white">
                     Mas popular
                   </div>
                 )}
-                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{plan.name}</h3>
+                <h3 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">{plan.name}</h3>
                 <div className="mt-4 flex items-baseline gap-1">
                   <span className="text-4xl font-bold text-gray-900 dark:text-white">{plan.price}</span>
                   <span className="text-sm text-gray-500 dark:text-gray-400">{plan.period}</span>
@@ -264,7 +264,7 @@ export default async function HomePage() {
                   href="/register"
                   className={`mt-8 block w-full rounded-xl py-3 text-center text-sm font-semibold transition-all ${
                     plan.popular
-                      ? 'bg-gradient-to-r from-[#0F2B46] to-indigo-600 text-white shadow-sm hover:shadow-md hover:brightness-110'
+                      ? 'bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] text-white shadow-sm hover:shadow-md hover:brightness-110'
                       : 'border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                   }`}
                 >
@@ -296,7 +296,7 @@ export default async function HomePage() {
           </p>
           <Link
             href="/register"
-            className="mt-8 inline-block rounded-xl bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-10 py-4 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110"
+            className="mt-8 inline-block rounded-xl bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110"
           >
             Comenzar gratis — 7 dias sin costo
           </Link>
@@ -308,7 +308,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-indigo-600">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3]">
                 <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>

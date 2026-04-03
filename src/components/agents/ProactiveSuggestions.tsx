@@ -95,7 +95,7 @@ export function ProactiveSuggestions({
           <button
             key={s.id}
             onClick={() => onSuggestionClick(s.text)}
-            className="w-full rounded-lg bg-white px-3 py-2 text-left text-sm text-gray-700 shadow-sm transition-colors hover:bg-[#E8F4F8] hover:text-[#0F2B46]"
+            className="px-3 py-1.5 rounded-full border border-[#0EA5A3] text-[#0EA5A3] text-sm font-medium bg-white hover:bg-[#0EA5A3]/5 transition-colors cursor-pointer text-left"
           >
             {s.text}
           </button>

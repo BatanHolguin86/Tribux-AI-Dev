@@ -4,7 +4,7 @@ const INDUSTRY_COLORS: Record<string, string> = {
   educacion: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400',
   ecommerce: 'bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400',
   foodtech: 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400',
-  saas: 'bg-indigo-100 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400',
+  saas: 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20 text-[#0F2B46] dark:text-[#0EA5A3]',
   logistica: 'bg-cyan-100 dark:bg-cyan-900/20 text-cyan-700 dark:text-cyan-400',
   inmobiliaria: 'bg-teal-100 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400',
 }

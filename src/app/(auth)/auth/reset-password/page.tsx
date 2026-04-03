@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Contrasena actualizada</h2>
+        <h2 className="text-xl font-display font-bold text-gray-900 dark:text-gray-100">Contrasena actualizada</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Redirigiendo al inicio de sesion...</p>
       </div>
     )
@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
   return (
     <>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Nueva contrasena</h2>
+        <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-gray-100">Nueva contrasena</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Ingresa tu nueva contrasena</p>
       </div>
 

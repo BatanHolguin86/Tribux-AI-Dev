@@ -36,7 +36,7 @@ export function Phase02FinalGate({ projectId }: Phase02FinalGateProps) {
       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-2xl dark:bg-green-800/30">
         🏗️
       </div>
-      <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Phase 02 completada</h2>
+      <h2 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">Phase 02 completada</h2>
       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
         Has aprobado los {PHASE02_SECTIONS.length} documentos de arquitectura:
       </p>

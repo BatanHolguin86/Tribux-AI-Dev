@@ -127,7 +127,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
           >
             &larr; Diseño &amp; UX (Phase 02)
           </Link>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{artifact.screen_name}</h1>
+          <h1 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">{artifact.screen_name}</h1>
           <span className="rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-400">
             {TYPE_LABELS[artifact.type]}
           </span>

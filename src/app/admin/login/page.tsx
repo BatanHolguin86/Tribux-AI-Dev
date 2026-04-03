@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
       {/* Left panel — brand */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center bg-[#0A1F33] px-12">
         <div className="max-w-md">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#0F2B46] to-indigo-600 shadow-lg shadow-[#0EA5A3]/25 mb-8">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3] shadow-lg shadow-[#0EA5A3]/25 mb-8">
             <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
         <div className="w-full max-w-sm space-y-8">
           {/* Mobile logo */}
           <div className="lg:hidden text-center">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-indigo-600 shadow-lg shadow-[#0EA5A3]/25">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3] shadow-lg shadow-[#0EA5A3]/25">
               <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -92,7 +92,7 @@ export default function AdminLoginPage() {
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-display font-bold text-gray-900 dark:text-white">
               Acceso al backoffice
             </h1>
             <p className="mt-1.5 text-sm text-gray-600 dark:text-gray-400">
@@ -140,7 +140,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-lg bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#0EA5A3] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-lg bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#0EA5A3] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Verificando...' : 'Ingresar al backoffice'}
             </button>

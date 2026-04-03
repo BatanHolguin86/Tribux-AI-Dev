@@ -101,7 +101,7 @@ export function BillingSection({
 
   return (
     <section id="billing" className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Plan y facturacion</h2>
+      <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">Plan y facturacion</h2>
 
       {showAlert && billingStatus === 'success' && (
         <div className="mt-3 rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">
@@ -118,7 +118,7 @@ export function BillingSection({
       <div className="mt-4 flex items-start gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{planDetail?.name ?? currentPlan}</p>
+            <p className="text-xl font-display font-bold text-gray-900 dark:text-gray-100">{planDetail?.name ?? currentPlan}</p>
             <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${statusInfo.color}`}>
               {statusInfo.label}
             </span>

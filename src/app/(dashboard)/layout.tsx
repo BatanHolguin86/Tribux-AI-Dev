@@ -44,7 +44,7 @@ export default async function DashboardLayout({
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-indigo-600 shadow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3] shadow-sm">
               <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -71,7 +71,7 @@ export default async function DashboardLayout({
 
             {/* Avatar + name */}
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#0EA5A3] to-indigo-500 text-[11px] font-bold text-white shadow-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#0EA5A3] to-[#0EA5A3] text-[11px] font-bold text-white shadow-sm">
                 {initials}
               </div>
               <div className="hidden sm:block">

@@ -50,7 +50,7 @@ export function PhaseCelebration({
     <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}>
       <div className="mx-4 max-w-md rounded-2xl bg-white p-8 text-center shadow-2xl dark:bg-[#0F2B46]">
         <div className="mb-4 text-6xl">{celebration.emoji}</div>
-        <h2 className="font-display text-2xl font-bold text-[#0F2B46] dark:text-white">
+        <h2 className="font-display text-2xl font-display font-bold text-[#0F2B46] dark:text-white">
           {celebration.title}
         </h2>
         <p className="mt-2 text-sm text-[#94A3B8]">

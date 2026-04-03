@@ -64,11 +64,11 @@ export function Phase02WorkflowGuide({
 
   return (
     <div className="mb-6 space-y-4">
-      <div className="rounded-2xl border border-[#0EA5A3]/30/80 bg-gradient-to-br from-[#E8F4F8]/95 via-white to-indigo-50/60 p-5 shadow-sm dark:border-[#0F2B46]/35 dark:from-[#0A1F33]/25 dark:via-gray-950 dark:to-indigo-950/20">
+      <div className="rounded-2xl border border-[#0EA5A3]/30/80 bg-gradient-to-br from-[#E8F4F8]/95 via-white to-[#E8F4F8]/60 p-5 shadow-sm dark:border-[#0F2B46]/35 dark:from-[#0A1F33]/25 dark:via-gray-950 dark:to-[#0A1F33]/20">
         <p className="text-[11px] font-bold uppercase tracking-wide text-[#0F2B46] dark:text-[#0EA5A3]">
           Phase 02 — Un solo flujo: Arquitectura &amp; Diseño
         </p>
-        <h2 className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <h2 className="mt-1 text-lg font-display font-semibold text-gray-900 dark:text-gray-100">
           Recorrido guiado con entregables claros
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600 dark:text-gray-400">

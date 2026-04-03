@@ -69,7 +69,7 @@ export function SaveArtifactModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div ref={trapRef} role="dialog" aria-modal="true" className="mx-4 w-full max-w-md rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Guardar como Artifact</h3>
+        <h3 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">Guardar como Artifact</h3>
 
         <div className="mt-4 space-y-3">
           <div>

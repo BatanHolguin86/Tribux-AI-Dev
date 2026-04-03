@@ -11,8 +11,8 @@ export function DashboardHeader({ summary, onCreateProject }: DashboardHeaderPro
   return (
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Tus proyectos</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <h1 className="text-2xl font-display font-bold text-[#0F2B46] dark:text-gray-100">Tus proyectos</h1>
+        <p className="mt-1 text-sm text-[#64748B] dark:text-[#94A3B8]">
           {summary.total_active === 0
             ? 'Crea tu primer proyecto para comenzar'
             : `${summary.total_active} proyecto${summary.total_active !== 1 ? 's' : ''} activo${summary.total_active !== 1 ? 's' : ''}`}
@@ -26,7 +26,7 @@ export function DashboardHeader({ summary, onCreateProject }: DashboardHeaderPro
       {onCreateProject && (
         <button
           onClick={onCreateProject}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#0F2B46] to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

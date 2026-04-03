@@ -212,7 +212,7 @@ export function DesignGenerator({
               <p className="text-[10px] font-bold uppercase tracking-wide text-[#0F2B46] dark:text-[#0EA5A3]">
                 Camino B · Agente UI/UX
               </p>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">{resolvedTemplate.title}</h2>
+              <h2 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">{resolvedTemplate.title}</h2>
               <p className="mt-0.5 text-sm text-gray-600 dark:text-gray-400">{flow.uxDeliverable}</p>
             </div>
           </div>
@@ -313,7 +313,7 @@ export function DesignGenerator({
   return (
     <div>
       <header className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Diseño &amp; UX</h1>
+        <h1 className="text-2xl font-display font-bold tracking-tight text-gray-900 dark:text-gray-100">Diseño &amp; UX</h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600 dark:text-gray-400">
           Dos caminos complementarios, alineados a la metodología IA DLC:{' '}
           <strong className="text-gray-800 dark:text-gray-200">salidas visuales</strong> que quedan guardadas en el
@@ -335,8 +335,8 @@ export function DesignGenerator({
               </p>
             </div>
           </li>
-          <li className="flex gap-3 rounded-xl border border-indigo-200 bg-indigo-50/50 p-4 dark:border-indigo-900/40 dark:bg-indigo-950/20">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
+          <li className="flex gap-3 rounded-xl border border-[#0EA5A3]/30 bg-[#E8F4F8] p-4 dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/20">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46] text-sm font-bold text-white">
               B
             </span>
             <div>
@@ -521,11 +521,11 @@ export function DesignGenerator({
 
       {/* Camino B */}
       <section
-        className="mb-10 rounded-2xl border-2 border-indigo-200/80 bg-gradient-to-b from-indigo-50/40 to-white p-5 dark:border-indigo-900/50 dark:from-indigo-950/20 dark:to-gray-900 md:p-6"
+        className="mb-10 rounded-2xl border-2 border-[#0EA5A3]/30/80 bg-gradient-to-b from-[#E8F4F8]/40 to-white p-5 dark:border-[#0F2B46]/50 dark:from-[#0A1F33]/20 dark:to-gray-900 md:p-6"
         aria-labelledby="camino-b-title"
       >
         <div className="mb-2 flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-indigo-600 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
+          <span className="rounded-full bg-[#0F2B46] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
             Camino B
           </span>
           <h2 id="camino-b-title" className="text-base font-bold text-gray-900 dark:text-gray-100">
@@ -546,10 +546,10 @@ export function DesignGenerator({
                 key={tmpl.id}
                 type="button"
                 onClick={() => handleSelectTemplate(tmpl.id)}
-                className="group flex flex-col rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-indigo-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-indigo-600"
+                className="group flex flex-col rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-[#0EA5A3] hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-[#0EA5A3]"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-lg dark:bg-indigo-900/30">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E8F4F8] text-lg dark:bg-[#0F2B46]/30">
                     {tmpl.icon}
                   </span>
                   <span className="rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-bold text-white dark:bg-gray-100 dark:text-gray-900">
@@ -560,7 +560,7 @@ export function DesignGenerator({
                 <p className="mt-1 flex-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
                   {meta.outcomeLine}
                 </p>
-                <p className="mt-3 text-[11px] font-medium text-indigo-600 dark:text-indigo-400">
+                <p className="mt-3 text-[11px] font-medium text-[#0EA5A3] dark:text-[#0EA5A3]">
                   Abrir conversación guiada · {meta.durationHint}
                 </p>
               </button>
@@ -570,7 +570,7 @@ export function DesignGenerator({
           <button
             type="button"
             onClick={() => handleSelectTemplate('custom')}
-            className="flex flex-col rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/80 p-4 text-left transition-all hover:border-indigo-400 hover:bg-white dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-900"
+            className="flex flex-col rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/80 p-4 text-left transition-all hover:border-[#0EA5A3] hover:bg-white dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-900"
           >
             <div className="flex items-start justify-between gap-2">
               <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 text-lg dark:bg-gray-700">
@@ -584,7 +584,7 @@ export function DesignGenerator({
             <p className="mt-1 flex-1 text-xs text-gray-600 dark:text-gray-400">
               {getDesignToolCardMeta('custom').outcomeLine}
             </p>
-            <p className="mt-3 text-[11px] font-medium text-indigo-600 dark:text-indigo-400">
+            <p className="mt-3 text-[11px] font-medium text-[#0EA5A3] dark:text-[#0EA5A3]">
               Abrir conversación guiada · {getDesignToolCardMeta('custom').durationHint}
             </p>
           </button>
@@ -717,7 +717,7 @@ export function DesignGenerator({
                         srcDoc={artifact.thumb_srcdoc}
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#E8F4F8] to-indigo-100 text-xl dark:from-[#0A1F33] dark:to-indigo-950">
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#E8F4F8] to-[#E8F4F8] text-xl dark:from-[#0A1F33] dark:to-[#0A1F33]">
                         🎨
                       </div>
                     )}

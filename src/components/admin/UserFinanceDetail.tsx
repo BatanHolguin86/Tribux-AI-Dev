@@ -116,7 +116,7 @@ function KpiCard({
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-[#0EA5A3] dark:hover:border-[#0A1F33]">
       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
-      <p className={`mt-2 text-2xl font-bold ${valueColor[variant]}`}>{value}</p>
+      <p className={`mt-2 text-2xl font-display font-bold ${valueColor[variant]}`}>{value}</p>
       {subtitle && <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{subtitle}</p>}
     </div>
   )
@@ -173,12 +173,12 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
       {/* User profile header */}
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#0EA5A3] to-indigo-500 text-sm font-bold text-white shadow-lg shadow-[#0EA5A3]/25 shrink-0">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#0EA5A3] to-[#0EA5A3] text-sm font-bold text-white shadow-lg shadow-[#0EA5A3]/25 shrink-0">
             {initials}
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+              <h1 className="text-xl font-display font-bold text-gray-900 dark:text-white tracking-tight">
                 {user.fullName || 'Usuario'}
               </h1>
               <span className="inline-flex rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2.5 py-0.5 text-[11px] font-bold text-[#0F2B46] dark:text-[#0EA5A3] uppercase">
@@ -370,7 +370,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
             </tbody>
             {eventTypeBreakdown.length > 0 && (
               <tfoot>
-                <tr className="border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-[#E8F4F8] via-white to-indigo-50 dark:from-[#0A1F33]/20 dark:via-gray-900 dark:to-indigo-950/20">
+                <tr className="border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-[#E8F4F8] via-white to-[#E8F4F8] dark:from-[#0A1F33]/20 dark:via-gray-900 dark:to-[#0A1F33]/20">
                   <td className="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Total</td>
                   <td className="px-4 py-3 text-right text-sm font-bold text-gray-900 dark:text-white tabular-nums">
                     {formatUsd(totalCostAllTimeUsd)}

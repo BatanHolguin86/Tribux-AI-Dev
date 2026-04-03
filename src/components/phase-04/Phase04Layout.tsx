@@ -127,7 +127,7 @@ export function Phase04Layout({
         />
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 py-16 dark:border-gray-700">
           <div className="mb-3 text-4xl">📋</div>
-          <h3 className="text-lg font-semibold font-display text-gray-900 dark:text-gray-100">
+          <h3 className="text-lg font-display font-semibold font-display text-gray-900 dark:text-gray-100">
             No hay tasks aun
           </h3>
           <p className="mt-1 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400">

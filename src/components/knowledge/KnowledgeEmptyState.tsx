@@ -40,7 +40,7 @@ export function KnowledgeEmptyState({ projectId, onSeeded }: KnowledgeEmptyState
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E8F4F8] text-3xl dark:bg-[#0F2B46]/30">
           📚
         </div>
-        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">
           Base de Conocimiento
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">

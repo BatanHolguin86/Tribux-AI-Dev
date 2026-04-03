@@ -16,7 +16,7 @@ export default function DashboardError({
           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
         />
       </svg>
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Error al cargar el dashboard</h2>
+      <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">Error al cargar el dashboard</h2>
       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Ocurrio un problema. Intenta de nuevo.</p>
       <button
         onClick={reset}

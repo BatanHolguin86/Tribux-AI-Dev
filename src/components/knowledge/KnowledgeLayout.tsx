@@ -137,7 +137,7 @@ export function KnowledgeLayout({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">
             Base de Conocimiento
           </h1>
           <p className="text-xs text-gray-500 dark:text-gray-400">

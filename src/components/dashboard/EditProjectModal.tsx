@@ -74,7 +74,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
       <div ref={trapRef} role="dialog" aria-modal="true" className="relative z-10 w-full max-w-md rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Editar proyecto</h2>
+          <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">Editar proyecto</h2>
           <button onClick={onClose} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400" aria-label="Cerrar">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

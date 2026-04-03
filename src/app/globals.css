@@ -86,6 +86,44 @@
   /* Remap emerald → brand success */
   --color-emerald-500: #10B981;
   --color-emerald-600: #059669;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-elevated: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-sidebar: 4px 0 24px rgba(0,0,0,0.12);
+
+  /* Phase colors as Tailwind utilities */
+  --color-phase-discovery: #6366F1;
+  --color-phase-requirements: #8B5CF6;
+  --color-phase-architecture: #0EA5A3;
+  --color-phase-environment: #0EA5A3;
+  --color-phase-development: #10B981;
+  --color-phase-testing: #F59E0B;
+  --color-phase-launch: #F97316;
+  --color-phase-iteration: #EF4444;
+
+  /* Agent colors as Tailwind utilities */
+  --color-agent-cto: #0EA5A3;
+  --color-agent-product: #6366F1;
+  --color-agent-system: #8B5CF6;
+  --color-agent-designer: #EC4899;
+  --color-agent-developer: #0EA5A3;
+  --color-agent-database: #F59E0B;
+  --color-agent-qa: #10B981;
+  --color-agent-devops: #F97316;
+
+  /* Brand direct access */
+  --color-brand-command-blue: #0F2B46;
+  --color-brand-squad-teal: #0EA5A3;
+  --color-brand-signal-amber: #F59E0B;
+  --color-brand-deep-navy: #0A1F33;
+
+  /* Semantic */
+  --color-success: #10B981;
+  --color-warning: #F97316;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
 }
 
 @media (prefers-color-scheme: dark) {

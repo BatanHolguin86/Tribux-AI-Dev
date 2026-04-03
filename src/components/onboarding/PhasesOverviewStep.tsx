@@ -13,7 +13,7 @@ type PhasesOverviewStepProps = {
 export function PhasesOverviewStep({ isSubmitting, onFinish, onBack }: PhasesOverviewStepProps) {
   return (
     <div className="mx-auto max-w-lg">
-      <h2 className="text-2xl font-bold text-gray-900">El camino de tu producto</h2>
+      <h2 className="text-2xl font-display font-bold text-gray-900">El camino de tu producto</h2>
       <p className="mt-2 text-sm text-gray-600">
         Tu equipo de agentes IA te guiara por estas 8 fases.
       </p>
