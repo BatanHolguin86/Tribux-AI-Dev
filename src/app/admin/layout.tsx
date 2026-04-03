@@ -38,19 +38,19 @@ export default async function AdminLayout({
     .toUpperCase()
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      <header className="sticky top-0 z-40 border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+    <div className="min-h-screen bg-[var(--background)]">
+      <header className="sticky top-0 z-40 border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-[#0A1F33]/80 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <Link href="/admin/finance" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 shadow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0F2B46] shadow-sm">
               <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <span className="text-base font-bold text-gray-900 dark:text-gray-100">
+            <span className="text-base font-display font-bold text-gray-900 dark:text-gray-100">
               AI Squad
             </span>
-            <span className="hidden sm:inline-flex rounded-full bg-violet-100 dark:bg-violet-900/30 px-2.5 py-0.5 text-[10px] font-bold text-violet-700 dark:text-violet-400">
+            <span className="hidden sm:inline-flex rounded-full bg-[#0EA5A3]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#0EA5A3]">
               BACKOFFICE
             </span>
           </Link>
@@ -68,7 +68,7 @@ export default async function AdminLayout({
 
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-[11px] font-bold text-white shadow-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F2B46] text-[11px] font-bold text-white shadow-sm">
                 {initials}
               </div>
               <div className="hidden sm:block">
