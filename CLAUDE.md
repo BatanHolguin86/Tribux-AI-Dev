@@ -365,6 +365,29 @@ Antes de hacer deploy a produccion, verificar (checklist ampliable con criterios
 - Lighthouse score > 90 en Performance, Accessibility, Best Practices
 - Spec KIRO marcado como completado
 
+## Design System
+
+**ANTES de crear o modificar cualquier componente visual, consultar `docs/design-system/DESIGN-SYSTEM.md`.**
+
+### Reglas criticas de estilo
+
+1. **Color primario:** `#0F2B46` (Command Blue) — NO azules genericos ni violeta
+2. **Teal:** `#0EA5A3` para acciones secundarias, links, focus rings
+3. **Amber:** `#F59E0B` para gates, CTAs de upgrade, alertas
+4. **Tipografia:** DM Sans (`font-display`) para titulos, Inter (`font-sans`) para cuerpo, JetBrains Mono (`font-mono`) para codigo
+5. **Iconos:** Lucide React (`lucide-react`) — NO inline SVGs en componentes nuevos
+6. **NO gradientes purpura**, NO layouts 100% centrados, NO "AI slop"
+7. **Border radius:** `rounded-lg` (10px) cards/botones, `rounded-xl` (16px) containers
+8. **Cada agente y fase tiene color asignado** — ver DESIGN-SYSTEM.md
+
+### Archivos de tokens
+
+- `src/app/globals.css` — CSS variables (colores, fuentes, gradientes)
+- `src/app/layout.tsx` — Font imports (DM Sans + Inter + JetBrains Mono)
+- `docs/design-system/DESIGN-SYSTEM.md` — Referencia completa
+
+---
+
 ## Estado Actual del Proyecto
 
 No duplicar aquí el estado detallado: mantenerlo en **`docs/00-discovery/estatus-v1-y-roadmap.md`** (avance v1, módulos operativos) y en **`docs/05-qa/v1-go-no-go.md`** (criterios y evidencia de release). Actualizar esos documentos cuando cambie el alcance o el entorno.
