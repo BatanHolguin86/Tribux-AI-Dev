@@ -14,6 +14,7 @@ import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import type { TaskWithFeature } from '@/types/task'
 import type { AgentType } from '@/types/agent'
 import { buildExecutionPlan, type ExecutionPlan, type PlannedTask } from '@/lib/build/orchestrator'
+import { useFounderMode } from '@/hooks/useFounderMode'
 
 type TaskStatus = 'waiting' | 'building' | 'done' | 'failed'
 
@@ -61,10 +62,43 @@ function ActiveTaskRunner({
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, isLoading])
 
+  const { isFounder } = useFounderMode()
+
   if (error) {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
-        Error: {error.message}
+        {isFounder ? 'Hubo un problema. Reintentando...' : `Error: ${error.message}`}
+      </div>
+    )
+  }
+
+  // Founder mode: simple progress instead of tool calls
+  if (isFounder) {
+    const toolCount = messages.reduce((count, msg) => {
+      const parts = msg.parts as UIMessagePart<UIDataTypes, UITools>[]
+      return count + parts.filter(isToolUIPart).length
+    }, 0)
+
+    return (
+      <div className="flex items-center gap-3 py-2">
+        {isLoading ? (
+          <>
+            <svg className="h-5 w-5 animate-spin text-[#0EA5A3]" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <span className="text-sm text-[#0F2B46] dark:text-gray-300">
+              Construyendo... ({toolCount} pasos completados)
+            </span>
+          </>
+        ) : (
+          <>
+            <svg className="h-5 w-5 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-sm font-medium text-[#10B981]">Listo</span>
+          </>
+        )}
       </div>
     )
   }

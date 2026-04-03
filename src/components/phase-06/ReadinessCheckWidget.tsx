@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useFounderMode, founderLabel } from '@/hooks/useFounderMode'
 
 type CheckStatus = 'pass' | 'fail' | 'warn' | 'skip'
 
@@ -27,6 +28,7 @@ const STATUS_STYLE: Record<CheckStatus, { icon: string; cls: string }> = {
 }
 
 export function ReadinessCheckWidget({ projectId }: { projectId: string }) {
+  const { isFounder } = useFounderMode()
   const [data, setData] = useState<ReadinessData | null>(null)
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(false)
@@ -129,7 +131,7 @@ export function ReadinessCheckWidget({ projectId }: { projectId: string }) {
               >
                 <div className="flex items-center gap-2.5">
                   <span className={`text-sm font-bold ${style.cls}`}>{style.icon}</span>
-                  <span className="text-sm text-gray-900 dark:text-gray-100">{check.label}</span>
+                  <span className="text-sm text-gray-900 dark:text-gray-100">{founderLabel(check.label, isFounder)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-500 dark:text-gray-400">{check.detail}</span>

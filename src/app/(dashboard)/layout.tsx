@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { TrialBanner } from '@/components/shared/TrialBanner'
+import { FounderModeProvider } from '@/hooks/useFounderMode'
 import { UsageQuotaBanner } from '@/components/shared/UsageQuotaBanner'
 import { getTrialDaysRemaining } from '@/lib/plans/guards'
 
@@ -21,7 +22,7 @@ export default async function DashboardLayout({
 
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('onboarding_completed, full_name, subscription_status, trial_ends_at')
+    .select('onboarding_completed, full_name, subscription_status, trial_ends_at, persona')
     .eq('id', user.id)
     .single()
 
@@ -93,14 +94,16 @@ export default async function DashboardLayout({
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-8">
-        <div className="mb-6">
-          <UsageQuotaBanner />
-          <TrialBanner
-            daysRemaining={getTrialDaysRemaining(profile.trial_ends_at)}
-            subscriptionStatus={profile.subscription_status ?? 'free'}
-          />
-        </div>
-        {children}
+        <FounderModeProvider persona={profile.persona ?? null}>
+          <div className="mb-6">
+            <UsageQuotaBanner />
+            <TrialBanner
+              daysRemaining={getTrialDaysRemaining(profile.trial_ends_at)}
+              subscriptionStatus={profile.subscription_status ?? 'free'}
+            />
+          </div>
+          {children}
+        </FounderModeProvider>
       </main>
     </div>
   )

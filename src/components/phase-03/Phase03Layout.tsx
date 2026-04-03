@@ -17,6 +17,7 @@ import { Phase03FinalGate } from './Phase03FinalGate'
 import { InfraReadinessBanner } from './InfraReadinessBanner'
 import { OneClickSetupCard } from './OneClickSetupCard'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
+import { useFounderMode } from '@/hooks/useFounderMode'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 
 const PHASE_OBJECTIVE =
@@ -34,6 +35,8 @@ type Phase03LayoutProps = {
 const phaseAgents = getPhaseAgents(3)
 
 export function Phase03Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [], platformReady = false, existingSetup = { hasRepo: false, hasSupabase: false, hasVercel: false } }: Phase03LayoutProps) {
+  const { isFounder } = useFounderMode()
+  const allSetupDone = existingSetup.hasRepo && existingSetup.hasSupabase && existingSetup.hasVercel
   const [categories, setCategories] = useState(initialCategories)
   const {
     actions,
@@ -157,7 +160,7 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
             </div>
           )}
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className={`grid gap-4 md:grid-cols-2 ${isFounder && allSetupDone ? 'hidden' : ''}`}>
             {PHASE03_SECTIONS.map((sectionKey) => {
               const category = categories.find((c) => c.key === sectionKey)!
               const action = actions.find((a) => a.section === sectionKey)
