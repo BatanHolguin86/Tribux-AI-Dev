@@ -254,20 +254,20 @@ function StepperItem({
       {/* Phase number square */}
       <div className="relative z-10 flex shrink-0 items-center justify-center">
         {status === 'completed' ? (
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500">
             <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
         ) : status === 'active' ? (
           <div
-            className="flex h-10 w-10 items-center justify-center rounded-lg"
+            className="flex h-8 w-8 items-center justify-center rounded-lg"
             style={{ backgroundColor: phaseColor }}
           >
             <span className="font-mono text-sm font-bold text-white">{phaseNum}</span>
           </div>
         ) : (
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700">
             <span className="font-mono text-sm font-bold text-gray-400 dark:text-gray-500">{phaseNum}</span>
           </div>
         )}
