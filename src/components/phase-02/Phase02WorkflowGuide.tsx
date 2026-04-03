@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import type { Phase02Section, SectionStatus } from '@/types/conversation'
 import { PHASE02_SECTIONS, SECTION_LABELS } from '@/lib/ai/prompts/phase-02'
 import { usePhaseWorkspaceNav } from '@/lib/phase-workspace-nav-context'
@@ -25,7 +26,7 @@ function visualStepStatus(approvedCount: number, artifactCount: number): StepSta
 type Phase02WorkflowGuideProps = {
   projectId: string
   activeSection: Phase02Section
-  sections: Array<{ key: Phase02Section; status: SectionStatus; hasDocument?: boolean; documentPreview?: string | null }>
+  sections: Array<{ key: Phase02Section; status: SectionStatus; hasDocument?: boolean; documentPreview?: string | null; documentContent?: string | null }>
   artifactCount: number
   approvedVisualCount: number
   onSectionClick?: (section: Phase02Section) => void
@@ -40,6 +41,7 @@ export function Phase02WorkflowGuide({
   onSectionClick,
 }: Phase02WorkflowGuideProps) {
   const nav = usePhaseWorkspaceNav()
+  const [expandedCard, setExpandedCard] = useState<string | null>(null)
   const statusByKey = Object.fromEntries(sections.map((s) => [s.key, s.status])) as Record<
     Phase02Section,
     SectionStatus
@@ -94,13 +96,14 @@ export function Phase02WorkflowGuide({
           const sectionData = !isDesign ? sections.find((s) => s.key === step.id) : null
           const hasDoc = sectionData?.hasDocument ?? false
           const preview = sectionData?.documentPreview ?? null
+          const isExpanded = expandedCard === step.id
 
           return (
             <li
               key={step.id}
-              onClick={!isDesign && onSectionClick ? () => onSectionClick(step.id as Phase02Section) : undefined}
+              onClick={!isDesign && hasDoc ? () => setExpandedCard(isExpanded ? null : step.id) : !isDesign && onSectionClick ? () => onSectionClick(step.id as Phase02Section) : undefined}
               className={`flex flex-col rounded-xl border p-3 text-left transition-shadow ${
-                !isDesign && onSectionClick ? 'cursor-pointer hover:shadow-md' : ''
+                !isDesign && (hasDoc || onSectionClick) ? 'cursor-pointer hover:shadow-md' : ''
               } ${
                 step.status === 'current'
                   ? 'border-[#0EA5A3] shadow-md shadow-[#E8F4F8]/50 dark:border-[#0EA5A3] dark:shadow-[#0F2B46]/20'
@@ -161,11 +164,21 @@ export function Phase02WorkflowGuide({
                 >
                   Ir a Phase 02
                 </a>
-              ) : !isDesign && onSectionClick ? (
+              ) : !isDesign && hasDoc ? (
                 <p className="mt-2 text-[10px] font-medium text-[#0EA5A3]">
-                  Click para ver →
+                  {isExpanded ? 'Click para cerrar' : 'Click para ver'}
                 </p>
               ) : null}
+
+              {isExpanded && sectionData?.documentContent && (
+                <div className="mt-3 max-h-64 overflow-y-auto rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3 dark:border-[#1E3A55] dark:bg-[#0A1F33]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <pre className="whitespace-pre-wrap text-xs leading-relaxed text-[#0F2B46] dark:text-gray-300">
+                    {sectionData.documentContent}
+                  </pre>
+                </div>
+              )}
             </li>
           )
         })}

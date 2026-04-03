@@ -131,7 +131,7 @@ export function Phase02Layout({
       <Phase02WorkflowGuide
         projectId={projectId}
         activeSection={activeSection}
-        sections={sections.map((s) => ({ key: s.key, status: s.status, hasDocument: s.document !== null, documentPreview: s.document?.content?.slice(0, 150) ?? null }))}
+        sections={sections.map((s) => ({ key: s.key, status: s.status, hasDocument: s.document !== null, documentPreview: s.document?.content?.slice(0, 150) ?? null, documentContent: s.document?.content ?? null }))}
         artifactCount={designArtifacts.length}
         approvedVisualCount={approvedDesigns.length}
         onSectionClick={(section) => {
