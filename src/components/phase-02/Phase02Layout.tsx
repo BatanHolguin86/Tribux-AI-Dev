@@ -236,6 +236,8 @@ export function Phase02Layout({
       hasTools={true}
       toolsTabLabel="Diseño & UX"
       toolsTabIcon="🎨"
+      sectionsTabLabel={isFounder ? 'Arquitectura (auto)' : 'Arquitectura'}
+      initialTab={isFounder ? 'herramientas' : 'secciones'}
       phaseAgents={phaseAgents}
       teamContent={(goToSecciones) => (
         <PhaseTeamPanel
