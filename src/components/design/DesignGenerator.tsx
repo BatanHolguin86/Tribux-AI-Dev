@@ -309,80 +309,28 @@ export function DesignGenerator({
     )
   }
 
-  // Hub: two clear product paths (visual artifacts vs. agent-led design kit)
+  // Simplified unified design hub
   return (
     <div>
-      <header className="mb-8">
-        <h1 className="text-2xl font-display font-bold tracking-tight text-gray-900 dark:text-gray-100">Diseño &amp; UX</h1>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          Dos caminos complementarios, alineados a la metodología IA DLC:{' '}
-          <strong className="text-gray-800 dark:text-gray-200">salidas visuales</strong> que quedan guardadas en el
-          proyecto, y <strong className="text-gray-800 dark:text-gray-200">conversaciones guiadas</strong> con el agente
-          UI/UX para sistema de diseño (tokens, componentes, flujos, responsive), usando personas y propuesta de valor
-          del Discovery.
+      <header className="mb-6">
+        <h1 className="text-2xl font-display font-bold tracking-tight text-[#0F2B46] dark:text-gray-100">Disena tu app</h1>
+        <p className="mt-1 text-sm text-[#64748B] dark:text-gray-400">
+          Selecciona tus features, elige el nivel de detalle y genera los diseños visuales.
         </p>
-
-        <ol className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="Resumen del flujo">
-          <li className="flex gap-3 rounded-xl border border-[#0EA5A3]/30 bg-[#E8F4F8]/50 p-4 dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/20">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46] text-sm font-bold text-white">
-              A
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Pantallas visuales</p>
-              <p className="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
-                Genera wireframes o mockups por lista de pantallas. Ideal cuando ya tienes specs KIRO o una lista clara
-                de vistas. El resultado aparece abajo y puedes abrirlo, aprobarlo o refinarlo.
-              </p>
-            </div>
-          </li>
-          <li className="flex gap-3 rounded-xl border border-[#0EA5A3]/30 bg-[#E8F4F8] p-4 dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/20">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46] text-sm font-bold text-white">
-              B
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Kit de diseño con agente</p>
-              <p className="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
-                Elige una herramienta (pasos 1–6). Se abre un chat: el primer mensaje ya incluye contexto del proyecto y
-                el flujo CTO + UX. Tu trabajo es leer la respuesta y pedir ajustes en el mismo hilo.
-              </p>
-            </div>
-          </li>
-        </ol>
       </header>
 
-      {/* Camino A */}
-      <section
-        className="relative mb-10 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900 md:p-6"
-        aria-labelledby="camino-a-title"
-      >
+      {/* Main action: generate designs from features */}
+      <section className="relative mb-8 rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm dark:border-[#1E3A55] dark:bg-[#0F2B46] md:p-6">
         {isGenerating && (
           <div
-            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl bg-white/85 p-6 text-center backdrop-blur-sm dark:bg-gray-900/85"
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl bg-white/90 p-6 text-center backdrop-blur-sm dark:bg-[#0F2B46]/90"
             role="status"
-            aria-live="polite"
           >
-            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0F2B46]" />
-            <p className="mt-4 text-sm font-semibold text-gray-900 dark:text-gray-100">Generando diseños…</p>
-            <p className="mt-2 max-w-sm text-xs leading-relaxed text-gray-600 dark:text-gray-400">
-              La IA está creando HTML+Tailwind por cada pantalla en el servidor. Suele tardar entre unos segundos y un
-              minuto; no cierres esta pestaña.
-            </p>
+            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0EA5A3]" />
+            <p className="mt-4 text-sm font-display font-semibold text-[#0F2B46] dark:text-white">Generando diseños...</p>
+            <p className="mt-1 text-xs text-[#94A3B8]">Esto puede tomar hasta 1 minuto</p>
           </div>
         )}
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-[#E8F4F8] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#0F2B46] dark:bg-[#0F2B46]/40 dark:text-[#0EA5A3]/30">
-            Camino A
-          </span>
-          <h2 id="camino-a-title" className="text-base font-bold text-gray-900 dark:text-gray-100">
-            Pantallas visuales (wireframe / mockup)
-          </h2>
-        </div>
-        <p className="mb-4 text-xs text-gray-600 dark:text-gray-400">
-          Escribe pantallas separadas por coma, elige tipo y opcionalmente refina. La generación es{' '}
-          <strong className="text-gray-800 dark:text-gray-200">síncrona</strong>: verás el estado “Generando…” hasta
-          que termine (sin polling). Tras generar, revisa la lista <strong className="text-gray-800 dark:text-gray-200">Diseños generados</strong>{' '}
-          (vista miniatura cuando hay HTML guardado) y abre cada artefacto para aprobar o refinar.
-        </p>
         <div className="mt-3 space-y-3">
           <div>
             <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">
@@ -503,7 +451,7 @@ export function DesignGenerator({
             <button
               type="button"
               onClick={handleGenerateFromSpecs}
-              disabled={!screensInput.trim() || isGenerating}
+              disabled={(selectedFeatures.size === 0 && !screensInput.trim()) || isGenerating}
               className="rounded-lg bg-[#0F2B46] px-5 py-2.5 text-sm font-semibold text-white shadow-sm dark:shadow-gray-900/20 transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
             >
               {isGenerating ? 'Generando…' : 'Generar y guardar en el proyecto'}
@@ -512,165 +460,26 @@ export function DesignGenerator({
         </div>
       </section>
 
-      {/* Error display for template actions */}
-      {generateError && !screensInput.trim() && (
-        <div className="mb-4 rounded-md border-l-4 border-red-500 bg-red-50 dark:bg-red-900/10 px-3 py-2 text-sm text-red-700 dark:text-red-400">
-          {generateError}
-        </div>
-      )}
+      {/* Secondary options */}
+      <div className="mb-8 flex flex-wrap gap-3">
+        {/* Import from external tools */}
+        <button
+          type="button"
+          onClick={() => setShowExternalImport(true)}
+          className="flex items-center gap-2 rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-sm font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200 dark:hover:border-[#0EA5A3]"
+        >
+          🎨 Importar desde Figma, V0 o Lovable
+        </button>
 
-      {/* Camino B */}
-      <section
-        className="mb-10 rounded-2xl border-2 border-[#0EA5A3]/30/80 bg-gradient-to-b from-[#E8F4F8]/40 to-white p-5 dark:border-[#0F2B46]/50 dark:from-[#0A1F33]/20 dark:to-gray-900 md:p-6"
-        aria-labelledby="camino-b-title"
-      >
-        <div className="mb-2 flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-[#0F2B46] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
-            Camino B
-          </span>
-          <h2 id="camino-b-title" className="text-base font-bold text-gray-900 dark:text-gray-100">
-            Kit de diseño con agente (orden sugerido 1 → 6)
-          </h2>
-        </div>
-        <p className="mb-5 max-w-3xl text-xs leading-relaxed text-gray-600 dark:text-gray-400">
-          Cada tarjeta <strong className="text-gray-800 dark:text-gray-200">crea un hilo nuevo</strong> con el UI/UX
-          Designer. No hace falta copiar prompts: el sistema envía personas, propuesta de valor y el guion de la
-          herramienta. Los tiempos son orientativos (IA).
-        </p>
-
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {ORDERED_KIT_TEMPLATES.map((tmpl) => {
-            const meta = getDesignToolCardMeta(tmpl.id)
-            return (
-              <button
-                key={tmpl.id}
-                type="button"
-                onClick={() => handleSelectTemplate(tmpl.id)}
-                className="group flex flex-col rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-[#0EA5A3] hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-[#0EA5A3]"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E8F4F8] text-lg dark:bg-[#0F2B46]/30">
-                    {tmpl.icon}
-                  </span>
-                  <span className="rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-bold text-white dark:bg-gray-100 dark:text-gray-900">
-                    Paso {meta.step}
-                  </span>
-                </div>
-                <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">{tmpl.title}</h3>
-                <p className="mt-1 flex-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
-                  {meta.outcomeLine}
-                </p>
-                <p className="mt-3 text-[11px] font-medium text-[#0EA5A3] dark:text-[#0EA5A3]">
-                  Abrir conversación guiada · {meta.durationHint}
-                </p>
-              </button>
-            )
-          })}
-
-          <button
-            type="button"
-            onClick={() => handleSelectTemplate('custom')}
-            className="flex flex-col rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/80 p-4 text-left transition-all hover:border-[#0EA5A3] hover:bg-white dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-900"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 text-lg dark:bg-gray-700">
-                ✏️
-              </span>
-              <span className="rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-bold text-white dark:bg-gray-100 dark:text-gray-900">
-                Paso {getDesignToolCardMeta('custom').step}
-              </span>
-            </div>
-            <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">Diseño custom</h3>
-            <p className="mt-1 flex-1 text-xs text-gray-600 dark:text-gray-400">
-              {getDesignToolCardMeta('custom').outcomeLine}
-            </p>
-            <p className="mt-3 text-[11px] font-medium text-[#0EA5A3] dark:text-[#0EA5A3]">
-              Abrir conversación guiada · {getDesignToolCardMeta('custom').durationHint}
-            </p>
-          </button>
-        </div>
-      </section>
-
-      {/* Camino C */}
-      <section
-        className="mb-10 rounded-2xl border-2 border-emerald-200/80 bg-gradient-to-b from-emerald-50/40 to-white p-5 dark:border-emerald-900/50 dark:from-emerald-950/20 dark:to-gray-900 md:p-6"
-        aria-labelledby="camino-c-title"
-      >
-        <div className="mb-2 flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
-            Camino C
-          </span>
-          <h2 id="camino-c-title" className="text-base font-bold text-gray-900 dark:text-gray-100">
-            Herramientas externas
-          </h2>
-        </div>
-        <p className="mb-5 max-w-3xl text-xs leading-relaxed text-gray-600 dark:text-gray-400">
-          Importa diseños profesionales de herramientas externas. Los artefactos importados se integran al mismo flujo de
-          aprobacion y alimentan Phase 04 (desarrollo).
-        </p>
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          {([
-            {
-              id: 'figma' as const,
-              label: 'Figma',
-              description: 'Importar frames de un archivo Figma como imagenes PNG.',
-              icon: (
-                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
-                  <path d="M8 24c2.2 0 4-1.8 4-4v-4H8c-2.2 0-4 1.8-4 4s1.8 4 4 4zM4 12c0-2.2 1.8-4 4-4h4v8H8c-2.2 0-4-1.8-4-4zM4 4c0-2.2 1.8-4 4-4h4v8H8C5.8 8 4 6.2 4 4zM12 0h4c2.2 0 4 1.8 4 4s-1.8 4-4 4h-4V0zM20 12c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4 4 1.8 4 4z" />
-                </svg>
-              ),
-              connected: connectedTools.figma,
-            },
-            {
-              id: 'v0' as const,
-              label: 'V0 by Vercel',
-              description: 'Pegar codigo React+Tailwind generado en V0.',
-              icon: (
-                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
-                  <path d="M12 1L24 22H0L12 1z" />
-                </svg>
-              ),
-              connected: connectedTools.v0,
-            },
-            {
-              id: 'lovable' as const,
-              label: 'Lovable',
-              description: 'Vincular un proyecto de Lovable como referencia de diseño.',
-              icon: <span className="text-lg">💜</span>,
-              connected: true,
-            },
-          ]).map((tool) => (
-            <button
-              key={tool.id}
-              type="button"
-              onClick={() => {
-                setExternalTab(tool.id)
-                setShowExternalImport(true)
-              }}
-              className="group flex flex-col rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-emerald-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-emerald-600"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
-                  {tool.icon}
-                </span>
-                {tool.connected && (
-                  <span className="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                  </span>
-                )}
-              </div>
-              <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">{tool.label}</h3>
-              <p className="mt-1 flex-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
-                {tool.description}
-              </p>
-              <p className="mt-3 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
-                {tool.id === 'lovable' ? 'Vincular proyecto →' : 'Importar →'}
-              </p>
-            </button>
-          ))}
-        </div>
-      </section>
+        {/* Chat with designer */}
+        <button
+          type="button"
+          onClick={() => handleSelectTemplate('wireframes')}
+          className="flex items-center gap-2 rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-sm font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200 dark:hover:border-[#0EA5A3]"
+        >
+          💬 Chat con el disenador IA
+        </button>
+      </div>
 
       <ExternalToolImportModal
         projectId={projectId}
@@ -681,22 +490,18 @@ export function DesignGenerator({
         onImported={() => refreshArtifactsWithThumbs()}
       />
 
-      {/* Artefactos Camino A */}
+      {/* Diseños generados */}
       <div className="mt-8">
-        <h3 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+        <h3 className="mb-1 text-sm font-display font-semibold uppercase tracking-wider text-[#94A3B8]">
           Diseños generados
         </h3>
-        <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-          Artefactos del <span className="font-medium text-gray-700 dark:text-gray-300">Camino A</span>. Después de
-          revisarlos, usa el <span className="font-medium text-gray-700 dark:text-gray-300">Camino B</span> para alinear
-          sistema de diseño y flujos.
+        <p className="mb-3 text-xs text-[#94A3B8]">
+          Haz click en un diseño para verlo, aprobarlo o refinarlo.
         </p>
         {artifacts.length === 0 ? (
           <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50/70 px-4 py-8 text-center dark:border-gray-600 dark:bg-gray-900/40">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Aún no hay pantallas generadas. Completa el formulario del{' '}
-              <span className="font-medium text-gray-800 dark:text-gray-200">Camino A</span> para crear wireframes o
-              mockups guardados en este proyecto.
+            <p className="text-sm text-[#94A3B8]">
+              Aun no hay diseños. Selecciona features arriba y genera tus primeros wireframes.
             </p>
           </div>
         ) : (
