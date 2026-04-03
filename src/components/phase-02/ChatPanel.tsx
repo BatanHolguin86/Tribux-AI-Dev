@@ -208,7 +208,7 @@ export function ChatPanel({
       <AgentParticipationHeader agents={PHASE_02_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
       {streamError && (
-        <div className="mx-3 my-2 rounded-lg border-l-4 border-amber-500 bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-300" role="alert">
+        <div className="mx-3 my-2 rounded-lg border-l-4 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-3 text-sm text-[#F59E0B] dark:text-[#F59E0B]" role="alert">
           <p className="text-xs font-medium">
             {streamError.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}
           </p>
