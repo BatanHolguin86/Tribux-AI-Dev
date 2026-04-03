@@ -3,11 +3,8 @@ import { PHASE_NAMES } from '@/types/project'
 import type { PhaseStatus } from '@/types/project'
 import { FloatingAgentButton } from '@/components/agents/FloatingAgentButton'
 import { PhasesStepper } from '@/components/projects/PhasesStepper'
-import { ProgressDashboard } from '@/components/projects/ProgressDashboard'
-import { ProactiveSuggestions } from '@/components/projects/ProactiveSuggestions'
 import { MobileSidebarDrawer } from '@/components/projects/MobileSidebarDrawer'
 import { ProjectBreadcrumb } from '@/components/projects/ProjectBreadcrumb'
-import { DlcClosingNarrative } from '@/components/projects/DlcClosingNarrative'
 
 export default async function ProjectLayout({
   children,
@@ -40,16 +37,6 @@ export default async function ProjectLayout({
     status: p.status as PhaseStatus,
   }))
 
-  // Fetch task stats for progress dashboard
-  const { data: taskRows } = await supabase
-    .from('project_tasks')
-    .select('status')
-    .eq('project_id', id)
-
-  const taskStats = taskRows && taskRows.length > 0
-    ? { total: taskRows.length, done: taskRows.filter((t) => t.status === 'done').length }
-    : null
-
   return (
     <div>
       <ProjectBreadcrumb
@@ -59,21 +46,12 @@ export default async function ProjectLayout({
         phaseName={phaseName}
       />
 
-      <DlcClosingNarrative variant="project" />
-
       {/* Main layout: sidebar + content */}
       <div className="flex gap-6">
-        {/* Progress dashboard — mobile only (above content) */}
-        <div className="mb-4 lg:hidden">
-          <ProgressDashboard phases={phases} projectName={projectName} taskStats={taskStats} />
-        </div>
-
         {/* Sidebar — sticky with scroll, hidden on mobile */}
         <aside className="hidden w-64 shrink-0 lg:block">
-          <div className="sticky top-6 max-h-[calc(100vh-5rem)] space-y-5 overflow-y-auto scrollbar-hide pb-6">
-            <ProgressDashboard phases={phases} projectName={projectName} taskStats={taskStats} />
+          <div className="sticky top-6 max-h-[calc(100vh-5rem)] space-y-4 overflow-y-auto scrollbar-hide pb-6">
             <PhasesStepper projectId={id} phases={phases} />
-            <ProactiveSuggestions projectId={id} phases={phases} currentPhase={currentPhase} />
           </div>
         </aside>
 
