@@ -52,6 +52,7 @@ type Phase02LayoutProps = {
   designArtifacts?: Artifact[]
   workflowContext?: DesignWorkflowContext
   connectedTools?: { figma: boolean; v0: boolean }
+  completedFeatures?: Array<{ id: string; name: string }>
 }
 
 const phaseAgents = getPhaseAgents(2)
@@ -64,6 +65,7 @@ export function Phase02Layout({
   designArtifacts = [],
   workflowContext,
   connectedTools,
+  completedFeatures = [],
 }: Phase02LayoutProps) {
   const router = useRouter()
   const { isFounder } = useFounderMode()
@@ -220,6 +222,7 @@ export function Phase02Layout({
       existingArtifacts={designArtifacts}
       workflowContext={workflowContext}
       connectedTools={connectedTools}
+      completedFeatures={completedFeatures}
     />
   ) : (
     <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50/70 px-4 py-12 text-center dark:border-gray-600 dark:bg-gray-900/40">

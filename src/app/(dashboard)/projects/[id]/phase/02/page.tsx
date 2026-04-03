@@ -102,6 +102,17 @@ export default async function Phase02Page({
     getDesignWorkflowContext(projectId),
   ])
 
+  // Fetch completed features from Phase 01
+  const { data: featuresData } = await supabase
+    .from('project_features')
+    .select('id, name, spec_complete')
+    .eq('project_id', projectId)
+    .order('created_at')
+
+  const completedFeatures = (featuresData ?? [])
+    .filter((f) => f.spec_complete)
+    .map((f) => ({ id: f.id as string, name: f.name as string }))
+
   const sections = sectionsRes.data ?? []
   const conversations = conversationsRes.data ?? []
   const documents = documentsRes.data ?? []
@@ -180,6 +191,7 @@ export default async function Phase02Page({
       designArtifacts={allArtifacts}
       workflowContext={workflowContext}
       connectedTools={connectedTools}
+      completedFeatures={completedFeatures}
     />
   )
 }

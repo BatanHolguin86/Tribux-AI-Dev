@@ -32,11 +32,14 @@ const TYPE_LABELS: Record<string, string> = {
   mockup_highfi: 'Mockup High-Fi',
 }
 
+type FeatureOption = { id: string; name: string }
+
 type DesignGeneratorProps = {
   projectId: string
   existingArtifacts: Artifact[]
   workflowContext: DesignWorkflowContext
   connectedTools?: { figma: boolean; v0: boolean }
+  completedFeatures?: FeatureOption[]
 }
 
 export function DesignGenerator({
@@ -44,11 +47,13 @@ export function DesignGenerator({
   existingArtifacts,
   workflowContext,
   connectedTools = { figma: false, v0: false },
+  completedFeatures = [],
 }: DesignGeneratorProps) {
   const [activeTemplate, setActiveTemplate] = useState<string | null>(null)
   const [threadId, setThreadId] = useState<string | null>(null)
   const [artifacts, setArtifacts] = useState<Artifact[]>(existingArtifacts)
   const [screensInput, setScreensInput] = useState('')
+  const [selectedFeatures, setSelectedFeatures] = useState<Set<string>>(new Set())
   const [type, setType] = useState<'wireframe' | 'mockup_lowfi' | 'mockup_highfi'>('wireframe')
   const [refinement, setRefinement] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -141,10 +146,15 @@ export function DesignGenerator({
   }, [activeTemplate, workflowContext])
 
   async function handleGenerateFromSpecs() {
-    const screens = screensInput
+    // Use selected features + manual input
+    const fromFeatures = completedFeatures
+      .filter((f) => selectedFeatures.has(f.id))
+      .map((f) => f.name)
+    const fromInput = screensInput
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean)
+    const screens = [...fromFeatures, ...fromInput]
 
     if (screens.length === 0) return
 
@@ -376,13 +386,42 @@ export function DesignGenerator({
         <div className="mt-3 space-y-3">
           <div>
             <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">
-              Pantallas / flujos
+              Selecciona features para disenar
+            </label>
+            {completedFeatures.length > 0 ? (
+              <div className="mt-2 space-y-1.5 rounded-lg border border-[#E2E8F0] p-3 dark:border-[#1E3A55]">
+                {completedFeatures.map((feature) => (
+                  <label key={feature.id} className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-[#E8F4F8] dark:hover:bg-[#0F2B46]/30">
+                    <input
+                      type="checkbox"
+                      checked={selectedFeatures.has(feature.id)}
+                      onChange={() => {
+                        setSelectedFeatures((prev) => {
+                          const next = new Set(prev)
+                          next.has(feature.id) ? next.delete(feature.id) : next.add(feature.id)
+                          return next
+                        })
+                      }}
+                      className="rounded border-gray-300 text-[#0EA5A3] focus:ring-[#0EA5A3]"
+                    />
+                    <span className="text-[#0F2B46] dark:text-gray-200">{feature.name}</span>
+                  </label>
+                ))}
+                {selectedFeatures.size > 0 && (
+                  <p className="mt-1 text-[10px] text-[#0EA5A3]">{selectedFeatures.size} feature(s) seleccionado(s)</p>
+                )}
+              </div>
+            ) : (
+              <p className="mt-1 text-xs text-[#94A3B8]">No hay features completados. Completa specs en Phase 01 primero.</p>
+            )}
+            <label className="mt-3 block text-xs font-medium text-gray-700 dark:text-gray-300">
+              Pantallas adicionales (opcional)
             </label>
             <input
               type="text"
               value={screensInput}
               onChange={(e) => setScreensInput(e.target.value)}
-              placeholder="Login, Dashboard, Detalle de presupuesto..."
+              placeholder="Landing page, Perfil de usuario..."
               className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             />
           </div>
