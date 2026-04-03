@@ -111,14 +111,14 @@ export default async function Phase02Page({
 
   const { data: featureDocsData } = await supabase
     .from('feature_documents')
-    .select('feature_id, doc_type, status')
+    .select('feature_id, document_type, status')
     .eq('project_id', projectId)
 
   const allFeatures = (featuresData ?? []).map((f) => {
     const docs = (featureDocsData ?? []).filter((d) => d.feature_id === f.id)
-    const hasRequirements = docs.some((d) => d.doc_type === 'requirements' && (d.status === 'approved' || d.status === 'draft'))
-    const hasDesign = docs.some((d) => d.doc_type === 'design' && (d.status === 'approved' || d.status === 'draft'))
-    const hasTasks = docs.some((d) => d.doc_type === 'tasks' && (d.status === 'approved' || d.status === 'draft'))
+    const hasRequirements = docs.some((d) => d.document_type === 'requirements' && (d.status === 'approved' || d.status === 'draft'))
+    const hasDesign = docs.some((d) => d.document_type === 'design' && (d.status === 'approved' || d.status === 'draft'))
+    const hasTasks = docs.some((d) => d.document_type === 'tasks' && (d.status === 'approved' || d.status === 'draft'))
     const isComplete = hasRequirements && hasDesign && hasTasks
 
     return {
