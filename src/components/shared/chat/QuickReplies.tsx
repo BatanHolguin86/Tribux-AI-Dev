@@ -10,24 +10,17 @@ export function QuickReplies({ options, onSelect, disabled }: QuickRepliesProps)
   if (options.length === 0) return null
 
   return (
-    <div className="flex flex-wrap gap-2 border-t border-gray-100 px-3 py-2 dark:border-gray-800">
-      {options.map((option, i) => {
-        const isOpen = i === options.length - 1
-        return (
-          <button
-            key={i}
-            onClick={() => onSelect(option)}
-            disabled={disabled}
-            className={`rounded-xl px-3 py-2 text-xs font-medium leading-snug text-left transition-all disabled:opacity-40 ${
-              isOpen
-                ? 'bg-gray-50 text-gray-500 ring-1 ring-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-gray-700'
-                : 'bg-violet-50 text-violet-700 ring-1 ring-violet-200 hover:bg-violet-100 dark:bg-violet-900/20 dark:text-violet-300 dark:ring-violet-800/50 dark:hover:bg-violet-900/30'
-            }`}
-          >
-            {option}
-          </button>
-        )
-      })}
+    <div className="flex flex-wrap gap-2 px-4 py-3">
+      {options.map((option, i) => (
+        <button
+          key={i}
+          onClick={() => onSelect(option)}
+          disabled={disabled}
+          className="rounded-full border border-[#0EA5A3] px-4 py-2 text-xs font-medium text-[#0EA5A3] transition-all hover:bg-[#0EA5A3]/10 disabled:opacity-40 dark:border-[#0EA5A3]/60 dark:text-[#0EA5A3]"
+        >
+          {option}
+        </button>
+      ))}
     </div>
   )
 }

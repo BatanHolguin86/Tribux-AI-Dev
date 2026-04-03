@@ -390,34 +390,39 @@ export function ChatMessage({ role, content, createdAt, projectId }: ChatMessage
   const { cleanText, action } = isUser ? { cleanText: content, action: null } : extractAction(content)
 
   return (
-    <div className={`flex gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`}>
-      <div
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-          isUser
-            ? 'bg-violet-600 text-white'
-            : 'bg-violet-50 ring-1 ring-violet-100 dark:bg-violet-900/30 dark:ring-violet-800/50'
-        }`}
-      >
-        {isUser ? 'Tú' : '🧠'}
-      </div>
+    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
+      {/* Avatar */}
+      {!isUser && (
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#E8F4F8] text-sm dark:bg-[#0F2B46]">
+          🧠
+        </div>
+      )}
 
-      <div className={`max-w-[80%] min-w-0 ${isUser ? 'text-right' : ''}`}>
+      {/* Bubble */}
+      <div className={`max-w-[85%] min-w-0 ${isUser ? 'text-right' : ''}`}>
         <div
-          className={`inline-block rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+          className={`inline-block px-4 py-3 text-sm leading-relaxed ${
             isUser
-              ? 'rounded-tr-sm bg-violet-600 text-white'
-              : 'rounded-tl-sm bg-gray-50 text-gray-700 ring-1 ring-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700'
+              ? 'rounded-2xl rounded-tr-md bg-[#0F2B46] text-white'
+              : 'rounded-2xl rounded-tl-md border border-[#E2E8F0] bg-white text-[#0F2B46] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200'
           }`}
         >
           {renderMarkdown(cleanText, isUser)}
         </div>
         {action && <ActionButton action={action} projectId={projectId} />}
         {createdAt && (
-          <p className={`mt-1 text-[10px] text-gray-400 dark:text-gray-500 ${isUser ? 'text-right' : ''}`}>
+          <p className={`mt-1 text-[10px] text-[#94A3B8] ${isUser ? 'text-right' : ''}`}>
             {formatRelativeDate(createdAt)}
           </p>
         )}
       </div>
+
+      {/* User badge */}
+      {isUser && (
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46] text-[10px] font-bold text-white">
+          Tú
+        </div>
+      )}
     </div>
   )
 }
