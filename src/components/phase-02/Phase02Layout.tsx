@@ -14,6 +14,8 @@ import { ChatPanel } from './ChatPanel'
 import { DocumentPanel } from './DocumentPanel'
 import { Phase02FinalGate } from './Phase02FinalGate'
 import { Phase02WorkflowGuide } from './Phase02WorkflowGuide'
+import { AutoGenerateCard } from './AutoGenerateCard'
+import { useFounderMode } from '@/hooks/useFounderMode'
 
 type SectionData = {
   key: Phase02Section
@@ -64,8 +66,12 @@ export function Phase02Layout({
   connectedTools,
 }: Phase02LayoutProps) {
   const router = useRouter()
+  const { isFounder } = useFounderMode()
   const [sections, setSections] = useState(initialSections)
   const [activeSection, setActiveSection] = useState<Phase02Section>(initialActiveSection)
+
+  // Count sections without documents (for auto-generate card)
+  const missingDocCount = sections.filter((s) => s.document === null).length
   const [mobileTab, setMobileTab] = useState<'chat' | 'document'>('chat')
 
   const currentSection = sections.find((s) => s.key === activeSection)!
@@ -128,6 +134,11 @@ export function Phase02Layout({
         artifactCount={designArtifacts.length}
         approvedVisualCount={approvedDesigns.length}
       />
+
+      {/* Founder Mode: auto-generate docs if missing */}
+      {isFounder && missingDocCount > 0 && (
+        <AutoGenerateCard projectId={projectId} missingCount={missingDocCount} />
+      )}
 
       {allApproved ? (
         <Phase02FinalGate projectId={projectId} />
