@@ -78,6 +78,41 @@ export const FOUNDER_LABELS: Record<string, string> = {
   'todo': 'Pendiente',
   'in_progress': 'En progreso',
   'done': 'Listo',
+
+  // Phase header titles (additional)
+  'Discovery & Ideation': 'Definir tu idea',
+  'Define requisitos, diseno y tasks para cada feature': 'Define que hace cada feature',
+
+  // Phase 03 sections
+  'Repository': 'Codigo',
+  'Database': 'Base de datos',
+  'Authentication': 'Login y seguridad',
+  'Hosting': 'Publicacion',
+  'Environment Variables': 'Configuracion',
+  'Verification': 'Verificacion',
+
+  // Phase 05 sections
+  'Test Plan': 'Plan de verificacion',
+  'Unit Tests': 'Verificaciones basicas',
+  'Integration Tests': 'Verificaciones de conexion',
+  'E2E Tests': 'Verificaciones completas',
+  'QA Report': 'Reporte de calidad',
+
+  // Phase 06 sections
+  'Deploy a Produccion': 'Publicar',
+  'Monitoring & Alertas': 'Monitoreo',
+  'Documentacion Operacional': 'Documentacion',
+  'Launch Checklist': 'Lista de verificacion',
+
+  // Phase 07 sections
+  'Feedback de Usuarios': 'Opiniones de usuarios',
+  'Metricas de Producto': 'Datos de uso',
+  'Backlog Priorizado': 'Proximos pasos',
+  'Retrospectiva': 'Que aprendimos',
+
+  // Readiness
+  'Fases previas (00-05)': 'Pasos anteriores',
+  'Sentry (opcional)': 'Monitoreo de errores',
 }
 
 /**

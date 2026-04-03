@@ -16,6 +16,7 @@ import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 import { CIStatusWidget } from '@/components/phase-05/CIStatusWidget'
 import { LivePreviewWidget } from './LivePreviewWidget'
+import { useFounderMode } from '@/hooks/useFounderMode'
 
 const PHASE04_OBJECTIVE =
   'El Kanban es tu checklist de desarrollo: cada task KIRO persistida se mueve hasta Done. Parte del trabajo puede ser manual (IDE, PRs, repos externos).'
@@ -37,6 +38,7 @@ export function Phase04Layout({
   initialMessages,
   repoUrl,
 }: Phase04LayoutProps) {
+  const { isFounder } = useFounderMode()
   const [tasks, setTasks] = useState(initialTasks)
   const [selectedTask, setSelectedTask] = useState<TaskWithFeature | null>(null)
   const [showCodeGenModal, setShowCodeGenModal] = useState(false)
@@ -149,28 +151,50 @@ export function Phase04Layout({
           <Phase04FinalGate projectId={projectId} totalTasks={totalTasks} />
         ) : (
           <>
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Mueve las tasks por el Kanban (estado persistido). Usa el tab{' '}
-                <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para Lead Developer o CTO.
-              </p>
-              {repoUrl && pendingTasks.length > 1 && (
-                <button
-                  onClick={() => setShowBuildSession(true)}
-                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] px-3 py-1.5 text-xs font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3] dark:hover:border-[#0EA5A3]"
-                >
-                  🏗️ Build All ({pendingTasks.length})
-                </button>
-              )}
-            </div>
+            {/* Founder Mode: preview first + big build button */}
+            {isFounder && repoUrl && (
+              <div className="mb-6">
+                <LivePreviewWidget projectId={projectId} />
+                {pendingTasks.length > 0 && (
+                  <button
+                    onClick={() => setShowBuildSession(true)}
+                    className="mt-4 w-full rounded-lg bg-[#0EA5A3] py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0C8C8A]"
+                  >
+                    🏗️ Construir {pendingTasks.length} features pendientes
+                  </button>
+                )}
+                <CIStatusWidget projectId={projectId} />
+                <p className="mt-3 text-xs text-[#94A3B8]">
+                  {doneTasks} de {totalTasks} features construidas
+                </p>
+              </div>
+            )}
+
+            {/* Normal mode: kanban + controls */}
+            {!isFounder && (
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Mueve las tasks por el Kanban (estado persistido). Usa el tab{' '}
+                  <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para Lead Developer o CTO.
+                </p>
+                {repoUrl && pendingTasks.length > 1 && (
+                  <button
+                    onClick={() => setShowBuildSession(true)}
+                    className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] px-3 py-1.5 text-xs font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3] dark:hover:border-[#0EA5A3]"
+                  >
+                    🏗️ Build All ({pendingTasks.length})
+                  </button>
+                )}
+              </div>
+            )}
             <KanbanBoard
               tasks={tasks}
               onStatusChange={handleStatusChange}
               onGenerateCode={repoUrl ? handleGenerateCode : undefined}
               onAutoBuild={repoUrl ? handleAutoBuild : undefined}
             />
-            {repoUrl && <CIStatusWidget projectId={projectId} />}
-            {repoUrl && <LivePreviewWidget projectId={projectId} />}
+            {!isFounder && repoUrl && <CIStatusWidget projectId={projectId} />}
+            {!isFounder && repoUrl && <LivePreviewWidget projectId={projectId} />}
           </>
         )}
       </div>

@@ -1,9 +1,7 @@
 'use client'
 
-/**
- * Shared progress header for phases 03–07.
- * Uses design tokens: primary (Command Blue #0F2B46), secondary (Squad Teal #0EA5A3), muted (gray).
- */
+import { useFounderMode, founderLabel } from '@/hooks/useFounderMode'
+
 type PhaseProgressHeaderProps = {
   title: string
   completedCount: number
@@ -19,6 +17,8 @@ export function PhaseProgressHeader({
   unitLabel = 'categorías',
   objective,
 }: PhaseProgressHeaderProps) {
+  const { isFounder } = useFounderMode()
+  const displayTitle = founderLabel(title, isFounder)
   const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
   const progressLine =
     totalCount === 0 && unitLabel === 'tasks'
@@ -31,7 +31,7 @@ export function PhaseProgressHeader({
     <div className="mb-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">{title}</h2>
+          <h2 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">{displayTitle}</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">{progressLine}</p>
         </div>
         <div className="flex items-center gap-2">
