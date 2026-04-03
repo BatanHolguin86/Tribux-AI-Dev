@@ -2,23 +2,38 @@
 
 import { createContext, useContext } from 'react'
 
-type FounderModeContextType = {
+type PersonaModeContextType = {
   isFounder: boolean
+  isPM: boolean
+  isConsultor: boolean
   persona: string | null
+  /** Hide code, tool calls, CI logs — for founder + PM */
+  hideCode: boolean
+  /** Hide technical checklists — for founder only */
+  hideChecklists: boolean
+  /** Show full specs/architecture detail — for PM + consultor */
+  showSpecs: boolean
 }
 
-const FounderModeContext = createContext<FounderModeContextType>({
+const PersonaModeContext = createContext<PersonaModeContextType>({
   isFounder: false,
+  isPM: false,
+  isConsultor: false,
   persona: null,
+  hideCode: false,
+  hideChecklists: false,
+  showSpecs: true,
 })
 
 /**
- * Founder Mode provider. Wraps the dashboard to provide persona-aware
- * rendering. "founder" and "emprendedor" personas get simplified UI:
- * - Technical terms replaced with simple Spanish
- * - Code/tool calls hidden in build sessions
- * - Architecture phases auto-simplified
- * - Checklists hidden when one-click setup completes
+ * Persona Mode provider. Wraps the dashboard to provide persona-aware rendering.
+ *
+ * | Persona      | hideCode | hideChecklists | showSpecs | autoApproveArch |
+ * |-------------|----------|----------------|-----------|-----------------|
+ * | founder     | ✅       | ✅             | ❌        | ✅              |
+ * | emprendedor | ✅       | ✅             | ❌        | ✅              |
+ * | pm          | ✅       | ❌             | ✅        | ❌              |
+ * | consultor   | ❌       | ❌             | ✅        | ❌              |
  */
 export function FounderModeProvider({
   persona,
@@ -28,16 +43,28 @@ export function FounderModeProvider({
   children: React.ReactNode
 }) {
   const isFounder = persona === 'founder' || persona === 'emprendedor'
+  const isPM = persona === 'pm'
+  const isConsultor = persona === 'consultor'
+
+  const value: PersonaModeContextType = {
+    isFounder,
+    isPM,
+    isConsultor,
+    persona,
+    hideCode: isFounder || isPM,
+    hideChecklists: isFounder,
+    showSpecs: isPM || isConsultor,
+  }
 
   return (
-    <FounderModeContext.Provider value={{ isFounder, persona }}>
+    <PersonaModeContext.Provider value={value}>
       {children}
-    </FounderModeContext.Provider>
+    </PersonaModeContext.Provider>
   )
 }
 
 export function useFounderMode() {
-  return useContext(FounderModeContext)
+  return useContext(PersonaModeContext)
 }
 
 /**

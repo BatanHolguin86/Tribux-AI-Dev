@@ -62,18 +62,18 @@ function ActiveTaskRunner({
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, isLoading])
 
-  const { isFounder } = useFounderMode()
+  const { hideCode } = useFounderMode()
 
   if (error) {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
-        {isFounder ? 'Hubo un problema. Reintentando...' : `Error: ${error.message}`}
+        {hideCode ? 'Hubo un problema. Reintentando...' : `Error: ${error.message}`}
       </div>
     )
   }
 
   // Founder mode: simple progress instead of tool calls
-  if (isFounder) {
+  if (hideCode) {
     const toolCount = messages.reduce((count, msg) => {
       const parts = msg.parts as UIMessagePart<UIDataTypes, UITools>[]
       return count + parts.filter(isToolUIPart).length

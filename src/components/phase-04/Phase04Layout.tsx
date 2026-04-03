@@ -38,7 +38,7 @@ export function Phase04Layout({
   initialMessages,
   repoUrl,
 }: Phase04LayoutProps) {
-  const { isFounder } = useFounderMode()
+  const { isFounder, hideCode } = useFounderMode()
   const [tasks, setTasks] = useState(initialTasks)
   const [selectedTask, setSelectedTask] = useState<TaskWithFeature | null>(null)
   const [showCodeGenModal, setShowCodeGenModal] = useState(false)
@@ -152,7 +152,7 @@ export function Phase04Layout({
         ) : (
           <>
             {/* Founder Mode: preview first + big build button */}
-            {isFounder && repoUrl && (
+            {(isFounder || hideCode) && repoUrl && (
               <div className="mb-6">
                 <LivePreviewWidget projectId={projectId} />
                 {pendingTasks.length > 0 && (
@@ -171,7 +171,7 @@ export function Phase04Layout({
             )}
 
             {/* Normal mode: kanban + controls */}
-            {!isFounder && (
+            {!hideCode && (
               <div className="mb-4 flex items-center justify-between gap-3">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Mueve las tasks por el Kanban (estado persistido). Usa el tab{' '}
@@ -193,8 +193,8 @@ export function Phase04Layout({
               onGenerateCode={repoUrl ? handleGenerateCode : undefined}
               onAutoBuild={repoUrl ? handleAutoBuild : undefined}
             />
-            {!isFounder && repoUrl && <CIStatusWidget projectId={projectId} />}
-            {!isFounder && repoUrl && <LivePreviewWidget projectId={projectId} />}
+            {!hideCode && repoUrl && <CIStatusWidget projectId={projectId} />}
+            {!hideCode && repoUrl && <LivePreviewWidget projectId={projectId} />}
           </>
         )}
       </div>

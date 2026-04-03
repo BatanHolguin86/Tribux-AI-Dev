@@ -35,7 +35,7 @@ type Phase03LayoutProps = {
 const phaseAgents = getPhaseAgents(3)
 
 export function Phase03Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [], platformReady = false, existingSetup = { hasRepo: false, hasSupabase: false, hasVercel: false } }: Phase03LayoutProps) {
-  const { isFounder } = useFounderMode()
+  const { hideChecklists } = useFounderMode()
   const allSetupDone = existingSetup.hasRepo && existingSetup.hasSupabase && existingSetup.hasVercel
   const [categories, setCategories] = useState(initialCategories)
   const {
@@ -160,7 +160,7 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
             </div>
           )}
 
-          <div className={`grid gap-4 md:grid-cols-2 ${isFounder && allSetupDone ? 'hidden' : ''}`}>
+          <div className={`grid gap-4 md:grid-cols-2 ${hideChecklists && allSetupDone ? 'hidden' : ''}`}>
             {PHASE03_SECTIONS.map((sectionKey) => {
               const category = categories.find((c) => c.key === sectionKey)!
               const action = actions.find((a) => a.section === sectionKey)
