@@ -331,132 +331,145 @@ export function DesignGenerator({
             <p className="mt-1 text-xs text-[#94A3B8]">Esto puede tomar hasta 1 minuto</p>
           </div>
         )}
-        <div className="mt-3 space-y-3">
+        <div className="space-y-5">
+          {/* Feature selector */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">
-              Selecciona features para disenar
-            </label>
-            {completedFeatures.length > 0 ? (
-              <div className="mt-2 space-y-1 rounded-lg border border-[#E2E8F0] p-3 dark:border-[#1E3A55]">
-                {completedFeatures.map((feature) => {
-                  const missing: string[] = []
-                  if (!feature.hasRequirements) missing.push('Requisitos')
-                  if (!feature.hasDesign) missing.push('Diseno')
-                  if (!feature.hasTasks) missing.push('Tasks')
+            <p className="mb-3 text-sm font-display font-semibold text-[#0F2B46] dark:text-gray-100">
+              1. Selecciona features
+            </p>
+            {(() => {
+              const ready = completedFeatures.filter((f) => f.isComplete)
+              const pending = completedFeatures.filter((f) => !f.isComplete)
 
-                  return (
+              if (completedFeatures.length === 0) {
+                return (
+                  <div className="rounded-xl border border-dashed border-[#E2E8F0] bg-[#F8FAFC] px-4 py-6 text-center dark:border-[#1E3A55] dark:bg-[#0A1F33]">
+                    <p className="text-sm text-[#94A3B8]">Completa specs en Phase 01 para desbloquear el diseno.</p>
+                  </div>
+                )
+              }
+
+              return (
+                <div className="space-y-2">
+                  {ready.map((feature) => (
                     <label
                       key={feature.id}
-                      className={`flex items-center gap-2 rounded-md px-2 py-2 text-sm ${
-                        feature.isComplete
-                          ? 'cursor-pointer hover:bg-[#E8F4F8] dark:hover:bg-[#0F2B46]/30'
-                          : 'cursor-not-allowed opacity-50'
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 px-4 py-3 transition-all ${
+                        selectedFeatures.has(feature.id)
+                          ? 'border-[#0EA5A3] bg-[#0EA5A3]/5'
+                          : 'border-[#E2E8F0] bg-white hover:border-[#0EA5A3]/50 dark:border-[#1E3A55] dark:bg-[#0F2B46]'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={selectedFeatures.has(feature.id)}
-                        disabled={!feature.isComplete}
                         onChange={() => {
-                          if (!feature.isComplete) return
                           setSelectedFeatures((prev) => {
                             const next = new Set(prev)
                             next.has(feature.id) ? next.delete(feature.id) : next.add(feature.id)
                             return next
                           })
                         }}
-                        className="rounded border-gray-300 text-[#0EA5A3] focus:ring-[#0EA5A3] disabled:opacity-30"
+                        className="h-4 w-4 rounded border-[#E2E8F0] text-[#0EA5A3] focus:ring-[#0EA5A3]"
                       />
-                      <div className="flex-1 min-w-0">
-                        <span className={`${feature.isComplete ? 'text-[#0F2B46] dark:text-gray-200' : 'text-gray-400'}`}>
-                          {feature.name}
-                        </span>
-                        {!feature.isComplete && (
-                          <p className="text-[10px] text-red-500">
-                            Falta: {missing.join(', ')}
-                          </p>
-                        )}
-                      </div>
-                      {feature.isComplete && (
-                        <span className="shrink-0 text-[10px] text-[#10B981]">✓ Completo</span>
-                      )}
+                      <span className="flex-1 text-sm font-medium text-[#0F2B46] dark:text-gray-100">{feature.name}</span>
+                      <span className="rounded-full bg-[#10B981]/10 px-2 py-0.5 text-[10px] font-medium text-[#10B981]">Listo</span>
                     </label>
-                  )
-                })}
-                {selectedFeatures.size > 0 && (
-                  <p className="mt-1 text-[10px] text-[#0EA5A3]">{selectedFeatures.size} feature(s) seleccionado(s)</p>
-                )}
-              </div>
-            ) : (
-              <p className="mt-1 text-xs text-[#94A3B8]">No hay features. Crea specs en Phase 01 primero.</p>
-            )}
-            <label className="mt-3 block text-xs font-medium text-gray-700 dark:text-gray-300">
-              Pantallas adicionales (opcional)
-            </label>
+                  ))}
+                  {pending.length > 0 && (
+                    <details className="mt-2">
+                      <summary className="cursor-pointer text-xs text-[#94A3B8] hover:text-[#64748B]">
+                        {pending.length} feature(s) pendientes de completar
+                      </summary>
+                      <div className="mt-2 space-y-1 pl-2">
+                        {pending.map((feature) => {
+                          const missing: string[] = []
+                          if (!feature.hasRequirements) missing.push('Requisitos')
+                          if (!feature.hasDesign) missing.push('Diseno')
+                          if (!feature.hasTasks) missing.push('Tasks')
+                          return (
+                            <div key={feature.id} className="flex items-center gap-2 py-1 text-xs text-[#94A3B8]">
+                              <span className="h-4 w-4 rounded border border-[#E2E8F0]" />
+                              <span>{feature.name}</span>
+                              <span className="text-[10px] text-[#EF4444]">Falta: {missing.join(', ')}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </details>
+                  )}
+                  {selectedFeatures.size > 0 && (
+                    <p className="text-xs font-medium text-[#0EA5A3]">{selectedFeatures.size} seleccionado(s)</p>
+                  )}
+                </div>
+              )
+            })()}
+          </div>
+
+          {/* Design type — pill buttons */}
+          <div>
+            <p className="mb-3 text-sm font-display font-semibold text-[#0F2B46] dark:text-gray-100">
+              2. Nivel de detalle
+            </p>
+            <div className="flex gap-2">
+              {([
+                { value: 'wireframe' as const, label: 'Wireframe', desc: 'Estructura basica' },
+                { value: 'mockup_lowfi' as const, label: 'Mockup', desc: 'Con colores y estilo' },
+                { value: 'mockup_highfi' as const, label: 'Detallado', desc: 'Listo para desarrollo' },
+              ]).map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setType(opt.value)}
+                  className={`flex-1 rounded-xl border-2 px-3 py-3 text-center transition-all ${
+                    type === opt.value
+                      ? 'border-[#0EA5A3] bg-[#0EA5A3]/5 text-[#0F2B46] dark:text-white'
+                      : 'border-[#E2E8F0] bg-white text-[#64748B] hover:border-[#0EA5A3]/50 dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-400'
+                  }`}
+                >
+                  <p className="text-sm font-medium">{opt.label}</p>
+                  <p className="text-[10px]">{opt.desc}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Optional refinement */}
+          <div>
+            <p className="mb-2 text-sm font-display font-semibold text-[#0F2B46] dark:text-gray-100">
+              3. Instrucciones (opcional)
+            </p>
             <input
               type="text"
               value={screensInput}
               onChange={(e) => setScreensInput(e.target.value)}
-              placeholder="Landing page, Perfil de usuario..."
-              className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              placeholder="Pantallas extra: Landing, Perfil..."
+              className="w-full rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2.5 text-sm text-[#0F2B46] placeholder:text-[#94A3B8] focus:border-[#0EA5A3] focus:outline-none focus:ring-2 focus:ring-[#0EA5A3]/20 dark:border-[#1E3A55] dark:bg-[#0A1F33] dark:text-gray-200"
             />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">Tipo de diseño</label>
-            <div className="mt-1 flex gap-3 text-xs">
-              <label className="flex items-center gap-1">
-                <input
-                  type="radio"
-                  checked={type === 'wireframe'}
-                  onChange={() => setType('wireframe')}
-                />
-                Wireframe
-              </label>
-              <label className="flex items-center gap-1">
-                <input
-                  type="radio"
-                  checked={type === 'mockup_lowfi'}
-                  onChange={() => setType('mockup_lowfi')}
-                />
-                Mockup low-fi
-              </label>
-              <label className="flex items-center gap-1">
-                <input
-                  type="radio"
-                  checked={type === 'mockup_highfi'}
-                  onChange={() => setType('mockup_highfi')}
-                />
-                Mockup high-fi
-              </label>
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">
-              Instrucciones de refinamiento (opcional)
-            </label>
             <textarea
               value={refinement}
               onChange={(e) => setRefinement(e.target.value)}
               placeholder="Ej: estilo minimalista, enfasis en CTA principal..."
               rows={2}
-              className="mt-1 w-full resize-none rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:shadow-gray-900/20 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-2 w-full resize-none rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2.5 text-sm text-[#0F2B46] placeholder:text-[#94A3B8] focus:border-[#0EA5A3] focus:outline-none focus:ring-2 focus:ring-[#0EA5A3]/20 dark:border-[#1E3A55] dark:bg-[#0A1F33] dark:text-gray-200"
             />
           </div>
+
           {generateError && (
-            <div className="rounded-md border-l-4 border-red-500 bg-red-50 dark:bg-red-900/10 px-3 py-2 text-sm text-red-700 dark:text-red-400">
+            <div className="rounded-xl border-l-4 border-[#EF4444] bg-[#EF4444]/5 px-4 py-3 text-sm text-[#EF4444]">
               {generateError}
             </div>
           )}
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={handleGenerateFromSpecs}
-              disabled={(selectedFeatures.size === 0 && !screensInput.trim()) || isGenerating}
-              className="rounded-lg bg-[#0F2B46] px-5 py-2.5 text-sm font-semibold text-white shadow-sm dark:shadow-gray-900/20 transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
-            >
-              {isGenerating ? 'Generando…' : 'Generar y guardar en el proyecto'}
-            </button>
-          </div>
+
+          {/* Generate button */}
+          <button
+            type="button"
+            onClick={handleGenerateFromSpecs}
+            disabled={(selectedFeatures.size === 0 && !screensInput.trim()) || isGenerating}
+            className="w-full rounded-xl bg-[#0EA5A3] py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0C8C8A] disabled:opacity-40"
+          >
+            {isGenerating ? 'Generando diseños...' : `Generar diseños${selectedFeatures.size > 0 ? ` (${selectedFeatures.size} features)` : ''}`}
+          </button>
         </div>
       </section>
 
