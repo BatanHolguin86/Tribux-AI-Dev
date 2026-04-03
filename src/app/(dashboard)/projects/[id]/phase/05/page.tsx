@@ -17,8 +17,10 @@ export default async function Phase05Page({
 
   const { data: { user } } = await supabase.auth.getUser()
   const { data: profile } = user
-    ? await supabase.from('user_profiles').select('plan, subscription_status, trial_ends_at').eq('id', user.id).single()
+    ? await supabase.from('user_profiles').select('plan, subscription_status, trial_ends_at, persona').eq('id', user.id).single()
     : { data: null }
+
+  const isFounder = profile?.persona === 'founder' || profile?.persona === 'emprendedor'
 
   if (!profile || !canAccessPhase(5, profile)) {
     return (
@@ -36,10 +38,18 @@ export default async function Phase05Page({
 
   const categories: PhaseChecklistCategory[] = PHASE05_SECTIONS.map((key) => {
     const row = (sections ?? []).find((s) => s.section === key)
+    let status = (row?.status ?? 'pending') as SectionStatus
+
+    // Founder Mode: auto-approve all testing sections
+    // Founders don't need to manage test plans, unit tests, E2E details
+    if (isFounder && status !== 'approved' && status !== 'completed') {
+      status = 'completed' as SectionStatus
+    }
+
     return {
       key,
       label: SECTION_LABELS[key],
-      status: (row?.status ?? 'pending') as SectionStatus,
+      status,
       itemStates: parseItemStates(row?.item_states),
     }
   })

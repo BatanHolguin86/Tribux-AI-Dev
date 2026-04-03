@@ -40,10 +40,12 @@ export default async function Phase02Page({
   const { data: profile } = user
     ? await supabase
         .from('user_profiles')
-        .select('plan, subscription_status, trial_ends_at')
+        .select('plan, subscription_status, trial_ends_at, persona')
         .eq('id', user.id)
         .single()
     : { data: null }
+
+  const isFounder = profile?.persona === 'founder' || profile?.persona === 'emprendedor'
 
   const hasAccess = profile ? canAccessPhase(2, profile) : false
 
@@ -139,7 +141,21 @@ export default async function Phase02Page({
 
     // If document is approved, override section status to 'approved'
     const rawStatus = (sectionRow?.status ?? 'pending') as SectionStatus
-    const effectiveStatus = approvedDocs.has(key) ? 'approved' as SectionStatus : rawStatus
+    let effectiveStatus = approvedDocs.has(key) ? 'approved' as SectionStatus : rawStatus
+
+    // Founder Mode: auto-approve technical architecture sections
+    // Founders don't need to review system architecture, database design, etc.
+    if (isFounder && effectiveStatus !== 'approved') {
+      effectiveStatus = 'approved' as SectionStatus
+      // Best-effort DB sync
+      supabase
+        .from('phase_sections')
+        .upsert(
+          { project_id: projectId, phase_number: 2, section: key, status: 'approved', approved_at: new Date().toISOString() },
+          { onConflict: 'project_id,phase_number,section' },
+        )
+        .then(() => {})
+    }
 
     return {
       key,
