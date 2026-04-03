@@ -25,9 +25,10 @@ function visualStepStatus(approvedCount: number, artifactCount: number): StepSta
 type Phase02WorkflowGuideProps = {
   projectId: string
   activeSection: Phase02Section
-  sections: Array<{ key: Phase02Section; status: SectionStatus }>
+  sections: Array<{ key: Phase02Section; status: SectionStatus; hasDocument?: boolean; documentPreview?: string | null }>
   artifactCount: number
   approvedVisualCount: number
+  onSectionClick?: (section: Phase02Section) => void
 }
 
 export function Phase02WorkflowGuide({
@@ -36,6 +37,7 @@ export function Phase02WorkflowGuide({
   sections,
   artifactCount,
   approvedVisualCount,
+  onSectionClick,
 }: Phase02WorkflowGuideProps) {
   const nav = usePhaseWorkspaceNav()
   const statusByKey = Object.fromEntries(sections.map((s) => [s.key, s.status])) as Record<
@@ -89,10 +91,17 @@ export function Phase02WorkflowGuide({
                 ? 'bg-amber-100 text-amber-900 dark:bg-amber-900/35 dark:text-amber-200'
                 : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
 
+          const sectionData = !isDesign ? sections.find((s) => s.key === step.id) : null
+          const hasDoc = sectionData?.hasDocument ?? false
+          const preview = sectionData?.documentPreview ?? null
+
           return (
             <li
               key={step.id}
+              onClick={!isDesign && onSectionClick ? () => onSectionClick(step.id as Phase02Section) : undefined}
               className={`flex flex-col rounded-xl border p-3 text-left transition-shadow ${
+                !isDesign && onSectionClick ? 'cursor-pointer hover:shadow-md' : ''
+              } ${
                 step.status === 'current'
                   ? 'border-[#0EA5A3] shadow-md shadow-[#E8F4F8]/50 dark:border-[#0EA5A3] dark:shadow-[#0F2B46]/20'
                   : 'border-gray-200 dark:border-gray-700'
@@ -124,9 +133,17 @@ export function Phase02WorkflowGuide({
                     <>Genera wireframes o mockups en HTML; al aprobar, alimentan la arquitectura.</>
                   )}
                 </p>
+              ) : hasDoc && preview ? (
+                <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+                  {preview}...
+                </p>
+              ) : hasDoc ? (
+                <p className="mt-1 text-xs text-[#0EA5A3]">
+                  Documento generado — click para ver
+                </p>
               ) : (
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Documento Markdown + chat con el orquestador.
+                <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                  Sin documento aun
                 </p>
               )}
               {isDesign && nav?.goToHerramientas ? (
@@ -144,6 +161,10 @@ export function Phase02WorkflowGuide({
                 >
                   Ir a Phase 02
                 </a>
+              ) : !isDesign && onSectionClick ? (
+                <p className="mt-2 text-[10px] font-medium text-[#0EA5A3]">
+                  Click para ver →
+                </p>
               ) : null}
             </li>
           )
