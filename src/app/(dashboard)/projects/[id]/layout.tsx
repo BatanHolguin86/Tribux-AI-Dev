@@ -5,6 +5,7 @@ import { FloatingAgentButton } from '@/components/agents/FloatingAgentButton'
 import { PhasesStepper } from '@/components/projects/PhasesStepper'
 import { MobileSidebarDrawer } from '@/components/projects/MobileSidebarDrawer'
 import { ProjectBreadcrumb } from '@/components/projects/ProjectBreadcrumb'
+import { AppPreviewDrawer } from '@/components/shared/AppPreviewDrawer'
 
 export default async function ProjectLayout({
   children,
@@ -18,7 +19,7 @@ export default async function ProjectLayout({
 
   const { data: project } = await supabase
     .from('projects')
-    .select('name, current_phase')
+    .select('name, current_phase, repo_url')
     .eq('id', id)
     .single()
 
@@ -63,6 +64,7 @@ export default async function ProjectLayout({
 
       <FloatingAgentButton projectId={id} />
       <MobileSidebarDrawer projectId={id} phases={phases} currentPhase={currentPhase} />
+      <AppPreviewDrawer projectId={id} repoUrl={project?.repo_url ?? null} />
     </div>
   )
 }
