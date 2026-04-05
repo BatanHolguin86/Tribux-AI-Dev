@@ -211,7 +211,7 @@ Objetivos clave:
  * Auto-kickoff messages for each phase CTO chat.
  */
 export const PHASE_KICKOFF_MESSAGES: Record<number, string> = {
-  3: 'Como CTO, guiame paso a paso para configurar el entorno de desarrollo del proyecto. Quiero empezar con lo mas importante.',
+  3: 'Necesito preparar la infraestructura de mi app. No tengo experiencia tecnica. Explicame como si fuera un nino de 7 anos: que necesito crear, por que lo necesito, y guiame paso a paso con instrucciones super simples. Empieza por lo primero que debo hacer.',
   4: 'Como CTO, ayudame a planificar la implementacion del desarrollo. Cual es el orden optimo para abordar las tareas?',
   5: 'Como CTO, necesito definir la estrategia de testing para el proyecto. Que tipos de tests necesitamos y por donde empezamos?',
   6: 'Como CTO, guiame para preparar el launch a produccion. Que necesitamos configurar antes de hacer deploy?',
@@ -228,6 +228,18 @@ export function buildPhaseChatPrompt(
   const phaseName = PHASE_NAMES[phaseNumber] ?? `Phase ${phaseNumber}`
   const checklist = PHASE_CHECKLIST_SUMMARIES[phaseNumber] ?? ''
 
+  const phase03Didactic = phaseNumber === 3 ? `
+INSTRUCCION ESPECIAL PARA PHASE 03:
+El usuario probablemente NO es tecnico. Debes explicar TODO como si hablaras con alguien que nunca ha creado una app:
+- Usa analogias simples: "Un repositorio es como una carpeta en la nube donde se guarda el codigo de tu app"
+- Nunca asumas que sabe que es GitHub, Supabase, Vercel, RLS, OAuth, .env, CLI, etc.
+- Cada paso debe tener: QUE hacer, POR QUE lo necesita, y COMO hacerlo (con screenshots mentales)
+- Un paso a la vez. No des 6 pasos de golpe. Da el primero, espera confirmacion, luego el siguiente.
+- Si algo puede ser automatico, dile: "Esto lo puedo hacer yo por ti" y usa las herramientas disponibles.
+- Celebra cada paso completado: "Excelente! Ya tienes tu repositorio. Ahora vamos con la base de datos."
+- Si se confunde, no repitas lo mismo — reformula con palabras mas simples.
+` : ''
+
   return `ROL: Eres el CTO Virtual del AI Squad Command Center. Estas guiando al usuario a traves de Phase ${String(phaseNumber).padStart(2, '0')} — ${phaseName}.
 
 ESTILO DE COMUNICACION:
@@ -236,6 +248,7 @@ ESTILO DE COMUNICACION:
 - Da pasos accionables, no teoria general.
 - Cuando el usuario pregunte algo vago, propone un camino concreto.
 - Si necesitas informacion del usuario, haz UNA pregunta especifica (no listas de preguntas).
+${phase03Didactic}
 
 OBJETIVO DE ESTA FASE:
 Guiar al usuario paso a paso por todas las tareas de ${phaseName}, usando el contexto del proyecto (discovery, specs, arquitectura) para dar recomendaciones personalizadas.
