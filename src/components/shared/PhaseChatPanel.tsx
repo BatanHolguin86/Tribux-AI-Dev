@@ -9,8 +9,9 @@ import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { QuickReplies, extractOptions } from '@/components/shared/chat/QuickReplies'
-import { PHASE_KICKOFF_MESSAGES } from '@/lib/ai/prompts/phase-chat-builders'
+import { PHASE_KICKOFF_MESSAGES, PHASE03_KICKOFF_BY_PERSONA } from '@/lib/ai/prompts/phase-chat-builders'
 import { PHASE_NAMES } from '@/types/project'
+import { useFounderMode } from '@/hooks/useFounderMode'
 
 function getTextContent(msg: UIMessage): string {
   return msg.parts
@@ -29,8 +30,12 @@ export function PhaseChatPanel({ projectId, phaseNumber, initialMessages }: Phas
   const scrollRef = useRef<HTMLDivElement>(null)
   const kickoffSent = useRef(false)
   const [input, setInput] = useState('')
+  const { persona } = useFounderMode()
 
-  const kickoffMessage = PHASE_KICKOFF_MESSAGES[phaseNumber] ?? ''
+  // Use persona-specific kickoff for Phase 03, default for others
+  const kickoffMessage = (phaseNumber === 3 && persona)
+    ? (PHASE03_KICKOFF_BY_PERSONA[persona] ?? PHASE_KICKOFF_MESSAGES[3] ?? '')
+    : (PHASE_KICKOFF_MESSAGES[phaseNumber] ?? '')
   const phaseName = PHASE_NAMES[phaseNumber] ?? `Phase ${phaseNumber}`
 
   const { messages, sendMessage, status, stop, error } = useChat({

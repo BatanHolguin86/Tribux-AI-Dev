@@ -211,11 +211,23 @@ Objetivos clave:
  * Auto-kickoff messages for each phase CTO chat.
  */
 export const PHASE_KICKOFF_MESSAGES: Record<number, string> = {
-  3: 'Necesito preparar la infraestructura de mi app. No tengo experiencia tecnica. Explicame como si fuera un nino de 7 anos: que necesito crear, por que lo necesito, y guiame paso a paso con instrucciones super simples. Empieza por lo primero que debo hacer.',
+  3: 'Necesito preparar la infraestructura de mi app. Guiame paso a paso.',
   4: 'Como CTO, ayudame a planificar la implementacion del desarrollo. Cual es el orden optimo para abordar las tareas?',
   5: 'Como CTO, necesito definir la estrategia de testing para el proyecto. Que tipos de tests necesitamos y por donde empezamos?',
   6: 'Como CTO, guiame para preparar el launch a produccion. Que necesitamos configurar antes de hacer deploy?',
   7: 'Como CTO, el producto ya esta en produccion. Como debemos recopilar feedback y priorizar las mejoras?',
+}
+
+/**
+ * Persona-specific kickoff messages for Phase 03.
+ * Used by PhaseChatPanel to override the default kickoff.
+ */
+export const PHASE03_KICKOFF_BY_PERSONA: Record<string, string> = {
+  founder: 'Necesito preparar la infraestructura de mi app. No tengo experiencia tecnica. Explicame como si fuera un nino de 7 anos: que necesito crear, por que lo necesito, y guiame paso a paso con instrucciones super simples. Empieza por lo primero que debo hacer.',
+  emprendedor: 'Necesito preparar la infraestructura de mi app. No tengo experiencia tecnica. Explicame como si fuera un nino de 7 anos: que necesito crear, por que lo necesito, y guiame paso a paso con instrucciones super simples. Empieza por lo primero que debo hacer.',
+  ceo: 'Necesito preparar la infraestructura de mi app. No tengo experiencia tecnica. Explicame como si fuera un nino de 7 anos: que necesito crear, por que lo necesito, y guiame paso a paso con instrucciones super simples. Empieza por lo primero que debo hacer.',
+  pm: 'Como CTO, necesito configurar la infraestructura del proyecto para mi equipo de ingenieria. Dame un resumen ejecutivo de que servicios necesitamos (repo, DB, hosting) y los pasos principales. No necesito detalle de comandos, solo la vision general y que decisions tomar.',
+  consultor: 'Como CTO, configuremos el entorno de desarrollo. Necesito el setup completo: repo con CI, Supabase con RLS, Vercel con preview deployments. Dame los pasos tecnicos en orden optimo. Tengo experiencia con el stack.',
 }
 
 /**
@@ -228,16 +240,24 @@ export function buildPhaseChatPrompt(
   const phaseName = PHASE_NAMES[phaseNumber] ?? `Phase ${phaseNumber}`
   const checklist = PHASE_CHECKLIST_SUMMARIES[phaseNumber] ?? ''
 
+  // Persona-aware instructions are injected via the kickoff message.
+  // The CTO adapts based on how the user phrases their first message:
+  // - Founders say "explicame como nino de 7 anos" → CTO goes didactic
+  // - PMs say "dame resumen ejecutivo" → CTO stays strategic
+  // - Consultors say "tengo experiencia con el stack" → CTO goes technical
   const phase03Didactic = phaseNumber === 3 ? `
-INSTRUCCION ESPECIAL PARA PHASE 03:
-El usuario probablemente NO es tecnico. Debes explicar TODO como si hablaras con alguien que nunca ha creado una app:
-- Usa analogias simples: "Un repositorio es como una carpeta en la nube donde se guarda el codigo de tu app"
-- Nunca asumas que sabe que es GitHub, Supabase, Vercel, RLS, OAuth, .env, CLI, etc.
-- Cada paso debe tener: QUE hacer, POR QUE lo necesita, y COMO hacerlo (con screenshots mentales)
-- Un paso a la vez. No des 6 pasos de golpe. Da el primero, espera confirmacion, luego el siguiente.
-- Si algo puede ser automatico, dile: "Esto lo puedo hacer yo por ti" y usa las herramientas disponibles.
-- Celebra cada paso completado: "Excelente! Ya tienes tu repositorio. Ahora vamos con la base de datos."
-- Si se confunde, no repitas lo mismo — reformula con palabras mas simples.
+INSTRUCCION PARA PHASE 03:
+Adapta tu nivel de comunicacion al usuario. Si dice que no tiene experiencia tecnica:
+- Usa analogias simples: "Un repositorio es como una carpeta en la nube"
+- Un paso a la vez. Espera confirmacion antes del siguiente.
+- Celebra cada paso: "Excelente! Ahora vamos con..."
+- Si se confunde, reformula con palabras mas simples.
+Si dice que tiene experiencia o es tecnico:
+- Ve directo al grano con comandos y configuraciones.
+- Lista los pasos en orden optimo sin rodeos.
+Si es PM o gerente:
+- Da vision general y decisiones, no comandos CLI.
+- Enfoca en que servicios usar y por que.
 ` : ''
 
   return `ROL: Eres el CTO Virtual del AI Squad Command Center. Estas guiando al usuario a traves de Phase ${String(phaseNumber).padStart(2, '0')} — ${phaseName}.
