@@ -35,7 +35,6 @@ type Phase03LayoutProps = {
 const phaseAgents = getPhaseAgents(3)
 
 export function Phase03Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [], platformReady = false, existingSetup = { hasRepo: false, hasSupabase: false, hasVercel: false } }: Phase03LayoutProps) {
-  const { hideChecklists } = useFounderMode()
   const allSetupDone = existingSetup.hasRepo && existingSetup.hasSupabase && existingSetup.hasVercel
   const [categories, setCategories] = useState(initialCategories)
   const {
@@ -111,7 +110,99 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
     [categories, projectId],
   )
 
-  const sectionsContent = (
+  const { hideChecklists: isFounderMode, isPM, isConsultor } = useFounderMode()
+
+  // ── Founder view: only OneClickSetup + result ──
+  const founderContent = (
+    <div>
+      <PhaseProgressHeader
+        title="Environment Setup"
+        completedCount={allSetupDone ? totalCategories : 0}
+        totalCount={totalCategories}
+        objective="Preparar la infraestructura de tu app con un solo click."
+      />
+
+      {allSetupDone ? (
+        <div className="rounded-xl border-2 border-[#10B981]/30 bg-[#10B981]/5 p-6 text-center">
+          <div className="mb-3 text-4xl">✅</div>
+          <h3 className="font-display text-lg font-display font-bold text-[#0F2B46] dark:text-white">Tu app esta lista</h3>
+          <div className="mt-4 flex justify-center gap-3">
+            {[
+              { label: 'Codigo', done: existingSetup.hasRepo },
+              { label: 'Base de datos', done: existingSetup.hasSupabase },
+              { label: 'Hosting', done: existingSetup.hasVercel },
+            ].map((item) => (
+              <span key={item.label} className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#10B981] shadow-sm dark:bg-[#0F2B46]">
+                ✓ {item.label}
+              </span>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-[#94A3B8]">La infraestructura esta configurada. Continua a construir tu app.</p>
+        </div>
+      ) : (
+        <OneClickSetupCard
+          projectId={projectId}
+          platformReady={platformReady}
+          existingSetup={existingSetup}
+        />
+      )}
+    </div>
+  )
+
+  // ── PM view: OneClickSetup + collapsible checklists ──
+  const pmContent = (
+    <div>
+      <PhaseProgressHeader
+        title="Environment Setup"
+        completedCount={completedCount}
+        totalCount={totalCategories}
+        objective="Configurar la infraestructura del proyecto."
+      />
+
+      {allCompleted ? (
+        <Phase03FinalGate projectId={projectId} />
+      ) : (
+        <>
+          <OneClickSetupCard
+            projectId={projectId}
+            platformReady={platformReady}
+            existingSetup={existingSetup}
+          />
+
+          <details className="mt-4">
+            <summary className="cursor-pointer rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3 text-sm font-medium text-[#0F2B46] hover:bg-[#E8F4F8] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200">
+              Ver detalle tecnico ({completedCount}/{totalCategories} categorias)
+            </summary>
+            <div className="mt-3 grid gap-4 md:grid-cols-2">
+              {PHASE03_SECTIONS.map((sectionKey) => {
+                const category = categories.find((c) => c.key === sectionKey)!
+                const action = actions.find((a) => a.section === sectionKey)
+                const sectionExecutions = executions.filter((e) => e.section === sectionKey)
+                return (
+                  <AutomatedChecklistCard
+                    key={sectionKey}
+                    sectionKey={sectionKey}
+                    config={CATEGORY_CONFIGS[sectionKey]}
+                    status={category.status}
+                    itemStates={category.itemStates}
+                    onItemToggle={handleItemToggle}
+                    onToggle={() => handleToggle(sectionKey)}
+                    action={action}
+                    executions={sectionExecutions}
+                    onActionExecute={executeAction}
+                    executingAction={executingAction}
+                  />
+                )
+              })}
+            </div>
+          </details>
+        </>
+      )}
+    </div>
+  )
+
+  // ── Consultor view: full technical detail ──
+  const consultorContent = (
     <div>
       <PhaseProgressHeader
         title="Environment Setup"
@@ -140,12 +231,8 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
               { label: 'Infra', path: 'infrastructure/supabase/migrations/' },
             ]}
           />
-          <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-            Marca cada <strong className="font-medium text-gray-700 dark:text-gray-300">item</strong> al completarlo
-            (se guarda por proyecto). Cuando la categoria este lista, usa{' '}
-            <strong className="font-medium text-gray-700 dark:text-gray-300">Marcar como completada</strong>. Si te
-            atoras, usa el tab{' '}
-            <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para CTO o DevOps.
+          <p className="mb-4 text-sm text-[#94A3B8]">
+            Marca cada item al completarlo. Cuando la categoria este lista, usa Marcar como completada.
           </p>
 
           {streamingContent && (
@@ -160,7 +247,7 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
             </div>
           )}
 
-          <div className={`grid gap-4 md:grid-cols-2 ${hideChecklists && allSetupDone ? 'hidden' : ''}`}>
+          <div className="grid gap-4 md:grid-cols-2">
             {PHASE03_SECTIONS.map((sectionKey) => {
               const category = categories.find((c) => c.key === sectionKey)!
               const action = actions.find((a) => a.section === sectionKey)
@@ -186,6 +273,9 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
       )}
     </div>
   )
+
+  // Select content based on persona
+  const sectionsContent = isFounderMode ? founderContent : isPM ? pmContent : consultorContent
 
   const chatContent = (
     <PhaseChatPanel
