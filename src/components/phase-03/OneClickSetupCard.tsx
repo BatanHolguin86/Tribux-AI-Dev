@@ -51,7 +51,26 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
   const router = useRouter()
   const { isRunning, steps, isComplete, error, execute } = useOneClickSetup(projectId)
 
-  if (!platformReady) return null
+  if (!platformReady) {
+    return (
+      <div className="mb-6 rounded-xl border-2 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-6">
+        <div className="flex items-start gap-4">
+          <span className="text-3xl">⚙️</span>
+          <div>
+            <h3 className="font-display text-base font-bold text-[#0F2B46] dark:text-white">
+              Configuracion pendiente
+            </h3>
+            <p className="mt-1 text-sm text-[#64748B] dark:text-gray-400">
+              El administrador de la plataforma necesita configurar los servicios (GitHub, Supabase, Vercel) para que puedas crear tu app con un solo click.
+            </p>
+            <p className="mt-3 text-xs text-[#94A3B8]">
+              Contacta al administrador para que complete la configuracion en el panel de admin.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const allConfigured = existingSetup.hasRepo && existingSetup.hasSupabase && existingSetup.hasVercel
 
