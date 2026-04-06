@@ -243,6 +243,17 @@ export const PHASE_ACTIONS: ActionDefinition[] = [
     confirmRequired: true,
   },
   {
+    actionName: 'smoke-test',
+    phaseNumber: 6,
+    section: 'launch_checklist',
+    itemIndices: [2],
+    label: 'Smoke test produccion',
+    description: 'Verifica que la app carga correctamente en produccion despues del deploy.',
+    prerequisites: [],
+    type: 'external-api',
+    streaming: false,
+  },
+  {
     actionName: 'export-transfer-bundle',
     phaseNumber: 6,
     section: 'documentation',

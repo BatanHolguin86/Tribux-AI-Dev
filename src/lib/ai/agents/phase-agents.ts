@@ -34,5 +34,5 @@ export const PHASE_03_07_AGENTS: Record<number, AgentType[]> = {
   4: ['lead_developer', 'qa_engineer'],
   5: ['qa_engineer', 'lead_developer'],
   6: ['devops_engineer'],
-  7: ['product_architect', 'qa_engineer'],
+  7: ['product_architect', 'system_architect', 'qa_engineer'],
 }
