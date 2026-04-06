@@ -59,27 +59,27 @@ export function KnowledgeEntryDetail({
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <div className="shrink-0 flex items-start justify-between border-b border-gray-100 px-5 py-3 dark:border-gray-800">
+      <div className="shrink-0 flex items-start justify-between border-b border-[#E2E8F0] px-5 py-4 dark:border-[#1E3A55]">
         <div className="min-w-0 flex-1">
-          <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">
-            {entry.title}
+          <h2 className="font-display text-lg font-display font-bold text-[#0F2B46] dark:text-white">
+            {entry.title.replace(/_/g, ' ')}
           </h2>
-          <div className="mt-1.5 flex flex-wrap items-center gap-2">
-            <span className="flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="flex items-center gap-1 rounded-full bg-[#0EA5A3]/10 px-2.5 py-0.5 text-xs font-medium text-[#0EA5A3]">
               {KB_CATEGORY_ICONS[entry.category]}
               {KB_CATEGORY_LABELS[entry.category]}
             </span>
             {entry.phase_number !== null && (
-              <span className="text-xs text-gray-400 dark:text-gray-500">
+              <span className="rounded-full bg-[#F1F5F9] px-2 py-0.5 text-[10px] font-medium text-[#64748B] dark:bg-[#0A1F33] dark:text-[#94A3B8]">
                 Phase {String(entry.phase_number).padStart(2, '0')}
               </span>
             )}
             {entry.source_type && (
-              <span className="text-xs text-gray-400 dark:text-gray-500">
+              <span className="rounded-full bg-[#F1F5F9] px-2 py-0.5 text-[10px] text-[#94A3B8] dark:bg-[#0A1F33]">
                 Auto-indexado
               </span>
             )}
-            <span className="text-xs text-gray-400 dark:text-gray-500">
+            <span className="text-[10px] text-[#94A3B8]">
               {dateStr}
             </span>
           </div>
