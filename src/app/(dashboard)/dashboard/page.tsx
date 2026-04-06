@@ -62,30 +62,35 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <DashboardGreeting displayName={displayName} />
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <GlobalProgressBar projects={enriched} />
-        <Suspense
-          fallback={
-            <div className="h-32 animate-pulse rounded-xl bg-gray-100 dark:bg-gray-800" />
-          }
-        >
-          <PendingGatesCard />
-        </Suspense>
+      {/* Greeting + Progress inline */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <DashboardGreeting displayName={displayName} />
+        <div className="w-full sm:w-80">
+          <GlobalProgressBar projects={enriched} />
+        </div>
       </div>
 
-      <Suspense
-        fallback={
-          <div className="h-48 animate-pulse rounded-xl bg-gray-100 dark:bg-gray-800" />
-        }
-      >
-        <AgentActivityFeed />
+      {/* Pending gates (only shows if there are any) */}
+      <Suspense fallback={null}>
+        <PendingGatesCard />
       </Suspense>
 
+      {/* Projects — main content */}
       <Suspense>
         <ProjectsGrid projects={enriched} />
       </Suspense>
+
+      {/* Activity — collapsed at bottom */}
+      <details className="rounded-xl border border-[#E2E8F0] bg-white dark:border-[#1E3A55] dark:bg-[#0F2B46]">
+        <summary className="cursor-pointer px-5 py-3 text-sm font-display font-semibold text-[#0F2B46] hover:bg-[#F8FAFC] dark:text-white dark:hover:bg-white/5">
+          Actividad reciente
+        </summary>
+        <div className="border-t border-[#E2E8F0] dark:border-[#1E3A55]">
+          <Suspense fallback={<div className="px-5 py-4 text-xs text-[#94A3B8]">Cargando...</div>}>
+            <AgentActivityFeed />
+          </Suspense>
+        </div>
+      </details>
     </div>
   )
 }
