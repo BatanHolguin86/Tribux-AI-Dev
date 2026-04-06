@@ -345,7 +345,7 @@ El orquestador puede delegar a estos agentes segun la tarea. En v1.0, al abrir e
 | **Backend Dev**    | API routes, logica de negocio, integraciones de servicios                                                                                                                                                    |
 | **DB Admin**       | Esquemas Supabase, migraciones, RLS, optimizacion de queries                                                                                                                                                 |
 | **QA Engineer**    | Tests, reportes de calidad, regression testing                                                                                                                                                               |
-| **DevOps**         | CI/CD, deployment, monitoring, infraestructura                                                                                                                                                               |
+| **DevOps & Ops**   | CI/CD, deployment, monitoring, infraestructura, runbooks, planes de ejecucion                                                                                                                                |
 
 
 ---

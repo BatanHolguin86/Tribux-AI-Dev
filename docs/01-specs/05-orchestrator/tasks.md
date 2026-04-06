@@ -20,7 +20,7 @@
 
 ### System Prompts de Agentes
 
-- [x] **TASK-181:** Crear `src/lib/ai/agents/index.ts` — definicion de los 9 agentes (CTO Virtual + 8 especializados) con metadata (id, name, icon, specialty, description, plan_required)
+- [x] **TASK-181:** Crear `src/lib/ai/agents/index.ts` — definicion de los 8 agentes (CTO Virtual + 7 especializados) con metadata (id, name, icon, specialty, description, plan_required)
 - [x] **TASK-182:** Crear `src/lib/ai/agents/cto-virtual.ts` — system prompt completo del CTO Virtual con instrucciones de delegacion a agentes especializados
 - [x] **TASK-183:** Crear `src/lib/ai/agents/product-architect.ts` — system prompt con enfoque en producto, priorizacion y user stories
 - [x] **TASK-184:** Crear `src/lib/ai/agents/system-architect.ts` — system prompt con enfoque en arquitectura, patrones y diagramas
@@ -108,7 +108,7 @@
 
 ## Definition of Done — Feature 05
 
-- [x] Los 9 agentes (CTO Virtual + 8 especializados) son accesibles desde el tab **Equipo** en `/projects/:id/phase/NN` (la ruta `/agents` redirige a la fase actual y ahi se muestra el selector)
+- [x] Los 8 agentes (CTO Virtual + 7 especializados) son accesibles desde el tab **Equipo** en `/projects/:id/phase/NN` (la ruta `/agents` redirige a la fase actual y ahi se muestra el selector)
 - [x] El chat con cada agente funciona con streaming (< 2s primer token)
 - [x] Cada agente tiene system prompt unico y recibe el contexto completo del proyecto
 - [x] El CTO Virtual sugiere agentes especializados cuando la pregunta es especifica

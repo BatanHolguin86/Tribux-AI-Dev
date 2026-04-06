@@ -86,7 +86,7 @@
 ## Value Map
 
 - Plataforma web con orquestador IA (CTO Virtual) que soporta cualquier tipo de producto — desde interfaces simples hasta productos complejos con integraciones, soluciones IA y agentes autonomos
-- 8 agentes especializados: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer, Operator
+- 8 agentes especializados: Product Architect, System Architect, UI/UX Designer, Lead Developer, DB Admin, QA Engineer, DevOps Engineer
 - Sugerencias proactivas de los agentes (v1.0): el sistema ofrece 1–3 sugerencias contextuales al abrir el chat, sin que el usuario tenga que saber que preguntar
 - Cuatro planes: Starter, Builder, Agency y Enterprise (precio y alcance de Enterprise negociados caso por caso)
 - Metodologia IA DLC con 8 fases estructuradas

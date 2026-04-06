@@ -30,8 +30,8 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
             desc: 'Defines la vision, tomas decisiones y apruebas cada fase.',
           },
           {
-            title: 'Equipo de 9 agentes',
-            desc: 'CTO Virtual + 8 agentes especializados que diseñan, construyen y lanzan contigo.',
+            title: 'Equipo de 8 agentes',
+            desc: 'CTO Virtual + 7 agentes especializados que diseñan, construyen y lanzan contigo.',
           },
           {
             title: '8 fases de desarrollo',

@@ -50,7 +50,7 @@ const PLANS = [
     name: 'Agency',
     price: '$699',
     period: '/mes',
-    features: ['10 proyectos', 'Todas las fases (00–07)', '9 agentes + Operator', 'Soporte dedicado'],
+    features: ['10 proyectos', 'Todas las fases (00–07)', '8 agentes especializados', 'Soporte dedicado'],
     cta: 'Comenzar',
     popular: false,
   },
@@ -112,7 +112,7 @@ export default async function HomePage() {
               </span>
             </h1>
             <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 sm:text-xl">
-              Un equipo de 9 agentes IA especializados que te guian por 8 fases estructuradas
+              Un equipo de 8 agentes IA especializados que te guian por 8 fases estructuradas
               para construir cualquier producto tecnologico — desde una web simple hasta un SaaS complejo.
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -143,7 +143,7 @@ export default async function HomePage() {
                 <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                9 agentes IA
+                8 agentes IA
               </div>
               <div className="flex items-center gap-1.5">
                 <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -195,7 +195,7 @@ export default async function HomePage() {
           <div className="text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-[#0F2B46] dark:text-[#0EA5A3]">Tu equipo</p>
             <h2 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-              9 agentes IA especializados
+              8 agentes IA especializados
             </h2>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
               Cada agente domina su area. Tu decides, ellos ejecutan.

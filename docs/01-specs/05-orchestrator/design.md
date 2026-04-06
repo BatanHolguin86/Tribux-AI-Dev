@@ -9,7 +9,7 @@
 
 ## Overview
 
-El modulo de Orquestador + Agentes expone una interfaz de chat libre con 9 agentes IA (CTO Virtual + 8 especializados, incluyendo Operator), cada uno con un system prompt unico y el contexto completo del proyecto inyectado. A diferencia de Phase 00 y 01 (donde el chat es guiado), aqui el usuario hace preguntas abiertas y los agentes responden con formato rico. Se usa Claude claude-sonnet-4-6 via Vercel AI SDK con streaming. Las conversaciones se organizan en hilos por agente y se persisten en `agent_conversations`. Los artifacts (respuestas guardadas) se almacenan como documentos del proyecto.
+El modulo de Orquestador + Agentes expone una interfaz de chat libre con 8 agentes IA (CTO Virtual + 7 especializados), cada uno con un system prompt unico y el contexto completo del proyecto inyectado. A diferencia de Phase 00 y 01 (donde el chat es guiado), aqui el usuario hace preguntas abiertas y los agentes responden con formato rico. Se usa Claude claude-sonnet-4-6 via Vercel AI SDK con streaming. Las conversaciones se organizan en hilos por agente y se persisten en `agent_conversations`. Los artifacts (respuestas guardadas) se almacenan como documentos del proyecto.
 
 **Sugerencias proactivas (v1.0):** Al abrir el chat con un agente o la vista de agentes, el sistema puede mostrar sugerencias proactivas (sin que el usuario pregunte) basadas en el estado del proyecto: fase actual, documentos pendientes, siguiente accion recomendada. El CTO Virtual muestra un mensaje inicial con 1–3 sugerencias accionables en hilos vacios. Las sugerencias se generan en servidor con el contexto del proyecto y se muestran como opciones clickeables o texto que el usuario puede enviar como primer mensaje. El usuario puede ignorarlas y escribir libremente.
 
