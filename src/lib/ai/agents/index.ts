@@ -76,27 +76,21 @@ export const AGENTS: AgentMeta[] = [
   },
   {
     id: 'devops_engineer',
-    name: 'DevOps Engineer',
+    name: 'DevOps & Operations',
     icon: '🚀',
-    specialty: 'Deploy, CI/CD, monitoring, infraestructura',
+    specialty: 'Deploy, CI/CD, monitoring, infraestructura, operaciones',
     description:
-      'Ingeniero de operaciones: configura CI/CD, deploy, monitoring y scripts de infraestructura.',
+      'Ingeniero de operaciones: configura CI/CD, deploy, monitoring, runbooks, planes de ejecucion y scripts de infraestructura.',
     planRequired: 'builder',
-  },
-  {
-    id: 'operator',
-    name: 'Operator',
-    icon: '🛠️',
-    specialty: 'Opera sistemas end-to-end: repos, entornos, CI/CD y deploys reproducibles',
-    description:
-      'Cierra el ciclo: toma specs y arquitectura aprobados y los traduce en repos, pipelines y planes de deploy listos para ejecutar.',
-    planRequired: 'agency',
   },
 ]
 
-export const AGENT_MAP: Record<AgentType, AgentMeta> = Object.fromEntries(
-  AGENTS.map((a) => [a.id, a]),
-) as Record<AgentType, AgentMeta>
+const agentEntries = AGENTS.map((a) => [a.id, a] as [AgentType, AgentMeta])
+// Operator is merged into DevOps — alias for backward compatibility
+const devops = AGENTS.find((a) => a.id === 'devops_engineer')!
+agentEntries.push(['operator', { ...devops, id: 'operator' as AgentType }])
+
+export const AGENT_MAP: Record<AgentType, AgentMeta> = Object.fromEntries(agentEntries) as Record<AgentType, AgentMeta>
 
 const PLAN_HIERARCHY: Record<Plan, number> = {
   starter: 0,

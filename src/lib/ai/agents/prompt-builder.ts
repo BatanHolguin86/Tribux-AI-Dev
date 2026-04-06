@@ -47,7 +47,7 @@ const AGENT_PROMPTS: Record<AgentType, string> = {
   db_admin: DB_ADMIN_PROMPT,
   qa_engineer: QA_ENGINEER_PROMPT,
   devops_engineer: DEVOPS_ENGINEER_PROMPT,
-  operator: OPERATOR_PROMPT,
+  operator: DEVOPS_ENGINEER_PROMPT, // Operator merged into DevOps
 }
 
 export type FullProjectContext = {
