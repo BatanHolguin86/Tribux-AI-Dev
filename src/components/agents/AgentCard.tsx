@@ -21,16 +21,28 @@ export function AgentCard({
   onClick,
   agentColor,
 }: AgentCardProps) {
+  const activeStyle =
+    isActive && agentColor
+      ? {
+          borderLeftWidth: '4px',
+          borderLeftColor: agentColor,
+          backgroundColor: `${agentColor}0D`,
+        }
+      : undefined
+
   return (
     <button
       onClick={onClick}
       disabled={isLocked}
+      style={activeStyle}
       className={`flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors ${
-        isActive
+        isActive && !agentColor
           ? 'border border-[#0EA5A3] bg-[#E8F4F8]'
-          : isLocked
-            ? 'cursor-not-allowed opacity-50'
-            : 'hover:bg-[#F8FAFC]'
+          : isActive && agentColor
+            ? 'border border-transparent'
+            : isLocked
+              ? 'cursor-not-allowed opacity-50'
+              : 'hover:bg-[#F8FAFC]'
       }`}
     >
       <div

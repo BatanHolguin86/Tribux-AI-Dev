@@ -12,6 +12,54 @@ import { ToolCallRenderer } from '@/components/shared/chat/ToolCallRenderer'
 import { MessageActions } from './MessageActions'
 import { ProactiveSuggestions } from './ProactiveSuggestions'
 
+const AGENT_SUGGESTIONS: Record<string, string[]> = {
+  cto_virtual: [
+    '¿Cuál es el siguiente paso del proyecto?',
+    'Revisa la arquitectura actual',
+    'Prioriza el backlog',
+  ],
+  product_architect: [
+    'Define los requisitos del MVP',
+    'Genera el spec KIRO',
+    'Valida las user stories',
+  ],
+  system_architect: [
+    'Propón patrones para la API',
+    'Identifica riesgos de escalabilidad',
+    'Resume decisiones de datos',
+  ],
+  ui_ux_designer: [
+    'Genera wireframes para el dashboard',
+    'Propón un style guide',
+    'Revisa el flujo de usuario',
+  ],
+  lead_developer: [
+    'Implementa el siguiente task',
+    'Revisa el código actual',
+    'Optimiza el rendimiento',
+  ],
+  db_admin: [
+    'Revisa índices y RLS',
+    'Propón migraciones seguras',
+    'Audita el modelo de datos',
+  ],
+  qa_engineer: [
+    'Define la pirámide de tests',
+    'Prioriza casos críticos',
+    'Sugiere datos de prueba',
+  ],
+  devops_engineer: [
+    'Checklist de deploy',
+    'Variables de entorno',
+    'Monitoreo y alertas',
+  ],
+  operator: [
+    'Runbook de release',
+    'Rollback seguro',
+    'Evidencias de despliegue',
+  ],
+}
+
 function getTextContent(msg: UIMessage): string {
   return msg.parts
     .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
@@ -115,6 +163,9 @@ export function AgentChat({
   function handleSuggestionClick(text: string) {
     sendMessage({ text })
   }
+
+  const chipSuggestions =
+    AGENT_SUGGESTIONS[agentType] ?? AGENT_SUGGESTIONS.cto_virtual
 
   return (
     <div className="flex flex-1 flex-col">
@@ -229,6 +280,9 @@ export function AgentChat({
         isLoading={isLoading}
         onFilesChange={(files) => setPendingFiles(files ? Array.from(files) : [])}
         hasAttachments={pendingFiles.length > 0}
+        suggestionChips={chipSuggestions}
+        suggestionChipsVisible={messages.length === 0 && !isLoading}
+        onSuggestionSelect={handleSuggestionClick}
       />
     </div>
   )

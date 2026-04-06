@@ -56,19 +56,19 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
 
   return (
     <>
-      <nav className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+      <nav className="rounded-xl bg-gradient-to-b from-[#0A1F33] to-[#0F2B46] p-4 shadow-[var(--shadow-sidebar)]">
         {/* Header with progress */}
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+          <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-white/50">
             Fases del proyecto
           </h3>
-          <span className="rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2 py-0.5 text-[10px] font-bold text-[#0F2B46] dark:text-[#0EA5A3]">
+          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-[#0EA5A3]">
             {progress}%
           </span>
         </div>
 
         {/* Progress bar */}
-        <div className="mb-3 h-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+        <div className="mb-3 h-1 overflow-hidden rounded-full bg-white/10">
           <div
             className="h-1 rounded-full gradient-phase transition-all duration-500"
             style={{ width: `${progress}%` }}
@@ -76,8 +76,8 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
         </div>
 
         {activePathPhase !== null && (
-          <p className="mb-3 rounded-lg bg-gray-50 px-2.5 py-2 text-[11px] leading-snug text-gray-600 dark:bg-gray-800/60 dark:text-gray-400">
-            <span className="font-semibold text-gray-700 dark:text-gray-300">Ahora:</span>{' '}
+          <p className="mb-3 rounded-lg bg-white/5 px-2.5 py-2 text-[11px] leading-snug text-white/70">
+            <span className="font-semibold text-white">Ahora:</span>{' '}
             {PHASES_META.find((m) => m.number === activePathPhase)?.description}. Avanza solo cuando apruebes cada
             bloque en la pantalla.
           </p>
@@ -112,23 +112,23 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
         </div>
 
         {/* Knowledge base + Infrastructure links */}
-        <div className="mt-3 border-t border-gray-100 pt-3 space-y-0.5 dark:border-gray-800">
+        <div className="mt-3 space-y-0.5 border-t border-white/10 pt-3">
           <Link
             href={`/projects/${projectId}/knowledge`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/knowledge')
-                ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
-                : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                ? 'bg-[#0EA5A3]/15'
+                : 'hover:bg-white/5'
             }`}
           >
             <div className="flex h-5 w-5 shrink-0 items-center justify-center text-sm">
               📚
             </div>
-            <span className={`text-sm font-medium ${
-              pathname?.includes('/knowledge')
-                ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
-                : 'text-gray-700 dark:text-gray-300'
-            }`}>
+            <span
+              className={`text-sm font-medium ${
+                pathname?.includes('/knowledge') ? 'text-[#0EA5A3]' : 'text-white/70'
+              }`}
+            >
               Base de Conocimiento
             </span>
           </Link>
@@ -137,18 +137,18 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             href={`/projects/${projectId}/infrastructure`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/infrastructure')
-                ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
-                : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                ? 'bg-[#0EA5A3]/15'
+                : 'hover:bg-white/5'
             }`}
           >
             <div className="flex h-5 w-5 shrink-0 items-center justify-center text-sm">
               🔌
             </div>
-            <span className={`text-sm font-medium ${
-              pathname?.includes('/infrastructure')
-                ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
-                : 'text-gray-700 dark:text-gray-300'
-            }`}>
+            <span
+              className={`text-sm font-medium ${
+                pathname?.includes('/infrastructure') ? 'text-[#0EA5A3]' : 'text-white/70'
+              }`}
+            >
               Infraestructura
             </span>
           </Link>
@@ -157,18 +157,18 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             href={`/projects/${projectId}/costs`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/costs')
-                ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
-                : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                ? 'bg-[#0EA5A3]/15'
+                : 'hover:bg-white/5'
             }`}
           >
             <div className="flex h-5 w-5 shrink-0 items-center justify-center text-sm">
               💰
             </div>
-            <span className={`text-sm font-medium ${
-              pathname?.includes('/costs')
-                ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
-                : 'text-gray-700 dark:text-gray-300'
-            }`}>
+            <span
+              className={`text-sm font-medium ${
+                pathname?.includes('/costs') ? 'text-[#0EA5A3]' : 'text-white/70'
+              }`}
+            >
               Control de Costos
             </span>
           </Link>
@@ -229,11 +229,11 @@ function StepperItem({
     <div
       className={`group relative flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
         isActive
-          ? 'bg-[#0EA5A3]/15'
+          ? 'bg-[#0EA5A3]/20'
           : status === 'completed'
-            ? 'hover:bg-green-50/50 dark:hover:bg-green-900/10'
+            ? 'hover:bg-white/5'
             : status === 'active'
-              ? 'hover:bg-[#E8F4F8]/50 dark:hover:bg-[#0F2B46]/10'
+              ? 'hover:bg-white/5'
               : ''
       }`}
     >
@@ -241,9 +241,7 @@ function StepperItem({
       {!isLast && (
         <div
           className={`absolute left-[1.55rem] top-[2.75rem] h-[calc(100%-1rem)] w-px ${
-            status === 'completed'
-              ? 'bg-green-300 dark:bg-green-800'
-              : 'bg-gray-200 dark:bg-gray-700'
+            status === 'completed' ? 'bg-green-500/50' : 'bg-white/10'
           }`}
         />
       )}
@@ -264,8 +262,8 @@ function StepperItem({
             <span className="font-mono text-sm font-bold text-white">{phaseNum}</span>
           </div>
         ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700">
-            <span className="font-mono text-sm font-bold text-gray-400 dark:text-gray-500">{phaseNum}</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
+            <span className="font-mono text-sm font-bold text-white/30">{phaseNum}</span>
           </div>
         )}
       </div>
@@ -277,12 +275,12 @@ function StepperItem({
           <span
             className={`block truncate text-sm font-medium leading-tight ${
               isActive
-                ? 'text-[#0EA5A3] font-semibold'
+                ? 'font-semibold text-[#0EA5A3]'
                 : status === 'completed'
-                  ? 'text-gray-700 dark:text-gray-300'
+                  ? 'text-white/80'
                   : status === 'active'
-                    ? 'text-[#0F2B46] dark:text-gray-300'
-                    : 'text-gray-400 dark:text-gray-500'
+                    ? 'text-white'
+                    : 'text-white/30'
             }`}
           >
             {label}
@@ -290,10 +288,10 @@ function StepperItem({
           <span
             className={`text-[10px] leading-tight ${
               isActive
-                ? 'text-[#0EA5A3] dark:text-[#0EA5A3]'
+                ? 'text-[#0EA5A3]'
                 : status === 'completed'
-                  ? 'text-green-600 dark:text-green-500'
-                  : 'text-gray-400 dark:text-gray-600'
+                  ? 'text-green-400'
+                  : 'text-white/40'
             }`}
           >
             Phase {phaseNum}
@@ -309,7 +307,7 @@ function StepperItem({
             e.stopPropagation()
             onReset()
           }}
-          className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition-all hover:bg-red-50 hover:text-red-500 group-hover:opacity-100 dark:text-gray-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+          className="shrink-0 rounded p-1 text-white/20 opacity-0 transition-all hover:bg-red-500/20 hover:text-red-400 group-hover:opacity-100"
           title={`Resetear Phase ${phaseNum}`}
         >
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

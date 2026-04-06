@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
+import { SuggestionChips } from './SuggestionChips'
 
 type ChatInputProps = {
   value: string
@@ -12,6 +13,10 @@ type ChatInputProps = {
   placeholder?: string
   onFilesChange?: (files: FileList | null) => void
   hasAttachments?: boolean
+  /** Quick-reply chips above the input (e.g. agent chat empty state) */
+  suggestionChips?: string[]
+  suggestionChipsVisible?: boolean
+  onSuggestionSelect?: (text: string) => void
 }
 
 export function ChatInput({
@@ -24,6 +29,9 @@ export function ChatInput({
   placeholder,
   onFilesChange,
   hasAttachments,
+  suggestionChips,
+  suggestionChipsVisible = false,
+  onSuggestionSelect,
 }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -44,8 +52,22 @@ export function ChatInput({
     }
   }
 
+  const chips =
+    suggestionChips &&
+    suggestionChips.length > 0 &&
+    onSuggestionSelect &&
+    suggestionChipsVisible
+
   return (
-    <div className="flex items-end gap-2 border-t border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3 dark:border-[#1E3A55] dark:bg-[#0A1F33]">
+    <div className="border-t border-[#E2E8F0] bg-[#F8FAFC] dark:border-[#1E3A55] dark:bg-[#0A1F33]">
+      {chips ? (
+        <SuggestionChips
+          suggestions={suggestionChips}
+          visible={suggestionChipsVisible}
+          onSelect={onSuggestionSelect}
+        />
+      ) : null}
+    <div className="flex items-end gap-2 px-4 py-3">
       {onFilesChange && (
         <>
           <input
@@ -105,6 +127,7 @@ export function ChatInput({
           </svg>
         </button>
       )}
+    </div>
     </div>
   )
 }
