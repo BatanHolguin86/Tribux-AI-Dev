@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react'
+import { SidebarUsageWidget } from './SidebarUsageWidget'
 
 function NavLink({
   href,
@@ -80,6 +81,10 @@ export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
             </button>
           </form>
         </div>
+      </div>
+
+      <div className="hidden md:block">
+        <SidebarUsageWidget />
       </div>
 
       <div className="hidden border-t border-white/10 p-4 md:block">

@@ -13,7 +13,7 @@ import { ToolCallRenderer } from '@/components/shared/chat/ToolCallRenderer'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import type { TaskWithFeature } from '@/types/task'
 import type { AgentType } from '@/types/agent'
-import { buildExecutionPlan, type ExecutionPlan, type PlannedTask } from '@/lib/build/orchestrator'
+import { buildExecutionPlan } from '@/lib/build/orchestrator'
 import { useFounderMode } from '@/hooks/useFounderMode'
 
 type TaskStatus = 'waiting' | 'building' | 'done' | 'failed'
@@ -131,6 +131,94 @@ function ActiveTaskRunner({
   )
 }
 
+// ─── Sub-component: live preview during build ──────────────────────────────
+
+function BuildPreview({
+  projectId,
+  branch,
+  refreshKey,
+}: {
+  projectId: string
+  branch: string | null
+  refreshKey: number
+}) {
+  const [url, setUrl] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [previewBranch, setPreviewBranch] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!branch) return
+    setLoading(true)
+    const params = `?branch=${encodeURIComponent(branch)}`
+    fetch(`/api/projects/${projectId}/phases/4/preview${params}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.url) {
+          setUrl(data.url)
+          setPreviewBranch(data.branch ?? branch)
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [projectId, branch, refreshKey])
+
+  if (!branch) return null
+
+  if (loading && !url) {
+    return (
+      <div className="flex items-center justify-center gap-2 py-6 text-xs text-gray-400">
+        <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+        Buscando preview...
+      </div>
+    )
+  }
+
+  if (!url) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-1.5 py-6 text-center">
+        <span className="text-xl">🔄</span>
+        <p className="text-[11px] text-gray-400">
+          Preview se activara cuando Vercel despliegue el branch
+        </p>
+        <p className="font-mono text-[10px] text-gray-300">{branch}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2 dark:border-gray-800">
+        <span className="h-2 w-2 rounded-full bg-green-500" />
+        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Preview en vivo</span>
+        {previewBranch && (
+          <span className="rounded bg-[#E8F4F8] px-1.5 py-0.5 text-[9px] font-medium text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3]">
+            {previewBranch}
+          </span>
+        )}
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-auto text-[10px] text-[#0EA5A3] underline hover:text-[#0F2B46]"
+        >
+          Abrir ↗
+        </a>
+      </div>
+      <div className="flex-1 bg-gray-50 p-2 dark:bg-gray-950">
+        <iframe
+          src={url}
+          className="h-full w-full rounded-lg border border-gray-200 bg-white dark:border-gray-700"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          title="Build Preview"
+        />
+      </div>
+    </div>
+  )
+}
+
 // ─── Agent badge ─────────────────────────────────────────────────────────────
 
 const AGENT_LABELS: Record<string, { label: string; cls: string }> = {
@@ -169,12 +257,13 @@ export function BuildSessionPanel({
     Object.fromEntries(tasks.map((t) => [t.id, 'waiting' as TaskStatus])),
   )
 
+  const { hideCode } = useFounderMode()
+
   const doneCount = Object.values(taskStatuses).filter((s) => s === 'done' || s === 'failed').length
   const successCount = Object.values(taskStatuses).filter((s) => s === 'done').length
   const allFinished = started && doneCount === tasks.length
 
   const currentTier = plan.tiers[currentTierIdx]
-  const tierTaskIds = new Set(currentTier?.tasks.map((t) => t.task.id) ?? [])
   const tierDone = currentTier?.tasks.every((t) => {
     const s = taskStatuses[t.task.id]
     return s === 'done' || s === 'failed'
@@ -207,16 +296,34 @@ export function BuildSessionPanel({
     })
   }
 
+  const [lastCompletedBranch, setLastCompletedBranch] = useState<string | null>(null)
+
   const handleTaskDone = useCallback(
     (taskId: string, success: boolean) => {
       setTaskStatuses((prev) => ({ ...prev, [taskId]: success ? 'done' : 'failed' }))
-      if (success) onTaskStatusChange(taskId, 'review')
+      if (success) {
+        onTaskStatusChange(taskId, 'review')
+        const t = tasks.find((x) => x.id === taskId)
+        if (t) setLastCompletedBranch(`feat/${t.task_key.toLowerCase()}`)
+      }
     },
-    [onTaskStatusChange],
+    [onTaskStatusChange, tasks],
   )
 
   // Get active (building) tasks for current tier
   const activeTasks = currentTier?.tasks.filter((t) => taskStatuses[t.task.id] === 'building') ?? []
+
+  // Track preview refresh — increment key when a task completes
+  const [previewKey, setPreviewKey] = useState(0)
+  const [showPreview, setShowPreview] = useState(false)
+
+  // Refresh preview when a task completes
+  useEffect(() => {
+    if (doneCount > 0) {
+      setPreviewKey((k) => k + 1)
+      if (!showPreview) setShowPreview(true)
+    }
+  }, [doneCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center">
@@ -255,7 +362,7 @@ export function BuildSessionPanel({
         {started && (
           <div className="h-1 w-full bg-gray-100 dark:bg-gray-800">
             <div
-              className="h-full bg-[#E8F4F8]0 transition-all duration-500"
+              className="h-full bg-[#0EA5A3] transition-all duration-500"
               style={{ width: `${(doneCount / tasks.length) * 100}%` }}
             />
           </div>
@@ -307,56 +414,80 @@ export function BuildSessionPanel({
             ))}
           </div>
 
-          {/* Right: Active task runners */}
-          <div className="flex flex-1 flex-col overflow-y-auto p-4">
-            {!started && (
-              <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-                <div className="text-4xl">🤖</div>
-                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  {tasks.length} tasks organizadas en {plan.tiers.length} tiers
-                </p>
-                <p className="max-w-sm text-xs text-gray-500 dark:text-gray-400">
-                  Cada tier se ejecuta en paralelo. El siguiente tier empieza cuando el anterior termina.
-                  Los agentes se asignan automaticamente segun el tipo de tarea.
-                </p>
-              </div>
-            )}
+          {/* Right: Active task runners + preview */}
+          <div className="flex flex-1 flex-col overflow-hidden">
+            {/* Task runners area */}
+            <div className={`${showPreview && hideCode ? 'max-h-28 shrink-0' : 'flex-1'} overflow-y-auto p-4`}>
+              {!started && (
+                <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+                  <div className="text-4xl">🤖</div>
+                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                    {tasks.length} tasks organizadas en {plan.tiers.length} tiers
+                  </p>
+                  <p className="max-w-sm text-xs text-gray-500 dark:text-gray-400">
+                    Cada tier se ejecuta en paralelo. El siguiente tier empieza cuando el anterior termina.
+                    Los agentes se asignan automaticamente segun el tipo de tarea.
+                  </p>
+                </div>
+              )}
 
-            {started && activeTasks.length > 0 && (
-              <div className="space-y-4">
-                <p className="text-xs font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">
-                  Tier {currentTierIdx + 1}: {currentTier?.label} — {activeTasks.length} task(s) en paralelo
-                </p>
-                {activeTasks.map((pt) => (
-                  <div key={pt.task.id} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#E8F4F8]0" />
-                      <span className="text-xs font-medium text-gray-900 dark:text-gray-100">
-                        {pt.task.task_key} — {pt.task.title}
-                      </span>
-                      <span className={`ml-auto rounded px-1.5 py-0.5 text-[9px] font-bold ${
-                        (AGENT_LABELS[pt.agent] ?? AGENT_LABELS['lead_developer']).cls
-                      }`}>
-                        {(AGENT_LABELS[pt.agent] ?? AGENT_LABELS['lead_developer']).label}
-                      </span>
+              {started && activeTasks.length > 0 && (
+                <div className="space-y-4">
+                  <p className="text-xs font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">
+                    Tier {currentTierIdx + 1}: {currentTier?.label} — {activeTasks.length} task(s) en paralelo
+                  </p>
+                  {activeTasks.map((pt) => (
+                    <div key={pt.task.id} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#0EA5A3]" />
+                        <span className="text-xs font-medium text-gray-900 dark:text-gray-100">
+                          {pt.task.task_key} — {pt.task.title}
+                        </span>
+                        <span className={`ml-auto rounded px-1.5 py-0.5 text-[9px] font-bold ${
+                          (AGENT_LABELS[pt.agent] ?? AGENT_LABELS['lead_developer']).cls
+                        }`}>
+                          {(AGENT_LABELS[pt.agent] ?? AGENT_LABELS['lead_developer']).label}
+                        </span>
+                      </div>
+                      <ActiveTaskRunner
+                        key={pt.task.id}
+                        projectId={projectId}
+                        task={pt.task}
+                        agentType={pt.agent}
+                        onDone={handleTaskDone}
+                      />
                     </div>
-                    <ActiveTaskRunner
-                      key={pt.task.id}
-                      projectId={projectId}
-                      task={pt.task}
-                      agentType={pt.agent}
-                      onDone={handleTaskDone}
-                    />
-                  </div>
-                ))}
+                  ))}
+                </div>
+              )}
+
+              {allFinished && !showPreview && (
+                <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+                  <div className="text-4xl">{successCount === tasks.length ? '🎉' : '⚠️'}</div>
+                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Sesion completada</p>
+                  <p className="text-xs text-gray-500">{successCount} de {tasks.length} tasks implementadas</p>
+                </div>
+              )}
+            </div>
+
+            {/* Live preview area — appears after first task completes */}
+            {showPreview && (
+              <div className={`${hideCode ? 'flex-1' : 'h-72 shrink-0'} border-t border-gray-200 dark:border-gray-700`}>
+                <BuildPreview
+                  projectId={projectId}
+                  branch={lastCompletedBranch}
+                  refreshKey={previewKey}
+                />
               </div>
             )}
 
-            {allFinished && (
-              <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-                <div className="text-4xl">{successCount === tasks.length ? '🎉' : '⚠️'}</div>
-                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Sesion completada</p>
-                <p className="text-xs text-gray-500">{successCount} de {tasks.length} tasks implementadas</p>
+            {/* Completion banner when preview is visible */}
+            {allFinished && showPreview && (
+              <div className="flex items-center justify-center gap-2 border-t border-gray-200 bg-green-50 px-4 py-2 dark:border-gray-700 dark:bg-green-900/10">
+                <span className="text-lg">{successCount === tasks.length ? '🎉' : '⚠️'}</span>
+                <span className="text-xs font-medium text-green-700 dark:text-green-400">
+                  Sesion completada — {successCount} de {tasks.length} tasks implementadas
+                </span>
               </div>
             )}
           </div>

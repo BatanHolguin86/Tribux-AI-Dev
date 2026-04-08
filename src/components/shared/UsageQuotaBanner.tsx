@@ -1,25 +1,32 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { QuotaExceededModal } from './QuotaExceededModal'
 
 type QuotaData = {
   usedUsd: number
   budgetUsd: number
+  creditsUsd: number
+  effectiveBudgetUsd: number
   usedPct: number
   status: 'ok' | 'warning' | 'exceeded' | 'whale'
+  plan: string
+  canTopUp: boolean
   message: string
 }
 
 export function UsageQuotaBanner() {
   const [quota, setQuota] = useState<QuotaData | null>(null)
+  const [showModal, setShowModal] = useState(false)
 
-  useEffect(() => {
+  function fetchQuota() {
     fetch('/api/user/quota')
       .then((r) => (r.ok ? r.json() : null))
       .then((data: QuotaData | null) => setQuota(data))
       .catch(() => null)
-  }, [])
+  }
+
+  useEffect(() => { fetchQuota() }, [])
 
   if (!quota || quota.status === 'ok') return null
 
@@ -47,35 +54,52 @@ export function UsageQuotaBanner() {
   const c = config[quota.status]
 
   return (
-    <div className={`rounded-lg border px-4 py-2.5 ${c.wrap}`}>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2">
-          <span aria-hidden>{c.icon}</span>
-          <p className={`text-sm font-medium ${c.text}`}>{quota.message}</p>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-3">
-          {/* Mini progress bar */}
-          <div className="hidden items-center gap-1.5 sm:flex">
-            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
-              <div
-                className={`h-full rounded-full transition-all ${c.bar}`}
-                style={{ width: `${Math.min(100, quota.usedPct)}%` }}
-              />
-            </div>
-            <span className={`text-xs font-bold tabular-nums ${c.text}`}>
-              {quota.usedPct}%
-            </span>
+    <>
+      <div className={`rounded-lg border px-4 py-2.5 ${c.wrap}`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <span aria-hidden>{c.icon}</span>
+            <p className={`text-sm font-medium ${c.text}`}>{quota.message}</p>
           </div>
 
-          <Link
-            href="/settings"
-            className="rounded-lg bg-[#0F2B46] px-3 py-1 text-xs font-semibold text-white transition-colors hover:bg-[#0A1F33]"
-          >
-            Ver planes →
-          </Link>
+          <div className="flex shrink-0 items-center gap-3">
+            {/* Mini progress bar */}
+            <div className="hidden items-center gap-1.5 sm:flex">
+              <div className="h-1.5 w-20 overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
+                <div
+                  className={`h-full rounded-full transition-all ${c.bar}`}
+                  style={{ width: `${Math.min(100, quota.usedPct)}%` }}
+                />
+              </div>
+              <span className={`text-xs font-bold tabular-nums ${c.text}`}>
+                {quota.usedPct}%
+              </span>
+            </div>
+
+            {quota.canTopUp && (quota.status === 'exceeded' || quota.status === 'whale') && (
+              <button
+                onClick={() => setShowModal(true)}
+                className="rounded-lg bg-[#0F2B46] px-3 py-1 text-xs font-semibold text-white transition-colors hover:bg-[#0A1F33]"
+              >
+                Comprar creditos
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {showModal && quota.canTopUp && (
+        <QuotaExceededModal
+          usedPct={quota.usedPct}
+          budgetUsd={quota.effectiveBudgetUsd}
+          plan={quota.plan}
+          onClose={() => setShowModal(false)}
+          onTopUpComplete={() => {
+            setShowModal(false)
+            fetchQuota()
+          }}
+        />
+      )}
+    </>
   )
 }

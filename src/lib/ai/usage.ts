@@ -1,6 +1,6 @@
 /**
  * AI usage tracking for financial control and backoffice.
- * Multi-provider pricing: Anthropic, OpenAI, Google.
+ * Pricing: Anthropic Claude models.
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -10,26 +10,14 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 // Update when providers change prices.
 // ---------------------------------------------------------------------------
 const MODEL_PRICING: Record<string, { inputPerMTok: number; outputPerMTok: number }> = {
-  // Anthropic — Claude 4.x
+  // Anthropic — Claude 4.x (active)
   'claude-sonnet-4-6':        { inputPerMTok: 3,    outputPerMTok: 15   },
   'claude-opus-4-6':          { inputPerMTok: 15,   outputPerMTok: 75   },
   'claude-haiku-4-5':         { inputPerMTok: 0.80, outputPerMTok: 4    },
   'claude-haiku-4-5-20251001':{ inputPerMTok: 0.80, outputPerMTok: 4    },
-  // Anthropic — Claude 3.x (legacy)
+  // Anthropic — Claude 3.x (legacy, kept for historical usage records)
   'claude-3-5-sonnet-20241022': { inputPerMTok: 3,  outputPerMTok: 15   },
   'claude-3-5-haiku-20241022':  { inputPerMTok: 0.80, outputPerMTok: 4  },
-  // OpenAI
-  'gpt-4o':                   { inputPerMTok: 2.50, outputPerMTok: 10   },
-  'gpt-4o-mini':              { inputPerMTok: 0.15, outputPerMTok: 0.60 },
-  'gpt-4-turbo':              { inputPerMTok: 10,   outputPerMTok: 30   },
-  'o3':                       { inputPerMTok: 10,   outputPerMTok: 40   },
-  'o4-mini':                  { inputPerMTok: 1.10, outputPerMTok: 4.40 },
-  // Google Gemini
-  'gemini-1.5-pro':           { inputPerMTok: 1.25, outputPerMTok: 5    },
-  'gemini-1.5-flash':         { inputPerMTok: 0.075,outputPerMTok: 0.30 },
-  'gemini-2.0-flash':         { inputPerMTok: 0.10, outputPerMTok: 0.40 },
-  'gemini-2.0-flash-lite':    { inputPerMTok: 0.075,outputPerMTok: 0.30 },
-  'gemini-2.5-pro':           { inputPerMTok: 1.25, outputPerMTok: 10   },
 }
 
 /** Default fallback: Claude Sonnet pricing */

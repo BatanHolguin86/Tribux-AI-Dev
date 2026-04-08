@@ -74,10 +74,35 @@ export async function POST(request: Request) {
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object
-      const userId = session.metadata && (session.metadata as Record<string, string>).user_id
-      const plan = session.metadata && (session.metadata as Record<string, string>).plan
+      const metadata = (session.metadata ?? {}) as Record<string, string>
+      const userId = metadata.user_id
+      const plan = metadata.plan
       const customerId = session.customer as string | undefined
 
+      // Credit top-up purchase
+      if (metadata.type === 'credit_top_up' && userId) {
+        const amountUsd = parseFloat(metadata.amount_usd ?? '0')
+        const month = metadata.month
+        const packId = metadata.pack_id
+        const priceUsd = (session.amount_total as number | undefined)
+          ? (session.amount_total as number) / 100
+          : amountUsd
+
+        if (amountUsd > 0 && month) {
+          await supabase.from('credit_purchases').insert({
+            user_id: userId,
+            amount_usd: amountUsd,
+            price_usd: priceUsd,
+            month,
+            stripe_payment_id: session.id as string,
+            status: 'completed',
+          })
+          console.log(`[Billing webhook] User ${userId} purchased credit pack ${packId}: $${amountUsd} for month ${month}`)
+        }
+        break
+      }
+
+      // Plan upgrade
       if (userId && plan) {
         await supabase
           .from('user_profiles')

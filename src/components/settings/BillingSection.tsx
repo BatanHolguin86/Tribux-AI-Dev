@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 const PLAN_DETAILS: Record<string, { name: string; price: string; features: string[] }> = {
   starter: {
@@ -58,6 +59,15 @@ export function BillingSection({
   const [portalLoading, setPortalLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showAlert, setShowAlert] = useState(!!billingStatus)
+  const sectionRef = useRef<HTMLElement>(null)
+  const searchParams = useSearchParams()
+
+  // Auto-scroll to billing when redirected from quota exceeded
+  useEffect(() => {
+    if (searchParams.get('upgrade') === 'true' && sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [searchParams])
 
   useEffect(() => {
     if (billingStatus) {
@@ -100,8 +110,22 @@ export function BillingSection({
   }
 
   return (
-    <section id="billing" className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
+    <section ref={sectionRef} id="billing" className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
       <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">Plan y facturacion</h2>
+
+      {searchParams.get('upgrade') === 'true' && !isPaid && (
+        <div className="mt-3 flex items-start gap-3 rounded-lg border border-[#F59E0B]/30 bg-[#F59E0B]/5 px-4 py-3">
+          <span className="text-lg">⚡</span>
+          <div>
+            <p className="text-sm font-medium text-[#0F2B46] dark:text-white">
+              Necesitas mas capacidad de IA
+            </p>
+            <p className="mt-0.5 text-xs text-[#64748B] dark:text-gray-400">
+              Alcanzaste el limite de tu plan actual. Mejora para continuar construyendo sin interrupciones.
+            </p>
+          </div>
+        </div>
+      )}
 
       {showAlert && billingStatus === 'success' && (
         <div className="mt-3 rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">

@@ -4,14 +4,31 @@ import { createAdminClient } from '@/lib/supabase/server'
 
 export type QuotaStatus = 'ok' | 'warning' | 'exceeded' | 'whale'
 
+export type CreditPack = {
+  id: string
+  label: string
+  amountUsd: number
+  priceUsd: number
+}
+
+/** Available credit packs for top-up */
+export const CREDIT_PACKS: CreditPack[] = [
+  { id: 'small',  label: '+$25 de IA',  amountUsd: 25,  priceUsd: 25 },
+  { id: 'medium', label: '+$50 de IA',  amountUsd: 50,  priceUsd: 50 },
+  { id: 'large',  label: '+$100 de IA', amountUsd: 100, priceUsd: 100 },
+]
+
 export type QuotaResult = {
   allowed: boolean
   usedUsd: number
   budgetUsd: number
+  creditsUsd: number
+  effectiveBudgetUsd: number
   usedPct: number
   status: QuotaStatus
   plan: string
   message: string
+  canTopUp: boolean
 }
 
 /**
@@ -28,7 +45,7 @@ export async function getUserQuota(userId: string): Promise<QuotaResult> {
   nextMonth.setMonth(nextMonth.getMonth() + 1)
   const monthEnd = nextMonth.toISOString().slice(0, 10)
 
-  const [profileRes, usageRes] = await Promise.all([
+  const [profileRes, usageRes, creditsRes] = await Promise.all([
     admin.from('user_profiles').select('plan').eq('id', userId).single(),
     admin
       .from('ai_usage_events')
@@ -36,11 +53,21 @@ export async function getUserQuota(userId: string): Promise<QuotaResult> {
       .eq('user_id', userId)
       .gte('created_at', monthStart)
       .lt('created_at', monthEnd),
+    admin
+      .from('credit_purchases')
+      .select('amount_usd')
+      .eq('user_id', userId)
+      .eq('month', monthStr)
+      .eq('status', 'completed'),
   ])
 
   const plan = profileRes.data?.plan ?? 'starter'
   const usedUsd = (usageRes.data ?? []).reduce(
     (sum, e) => sum + Number(e.estimated_cost_usd ?? 0),
+    0,
+  )
+  const creditsUsd = (creditsRes.data ?? []).reduce(
+    (sum, e) => sum + Number(e.amount_usd ?? 0),
     0,
   )
 
@@ -54,8 +81,9 @@ export async function getUserQuota(userId: string): Promise<QuotaResult> {
   const FALLBACK: Record<string, number> = {
     starter: 44.7, builder: 89.7, agency: 209.7, enterprise: 500,
   }
-  const budgetUsd = Number(target?.monthly_ai_budget_usd ?? FALLBACK[plan] ?? 44.7)
-  const usedPct = budgetUsd > 0 ? Math.round((usedUsd / budgetUsd) * 100) : 0
+  const baseBudgetUsd = Number(target?.monthly_ai_budget_usd ?? FALLBACK[plan] ?? 44.7)
+  const effectiveBudgetUsd = baseBudgetUsd + creditsUsd
+  const usedPct = effectiveBudgetUsd > 0 ? Math.round((usedUsd / effectiveBudgetUsd) * 100) : 0
 
   let status: QuotaStatus
   let allowed: boolean
@@ -64,15 +92,15 @@ export async function getUserQuota(userId: string): Promise<QuotaResult> {
   if (usedPct >= 150) {
     status = 'whale'
     allowed = false
-    message = `Consumiste el ${usedPct}% de tu presupuesto mensual de IA. Las operaciones están pausadas hasta el próximo ciclo.`
+    message = `Consumiste el ${usedPct}% de tu presupuesto mensual de IA. Compra creditos adicionales para continuar.`
   } else if (usedPct >= 100) {
     status = 'exceeded'
     allowed = false
-    message = `Alcanzaste tu límite mensual de IA (${formatUsd(budgetUsd)}). Las operaciones pesadas están pausadas.`
+    message = `Alcanzaste tu limite mensual de IA (${formatUsd(effectiveBudgetUsd)}). Compra creditos para seguir construyendo.`
   } else if (usedPct >= 80) {
     status = 'warning'
     allowed = true
-    message = `Usaste el ${usedPct}% de tu presupuesto mensual de IA (${formatUsd(usedUsd)} de ${formatUsd(budgetUsd)}).`
+    message = `Usaste el ${usedPct}% de tu presupuesto mensual de IA (${formatUsd(usedUsd)} de ${formatUsd(effectiveBudgetUsd)}).`
   } else {
     status = 'ok'
     allowed = true
@@ -81,17 +109,20 @@ export async function getUserQuota(userId: string): Promise<QuotaResult> {
 
   // Fire-and-forget alert for exceeded / whale (deduped by month in DB)
   if (status === 'exceeded' || status === 'whale') {
-    void sendQuotaAlert(userId, plan, usedUsd, budgetUsd, usedPct, status, monthStr, admin)
+    void sendQuotaAlert(userId, plan, usedUsd, effectiveBudgetUsd, usedPct, status, monthStr, admin)
   }
 
   return {
     allowed,
     usedUsd: Math.round(usedUsd * 10000) / 10000,
-    budgetUsd,
+    budgetUsd: baseBudgetUsd,
+    creditsUsd,
+    effectiveBudgetUsd,
     usedPct,
     status,
     plan,
     message,
+    canTopUp: !allowed && plan !== 'enterprise',
   }
 }
 
@@ -107,9 +138,12 @@ export async function checkHeavyQuota(userId: string): Promise<Response | null> 
         error: 'quota_exceeded',
         message: quota.message,
         usedPct: quota.usedPct,
-        budgetUsd: quota.budgetUsd,
+        budgetUsd: quota.effectiveBudgetUsd,
         status: quota.status,
-        upgradeUrl: '/settings',
+        canTopUp: quota.canTopUp,
+        creditPacks: quota.canTopUp ? CREDIT_PACKS : [],
+        topUpUrl: '/api/billing/top-up',
+        upgradeUrl: '/settings?upgrade=true',
       },
       { status: 402 },
     )
