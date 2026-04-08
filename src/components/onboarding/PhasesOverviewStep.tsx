@@ -4,6 +4,17 @@ import { PHASE_NAMES } from '@/types/project'
 
 const PHASE_ICONS = ['🔍', '📋', '🏗️', '⚙️', '💻', '🧪', '🚀', '📈']
 
+const AGENTS = [
+  { icon: '🧠', name: 'CTO Virtual', role: 'Lidera y orquesta todo el proyecto' },
+  { icon: '📐', name: 'Product Architect', role: 'Producto, alcance y prioridades' },
+  { icon: '🏛️', name: 'System Architect', role: 'Arquitectura y decisiones tecnicas' },
+  { icon: '🎨', name: 'UI/UX Designer', role: 'Diseno visual y experiencia' },
+  { icon: '💻', name: 'Lead Developer', role: 'Codigo, implementacion y debugging' },
+  { icon: '🗄️', name: 'DB Admin', role: 'Base de datos, schemas y queries' },
+  { icon: '🧪', name: 'QA Engineer', role: 'Testing y aseguramiento de calidad' },
+  { icon: '🚀', name: 'DevOps & Operations', role: 'Deploy, CI/CD y monitoreo' },
+]
+
 type PhasesOverviewStepProps = {
   isSubmitting: boolean
   onFinish: () => void
@@ -23,11 +34,30 @@ export function PhasesOverviewStep({ isSubmitting, onFinish, onBack }: PhasesOve
         antes de pasar a los specs y al desarrollo.
       </p>
 
-      <div className="relative mt-6">
-        {/* Vertical line */}
-        <div className="absolute left-5 top-3 h-[calc(100%-24px)] w-0.5 bg-gray-200" />
+      {/* Tu equipo */}
+      <div className="mt-6 rounded-xl border border-gray-100 bg-gray-50 p-4">
+        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Tu equipo</p>
+        <div className="grid grid-cols-2 gap-2">
+          {AGENTS.map((agent) => (
+            <div key={agent.name} className="flex items-center gap-2.5">
+              <span className="text-base">{agent.icon}</span>
+              <div className="min-w-0">
+                <p className="truncate text-xs font-medium text-gray-900">{agent.name}</p>
+                <p className="truncate text-[10px] text-gray-400">{agent.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        <div className="space-y-4">
+      {/* Fases */}
+      <div className="relative mt-6">
+        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">8 fases de desarrollo</p>
+
+        {/* Vertical line */}
+        <div className="absolute left-5 top-10 h-[calc(100%-40px)] w-0.5 bg-gray-200" />
+
+        <div className="space-y-3">
           {Object.entries(PHASE_NAMES).map(([num, name]) => {
             const phaseNum = Number(num)
             return (
