@@ -29,7 +29,9 @@ export async function GET(request: Request) {
   const prevMonthStart =
     `${prevMonthEndDate.getFullYear()}-${String(prevMonthEndDate.getMonth() + 1).padStart(2, '0')}-01`
 
-  const [profilesRes, usageCurrentRes, usagePrevRes, costTargetsRes] = await Promise.all([
+  const currentMonthStr = currentMonthStart.slice(0, 7)
+
+  const [profilesRes, usageCurrentRes, usagePrevRes, costTargetsRes, creditsRes] = await Promise.all([
     supabase
       .from('user_profiles')
       .select('id, full_name, plan, subscription_status, trial_ends_at, created_at, role')
@@ -47,6 +49,11 @@ export async function GET(request: Request) {
     supabase
       .from('plan_cost_targets')
       .select('plan, monthly_ai_budget_usd, plan_price_usd, target_margin_pct'),
+    supabase
+      .from('credit_purchases')
+      .select('user_id, amount_usd, price_usd')
+      .eq('month', currentMonthStr)
+      .eq('status', 'completed'),
   ])
 
   if (profilesRes.error) {
@@ -80,6 +87,15 @@ export async function GET(request: Request) {
   const currentByUser = aggregateByUser(usageCurrent)
   const prevByUser = aggregateByUser(usagePrev)
 
+  // Aggregate credit purchases by user
+  const creditsByUser: Record<string, { purchased: number; revenue: number }> = {}
+  for (const c of creditsRes.data ?? []) {
+    if (!creditsByUser[c.user_id]) creditsByUser[c.user_id] = { purchased: 0, revenue: 0 }
+    creditsByUser[c.user_id].purchased += Number(c.amount_usd ?? 0)
+    creditsByUser[c.user_id].revenue += Number(c.price_usd ?? 0)
+  }
+  const totalCreditRevenue = Object.values(creditsByUser).reduce((s, c) => s + c.revenue, 0)
+
   const planPrice: Record<string, number> = {
     starter: 149,
     builder: 299,
@@ -106,13 +122,16 @@ export async function GET(request: Request) {
       marginRatio: Math.round(margin * 100) / 100,
       inputTokensCurrentMonth: currentByUser[p.id]?.inputTokens ?? 0,
       outputTokensCurrentMonth: currentByUser[p.id]?.outputTokens ?? 0,
+      creditsPurchasedUsd: creditsByUser[p.id]?.purchased ?? 0,
+      creditsRevenueUsd: creditsByUser[p.id]?.revenue ?? 0,
     }
   })
 
   const totalAiCost = rows.reduce((s, r) => s + r.costCurrentMonthUsd, 0)
-  const totalRevenue = rows
+  const totalPlanRevenue = rows
     .filter((r) => r.subscriptionStatus === 'active' || r.subscriptionStatus === 'trialing')
     .reduce((s, r) => s + r.planPriceUsd, 0)
+  const totalRevenue = totalPlanRevenue + totalCreditRevenue
 
   // Infrastructure costs (monthly estimates — update via env vars or here)
   const infraCosts = {
@@ -133,6 +152,8 @@ export async function GET(request: Request) {
     totalCostCurrentMonthUsd: totalAiCost,
     totalCostPreviousMonthUsd: rows.reduce((s, r) => s + r.costPreviousMonthUsd, 0),
     totalRevenueCurrentMonthUsd: totalRevenue,
+    totalPlanRevenueUsd: totalPlanRevenue,
+    totalCreditRevenueUsd: totalCreditRevenue,
     totalInfraCostUsd: totalInfraCost,
     totalCostsUsd: totalCosts,
     netProfitUsd: netProfit,

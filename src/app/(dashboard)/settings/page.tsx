@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getUserPlanStatus, getTrialDaysRemaining } from '@/lib/plans/guards'
 import { BillingSection } from '@/components/settings/BillingSection'
 import { ProfileSection } from '@/components/settings/ProfileSection'
+import { ConsumptionDashboard } from '@/components/settings/ConsumptionDashboard'
 
 export default async function SettingsPage({
   searchParams,
@@ -43,6 +44,8 @@ export default async function SettingsPage({
         email={user.email ?? ''}
         persona={profile.persona}
       />
+
+      <ConsumptionDashboard />
 
       <BillingSection
         currentPlan={profile.plan}
