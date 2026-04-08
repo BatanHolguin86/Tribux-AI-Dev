@@ -83,7 +83,7 @@ function isCurrentMonth(m: string): boolean {
 // ── Category color ────────────────────────────────────────────────────────────
 
 const CAT_COLORS: Record<string, string> = {
-  chat:   'bg-[#E8F4F8]0',
+  chat:   'bg-[#0EA5A3]',
   code:   'bg-blue-500',
   tests:  'bg-emerald-500',
   data:   'bg-amber-500',
@@ -180,7 +180,7 @@ function PlanUsageBar({ data, projectId }: { data: CostSummary; projectId: strin
       {/* Stacked progress bar */}
       <div className="mb-3 h-3 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800 flex">
         {thisPct > 0 && (
-          <div className="h-full bg-[#E8F4F8]0 transition-all duration-700" style={{ width: `${thisPct}%` }} title={`Este proyecto: ${fmtUSD(thisProjectCost)}`} />
+          <div className="h-full bg-[#0EA5A3] transition-all duration-700" style={{ width: `${thisPct}%` }} title={`Este proyecto: ${fmtUSD(thisProjectCost)}`} />
         )}
         {otherPct > 0 && (
           <div className="h-full bg-gray-400 dark:bg-gray-600 transition-all duration-700" style={{ width: `${otherPct}%` }} title={`Otros proyectos: ${fmtUSD(otherCost)}`} />
@@ -189,7 +189,7 @@ function PlanUsageBar({ data, projectId }: { data: CostSummary; projectId: strin
 
       <div className="grid grid-cols-3 gap-2 text-xs">
         <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#E8F4F8]0" />
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#0EA5A3]" />
           <div>
             <p className="font-medium text-gray-700 dark:text-gray-300">Este proyecto</p>
             <p className="text-gray-400">{fmtUSD(thisProjectCost)} · {Math.round(thisPct)}%</p>
@@ -431,6 +431,128 @@ function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthl
   )
 }
 
+// ── Bloque 5: P&L + Pricing sugerido ─────────────────────────────────────
+
+function ProjectPnL({
+  data,
+  infraMonthly,
+}: {
+  data: CostSummary
+  infraMonthly: number
+}) {
+  // Calculate project duration in months
+  const startDate = new Date(data.projectCreatedAt)
+  const now = new Date()
+  const monthsActive = Math.max(1, Math.ceil(
+    (now.getTime() - startDate.getTime()) / (30 * 24 * 60 * 60 * 1000),
+  ))
+
+  // Prorate subscription cost to this project
+  const totalProjects = Math.max(1, data.thisMonthAllProjects.length)
+  const subscriptionPerProject = data.planPriceUsd / totalProjects
+  const subscriptionTotal = subscriptionPerProject * monthsActive
+
+  // Total infrastructure cost over project lifetime
+  const infraTotal = infraMonthly * monthsActive
+
+  // Total investment
+  const totalInvestment = data.aiCostAllTime + subscriptionTotal + infraTotal
+
+  // Ongoing monthly cost
+  const ongoingMonthly = infraMonthly + (data.aiCostThisMonth > 0 ? subscriptionPerProject : 0)
+
+  // Markup tiers
+  const markups = [
+    { label: 'Minimo (2×)', factor: 2, desc: 'Cubre costos + margen basico' },
+    { label: 'Competitivo (3×)', factor: 3, desc: 'Estandar de agencias' },
+    { label: 'Premium (5×)', factor: 5, desc: 'Producto de alto valor' },
+  ]
+
+  return (
+    <div className="rounded-xl border-2 border-[#0F2B46]/10 bg-gradient-to-b from-white to-gray-50/50 p-5 dark:border-[#0EA5A3]/10 dark:from-gray-900 dark:to-gray-900/50">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-base">📊</span>
+        <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200">P&L del Proyecto — Cuanto cobrar</h2>
+      </div>
+
+      {/* Investment breakdown */}
+      <div className="mb-5">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Inversion total</p>
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600 dark:text-gray-400">Desarrollo IA (tokens consumidos)</span>
+            <span className="font-medium tabular-nums text-gray-900 dark:text-white">{fmtUSD(data.aiCostAllTime)}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600 dark:text-gray-400">
+              Suscripcion AI Squad ({monthsActive} {monthsActive === 1 ? 'mes' : 'meses'}, prorrateado {totalProjects > 1 ? `1/${totalProjects} proyectos` : ''})
+            </span>
+            <span className="font-medium tabular-nums text-gray-900 dark:text-white">{fmtUSD(subscriptionTotal)}</span>
+          </div>
+          {infraTotal > 0 && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600 dark:text-gray-400">Infraestructura ({monthsActive} meses × {fmtUSD(infraMonthly)})</span>
+              <span className="font-medium tabular-nums text-gray-900 dark:text-white">{fmtUSD(infraTotal)}</span>
+            </div>
+          )}
+          <div className="flex items-center justify-between border-t border-gray-200 pt-2 dark:border-gray-700">
+            <span className="text-sm font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">Total invertido</span>
+            <span className="text-lg font-display font-bold tabular-nums text-[#0F2B46] dark:text-[#0EA5A3]">{fmtUSD(totalInvestment)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Suggested pricing */}
+      <div className="mb-5">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Precio sugerido al cliente</p>
+        <div className="grid grid-cols-3 gap-2">
+          {markups.map((m) => {
+            const price = totalInvestment * m.factor
+            return (
+              <div key={m.factor} className={`rounded-lg border p-3 text-center ${
+                m.factor === 3
+                  ? 'border-[#0EA5A3]/30 bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
+                  : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
+              }`}>
+                <p className="text-lg font-display font-bold tabular-nums text-[#0F2B46] dark:text-white">
+                  {fmtUSD(price)}
+                </p>
+                <p className="text-[11px] font-medium text-gray-700 dark:text-gray-300">{m.label}</p>
+                <p className="text-[10px] text-gray-400">{m.desc}</p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Ongoing costs */}
+      {ongoingMonthly > 0 && (
+        <div className="rounded-lg bg-gray-100/80 px-4 py-3 dark:bg-gray-800/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Costo operativo mensual</p>
+              <p className="text-[11px] text-gray-400">Lo que cuesta mantener este producto corriendo</p>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-display font-bold tabular-nums text-gray-900 dark:text-white">{fmtUSD(ongoingMonthly)}<span className="text-xs font-normal text-gray-400">/mes</span></p>
+              <p className="text-[10px] text-gray-400">Cobra al menos esto como fee mensual</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ROI note */}
+      <div className="mt-3 flex items-start gap-2 text-[11px] text-gray-400">
+        <span className="mt-0.5">💡</span>
+        <span>
+          Con un precio de venta de {fmtUSD(totalInvestment * 3)} y operacion de {fmtUSD(ongoingMonthly)}/mes,
+          tu proyecto se paga desde el primer cobro y genera {fmtUSD(totalInvestment * 3 - totalInvestment)} de ganancia.
+        </span>
+      </div>
+    </div>
+  )
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function ProjectCostDashboard({
@@ -514,6 +636,10 @@ export function ProjectCostDashboard({
 
       {data && (
         <>
+          <ProjectPnL data={data} infraMonthly={infraMonthly} />
+
+          <div className="mt-4" />
+
           <SummaryHeader data={data} infraMonthly={infraMonthly} />
           <PlanUsageBar data={data} projectId={projectId} />
 
