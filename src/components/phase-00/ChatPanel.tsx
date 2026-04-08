@@ -10,6 +10,7 @@ import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { EmptyResponseBanner } from '@/components/shared/chat/EmptyResponseBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
 import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
 import { QuickReplies, extractOptions } from '@/components/shared/chat/QuickReplies'
@@ -75,6 +76,24 @@ export function ChatPanel({
 
   const isLoading = status === 'streaming' || status === 'submitted'
   const autoStartedRef = useRef(false)
+  const [emptyResponseError, setEmptyResponseError] = useState(false)
+  const prevStatusRef = useRef(status)
+
+  // Detect empty response: stream finished but no assistant reply came back
+  useEffect(() => {
+    const wasLoading = prevStatusRef.current === 'streaming' || prevStatusRef.current === 'submitted'
+    const nowReady = status === 'ready'
+    if (wasLoading && nowReady && messages.length > 0) {
+      const lastMsg = messages[messages.length - 1]
+      const lastText = lastMsg ? getTextContent(lastMsg) : ''
+      if (lastMsg?.role === 'user' || lastText.trim() === '') {
+        setEmptyResponseError(true)
+      } else {
+        setEmptyResponseError(false)
+      }
+    }
+    prevStatusRef.current = status
+  }, [status, messages])
 
   // Auto-start conversation when section has no messages
   useEffect(() => {
@@ -174,6 +193,7 @@ export function ChatPanel({
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <AgentParticipationHeader agents={PHASE_00_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
+      {emptyResponseError && !error && <EmptyResponseBanner />}
       {(() => {
         const lastMsg = messages[messages.length - 1]
         const text = lastMsg?.role === 'assistant'

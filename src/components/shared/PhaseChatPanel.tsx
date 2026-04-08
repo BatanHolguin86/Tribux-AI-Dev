@@ -8,6 +8,7 @@ import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { EmptyResponseBanner } from '@/components/shared/chat/EmptyResponseBanner'
 import { QuickReplies, extractOptions } from '@/components/shared/chat/QuickReplies'
 import { PHASE_KICKOFF_MESSAGES, PHASE03_KICKOFF_BY_PERSONA } from '@/lib/ai/prompts/phase-chat-builders'
 import { PHASE_NAMES } from '@/types/project'
@@ -50,6 +51,18 @@ export function PhaseChatPanel({ projectId, phaseNumber, initialMessages }: Phas
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+  const [emptyResponseError, setEmptyResponseError] = useState(false)
+  const prevStatusRef = useRef(status)
+
+  useEffect(() => {
+    const wasLoading = prevStatusRef.current === 'streaming' || prevStatusRef.current === 'submitted'
+    if (wasLoading && status === 'ready' && messages.length > 0) {
+      const last = messages[messages.length - 1]
+      const text = last ? getTextContent(last) : ''
+      setEmptyResponseError(last?.role === 'user' || text.trim() === '')
+    }
+    prevStatusRef.current = status
+  }, [status, messages])
 
   // Auto-kickoff on first visit
   useEffect(() => {
@@ -86,6 +99,7 @@ export function PhaseChatPanel({ projectId, phaseNumber, initialMessages }: Phas
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {error && <ChatErrorBanner error={error} />}
+      {emptyResponseError && !error && <EmptyResponseBanner />}
       {(() => {
         const lastMsg = messages[messages.length - 1]
         const text = lastMsg?.role === 'assistant'
