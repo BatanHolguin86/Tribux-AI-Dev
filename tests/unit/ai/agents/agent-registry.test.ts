@@ -16,6 +16,7 @@ import { OPERATOR_PROMPT } from '@/lib/ai/agents/operator'
 import { DESIGN_TEMPLATES } from '@/lib/ai/agents/ui-ux-designer'
 import type { DesignTemplate } from '@/lib/ai/agents/ui-ux-designer'
 
+// 8 visible agents — operator was merged into devops_engineer
 const EXPECTED_AGENT_IDS: AgentType[] = [
   'cto_virtual',
   'product_architect',
@@ -25,10 +26,9 @@ const EXPECTED_AGENT_IDS: AgentType[] = [
   'db_admin',
   'qa_engineer',
   'devops_engineer',
-  'operator',
 ]
 
-const AGENT_PROMPTS: Record<AgentType, string> = {
+const AGENT_PROMPTS: Record<string, string> = {
   cto_virtual: CTO_VIRTUAL_PROMPT,
   product_architect: PRODUCT_ARCHITECT_PROMPT,
   system_architect: SYSTEM_ARCHITECT_PROMPT,
@@ -41,8 +41,8 @@ const AGENT_PROMPTS: Record<AgentType, string> = {
 }
 
 describe('AGENTS registry', () => {
-  it('contains exactly 9 agents', () => {
-    expect(AGENTS).toHaveLength(9)
+  it('contains exactly 8 visible agents', () => {
+    expect(AGENTS).toHaveLength(8)
   })
 
   it('includes all expected agent IDs', () => {
@@ -78,10 +78,10 @@ describe('AGENTS registry', () => {
     expect(cto!.planRequired).toBe('starter')
   })
 
-  it('operator requires agency plan', () => {
-    const operator = AGENTS.find((a) => a.id === 'operator')
-    expect(operator).toBeDefined()
-    expect(operator!.planRequired).toBe('agency')
+  it('operator alias maps to devops via AGENT_MAP', () => {
+    // operator was merged into devops_engineer — backward compat via AGENT_MAP
+    expect(AGENT_MAP['operator']).toBeDefined()
+    expect(AGENT_MAP['operator'].id).toBe('operator')
   })
 
   it('specialist agents require builder plan', () => {
@@ -116,8 +116,8 @@ describe('AGENT_MAP', () => {
     }
   })
 
-  it('has the same number of entries as AGENTS', () => {
-    expect(Object.keys(AGENT_MAP)).toHaveLength(AGENTS.length)
+  it('has AGENTS.length + 1 entries (includes operator alias)', () => {
+    expect(Object.keys(AGENT_MAP)).toHaveLength(AGENTS.length + 1)
   })
 })
 
