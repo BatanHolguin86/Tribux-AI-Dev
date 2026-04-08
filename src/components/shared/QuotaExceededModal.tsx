@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { CREDIT_PACKS } from '@/lib/plans/quota'
-import type { CreditPack } from '@/lib/plans/quota'
+import { CREDIT_PACKS } from '@/lib/plans/credit-packs'
+import type { CreditPack } from '@/lib/plans/credit-packs'
 
 type QuotaExceededModalProps = {
   usedPct: number

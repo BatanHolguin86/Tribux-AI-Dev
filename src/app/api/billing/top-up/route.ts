@@ -1,5 +1,5 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { CREDIT_PACKS } from '@/lib/plans/quota'
+import { CREDIT_PACKS } from '@/lib/plans/credit-packs'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export const maxDuration = 30

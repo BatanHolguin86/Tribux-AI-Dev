@@ -4,19 +4,9 @@ import { createAdminClient } from '@/lib/supabase/server'
 
 export type QuotaStatus = 'ok' | 'warning' | 'exceeded' | 'whale'
 
-export type CreditPack = {
-  id: string
-  label: string
-  amountUsd: number
-  priceUsd: number
-}
-
-/** Available credit packs for top-up */
-export const CREDIT_PACKS: CreditPack[] = [
-  { id: 'small',  label: '+$25 de IA',  amountUsd: 25,  priceUsd: 25 },
-  { id: 'medium', label: '+$50 de IA',  amountUsd: 50,  priceUsd: 50 },
-  { id: 'large',  label: '+$100 de IA', amountUsd: 100, priceUsd: 100 },
-]
+import { CREDIT_PACKS } from './credit-packs'
+export { CREDIT_PACKS }
+export type { CreditPack } from './credit-packs'
 
 export type QuotaResult = {
   allowed: boolean
