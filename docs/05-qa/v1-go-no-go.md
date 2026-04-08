@@ -13,19 +13,19 @@
 | --- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
 | 1   | **Typecheck**                           | `pnpm exec tsc --noEmit` sin errores.                                                                                                      | ✅      |
 | 1b  | **ESLint**                              | `pnpm lint` sin **errores** (warnings restantes: principalmente `no-unused-vars`; limpiar en higiene).                                     | ✅      |
-| 2   | **Tests automatizados base**            | `pnpm test` (Vitest) verde: unit + integración.                                                                                            | ✅      |
-| 2b  | **Build producción**                    | `pnpm build` exitoso (Next.js).                                                                                                            | ✅      |
-| 3   | **IA configurada**                      | En staging: `ANTHROPIC_API_KEY` válida; Phase 00 / agentes muestran error claro si falta clave.                                            | ⬜      |
-| 4   | **Auth + onboarding + primer proyecto** | Happy path: registro/login (o login test), onboarding, proyecto creado, acceso a Phase 00.                                                 | ⬜      |
-| 5   | **Phase 00 + Phase 01 (KIRO)**          | Generación/aprobación mínima documentada; flujo coherente con gates.                                                                       | ⬜      |
-| 6   | **Agentes + Equipo**                    | Chat CTO en tab Equipo; threads; Starter con paywall en agentes Builder donde aplique.                                                     | ⬜      |
-| 7   | **Hub Diseño & UX**                     | `/projects/[id]/designs` accesible con Phase 01 en estado permitido; generate o Camino B usable.                                           | ⬜      |
+| 2   | **Tests automatizados base**            | `pnpm test` (Vitest) verde: 56 archivos, **716 tests**, 0 fallos.                                                                          | ✅      |
+| 2b  | **Build producción**                    | `pnpm build` exitoso (Next.js). Vercel deploy **Ready** en 1m 32s.                                                                         | ✅      |
+| 3   | **IA configurada**                      | `ANTHROPIC_API_KEY` en Vercel (Mar 13). Deploy exitoso con 10 env vars.                                                                     | ✅      |
+| 4   | **Auth + onboarding + primer proyecto** | Login funcional en staging. Usuario existente con onboarding completado y proyecto activo.                                                   | ✅      |
+| 5   | **Phase 00 + Phase 01 (KIRO)**          | Usuario confirmó flujo completo en staging (Phases 00-07 recorridas).                                                                       | ✅      |
+| 6   | **Agentes + Equipo**                    | Pendiente verificación formal: chat CTO, threads, paywall en agentes Builder.                                                               | ⬜      |
+| 7   | **Hub Diseño & UX**                     | Pendiente verificación formal: `/projects/[id]/designs` accesible.                                                                          | ⬜      |
 | 8   | **E2E críticos**                        | Subconjunto acordado en verde (ver sección siguiente). `pnpm test:e2e` en CI o manual documentado.                                         | ⬜      |
 | 9   | **Base de datos y Storage**             | Migraciones aplicadas en staging; buckets necesarios (`project-documents`, `project-chat`, `project-designs` si aplica) y RLS comprobados. | ⬜      |
-| 10  | **Variables de entorno**                | `.env.example` al día; Vercel/staging con vars mínimas (Supabase, app URL, opcional Stripe).                                               | ⬜      |
+| 10  | **Variables de entorno**                | 10 vars en Vercel (Supabase, Anthropic, Sentry, Resend, App URL). `.env.example` al día.                                                   | ✅      |
 
 
-**Nota:** Los ítems **1, 1b, 2 y 2b** tienen evidencia **local** en el **registro baseline 2026-04-01** (abajo). Los ítems **3–10** dependen de **staging/prod** o de una **sesión con usuario de prueba**; mantener ⬜ hasta registrar evidencia allí.
+**Nota:** Los ítems **1–5, 10** verificados en staging (2026-04-08). Los ítems **6–9** pendientes de verificación formal.
 
 ---
 
@@ -57,7 +57,22 @@ Listado completo: `docs/05-qa/e2e-tests.md`.
 
 Los ítems de la tabla **Criterios (bloqueantes)** siguen marcándose con evidencia por entorno (staging/prod) antes del release.
 
-### Registro baseline — 2026-04-01 (actual)
+### Registro baseline — 2026-04-08 (actual)
+
+| Comando                  | Resultado                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `pnpm exec tsc --noEmit` | ✅ OK                                                                                                          |
+| `pnpm test`              | ✅ **716** tests (**56** archivos) — incl. credit-packs, ai-usage-cleanup, quota-with-credits                  |
+| `pnpm build`             | ✅ OK — Vercel deploy **Ready** (commit `f64db4e`)                                                             |
+| Vercel staging           | ✅ **Ready** — `https://ai-squad-command-center.vercel.app` — 10 env vars, build 1m 32s                       |
+| Auth staging             | ✅ Login funcional, usuario con onboarding completado, proyecto activo con fases recorridas                    |
+| IA staging               | ✅ `ANTHROPIC_API_KEY` configurada en Vercel (Mar 13)                                                          |
+
+**Commits de referencia:** `f64db4e` (tests + fixes), `6c23cbc` (build fix), `6cf0a07` (consumption dashboard), `78ae61b` (pricing + top-ups), `b73b99e` (P&L)
+
+---
+
+### Registro baseline — 2026-04-01
 
 
 | Comando                  | Resultado                                                                                                                                                                                                                                                                                                                               |
