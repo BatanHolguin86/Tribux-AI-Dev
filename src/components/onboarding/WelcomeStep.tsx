@@ -18,7 +18,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
         </svg>
       </div>
 
-      <h1 className="text-3xl font-bold text-gray-900">Bienvenido a AI Squad</h1>
+      <h1 className="text-3xl font-bold text-gray-900">Te damos la bienvenida a AI Squad</h1>
       <p className="mt-3 text-lg text-gray-600">
         Tu equipo de agentes IA esta listo para construir tu producto.
       </p>
@@ -26,12 +26,12 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
       <div className="mt-8 space-y-4 text-left">
         {[
           {
-            title: 'Tu eres el CEO',
+            title: 'Tu lideras el proyecto',
             desc: 'Defines la vision, tomas decisiones y apruebas cada fase.',
           },
           {
             title: 'Equipo de 8 agentes',
-            desc: 'CTO Virtual + 7 agentes especializados que diseñan, construyen y lanzan contigo.',
+            desc: 'CTO Virtual + 7 agentes especializados que disenan, construyen y lanzan contigo.',
           },
           {
             title: '8 fases de desarrollo',
