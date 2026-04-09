@@ -10,6 +10,7 @@ import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { EmptyResponseBanner } from '@/components/shared/chat/EmptyResponseBanner'
 import { ApprovalGate } from '@/components/shared/ApprovalGate'
 import { AgentParticipationHeader } from '@/components/shared/AgentParticipationHeader'
 import { QuickReplies, extractOptions } from '@/components/shared/chat/QuickReplies'
@@ -80,6 +81,18 @@ export function ChatPanel({
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+  const [emptyResponseError, setEmptyResponseError] = useState(false)
+  const prevStatusRef = useRef(status)
+
+  useEffect(() => {
+    const wasLoading = prevStatusRef.current === 'streaming' || prevStatusRef.current === 'submitted'
+    if (wasLoading && status === 'ready' && messages.length > 0) {
+      const last = messages[messages.length - 1]
+      const text = last ? getTextContent(last) : ''
+      setEmptyResponseError(last?.role === 'user' || text.trim() === '')
+    }
+    prevStatusRef.current = status
+  }, [status, messages])
 
   // Auto-kickoff: when section has no messages and is not approved, CTO starts proactively
   useEffect(() => {
@@ -207,6 +220,7 @@ export function ChatPanel({
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <AgentParticipationHeader agents={PHASE_02_AGENTS[section]} />
       {error && <ChatErrorBanner error={error} />}
+      {emptyResponseError && !error && <EmptyResponseBanner />}
       {streamError && (
         <div className="mx-3 my-2 rounded-lg border-l-4 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-3 text-sm text-[#F59E0B] dark:text-[#F59E0B]" role="alert">
           <p className="text-xs font-medium">

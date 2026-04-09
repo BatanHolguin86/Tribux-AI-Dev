@@ -8,6 +8,7 @@ import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { EmptyResponseBanner } from '@/components/shared/chat/EmptyResponseBanner'
 import { parseDesignGenerateCommand } from '@/lib/design/parse-design-generate-command'
 
 function getTextContent(msg: UIMessage): string {
@@ -45,6 +46,18 @@ export function DesignChat({
   })
 
   const isLoading = status === 'streaming' || status === 'submitted' || caminoABusy
+  const [emptyResponseError, setEmptyResponseError] = useState(false)
+  const prevStatusRef = useRef(status)
+
+  useEffect(() => {
+    const wasLoading = prevStatusRef.current === 'streaming' || prevStatusRef.current === 'submitted'
+    if (wasLoading && status === 'ready' && messages.length > 0) {
+      const last = messages[messages.length - 1]
+      const text = last ? getTextContent(last) : ''
+      setEmptyResponseError(last?.role === 'user' || text.trim() === '')
+    }
+    prevStatusRef.current = status
+  }, [status, messages])
 
   // Auto-send the template prompt once (ref avoids setState inside effect)
   useEffect(() => {
@@ -102,6 +115,7 @@ export function DesignChat({
   return (
     <div className="flex h-full min-h-0 flex-col">
       {error && <ChatErrorBanner error={error} />}
+      {emptyResponseError && !error && <EmptyResponseBanner />}
       {(() => {
         const lastMsg = messages[messages.length - 1]
         const text = lastMsg?.role === 'assistant'

@@ -10,6 +10,7 @@ import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { EmptyResponseBanner } from '@/components/shared/chat/EmptyResponseBanner'
 import { QuickReplies, extractOptions } from '@/components/shared/chat/QuickReplies'
 
 function getTextContent(msg: UIMessage): string {
@@ -86,6 +87,18 @@ export function KiroChat({
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+  const [emptyResponseError, setEmptyResponseError] = useState(false)
+  const prevStatusRef = useRef(status)
+
+  useEffect(() => {
+    const wasLoading = prevStatusRef.current === 'streaming' || prevStatusRef.current === 'submitted'
+    if (wasLoading && status === 'ready' && messages.length > 0) {
+      const last = messages[messages.length - 1]
+      const text = last ? getTextContent(last) : ''
+      setEmptyResponseError(last?.role === 'user' || text.trim() === '')
+    }
+    prevStatusRef.current = status
+  }, [status, messages])
 
   async function handleAutoDraft() {
     setAutoDrafting(true)
@@ -234,6 +247,7 @@ export function KiroChat({
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* ── Error banners ── */}
       {error && <ChatErrorBanner error={error} />}
+      {emptyResponseError && !error && <EmptyResponseBanner />}
       {generateError && (
         <div className="border-b border-red-100 bg-red-50 px-4 py-2.5 dark:border-red-900/30 dark:bg-red-950/20">
           <p className="text-xs leading-relaxed text-red-700 dark:text-red-300">{generateError}</p>

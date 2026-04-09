@@ -8,6 +8,7 @@ import type { UIMessage } from 'ai'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
+import { EmptyResponseBanner } from '@/components/shared/chat/EmptyResponseBanner'
 
 function getTextContent(msg: UIMessage): string {
   return msg.parts
@@ -52,6 +53,18 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+  const [emptyResponseError, setEmptyResponseError] = useState(false)
+  const prevStatusRef = useRef(status)
+
+  useEffect(() => {
+    const wasLoading = prevStatusRef.current === 'streaming' || prevStatusRef.current === 'submitted'
+    if (wasLoading && status === 'ready' && messages.length > 0) {
+      const last = messages[messages.length - 1]
+      const text = last ? getTextContent(last) : ''
+      setEmptyResponseError(last?.role === 'user' || text.trim() === '')
+    }
+    prevStatusRef.current = status
+  }, [status, messages])
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -93,6 +106,7 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
       </div>
 
       {error && <ChatErrorBanner error={error} />}
+      {emptyResponseError && !error && <EmptyResponseBanner />}
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
