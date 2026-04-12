@@ -77,7 +77,7 @@ export default async function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <span className="text-lg font-display font-bold text-gray-900 dark:text-white">AI Squad</span>
+            <span className="text-lg font-display font-bold text-gray-900 dark:text-white">Tribux</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
@@ -313,10 +313,10 @@ export default async function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="text-sm font-semibold text-gray-900 dark:text-white">AI Squad</span>
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">Tribux</span>
             </div>
             <p className="text-xs text-gray-400 dark:text-gray-500">
-              &copy; {new Date().getFullYear()} AI Squad. Todos los derechos reservados.
+              &copy; {new Date().getFullYear()} Tribux. Todos los derechos reservados.
             </p>
           </div>
         </div>

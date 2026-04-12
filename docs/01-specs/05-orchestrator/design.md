@@ -104,7 +104,7 @@ bucket: project-documents
 ### System Prompts — Estructura Comun
 
 ```
-ROL: Eres {nombre del agente}, parte del equipo de AI Squad Command Center.
+ROL: Eres {nombre del agente}, parte del equipo de Tribux.
 ESPECIALIDAD: {descripcion detallada de expertise y ambito}
 CONTEXTO DEL PROYECTO:
   - Nombre: {nombre}

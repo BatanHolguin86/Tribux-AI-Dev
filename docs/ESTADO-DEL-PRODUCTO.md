@@ -1,4 +1,4 @@
-# Estado del producto vs código — AI Squad Command Center
+# Estado del producto vs código — Tribux
 
 **Última revisión documental:** 2026-04-01  
 **Fuente de verdad del código:** repositorio (`src/`, `infrastructure/supabase/migrations/`).  

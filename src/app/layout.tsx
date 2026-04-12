@@ -26,24 +26,24 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://aisquad.dev'
 
 export const metadata: Metadata = {
   title: {
-    default: 'AI Squad Command Center',
-    template: '%s | AI Squad',
+    default: 'Tribux',
+    template: '%s | Tribux',
   },
   description:
     'Tu equipo de agentes IA especializados para construir productos tecnologicos end-to-end. Discovery, specs, arquitectura, desarrollo y deploy — todo guiado por IA.',
   metadataBase: new URL(APP_URL),
   openGraph: {
-    title: 'AI Squad Command Center',
+    title: 'Tribux',
     description:
       'Construye productos tecnologicos con un equipo de agentes IA: CTO Virtual, Architect, Frontend Dev, Backend Dev, QA y mas.',
     url: APP_URL,
-    siteName: 'AI Squad',
+    siteName: 'Tribux',
     locale: 'es_ES',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI Squad Command Center',
+    title: 'Tribux',
     description:
       'Tu equipo de agentes IA especializados para construir productos tecnologicos end-to-end.',
   },

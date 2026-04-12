@@ -12,7 +12,7 @@ function getHeaders(): Record<string, string> {
   if (!token) throw new Error('GITHUB_TOKEN is required for workflow operations')
   return {
     Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'AI-Squad-Command-Center',
+    'User-Agent': 'Tribux',
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
   }

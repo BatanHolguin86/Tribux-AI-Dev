@@ -125,7 +125,7 @@ export async function POST(
           const commitResult = await commitMultipleFiles(
             project.repo_url!,
             filesToCommit,
-            'docs: add ops runbook, architecture, and troubleshooting (AI Squad Phase 06)',
+            'docs: add ops runbook, architecture, and troubleshooting (Tribux Phase 06)',
           )
 
           // 11. Auto-check documentation items

@@ -123,7 +123,7 @@ export async function POST(
           const commitResult = await commitMultipleFiles(
             project.repo_url!,
             filesToCommit,
-            'chore: add .env.example template (AI Squad Phase 03)',
+            'chore: add .env.example template (Tribux Phase 03)',
           )
 
           // 10. Auto-check environment item

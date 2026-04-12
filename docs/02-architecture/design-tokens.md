@@ -1,4 +1,4 @@
-# Design Tokens — AI Squad Command Center (v2)
+# Design Tokens — Tribux (v2)
 
 Tokens definidos en `src/app/globals.css` para unificar colores, tipografia, espaciado y comportamiento visual.
 

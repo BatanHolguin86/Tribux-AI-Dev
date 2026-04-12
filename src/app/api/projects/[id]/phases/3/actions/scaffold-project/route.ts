@@ -127,7 +127,7 @@ export async function POST(
           const commitResult = await commitMultipleFiles(
             project.repo_url!,
             filesToCommit,
-            `chore: scaffold project structure (AI Squad Phase 03)`,
+            `chore: scaffold project structure (Tribux Phase 03)`,
           )
 
           // 11. Auto-check repository items

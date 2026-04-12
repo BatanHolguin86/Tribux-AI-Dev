@@ -110,7 +110,7 @@ create trigger on_auth_user_created
                                         │   ONBOARDING (4 pasos)    │
                                         │                           │
                                         │  Paso 1: Bienvenida       │
-                                        │  "Que es AI Squad"        │
+                                        │  "Que es Tribux"        │
                                         │  + vision rapida IA DLC   │
                                         │                           │
                                         │  Paso 2: Tu perfil        │
@@ -136,7 +136,7 @@ create trigger on_auth_user_created
 
 **Paginas de Auth** (`/login`, `/register`)
 
-- Layout dividido: lado izquierdo con valor prop de AI Squad, lado derecho con formulario
+- Layout dividido: lado izquierdo con valor prop de Tribux, lado derecho con formulario
 - Formulario con React Hook Form + validacion Zod
 - Boton Google OAuth prominente, separador visual "o continua con"
 - Links de navegacion entre login/register y forgot-password

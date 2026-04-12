@@ -1,4 +1,4 @@
-# RLS Audit — AI Squad Command Center
+# RLS Audit — Tribux
 
 **Fecha:** 2026-03-10
 **Resultado:** PASS (1 gap corregido)

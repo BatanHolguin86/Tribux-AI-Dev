@@ -1,4 +1,4 @@
-# User Personas — AI Squad Command Center
+# User Personas — Tribux
 
 **Fecha:** 2026-03-05
 **Fase:** Phase 00 — Discovery
@@ -32,7 +32,7 @@ Santiago tiene 8 anos de experiencia en consultoría de estrategia. Identificó 
 - **Velocidad:** Conseguir y alinear un equipo tecnico toma 2–3 meses antes de escribir una linea de codigo
 - **Riesgo:** Ha perdido tiempo y dinero con freelancers que abandonan proyectos a la mitad
 
-### Como usa AI Squad
+### Como usa Tribux
 
 Llega con una idea clara del problema de negocio. Actua como CEO/CPO: valida specs, toma decisiones de producto en cada fase, aprueba antes de avanzar. No necesita entender como funciona el codigo — necesita entender que se esta construyendo y por que.
 
@@ -69,7 +69,7 @@ Valentina lidera la roadmap de producto de una empresa establecida. Tiene presup
 - **Velocidad de validacion:** Entre ideacion y primer feedback real pasan 3–6 meses
 - **Comunicacion con stakeholders:** Le cuesta mostrar progreso tangible sin demos funcionales
 
-### Como usa AI Squad
+### Como usa Tribux
 
 Usa la plataforma para construir MVPs de features nuevas o productos adyacentes. Aprecia especialmente el formato KIRO porque le da estructura a sus PRDs y hace la comunicacion con ingenieria mas eficiente cuando eventualmente hace handoff.
 
@@ -106,9 +106,9 @@ Rodrigo tiene una consultora de 8 personas que ayuda a empresas tradicionales a 
 - **Propuesta de valor difusa:** Le cuesta diferenciar su consultora de otras cuando el desarrollo lo hace un tercero
 - **Escalabilidad limitada:** No puede tomar mas proyectos sin contratar mas gente
 
-### Como usa AI Squad
+### Como usa Tribux
 
-Usa la plataforma como el "equipo tecnico" de su consultora. El actua como orquestador entre el cliente (que da la vision) y AI Squad (que ejecuta). Le permite ofrecer desarrollo end-to-end como servicio sin el overhead de un equipo interno.
+Usa la plataforma como el "equipo tecnico" de su consultora. El actua como orquestador entre el cliente (que da la vision) y Tribux (que ejecuta). Le permite ofrecer desarrollo end-to-end como servicio sin el overhead de un equipo interno.
 
 ### Quote representativo
 
@@ -145,9 +145,9 @@ Camila tiene un trabajo estable pero lleva meses con una idea de negocio digital
 - **Presupuesto limitado:** Maneja sus ahorros personales ($2k–$10k) o bootstrapping; no tiene acceso a capital externo aun
 - **Soledad en el proceso:** Emprende sola o con un co-founder no-tecnico; no tiene equipo ni con quien validar decisiones tecnicas
 
-### Como usa AI Squad
+### Como usa Tribux
 
-Es el usuario que mas se beneficia del punto de entrada de Phase 00. Llega sin claridad sobre que construir exactamente — AI Squad la ayuda a definir eso primero (discovery), luego a especificarlo (KIRO) y finalmente a ejecutarlo paso a paso. La metodologia le da la estructura y confianza que necesita para dar el primer paso y no detenerse.
+Es el usuario que mas se beneficia del punto de entrada de Phase 00. Llega sin claridad sobre que construir exactamente — Tribux la ayuda a definir eso primero (discovery), luego a especificarlo (KIRO) y finalmente a ejecutarlo paso a paso. La metodologia le da la estructura y confianza que necesita para dar el primer paso y no detenerse.
 
 ### Quote representativo
 
@@ -155,7 +155,29 @@ Es el usuario que mas se beneficia del punto de entrada de Phase 00. Llega sin c
 
 ---
 
+## Agentes IA del producto (referencia)
+
+Las personas anteriores interactúan con el **CTO Virtual** como orquestador y, segun plan y fase, con especialistas. Hay **8 agentes** en el catálogo (`AGENTS`) en `src/lib/ai/agents/index.ts`. La asignación por sección de fase está en `src/lib/ai/agents/phase-agents.ts`. Descripción operativa para el orquestador: `CLAUDE.md` (seccion **Agentes Especializados**).
+
+
+| Agente              | id                  | Enfoque breve                       |
+| ------------------- | ------------------- | ----------------------------------- |
+| CTO Virtual         | `cto_virtual`       | Vision, delegacion, IA DLC          |
+| Product Architect   | `product_architect` | Producto, scope, user stories       |
+| System Architect    | `system_architect`  | Arquitectura, tecnologias, ADRs     |
+| UI/UX Designer      | `ui_ux_designer`    | Wireframes, estilo, hub Diseño & UX |
+| Lead Developer      | `lead_developer`    | Implementacion, codigo, practicas   |
+| DB Admin            | `db_admin`          | Esquema, RLS, migraciones           |
+| QA Engineer         | `qa_engineer`       | Testing, estrategia QA              |
+| DevOps & Operations | `devops_engineer`   | CI/CD, deploy, runbooks             |
+
+
+**Compatibilidad:** el tipo `operator` en `src/types/agent.ts` es alias del mismo agente que DevOps & Operations (metadata unificada).
+
+---
+
 ## Resumen de Personas
+
 
 | Atributo          | Santiago (Founder)          | Valentina (PM Senior)           | Rodrigo (Consultor)                  | Camila (Emprendedora)                       |
 | ----------------- | --------------------------- | ------------------------------- | ------------------------------------ | ------------------------------------------- |
@@ -164,3 +186,5 @@ Es el usuario que mas se beneficia del punto de entrada de Phase 00. Llega sin c
 | Frecuencia de uso | Diaria — es su unico equipo | Semanal — complementa al equipo | Por proyecto — multiple clientes     | Diaria — es su proyecto de vida             |
 | Exito =           | MVP lanzado y con usuarios  | Feature validada en produccion  | Cliente satisfecho, margen alto      | Primera venta o usuario real                |
 | Mayor fear        | Perder tiempo y dinero      | No poder demostrar ROI          | Entregar un producto de baja calidad | No saber si esta tomando el camino correcto |
+
+

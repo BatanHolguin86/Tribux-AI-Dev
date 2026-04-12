@@ -82,7 +82,7 @@ export async function POST(
     const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`
     const tagName = `v${dateStr}-cycle${cycle}`
     const releaseName = `${project.name} — Cycle ${cycle}`
-    const releaseBody = `Production release for ${project.name}.\n\n- Cycle: ${cycle}\n- Date: ${now.toISOString()}\n- Deployed via AI Squad Command Center`
+    const releaseBody = `Production release for ${project.name}.\n\n- Cycle: ${cycle}\n- Date: ${now.toISOString()}\n- Deployed via Tribux`
 
     const releaseResult = await createGitHubRelease(
       project.repo_url!,

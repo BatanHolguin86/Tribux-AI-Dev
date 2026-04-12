@@ -1,4 +1,4 @@
-# System Architecture — AI Squad Command Center
+# System Architecture — Tribux
 
 **Phase:** 02 — Architecture & Design
 **Fecha:** 2026-03-08

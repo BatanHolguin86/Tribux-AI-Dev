@@ -54,7 +54,7 @@ export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0EA5A3] to-[#0EA5A3]/70 shadow-sm">
           <Zap className="h-4 w-4 text-white" aria-hidden />
         </div>
-        <span className="font-display text-base font-bold text-white">AI Squad</span>
+        <span className="font-display text-base font-bold text-white">Tribux</span>
       </div>
 
       <nav className="flex min-h-0 flex-1 flex-row gap-1 overflow-x-auto px-3 py-3 md:flex-col md:space-y-1 md:overflow-y-auto md:py-4">

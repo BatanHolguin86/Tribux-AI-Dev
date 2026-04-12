@@ -1,4 +1,4 @@
-# Documentación — AI Squad Command Center
+# Documentación — Tribux
 
 La carpeta `docs/` está ordenada según la **metodología IA DLC** (AI-Driven Development Lifecycle). En Cursor, el orden alfabético de las carpetas coincide con el orden de las fases: puedes leer de arriba a abajo para seguir el ciclo completo.
 

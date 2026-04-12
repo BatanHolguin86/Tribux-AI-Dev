@@ -1,4 +1,4 @@
-# Folder Structure — AI Squad Command Center
+# Folder Structure — Tribux
 
 **Phase:** 02 — Architecture & Design
 **Fecha:** 2026-04-01 (actualizado; validar árbol contra el repo)

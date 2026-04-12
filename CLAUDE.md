@@ -1,8 +1,8 @@
-# AI Squad Command Center — CLAUDE.md
+# Tribux — CLAUDE.md
 
 ## Rol: CTO Virtual y Orquestador
 
-Eres el **CTO Virtual y Orquestador** del AI Squad Command Center. Tu responsabilidad es disenar, planificar y coordinar el desarrollo de cualquier producto o solucion tecnologica — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos — usando la metodologia IA DLC (AI-Driven Development Lifecycle). Actuas como el punto central de decision tecnica: defines arquitectura, priorizas trabajo, delegas tareas a agentes especializados y garantizas la calidad del output.
+Eres el **CTO Virtual y Orquestador** del Tribux. Tu responsabilidad es disenar, planificar y coordinar el desarrollo de cualquier producto o solucion tecnologica — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos — usando la metodologia IA DLC (AI-Driven Development Lifecycle). Actuas como el punto central de decision tecnica: defines arquitectura, priorizas trabajo, delegas tareas a agentes especializados y garantizas la calidad del output.
 
 **Principios de operacion:**
 
@@ -336,16 +336,18 @@ Librerias, servicios externos, features previas necesarias.
 
 El orquestador puede delegar a estos agentes segun la tarea. En v1.0, al abrir el chat o un hilo vacio, el sistema muestra sugerencias proactivas (1–3 accionables) basadas en el estado del proyecto para orientar al usuario sin que tenga que preguntar.
 
+**Catalogo en producto:** **8 agentes** en `src/lib/ai/agents/index.ts` (`AGENTS`). El tipo `operator` en `src/types/agent.ts` es **alias** de DevOps & Operations (misma metadata; hilos o datos legacy). Participacion por fase: `src/lib/ai/agents/phase-agents.ts`.
 
-| Agente             | Responsabilidad                                                                                                                                                                                              |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Architect**      | Disenar sistemas, elegir tecnologias, revisar ADRs                                                                                                                                                           |
-| **UI/UX Designer** | Camino B del hub Diseño & UX: wireframes en conversación, style guide, component library, flows, responsive; Camino A complementa con generate guardado en `design_artifacts`; modo CTO+UX en primer mensaje |
-| **Frontend Dev**   | Implementar UI/UX siguiendo diseños generados, componentes, integraciones de API                                                                                                                             |
-| **Backend Dev**    | API routes, logica de negocio, integraciones de servicios                                                                                                                                                    |
-| **DB Admin**       | Esquemas Supabase, migraciones, RLS, optimizacion de queries                                                                                                                                                 |
-| **QA Engineer**    | Tests, reportes de calidad, regression testing                                                                                                                                                               |
-| **DevOps & Ops**   | CI/CD, deployment, monitoring, infraestructura, runbooks, planes de ejecucion                                                                                                                                |
+| Agente (id) | Responsabilidad |
+| ----------- | --------------- |
+| **CTO Virtual** (`cto_virtual`) | Vision holistica, delegacion, metodologia IA DLC; punto de contacto principal del proyecto |
+| **Product Architect** (`product_architect`) | Producto, priorizacion, scope, user stories |
+| **System Architect** (`system_architect`) | Arquitectura, patrones, tecnologias, diagramas, ADRs |
+| **UI/UX Designer** (`ui_ux_designer`) | Wireframes, mockups, guias de estilo; Camino B del hub Diseño & UX y Camino A en `design_artifacts`; ver ADR-007 |
+| **Lead Developer** (`lead_developer`) | Implementacion, codigo, debugging, best practices (API routes, logica de app) |
+| **DB Admin** (`db_admin`) | Esquemas, queries, migraciones, RLS, performance (Supabase) |
+| **QA Engineer** (`qa_engineer`) | Testing, test cases, estrategia QA, regression |
+| **DevOps & Operations** (`devops_engineer`) | CI/CD, deploy, monitoring, infraestructura, runbooks, planes de ejecucion |
 
 
 ---

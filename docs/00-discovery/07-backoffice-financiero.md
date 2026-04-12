@@ -1,4 +1,4 @@
-# Backoffice de control financiero — AI Squad
+# Backoffice de control financiero — Tribux
 
 **Objetivo:** Panel para el administrador financiero del producto: costes de IA por cliente, márgenes y base para precios enterprise.
 

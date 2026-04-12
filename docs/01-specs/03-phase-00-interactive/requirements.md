@@ -9,7 +9,7 @@
 
 ## Contexto
 
-Phase 00 es el primer momento de valor real del producto. El usuario llega con una idea de negocio pero sin claridad tecnica — y esta fase lo transforma en un estratega con un discovery documentado y aprobado. Es la fase que diferencia a AI Squad de un simple generador de codigo: el orquestador guia una conversacion estructurada que produce 5 documentos de calidad profesional antes de escribir una linea de codigo.
+Phase 00 es el primer momento de valor real del producto. El usuario llega con una idea de negocio pero sin claridad tecnica — y esta fase lo transforma en un estratega con un discovery documentado y aprobado. Es la fase que diferencia a Tribux de un simple generador de codigo: el orquestador guia una conversacion estructurada que produce 5 documentos de calidad profesional antes de escribir una linea de codigo.
 
 La experiencia debe sentirse como trabajar con un consultor experto que hace las preguntas correctas, no como llenar un formulario.
 

@@ -14,7 +14,7 @@ function headers(token: string) {
   return {
     Authorization: `token ${token}`,
     Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'AI-Squad-Command-Center',
+    'User-Agent': 'Tribux',
     'Content-Type': 'application/json',
   }
 }

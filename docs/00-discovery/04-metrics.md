@@ -1,4 +1,4 @@
-# Success Metrics & KPIs — AI Squad Command Center
+# Success Metrics & KPIs — Tribux
 
 **Fecha:** 2026-03-05
 **Fase:** Phase 00 — Discovery

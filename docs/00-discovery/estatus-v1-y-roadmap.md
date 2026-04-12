@@ -1,4 +1,4 @@
-# Estatus v1.0 y roadmap — AI Squad Command Center
+# Estatus v1.0 y roadmap — Tribux
 
 **Última actualización:** 2026-04-01  
 **Complementa:** [`docs/ESTADO-DEL-PRODUCTO.md`](../ESTADO-DEL-PRODUCTO.md) (qué hay en código) y [`docs/05-qa/v1-go-no-go.md`](../05-qa/v1-go-no-go.md) (criterios verificables de release).

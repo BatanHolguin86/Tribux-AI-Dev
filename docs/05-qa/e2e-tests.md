@@ -1,4 +1,4 @@
-# Tests E2E — AI Squad Command Center
+# Tests E2E — Tribux
 
 ## Requisitos previos
 

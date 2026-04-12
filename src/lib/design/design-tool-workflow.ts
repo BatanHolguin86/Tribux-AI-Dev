@@ -112,7 +112,7 @@ export function buildDesignToolInitialUserMessage(
   const stepsBlock = flow.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')
 
   return [
-    '## Modo de trabajo: CTO + UI/UX Designer (hub Diseño & UX — AI Squad)',
+    '## Modo de trabajo: CTO + UI/UX Designer (hub Diseño & UX — Tribux)',
     '',
     '**Ritmo:** El usuario valida por pasos en la plataforma. Si el entregable es muy largo, fragmenta por bloques y pregunta antes de continuar. No sugieras avanzar de fase del proyecto (Phase 01, 02, etc.) salvo que el usuario lo pida.',
     '',

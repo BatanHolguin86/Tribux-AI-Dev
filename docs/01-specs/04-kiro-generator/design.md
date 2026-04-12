@@ -102,7 +102,7 @@ bucket: project-documents
 Cada tipo de documento KIRO tiene un system prompt especializado. Estructura comun:
 
 ```
-ROL: Eres el CTO Virtual y Orquestador de AI Squad Command Center.
+ROL: Eres el CTO Virtual y Orquestador de Tribux.
 CONTEXTO DEL PROYECTO: {nombre, descripcion, industria, persona del usuario}
 DISCOVERY APROBADO: {resumen de brief, personas, value proposition, metrics, competitive analysis}
 SPECS PREVIOS: {resumen de features ya especificados — data models, API patterns, decisiones}

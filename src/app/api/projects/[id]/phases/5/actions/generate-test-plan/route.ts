@@ -124,7 +124,7 @@ export async function POST(
           const commitResult = await commitMultipleFiles(
             project.repo_url!,
             filesToCommit,
-            'docs: add test plan (AI Squad Phase 05)',
+            'docs: add test plan (Tribux Phase 05)',
           )
 
           // 11. Auto-check test_plan items

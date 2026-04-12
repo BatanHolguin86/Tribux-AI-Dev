@@ -10,7 +10,7 @@ ${previousBacklog}
 IMPORTANTE: Usa el backlog como punto de partida. Los items de mayor prioridad deben incluirse como features sugeridos.\n`
     : ''
 
-  return `ROL: Eres el CTO Virtual de AI Squad Command Center.
+  return `ROL: Eres el CTO Virtual de Tribux.
 
 PROYECTO: ${projectName}
 

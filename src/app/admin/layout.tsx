@@ -48,7 +48,7 @@ export default async function AdminLayout({
               </svg>
             </div>
             <span className="text-base font-display font-bold text-gray-900 dark:text-gray-100">
-              AI Squad
+              Tribux
             </span>
             <span className="hidden sm:inline-flex rounded-full bg-[#0EA5A3]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#0EA5A3]">
               BACKOFFICE

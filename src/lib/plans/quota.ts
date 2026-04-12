@@ -196,7 +196,7 @@ async function sendQuotaAlert(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: `AI Squad Alerts <${fromEmail}>`,
+        from: `Tribux Alerts <${fromEmail}>`,
         to: adminEmail,
         subject,
         html: `

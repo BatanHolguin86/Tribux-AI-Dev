@@ -11,7 +11,7 @@ function layout(content: string) {
 <div style="max-width:520px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e4e4e7">
 ${content}
 </div>
-<p style="text-align:center;font-size:12px;color:#a1a1aa;margin-top:24px">AI Squad Command Center</p>
+<p style="text-align:center;font-size:12px;color:#a1a1aa;margin-top:24px">Tribux</p>
 </body>
 </html>`
 }

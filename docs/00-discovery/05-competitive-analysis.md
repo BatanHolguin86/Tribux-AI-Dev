@@ -1,4 +1,4 @@
-# Competitive Analysis — AI Squad Command Center
+# Competitive Analysis — Tribux
 
 **Fecha:** 2026-03-05
 **Fase:** Phase 00 — Discovery
@@ -21,7 +21,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Comunidad grande, templates, hosting incluido
 - **Debilidad:** Curva de aprendizaje significativa, vendor lock-in, no escala bien, limitado para logica compleja
 - **Precio:** $32–$349/mes
-- **Gap vs AI Squad:** Requiere que el usuario aprenda la herramienta; no genera codigo real; limitado en complejidad tecnica
+- **Gap vs Tribux:** Requiere que el usuario aprenda la herramienta; no genera codigo real; limitado en complejidad tecnica
 
 ### Webflow
 
@@ -29,7 +29,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Calidad de diseño, SEO, hosting
 - **Debilidad:** Solo frontend/marketing sites; no sirve para web apps con logica de negocio compleja
 - **Precio:** $14–$235/mes
-- **Gap vs AI Squad:** No es para productos SaaS o apps; no tiene backend real
+- **Gap vs Tribux:** No es para productos SaaS o apps; no tiene backend real
 
 ### Retool / AppSmith
 
@@ -37,7 +37,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Rapido para dashboards internos, integraciones con DBs
 - **Debilidad:** Solo herramientas internas; no para productos de cara al usuario final
 - **Precio:** $10–$50/usuario/mes
-- **Gap vs AI Squad:** Nicho muy especifico (herramientas internas); no genera productos comerciales
+- **Gap vs Tribux:** Nicho muy especifico (herramientas internas); no genera productos comerciales
 
 ---
 
@@ -49,7 +49,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Integracion nativa con flujo de desarrollo, amplio soporte de lenguajes
 - **Debilidad:** Requiere saber programar para usarlo; no tiene metodologia ni proceso; solo genera codigo, no arquitectura ni deployment
 - **Precio:** $10–$19/usuario/mes
-- **Gap vs AI Squad:** Es una herramienta para developers, no para no-tecnicos; no tiene proceso end-to-end
+- **Gap vs Tribux:** Es una herramienta para developers, no para no-tecnicos; no tiene proceso end-to-end
 
 ### Cursor
 
@@ -57,7 +57,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Contexto del codebase completo, edicion multiarchivo
 - **Debilidad:** Requiere ser desarrollador para operar; no tiene proceso ni metodologia
 - **Precio:** $20/mes
-- **Gap vs AI Squad:** Mismo gap que Copilot — para tecnicos, no para estrategas
+- **Gap vs Tribux:** Mismo gap que Copilot — para tecnicos, no para estrategas
 
 ### v0 by Vercel
 
@@ -65,7 +65,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Output de alta calidad en React/Tailwind, integrado con Vercel
 - **Debilidad:** Solo genera componentes UI; no tiene backend, auth, DB ni proceso completo
 - **Precio:** Freemium
-- **Gap vs AI Squad:** Es una pieza del puzzle (UI), no el puzzle completo
+- **Gap vs Tribux:** Es una pieza del puzzle (UI), no el puzzle completo
 
 ### Bolt.new / Lovable
 
@@ -73,7 +73,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Velocidad inicial impresionante, genera apps funcionales rapido
 - **Debilidad:** No tiene metodologia estructurada; output inconsistente en proyectos complejos; no hay validacion por fases; el usuario pierde control a medida que el proyecto crece; no escala bien mas alla de prototipos simples
 - **Precio:** $20–$50/mes
-- **Gap vs AI Squad:** Genera prototipos, no productos. No hay proceso, no hay specs, no hay gates de validacion. El usuario no entiende lo que se construyo.
+- **Gap vs Tribux:** Genera prototipos, no productos. No hay proceso, no hay specs, no hay gates de validacion. El usuario no entiende lo que se construyo.
 
 ---
 
@@ -85,7 +85,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Altamente capaz en tareas tecnicas complejas
 - **Debilidad:** Caja negra para el usuario no-tecnico; precio muy alto ($500+/mes); no tiene proceso de product management ni metodologia de fases; el usuario no tiene control granular
 - **Precio:** $500+/mes
-- **Gap vs AI Squad:** Orientado a equipos tecnicos, no a estrategas; no tiene la capa de metodologia de producto
+- **Gap vs Tribux:** Orientado a equipos tecnicos, no a estrategas; no tiene la capa de metodologia de producto
 
 ### GPT-Engineer / Aider
 
@@ -93,7 +93,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Potentes para developers que saben lo que quieren
 - **Debilidad:** Requieren conocimiento tecnico profundo; no tienen UI; no tienen proceso de producto
 - **Precio:** Gratis / Open source
-- **Gap vs AI Squad:** Herramientas tecnicas, no plataformas de producto
+- **Gap vs Tribux:** Herramientas tecnicas, no plataformas de producto
 
 ---
 
@@ -105,7 +105,7 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Calidad alta (si se elige bien), capacidad de proyectos complejos
 - **Debilidad:** Costo muy alto ($15k–$50k/mes), comunicacion lenta, poca transparencia, dependencia del equipo
 - **Precio:** $15,000–$50,000/mes o proyectos de $50k–$500k
-- **Gap vs AI Squad:** 10–30x mas caro; 3–6 meses para arrancar; poca visibilidad del proceso
+- **Gap vs Tribux:** 10–30x mas caro; 3–6 meses para arrancar; poca visibilidad del proceso
 
 ### Plataformas de freelancers (Upwork, Toptal)
 
@@ -113,13 +113,13 @@ Los cuatro perfiles de usuario objetivo (founder no-tecnico, PM senior, consulto
 - **Fortaleza:** Flexibilidad, variedad de perfiles, puede ser economico
 - **Debilidad:** Calidad inconsistente, alto costo de coordinacion, riesgo de abandono, requiere saber evaluar tecnicamente
 - **Precio:** $25–$150/hora
-- **Gap vs AI Squad:** Sin metodologia, sin garantia de calidad, alto overhead de gestion
+- **Gap vs Tribux:** Sin metodologia, sin garantia de calidad, alto overhead de gestion
 
 ---
 
 ## Matriz Comparativa
 
-| Criterio                                       | AI Squad | Bubble/No-code | Bolt/Lovable | Devin | Agencia |
+| Criterio                                       | Tribux | Bubble/No-code | Bolt/Lovable | Devin | Agencia |
 | ---------------------------------------------- | -------- | -------------- | ------------ | ----- | ------- |
 | No requiere saber programar                    | SI       | Parcial        | SI           | No    | SI      |
 | Guia desde el primer paso (onboarding de idea) | SI       | No             | No           | No    | Parcial |
@@ -153,7 +153,7 @@ CONTROL HUMANO POR FASES
 - Devin es demasiado tecnico y caro para el usuario objetivo
 - Las agencias son caras, lentas e impredecibles
 
-**AI Squad ocupa el espacio vacio:** cualquier producto o solucion tecnologica (interfaces, integraciones, IA, agentes) + proceso estructurado + accesible para no-tecnicos + precio SaaS.
+**Tribux ocupa el espacio vacio:** cualquier producto o solucion tecnologica (interfaces, integraciones, IA, agentes) + proceso estructurado + accesible para no-tecnicos + precio SaaS.
 
 ---
 

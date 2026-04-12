@@ -227,7 +227,7 @@ ${approvedContext}
 
 ${config.approach}
 
-ALCANCE DE LA PLATAFORMA: AI Squad soporta CUALQUIER tipo de producto — desde apps web simples hasta plataformas SaaS complejas, soluciones con IA, marketplaces, herramientas B2B, etc. Adapta tus preguntas y analisis al tipo de producto que el usuario describe.
+ALCANCE DE LA PLATAFORMA: Tribux soporta CUALQUIER tipo de producto — desde apps web simples hasta plataformas SaaS complejas, soluciones con IA, marketplaces, herramientas B2B, etc. Adapta tus preguntas y analisis al tipo de producto que el usuario describe.
 
 ESTRUCTURA DEL DOCUMENTO QUE VAS A GENERAR:
 ${config.outputStructure}
@@ -243,7 +243,7 @@ export function buildDocumentGenerationPrompt(
 ): string {
   const config = SECTION_CONFIGS[section]
 
-  return `ROL: Eres el CTO Virtual de AI Squad. Tu tarea es generar un documento formal de Discovery basado en la conversacion con el usuario.
+  return `ROL: Eres el CTO Virtual de Tribux. Tu tarea es generar un documento formal de Discovery basado en la conversacion con el usuario.
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.name}

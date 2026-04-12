@@ -7,7 +7,7 @@ export function generateReadme(project: {
 }): string {
   return `# ${project.name}
 
-${project.description ?? 'Proyecto generado con AI Squad Command Center.'}
+${project.description ?? 'Proyecto generado con Tribux.'}
 
 ## Tech Stack
 
@@ -55,6 +55,6 @@ ${project.vercelUrl ? `- **Vercel:** ${project.vercelUrl}` : ''}
 
 ---
 
-_Generado por [AI Squad Command Center](https://ai-squad-command-center.vercel.app)_
+_Generado por [Tribux](https://ai-squad-command-center.vercel.app)_
 `
 }

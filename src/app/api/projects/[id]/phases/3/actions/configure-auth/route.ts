@@ -156,7 +156,7 @@ export async function POST(
                 const commitResult = await commitMultipleFiles(
                   project.repo_url,
                   filesToCommit,
-                  'feat: configure authentication — RLS policies & auth helpers (AI Squad Phase 03)',
+                  'feat: configure authentication — RLS policies & auth helpers (Tribux Phase 03)',
                 )
                 results.commit = { sha: commitResult.sha, url: commitResult.url }
               } catch (commitError) {

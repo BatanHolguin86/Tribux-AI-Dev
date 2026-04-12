@@ -1,4 +1,4 @@
-# Sentry Setup — AI Squad Command Center
+# Sentry Setup — Tribux
 
 ## 1. Crear proyecto en Sentry
 

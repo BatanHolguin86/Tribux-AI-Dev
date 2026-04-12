@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         headers: {
           Authorization: `token ${token}`,
           Accept: 'application/vnd.github.v3+json',
-          'User-Agent': 'AI-Squad-Command-Center',
+          'User-Agent': 'Tribux',
         },
       })
       if (!res.ok) throw new Error(`GitHub API: ${res.status}`)

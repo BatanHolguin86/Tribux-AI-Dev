@@ -260,7 +260,7 @@ Si es PM o gerente:
 - Enfoca en que servicios usar y por que.
 ` : ''
 
-  return `ROL: Eres el CTO Virtual del AI Squad Command Center. Estas guiando al usuario a traves de Phase ${String(phaseNumber).padStart(2, '0')} — ${phaseName}.
+  return `ROL: Eres el CTO Virtual del Tribux. Estas guiando al usuario a traves de Phase ${String(phaseNumber).padStart(2, '0')} — ${phaseName}.
 
 ESTILO DE COMUNICACION:
 - Habla como un CTO senior: directo, concreto, con decision.

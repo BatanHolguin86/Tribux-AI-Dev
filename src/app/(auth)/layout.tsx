@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Accede a tu cuenta',
   description:
-    'Inicia sesion o crea tu cuenta en AI Squad Command Center para construir productos tecnologicos con agentes IA.',
+    'Inicia sesion o crea tu cuenta en Tribux para construir productos tecnologicos con agentes IA.',
 }
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +19,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <span className="text-[#0EA5A3]">Tu producto.</span>
         </h1>
         <p className="mt-6 text-lg text-[#0EA5A3]/30 max-w-md">
-          AI Squad Command Center te da un equipo de agentes IA especializados para construir
+          Tribux te da un equipo de agentes IA especializados para construir
           cualquier producto tecnologico — desde una web simple hasta un SaaS con integraciones.
         </p>
         <div className="mt-10 flex gap-4 text-sm text-[#0EA5A3]">

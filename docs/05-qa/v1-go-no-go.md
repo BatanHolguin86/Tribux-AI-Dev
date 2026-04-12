@@ -1,4 +1,4 @@
-# Go / No-go v1.0 — AI Squad Command Center
+# Go / No-go v1.0 — Tribux
 
 **Propósito:** Checklist corta y verificable para decidir si el producto puede etiquetarse **v1.0** y desplegarse a producción (o beta cerrada). Complementa `docs/ESTADO-DEL-PRODUCTO.md` y `docs/00-discovery/estatus-v1-y-roadmap.md`.
 

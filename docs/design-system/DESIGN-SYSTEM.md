@@ -1,4 +1,4 @@
-# AI Squad Command Center — Design System
+# Tribux — Design System
 
 Este documento es la referencia autoritativa de identidad visual, tokens de diseno y patrones de UI para el producto. Cualquier agente de IA (Claude Code, Cursor, etc.) DEBE seguir estas reglas al generar o modificar componentes visuales.
 

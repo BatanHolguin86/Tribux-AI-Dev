@@ -1,4 +1,4 @@
-# Requirements — AI Squad Command Center
+# Requirements — Tribux
 
 ## EARS Notation (Easy Approach to Requirements Syntax)
 

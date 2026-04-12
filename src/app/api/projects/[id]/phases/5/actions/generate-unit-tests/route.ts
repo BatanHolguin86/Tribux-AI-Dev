@@ -141,7 +141,7 @@ export async function POST(
           const commitResult = await commitMultipleFiles(
             project.repo_url!,
             filesToCommit,
-            'test: add unit tests (AI Squad Phase 05)',
+            'test: add unit tests (Tribux Phase 05)',
           )
 
           // 12. Auto-check unit_tests items
