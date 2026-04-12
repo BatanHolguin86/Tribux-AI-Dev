@@ -21,7 +21,7 @@ describe('buildPhase00Prompt', () => {
   it('genera prompt para problem_statement con contexto completo', () => {
     const prompt = buildPhase00Prompt('problem_statement', baseContext)
 
-    expect(prompt).toContain('ROL: Eres el CTO Virtual de AI Squad')
+    expect(prompt).toContain('ROL: Eres el CTO Virtual de Tribux')
     expect(prompt).toContain('CONTEXTO DEL PROYECTO:')
     expect(prompt).toContain('Nombre: Mi Proyecto Test')
     expect(prompt).toContain('Descripcion: Descripcion del proyecto')
@@ -83,7 +83,7 @@ describe('buildDocumentGenerationPrompt', () => {
   it('genera prompt de documento con estructura para problem_statement', () => {
     const prompt = buildDocumentGenerationPrompt('problem_statement', baseContext)
 
-    expect(prompt).toContain('ROL: Eres el CTO Virtual de AI Squad')
+    expect(prompt).toContain('ROL: Eres el CTO Virtual de Tribux')
     expect(prompt).toContain('CONTEXTO DEL PROYECTO:')
     expect(prompt).toContain('SECCION: Problem Statement & Brief')
     expect(prompt).toContain('# Brief del Producto')

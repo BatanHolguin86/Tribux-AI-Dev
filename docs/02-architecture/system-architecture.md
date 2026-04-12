@@ -290,8 +290,8 @@ RESEND_API_KEY=re_...                      # SERVER ONLY
 NEXT_PUBLIC_SENTRY_DSN=https://...         # Public (client tracking)
 SENTRY_AUTH_TOKEN=sntrys_...               # SERVER ONLY (source maps)
 
-# App
-NEXT_PUBLIC_APP_URL=https://app.aisquad.com
+# App (URL pública de Tribux; usar el dominio o preview real en cada entorno)
+NEXT_PUBLIC_APP_URL=https://app.tribux.com
 ```
 
 ---
@@ -363,13 +363,13 @@ Key config per use case:
 │     │     │                                                      │
 │     │     ▼  (if all pass)                                       │
 │     │  Vercel Preview Deployment                                 │
-│     │  └─ URL: feat-xxx.aisquad.vercel.app                      │
+│     │  └─ URL: feat-xxx.<proyecto-vercel>.vercel.app            │
 │     │                                                            │
 │     ├─ PR merged to main                                         │
 │     │     │                                                      │
 │     │     ▼                                                      │
 │     │  Vercel Production Deployment                              │
-│     │  └─ URL: app.aisquad.com                                  │
+│     │  └─ URL: dominio producción (p. ej. app.tribux.com) │
 │     │                                                            │
 │     └─ Supabase Migrations                                       │
 │           ├─ staging: manual apply before PR merge               │
@@ -378,7 +378,7 @@ Key config per use case:
 │  Environments:                                                   │
 │  ├─ Local:   localhost:3000 + Supabase local                    │
 │  ├─ Staging: preview deployments + Supabase staging project     │
-│  └─ Prod:    app.aisquad.com + Supabase production project      │
+│  └─ Prod:    dominio Tribux + Supabase production project       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

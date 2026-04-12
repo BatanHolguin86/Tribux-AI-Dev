@@ -88,7 +88,7 @@ describe('buildSuggestionsPrompt', () => {
   it('genera prompt de sugerencias con contexto del proyecto', () => {
     const prompt = buildSuggestionsPrompt(baseContext)
 
-    expect(prompt).toContain('ROL: Eres el asistente de AI Squad Command Center')
+    expect(prompt).toContain('ROL: Eres el asistente de Tribux')
     expect(prompt).toContain('CONTEXTO DEL PROYECTO:')
     expect(prompt).toContain('Nombre: Proyecto Agentes')
     expect(prompt).toContain('Phase 02')

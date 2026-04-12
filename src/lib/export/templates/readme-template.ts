@@ -55,6 +55,6 @@ ${project.vercelUrl ? `- **Vercel:** ${project.vercelUrl}` : ''}
 
 ---
 
-_Generado por [Tribux](https://ai-squad-command-center.vercel.app)_
+_Generado por [Tribux](https://tribux.com)_
 `
 }

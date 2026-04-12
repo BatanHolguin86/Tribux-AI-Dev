@@ -225,7 +225,7 @@ describe('buildFeatureSuggestionsPrompt', () => {
 
   it('includes the CTO Virtual role', () => {
     const prompt = buildFeatureSuggestionsPrompt('TestApp', 'docs')
-    expect(prompt).toContain('CTO Virtual de AI Squad')
+    expect(prompt).toContain('CTO Virtual de Tribux')
   })
 
   it('injects the project name', () => {

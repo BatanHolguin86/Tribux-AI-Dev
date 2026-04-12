@@ -22,7 +22,7 @@ const PROVIDERS = [
     tokenPlaceholder: 'ghp_...',
     helpUrl: 'https://github.com/settings/tokens/new?scopes=repo,admin:org&description=AI+Squad+Platform',
     helpText: 'Crear token en GitHub →',
-    metaFields: [{ key: 'org', label: 'Nombre de la org', placeholder: 'ai-squad-projects' }],
+    metaFields: [{ key: 'org', label: 'Nombre de la org', placeholder: 'tribux-apps' }],
   },
   {
     id: 'supabase' as const,

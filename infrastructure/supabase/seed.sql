@@ -1,4 +1,4 @@
--- Seed data for AI Squad Command Center
+-- Seed data for Tribux
 -- This file is for local development only
 
 -- No seed data needed for MVP — all data is user-generated

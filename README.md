@@ -1,4 +1,4 @@
-# AI Squad Command Center
+# Tribux
 
 Metodología **IA DLC** (AI-Driven Development Lifecycle): del discovery al lanzamiento, con KIRO specs y agentes especializados.
 

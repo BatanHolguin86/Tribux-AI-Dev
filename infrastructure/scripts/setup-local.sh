@@ -1,9 +1,9 @@
 #!/bin/bash
-# Local development setup script for AI Squad Command Center
+# Local development setup script for Tribux
 
 set -e
 
-echo "🚀 Setting up AI Squad Command Center..."
+echo "🚀 Setting up Tribux..."
 
 # Check prerequisites
 command -v pnpm >/dev/null 2>&1 || { echo "❌ pnpm is required. Install with: npm install -g pnpm"; exit 1; }

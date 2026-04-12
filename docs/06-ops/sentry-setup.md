@@ -5,8 +5,10 @@
 1. Ve a [sentry.io](https://sentry.io) y crea una cuenta o inicia sesion
 2. Crea un nuevo proyecto:
    - Platform: **Next.js**
-   - Project name: `ai-squad-command-center`
+   - Project name: `tribux` (recomendado, alineado con la marca)
 3. Copia el **DSN** que te da Sentry (formato: `https://xxxxx@oXXXXX.ingest.sentry.io/XXXXX`)
+
+Si ya tienes un proyecto Sentry creado con otro nombre (p. ej. legado `ai-squad-command-center`), usa ese mismo slug en `SENTRY_PROJECT` hasta renombrar el proyecto en Sentry.
 
 ## 2. Configurar variables de entorno
 
@@ -16,7 +18,7 @@
 NEXT_PUBLIC_SENTRY_DSN=https://tu-dsn-aqui@oXXXXX.ingest.sentry.io/XXXXX
 SENTRY_AUTH_TOKEN=sntrys_tu-token-aqui
 SENTRY_ORG=tu-organizacion
-SENTRY_PROJECT=ai-squad-command-center
+SENTRY_PROJECT=tribux
 ```
 
 ### Vercel (Production)
@@ -26,7 +28,7 @@ En Vercel Dashboard > Settings > Environment Variables, agrega:
 - `NEXT_PUBLIC_SENTRY_DSN` — el DSN de Sentry
 - `SENTRY_AUTH_TOKEN` — token de autenticacion (Settings > Auth Tokens)
 - `SENTRY_ORG` — nombre de tu organizacion en Sentry
-- `SENTRY_PROJECT` — `ai-squad-command-center`
+- `SENTRY_PROJECT` — `tribux` (o el slug exacto del proyecto en Sentry si es legado)
 
 ## 3. Verificar
 

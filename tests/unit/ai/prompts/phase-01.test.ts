@@ -33,7 +33,7 @@ describe('buildKiroPrompt', () => {
   it('genera prompt para requirements con contexto completo', () => {
     const prompt = buildKiroPrompt('requirements', baseContext)
 
-    expect(prompt).toContain('ROL: Eres el CTO Virtual de AI Squad')
+    expect(prompt).toContain('ROL: Eres el CTO Virtual de Tribux')
     expect(prompt).toContain('CONTEXTO DEL PROYECTO:')
     expect(prompt).toContain('Nombre: Proyecto KIRO')
     expect(prompt).toContain('Descripcion: App de gestion')
@@ -113,7 +113,7 @@ describe('buildKiroDocGenerationPrompt', () => {
   it('genera prompt de documento formal para requirements', () => {
     const prompt = buildKiroDocGenerationPrompt('requirements', baseContext)
 
-    expect(prompt).toContain('ROL: Eres el CTO Virtual de AI Squad')
+    expect(prompt).toContain('ROL: Eres el CTO Virtual de Tribux')
     expect(prompt).toContain('CONTEXTO DEL PROYECTO:')
     expect(prompt).toContain('FEATURE: Autenticacion')
     expect(prompt).toContain('DOCUMENTO: Requirements')

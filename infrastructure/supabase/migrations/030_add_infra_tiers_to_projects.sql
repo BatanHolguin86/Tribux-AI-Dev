@@ -1,7 +1,7 @@
 -- 030_add_infra_tiers_to_projects.sql
 -- Stores user-configured infrastructure service tiers per project.
 -- Used to estimate monthly operating costs (GitHub, Supabase, Vercel, Sentry).
--- This is separate from AI Squad billing — these are costs the user pays to external services.
+-- This is separate from Tribux billing — these are costs the user pays to external services.
 
 ALTER TABLE projects
   ADD COLUMN IF NOT EXISTS infra_tiers jsonb NOT NULL DEFAULT '{}';

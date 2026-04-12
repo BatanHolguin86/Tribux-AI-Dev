@@ -1,5 +1,5 @@
 -- ============================================================
--- PENDING MIGRATIONS — AI Squad Command Center
+-- PENDING MIGRATIONS — Tribux
 -- ⚠️  Preferir aplicar los archivos numerados en orden desde:
 --     infrastructure/supabase/migrations/
 --     Este script puede quedar desfasado respecto a esa carpeta.

@@ -8,7 +8,7 @@
 
 ## 1. Prerrequisitos
 
-- [ ] URL de staging configurada (ej. `https://ai-squad-xxx.vercel.app`)
+- [ ] URL de staging configurada (ej. `https://<proyecto-tribux>.vercel.app`)
 - [ ] Usuario de prueba en Supabase staging (mismo que en auth)
 - [ ] Migraciones 007 y 008 aplicadas en BD staging (`project_features`, `feature_documents`)
 - [ ] Variable `ANTHROPIC_API_KEY` en Vercel (staging)
