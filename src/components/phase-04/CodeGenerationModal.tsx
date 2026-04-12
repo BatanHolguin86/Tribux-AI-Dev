@@ -113,10 +113,8 @@ export function CodeGenerationModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-5 py-3 dark:border-gray-700 dark:bg-gray-800">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#E8F4F8] dark:bg-[#0F2B46]/40">
-              <svg className="h-4 w-4 text-[#0F2B46] dark:text-[#0EA5A3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46]">
+              <span className="text-sm font-bold text-[#0EA5A3]">T</span>
             </div>
             <div>
               <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">

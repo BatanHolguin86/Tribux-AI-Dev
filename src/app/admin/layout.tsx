@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { TribuxLogo } from '@/components/ui/TribuxLogo'
 
 export default async function AdminLayout({
   children,
@@ -42,11 +43,7 @@ export default async function AdminLayout({
       <header className="sticky top-0 z-40 border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-[#0A1F33]/80 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <Link href="/admin/finance" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0F2B46] shadow-sm">
-              <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
+            <TribuxLogo size={32} />
             <span className="text-base font-display font-bold text-gray-900 dark:text-gray-100">
               Tribux
             </span>

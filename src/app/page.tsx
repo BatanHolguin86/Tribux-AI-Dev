@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { TribuxLogo } from '@/components/ui/TribuxLogo'
 
 const PHASES = [
   { num: '00', name: 'Discovery & Ideation', icon: '🔍', desc: 'Define el problema, usuarios y propuesta de valor.' },
@@ -72,11 +73,7 @@ export default async function HomePage() {
       <nav className="sticky top-0 z-40 border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3]">
-              <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
+            <TribuxLogo size={32} />
             <span className="text-lg font-display font-bold text-gray-900 dark:text-white">Tribux</span>
           </div>
           <div className="flex items-center gap-3">
@@ -308,11 +305,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3]">
-                <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
+              <TribuxLogo size={28} />
               <span className="text-sm font-semibold text-gray-900 dark:text-white">Tribux</span>
             </div>
             <p className="text-xs text-gray-400 dark:text-gray-500">

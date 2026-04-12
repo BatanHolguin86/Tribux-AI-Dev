@@ -1,5 +1,7 @@
 'use client'
 
+import { TribuxLogo } from '@/components/ui/TribuxLogo'
+
 type WelcomeStepProps = {
   onNext: () => void
 }
@@ -7,15 +9,8 @@ type WelcomeStepProps = {
 export function WelcomeStep({ onNext }: WelcomeStepProps) {
   return (
     <div className="mx-auto max-w-lg text-center">
-      <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E8F4F8]">
-        <svg className="h-8 w-8 text-[#0F2B46]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M13 10V3L4 14h7v7l9-11h-7z"
-          />
-        </svg>
+      <div className="mx-auto mb-6">
+        <TribuxLogo size={64} />
       </div>
 
       <h1 className="text-3xl font-bold text-gray-900">Te damos la bienvenida a Tribux</h1>

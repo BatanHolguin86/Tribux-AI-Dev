@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { TribuxLogo } from '@/components/ui/TribuxLogo'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -62,10 +63,8 @@ export default function AdminLoginPage() {
       {/* Left panel — brand */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center bg-[#0A1F33] px-12">
         <div className="max-w-md">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3] shadow-lg shadow-[#0EA5A3]/25 mb-8">
-            <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+          <div className="mb-8">
+            <TribuxLogo size={48} />
           </div>
           <h2 className="text-3xl font-bold text-white tracking-tight">
             Tribux
@@ -84,11 +83,7 @@ export default function AdminLoginPage() {
         <div className="w-full max-w-sm space-y-8">
           {/* Mobile logo */}
           <div className="lg:hidden text-center">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#0F2B46] to-[#0EA5A3] shadow-lg shadow-[#0EA5A3]/25">
-              <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
+            <TribuxLogo size={40} />
           </div>
 
           <div>

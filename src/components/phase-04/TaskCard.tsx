@@ -71,7 +71,7 @@ export function TaskCard({ task, isDragging, onStatusChange, onGenerateCode, onA
           className="mt-2 flex w-full items-center justify-center gap-1.5 rounded border border-[#0EA5A3]/30 bg-[#E8F4F8] py-1 text-[10px] font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3] dark:hover:border-[#0EA5A3] dark:hover:bg-[#0F2B46]/40"
         >
           <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
           </svg>
           Generar codigo
         </button>
