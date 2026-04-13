@@ -13,6 +13,7 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser()
 
+  // No user → only allow login page, redirect everything else
   if (!user) {
     return <>{children}</>
   }
@@ -27,7 +28,7 @@ export default async function AdminLayout({
     profile?.role === 'financial_admin' || profile?.role === 'super_admin'
 
   if (!isAdmin) {
-    return <>{children}</>
+    redirect('/admin/login')
   }
 
   const displayName = profile.full_name || user.email?.split('@')[0] || 'Admin'
