@@ -179,7 +179,7 @@ async function sendQuotaAlert(
     // Send email to admin if Resend + admin email are configured
     const resendKey = process.env.RESEND_API_KEY
     const adminEmail = process.env.ADMIN_ALERT_EMAIL
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://tribux.vercel.app'
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://tribux-ai.vercel.app'
     const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'alerts@tribux.dev'
 
     if (!resendKey || !adminEmail) return
