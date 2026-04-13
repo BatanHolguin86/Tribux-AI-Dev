@@ -9,6 +9,7 @@ type ProviderStatus = {
   last_tested_at: string | null
   test_result: string | null
   metadata: Record<string, string>
+  source?: 'db' | 'env' | 'none'
 }
 
 const PROVIDERS = [
@@ -177,14 +178,19 @@ function ProviderCard({
               {isConnected && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                  Conectado
+                  Conectado{status?.source === 'env' ? ' (env var)' : ''}
+                </span>
+              )}
+              {status?.source === 'env' && status.metadata && Object.keys(status.metadata).length > 0 && (
+                <span className="text-[10px] text-gray-400">
+                  {Object.entries(status.metadata).map(([k, v]) => `${k}: ${v}`).join(' · ')}
                 </span>
               )}
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400">{config.description}</p>
           </div>
         </div>
-        {isConnected && (
+        {isConnected && status?.source !== 'env' && (
           <button
             onClick={handleDisconnect}
             className="text-xs text-red-500 underline hover:text-red-600"

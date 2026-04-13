@@ -3,6 +3,13 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { encrypt } from '@/lib/crypto/encrypt'
 import { savePlatformConfigSchema } from '@/lib/validations/admin'
 
+// Env var names for each provider (fallback when DB has no tokens)
+const ENV_CHECK: Record<string, { tokenKey: string; metaKeys: Record<string, string> }> = {
+  github: { tokenKey: 'PLATFORM_GITHUB_TOKEN', metaKeys: { org: 'PLATFORM_GITHUB_ORG' } },
+  supabase: { tokenKey: 'PLATFORM_SUPABASE_TOKEN', metaKeys: { org_id: 'PLATFORM_SUPABASE_ORG_ID' } },
+  vercel: { tokenKey: 'PLATFORM_VERCEL_TOKEN', metaKeys: { team_id: 'PLATFORM_VERCEL_TEAM_ID' } },
+}
+
 export async function GET() {
   const auth = await requireSuperAdmin()
   if (!auth.allowed) return Response.json(auth.body, { status: auth.status })
@@ -15,17 +22,58 @@ export async function GET() {
       .order('provider')
 
     if (error) {
-      // Table might not exist yet (migration not applied)
       console.error('[platform-config] Query error:', error.message)
-      return Response.json({ providers: [] })
     }
 
-    return Response.json({
-      providers: (rows ?? []).map((r) => ({
-        ...r,
-        has_token: true,
-      })),
+    const dbMap = new Map((rows ?? []).map((r) => [r.provider, r]))
+
+    // Merge DB rows with env var fallback — show "connected" if either source has a token
+    const providers = ['github', 'supabase', 'vercel'].map((provider) => {
+      const dbRow = dbMap.get(provider)
+      const envCfg = ENV_CHECK[provider]
+      const hasEnvToken = !!process.env[envCfg.tokenKey]
+
+      // Build metadata from env if DB has none
+      const envMetadata: Record<string, string> = {}
+      if (hasEnvToken) {
+        for (const [key, envVar] of Object.entries(envCfg.metaKeys)) {
+          const val = process.env[envVar]
+          if (val) envMetadata[key] = val
+        }
+      }
+
+      if (dbRow) {
+        return {
+          ...dbRow,
+          has_token: true,
+          source: 'db' as const,
+        }
+      }
+
+      if (hasEnvToken) {
+        return {
+          provider,
+          is_connected: true,
+          has_token: true,
+          last_tested_at: null,
+          test_result: 'env_var',
+          metadata: envMetadata,
+          source: 'env' as const,
+        }
+      }
+
+      return {
+        provider,
+        is_connected: false,
+        has_token: false,
+        last_tested_at: null,
+        test_result: null,
+        metadata: {},
+        source: 'none' as const,
+      }
     })
+
+    return Response.json({ providers })
   } catch (err) {
     console.error('[platform-config] Error:', err)
     return Response.json({ providers: [] })
