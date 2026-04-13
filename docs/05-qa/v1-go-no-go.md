@@ -20,9 +20,9 @@
 | 5   | **Phase 00 + Phase 01 (KIRO)**          | Usuario confirmó flujo completo en staging (Phases 00-07 recorridas).                                                                       | ✅      |
 | 6   | **Agentes + Equipo**                    | Pendiente verificación formal: chat CTO, threads, paywall en agentes Builder.                                                               | ⬜      |
 | 7   | **Hub Diseño & UX**                     | Pendiente verificación formal: `/projects/[id]/designs` accesible.                                                                          | ⬜      |
-| 8   | **E2E críticos**                        | Subconjunto acordado en verde (ver sección siguiente). `pnpm test:e2e` en CI o manual documentado.                                         | ⬜      |
+| 8   | **E2E críticos**                        | P0: **17/17** passed vs staging (auth, protected-routes, api-routes, phases, agents). P1 pendiente credenciales test user.                   | ✅      |
 | 9   | **Base de datos y Storage**             | Migraciones aplicadas en staging; buckets necesarios (`project-documents`, `project-chat`, `project-designs` si aplica) y RLS comprobados. | ⬜      |
-| 10  | **Variables de entorno**                | 10 vars en Vercel (Supabase, Anthropic, Sentry, Resend, App URL). `.env.example` al día.                                                   | ✅      |
+| 10  | **Variables de entorno**                | **16 vars** en Vercel (Supabase, Anthropic, Sentry, Resend, App URL + 6 PLATFORM_*). `.env.example` al día.                                 | ✅      |
 
 
 **Nota:** Los ítems **1–5, 10** verificados en staging (2026-04-08). Los ítems **6–9** pendientes de verificación formal.
