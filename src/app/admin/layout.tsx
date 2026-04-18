@@ -60,6 +60,9 @@ export default async function AdminLayout({
             <Link href="/admin/marketing" className="rounded-md px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
               Marketing
             </Link>
+            <Link href="/admin/feedback" className="rounded-md px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
+              Feedback
+            </Link>
             {isAdmin && (
               <Link href="/admin/platform-setup" className="rounded-md px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
                 Plataforma
