@@ -9,6 +9,12 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./tests/setup.ts'],
     include: ['tests/unit/**/*.test.ts', 'tests/unit/**/*.test.tsx', 'tests/integration/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/lib/**/*.ts'],
+      exclude: ['src/**/*.d.ts', 'src/lib/supabase/**'],
+      reporter: ['text-summary'],
+    },
   },
   resolve: {
     alias: {
