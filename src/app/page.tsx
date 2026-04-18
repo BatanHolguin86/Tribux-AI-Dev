@@ -294,38 +294,116 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          <div className="mt-12 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="pb-3 text-left font-medium text-gray-500 dark:text-gray-400">Caracteristica</th>
-                  <th className="pb-3 text-center font-bold text-brand-primary dark:text-brand-teal">Tribux AI</th>
-                  <th className="pb-3 text-center font-medium text-gray-500 dark:text-gray-400">Bolt / Lovable</th>
-                  <th className="pb-3 text-center font-medium text-gray-500 dark:text-gray-400">Freelancers</th>
-                  <th className="pb-3 text-center font-medium text-gray-500 dark:text-gray-400">Agencia</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                {[
-                  ['Metodologia estructurada', '✅', '❌', '❌', '⚠️'],
-                  ['8 agentes especializados', '✅', '❌', '❌', '⚠️'],
-                  ['Control humano por fases', '✅', '❌', '✅', '✅'],
-                  ['Codigo real (Next.js)', '✅', '⚠️', '✅', '✅'],
-                  ['Deploy automatico', '✅', '✅', '❌', '⚠️'],
-                  ['Specs antes de codear', '✅', '❌', '⚠️', '⚠️'],
-                  ['Precio mensual', '$49-$699', '$20-$50', '$2K-$10K', '$15K-$50K'],
-                  ['Tiempo a MVP', 'Semanas', 'Horas (prototipo)', 'Meses', 'Meses'],
-                ].map(([feature, tribux, bolt, free, agency], i) => (
-                  <tr key={i}>
-                    <td className="py-3 font-medium text-gray-700 dark:text-gray-300">{feature}</td>
-                    <td className="py-3 text-center font-semibold text-brand-primary dark:text-brand-teal">{tribux}</td>
-                    <td className="py-3 text-center text-gray-500 dark:text-gray-400">{bolt}</td>
-                    <td className="py-3 text-center text-gray-500 dark:text-gray-400">{free}</td>
-                    <td className="py-3 text-center text-gray-500 dark:text-gray-400">{agency}</td>
-                  </tr>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Tribux AI — highlighted */}
+            <div className="relative rounded-2xl border-2 border-brand-teal bg-white p-6 shadow-lg shadow-brand-teal/10 dark:bg-gray-900">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-teal px-3 py-0.5 text-[10px] font-bold text-white">
+                RECOMENDADO
+              </div>
+              <h3 className="font-display text-lg font-bold text-brand-primary dark:text-white">Tribux AI</h3>
+              <p className="mt-1 text-xs text-brand-teal font-semibold">$49 - $699/mes</p>
+              <div className="mt-4 space-y-2.5">
+                {['Metodologia 8 fases', '8 agentes IA', 'Control por fases', 'Codigo real (Next.js)', 'Deploy automatico', 'Specs antes de codear'].map((f) => (
+                  <div key={f} className="flex items-center gap-2">
+                    <svg className="h-4 w-4 shrink-0 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">{f}</span>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+              <p className="mt-4 text-[11px] font-medium text-brand-primary dark:text-brand-teal">MVP en semanas</p>
+            </div>
+
+            {/* Bolt / Lovable */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+              <h3 className="font-display text-lg font-bold text-gray-700 dark:text-gray-300">Bolt / Lovable</h3>
+              <p className="mt-1 text-xs text-gray-400">$20 - $50/mes</p>
+              <div className="mt-4 space-y-2.5">
+                {[
+                  { f: 'Sin metodologia', ok: false },
+                  { f: 'Sin agentes', ok: false },
+                  { f: 'Sin control por fases', ok: false },
+                  { f: 'Prototipo (no prod)', ok: false },
+                  { f: 'Deploy incluido', ok: true },
+                  { f: 'Sin specs previos', ok: false },
+                ].map(({ f, ok }) => (
+                  <div key={f} className="flex items-center gap-2">
+                    {ok ? (
+                      <svg className="h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg className="h-4 w-4 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    )}
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{f}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-[11px] text-gray-400">Prototipo en horas</p>
+            </div>
+
+            {/* Freelancers */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+              <h3 className="font-display text-lg font-bold text-gray-700 dark:text-gray-300">Freelancers</h3>
+              <p className="mt-1 text-xs text-gray-400">$2K - $10K/mes</p>
+              <div className="mt-4 space-y-2.5">
+                {[
+                  { f: 'Sin metodologia', ok: false },
+                  { f: 'Sin agentes', ok: false },
+                  { f: 'Control directo', ok: true },
+                  { f: 'Codigo real', ok: true },
+                  { f: 'Sin deploy auto', ok: false },
+                  { f: 'Specs inconsistentes', ok: false },
+                ].map(({ f, ok }) => (
+                  <div key={f} className="flex items-center gap-2">
+                    {ok ? (
+                      <svg className="h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg className="h-4 w-4 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    )}
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{f}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-[11px] text-gray-400">MVP en meses</p>
+            </div>
+
+            {/* Agencia */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+              <h3 className="font-display text-lg font-bold text-gray-700 dark:text-gray-300">Agencia</h3>
+              <p className="mt-1 text-xs text-gray-400">$15K - $50K/mes</p>
+              <div className="mt-4 space-y-2.5">
+                {[
+                  { f: 'Metodologia variable', ok: false },
+                  { f: 'Equipo humano', ok: true },
+                  { f: 'Control limitado', ok: false },
+                  { f: 'Codigo real', ok: true },
+                  { f: 'Deploy manual', ok: false },
+                  { f: 'Specs parciales', ok: false },
+                ].map(({ f, ok }) => (
+                  <div key={f} className="flex items-center gap-2">
+                    {ok ? (
+                      <svg className="h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg className="h-4 w-4 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    )}
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{f}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-[11px] text-gray-400">MVP en meses</p>
+            </div>
           </div>
         </div>
       </section>
