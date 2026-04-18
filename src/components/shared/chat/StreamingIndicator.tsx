@@ -1,6 +1,8 @@
 'use client'
 
-export function StreamingIndicator() {
+import React from 'react'
+
+export const StreamingIndicator = React.memo(function StreamingIndicator() {
   return (
     <div className="flex gap-3">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-surface text-sm dark:bg-brand-primary">
@@ -13,4 +15,4 @@ export function StreamingIndicator() {
       </div>
     </div>
   )
-}
+})

@@ -387,7 +387,7 @@ function ActionButton({ action, projectId }: { action: ActionSuggestion; project
   )
 }
 
-export function ChatMessage({ role, content, createdAt, projectId, agentName, agentIcon }: ChatMessageProps) {
+export const ChatMessage = React.memo(function ChatMessage({ role, content, createdAt, projectId, agentName, agentIcon }: ChatMessageProps) {
   const isUser = role === 'user'
   const { cleanText, action } = isUser ? { cleanText: content, action: null } : extractAction(content)
 
@@ -430,4 +430,4 @@ export function ChatMessage({ role, content, createdAt, projectId, agentName, ag
       )}
     </div>
   )
-}
+})

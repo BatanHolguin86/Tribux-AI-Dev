@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { PHASES_META } from '@/types/phase'
@@ -25,9 +25,9 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
   const currentPathPhase = pathname.match(/\/phase\/(\d+)/)
   const activePathPhase = currentPathPhase ? parseInt(currentPathPhase[1]) : null
 
-  const completedCount = phases.filter((p) => p.status === 'completed').length
+  const completedCount = useMemo(() => phases.filter((p) => p.status === 'completed').length, [phases])
   const totalPhases = PHASES_META.length
-  const progress = Math.round((completedCount / totalPhases) * 100)
+  const progress = useMemo(() => Math.round((completedCount / totalPhases) * 100), [completedCount, totalPhases])
 
   async function handleReset(phaseNumber: number) {
     setResetting(true)

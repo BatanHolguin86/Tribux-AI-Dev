@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import type { CostSummary } from '@/app/api/projects/[id]/costs/route'
 
 // ── Infra service tiers ───────────────────────────────────────────────────────
@@ -94,7 +94,7 @@ const CAT_COLORS: Record<string, string> = {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function StatCard({ label, value, sub, highlight }: { label: string; value: string; sub?: string; highlight?: boolean }) {
+const StatCard = React.memo(function StatCard({ label, value, sub, highlight }: { label: string; value: string; sub?: string; highlight?: boolean }) {
   return (
     <div className={`rounded-xl border p-4 ${highlight ? 'border-brand-teal/30 bg-brand-surface dark:border-[#0A1F33]/40 dark:bg-brand-primary/10' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'}`}>
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
@@ -102,7 +102,7 @@ function StatCard({ label, value, sub, highlight }: { label: string; value: stri
       {sub && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{sub}</p>}
     </div>
   )
-}
+})
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
@@ -112,7 +112,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 // ── Bloque 1: Summary Header ──────────────────────────────────────────────────
 
-function SummaryHeader({ data, infraMonthly }: { data: CostSummary; infraMonthly: number }) {
+const SummaryHeader = React.memo(function SummaryHeader({ data, infraMonthly }: { data: CostSummary; infraMonthly: number }) {
   const annualInfra = infraMonthly * 12
   const breakevenMsg = infraMonthly > 0
     ? `Para recuperar costos de operación, cobra ≥ ${fmtUSD(infraMonthly)}/mes a tu cliente`
@@ -152,7 +152,7 @@ function SummaryHeader({ data, infraMonthly }: { data: CostSummary; infraMonthly
       </div>
     </div>
   )
-}
+})
 
 // ── Bloque 2a: Plan budget bar ────────────────────────────────────────────────
 
@@ -236,7 +236,7 @@ function PlanUsageBar({ data, projectId }: { data: CostSummary; projectId: strin
 
 // ── Bloque 2b: Action breakdown ───────────────────────────────────────────────
 
-function ActionBreakdown({ data }: { data: CostSummary }) {
+const ActionBreakdown = React.memo(function ActionBreakdown({ data }: { data: CostSummary }) {
   if (data.byCategory.length === 0) {
     return (
       <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
@@ -279,7 +279,7 @@ function ActionBreakdown({ data }: { data: CostSummary }) {
       </div>
     </div>
   )
-}
+})
 
 // ── Bloque 3: Infra config ────────────────────────────────────────────────────
 
@@ -364,7 +364,7 @@ function InfraConfig({
 
 // ── Bloque 4: Monthly history ─────────────────────────────────────────────────
 
-function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthly: number }) {
+const MonthlyHistory = React.memo(function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthly: number }) {
   if (data.monthlyHistory.length === 0) {
     return (
       <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
@@ -429,11 +429,11 @@ function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthl
       </div>
     </div>
   )
-}
+})
 
 // ── Bloque 5: P&L + Pricing sugerido ─────────────────────────────────────
 
-function ProjectPnL({
+const ProjectPnL = React.memo(function ProjectPnL({
   data,
   infraMonthly,
 }: {
@@ -551,7 +551,7 @@ function ProjectPnL({
       </div>
     </div>
   )
-}
+})
 
 // ── Main component ────────────────────────────────────────────────────────────
 
@@ -587,7 +587,7 @@ export function ProjectCostDashboard({
 
   useEffect(() => { fetchData() }, [fetchData])
 
-  const infraMonthly = computeInfraMonthly(infraTiers)
+  const infraMonthly = useMemo(() => computeInfraMonthly(infraTiers), [infraTiers])
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6">
