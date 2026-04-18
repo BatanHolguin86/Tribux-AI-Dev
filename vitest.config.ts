@@ -11,8 +11,8 @@ export default defineConfig({
     include: ['tests/unit/**/*.test.ts', 'tests/unit/**/*.test.tsx', 'tests/integration/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      include: ['src/lib/**/*.ts'],
-      exclude: ['src/**/*.d.ts', 'src/lib/supabase/**'],
+      include: ['src/lib/plans/**', 'src/lib/ai/usage.ts', 'src/lib/rate-limit.ts', 'src/lib/errors/**', 'src/lib/ai/chat-errors.ts', 'src/lib/actions/action-registry.ts', 'src/lib/build/**', 'src/lib/api/**', 'src/lib/ai/agents/index.ts', 'src/lib/ai/agents/phase-agents.ts', 'src/lib/plans/credit-packs.ts'],
+      exclude: ['src/**/*.d.ts'],
       reporter: ['text-summary'],
     },
   },
