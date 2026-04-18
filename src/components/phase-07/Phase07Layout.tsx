@@ -17,6 +17,7 @@ import { Phase07FinalGate } from './Phase07FinalGate'
 import { MetricsDashboard } from './MetricsDashboard'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
+import { useFounderMode, founderLabel } from '@/hooks/useFounderMode'
 
 const PHASE_OBJECTIVE =
   'Recopila feedback, analiza métricas y planifica el siguiente ciclo del producto.'
@@ -31,6 +32,7 @@ type Phase07LayoutProps = {
 const phaseAgents = getPhaseAgents(7)
 
 export function Phase07Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [] }: Phase07LayoutProps) {
+  const { isFounder, hideChecklists } = useFounderMode()
   const [categories, setCategories] = useState(initialCategories)
   const {
     actions,
@@ -109,68 +111,117 @@ export function Phase07Layout({ projectId, categories: initialCategories, initia
   const sectionsContent = (
     <div>
       <PhaseProgressHeader
-        title="Iteration & Growth"
+        title={founderLabel('Iteration & Growth', isFounder)}
         completedCount={completedCount}
         totalCount={totalCategories}
-        objective={PHASE_OBJECTIVE}
+        objective={isFounder
+          ? 'Revisa como va tu producto y planifica las mejoras.'
+          : PHASE_OBJECTIVE}
       />
 
       {allCompleted ? (
         <Phase07FinalGate projectId={projectId} />
       ) : (
         <>
-          <PhaseDocsCallout
-            title="Documentación de producto y métricas"
-            description="La iteración combina feedback, datos y backlog; parte del trabajo vive fuera de la app."
-            repoPaths={[
-              { label: 'Métricas y discovery', path: 'docs/00-discovery/04-metrics.md' },
-              { label: 'Brief y roadmap', path: 'docs/00-discovery/01-brief.md' },
-              { label: 'Índice docs', path: 'docs/README.md' },
-            ]}
-          />
+          {!hideChecklists && (
+            <PhaseDocsCallout
+              title="Documentacion de producto y metricas"
+              description="La iteracion combina feedback, datos y backlog; parte del trabajo vive fuera de la app."
+              repoPaths={[
+                { label: 'Metricas y discovery', path: 'docs/00-discovery/04-metrics.md' },
+                { label: 'Brief y roadmap', path: 'docs/00-discovery/01-brief.md' },
+                { label: 'Indice docs', path: 'docs/README.md' },
+              ]}
+            />
+          )}
           <div className="mb-6">
             <MetricsDashboard projectId={projectId} executions={executions} />
           </div>
 
-          <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-            Marca items y categorias (persistente). Tab{' '}
-            <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para Product Architect.
-          </p>
+          {hideChecklists ? (
+            /* Founder view: simplified iteration summary */
+            <div className="space-y-4">
+              <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
+                <h3 className="font-display text-sm font-semibold text-[#0F2B46] dark:text-white">Proximos pasos de tu producto</h3>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Tu equipo IA analizara el feedback y las metricas para recomendarte mejoras.
+                  Usa el tab Equipo para hablar con el Product Architect.
+                </p>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  {categories.map((cat) => (
+                    <div
+                      key={cat.key}
+                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${
+                        cat.status === 'completed' || cat.status === 'approved'
+                          ? 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-900/10'
+                          : 'border-gray-200 dark:border-gray-700'
+                      }`}
+                    >
+                      <span className={`text-sm ${cat.status === 'completed' || cat.status === 'approved' ? 'text-green-500' : 'text-gray-400'}`}>
+                        {cat.status === 'completed' || cat.status === 'approved' ? '✓' : '○'}
+                      </span>
+                      <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                        {founderLabel((CATEGORY_CONFIGS as Record<string, { title: string }>)[cat.key]?.title ?? cat.key, isFounder)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-          {streamingContent && (
-            <div className="mb-4">
-              <ActionStreamingPanel
-                content={streamingContent}
-                isStreaming={!!executingAction}
-                onApplyToRepo={() => commitGeneratedFiles(executingAction ?? '')}
-                onClose={resetStreaming}
-                title="Resultado de automatizacion"
-              />
-            </div>
-          )}
-
-          <div className="grid gap-4 md:grid-cols-2">
-            {PHASE07_SECTIONS.map((sectionKey) => {
-              const category = categories.find((c) => c.key === sectionKey)!
-              const action = actions.find((a) => a.section === sectionKey)
-              const sectionExecutions = executions.filter((e) => e.section === sectionKey)
-              return (
-                <AutomatedChecklistCard
-                  key={sectionKey}
-                  sectionKey={sectionKey}
-                  config={CATEGORY_CONFIGS[sectionKey]}
-                  status={category.status}
-                  itemStates={category.itemStates}
-                  onItemToggle={handleItemToggle}
-                  onToggle={() => handleToggle(sectionKey)}
-                  action={action}
-                  executions={sectionExecutions}
-                  onActionExecute={executeAction}
-                  executingAction={executingAction}
+              {streamingContent && (
+                <ActionStreamingPanel
+                  content={streamingContent}
+                  isStreaming={!!executingAction}
+                  onApplyToRepo={() => commitGeneratedFiles(executingAction ?? '')}
+                  onClose={resetStreaming}
+                  title="Resultado"
                 />
-              )
-            })}
-          </div>
+              )}
+            </div>
+          ) : (
+            /* Technical view: full checklists */
+            <>
+              <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+                Marca items y categorias (persistente). Tab{' '}
+                <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para Product Architect.
+              </p>
+
+              {streamingContent && (
+                <div className="mb-4">
+                  <ActionStreamingPanel
+                    content={streamingContent}
+                    isStreaming={!!executingAction}
+                    onApplyToRepo={() => commitGeneratedFiles(executingAction ?? '')}
+                    onClose={resetStreaming}
+                    title="Resultado de automatizacion"
+                  />
+                </div>
+              )}
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {PHASE07_SECTIONS.map((sectionKey) => {
+                  const category = categories.find((c) => c.key === sectionKey)!
+                  const action = actions.find((a) => a.section === sectionKey)
+                  const sectionExecutions = executions.filter((e) => e.section === sectionKey)
+                  return (
+                    <AutomatedChecklistCard
+                      key={sectionKey}
+                      sectionKey={sectionKey}
+                      config={CATEGORY_CONFIGS[sectionKey]}
+                      status={category.status}
+                      itemStates={category.itemStates}
+                      onItemToggle={handleItemToggle}
+                      onToggle={() => handleToggle(sectionKey)}
+                      action={action}
+                      executions={sectionExecutions}
+                      onActionExecute={executeAction}
+                      executingAction={executingAction}
+                    />
+                  )
+                })}
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

@@ -6,6 +6,7 @@ import type { KiroDocumentType } from '@/types/feature'
 import { getPhaseAgents } from '@/lib/phase-workspace-config'
 import { PhaseWorkspaceTabs } from '@/components/shared/PhaseWorkspaceTabs'
 import { PhaseTeamPanel } from '@/components/shared/PhaseTeamPanel'
+import { useFounderMode, founderLabel } from '@/hooks/useFounderMode'
 import { FeatureList } from './FeatureList'
 import { FeatureSuggestions } from './FeatureSuggestions'
 import { DiscoverySummary } from './DiscoverySummary'
@@ -41,6 +42,7 @@ export function Phase01Layout({
   discoverySummary,
 }: Phase01LayoutProps) {
   const router = useRouter()
+  const { isFounder } = useFounderMode()
   const [features] = useState(initialFeatures)
   const [activeFeatureId, setActiveFeatureId] = useState<string | null>(null)
 
@@ -87,10 +89,12 @@ export function Phase01Layout({
       <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
         <div>
           <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            KIRO Specs
+            {founderLabel('KIRO Specs', isFounder)}
           </h2>
           <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-            Define requisitos, diseno y tasks para cada feature
+            {isFounder
+              ? 'Define que hace cada parte de tu producto'
+              : 'Define requisitos, diseno y tasks para cada feature'}
           </p>
         </div>
         {features.length > 0 && (
