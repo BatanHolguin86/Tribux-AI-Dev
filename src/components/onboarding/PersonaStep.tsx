@@ -30,11 +30,50 @@ const PERSONA_OPTIONS: PersonaOption[] = [
   },
   {
     value: 'emprendedor',
-    label: 'Emprendedor',
+    label: 'Emprendedora / Emprendedor',
     description: 'Quiero validar ideas de negocio sin depender de un equipo tecnico.',
     icon: '💡',
   },
 ]
+
+const PERSONA_GUIDANCE: Record<Persona, { title: string; bullets: string[] }> = {
+  founder: {
+    title: 'Tu experiencia como Founder:',
+    bullets: [
+      'Describiras tu idea en 3 preguntas simples',
+      'Tu equipo IA genera los documentos tecnicos',
+      'Tu apruebas cada fase antes de avanzar',
+      'No necesitas saber programar',
+    ],
+  },
+  pm: {
+    title: 'Tu experiencia como PM:',
+    bullets: [
+      'Veras specs detallados (KIRO format)',
+      'Podras priorizar features y acceptance criteria',
+      'Tu equipo IA ejecuta el desarrollo',
+      'Dashboard de progreso por fase',
+    ],
+  },
+  consultor: {
+    title: 'Tu experiencia como Consultor:',
+    bullets: [
+      'Acceso completo a codigo y arquitectura',
+      'Gestion de multiples clientes y proyectos',
+      'Control total sobre cada decision tecnica',
+      'P&L por proyecto para facturar a clientes',
+    ],
+  },
+  emprendedor: {
+    title: 'Tu experiencia como Emprendedora:',
+    bullets: [
+      'Describiras tu idea en 3 preguntas simples',
+      'Tu equipo IA genera los documentos tecnicos',
+      'Tu apruebas cada fase antes de avanzar',
+      'No necesitas saber programar',
+    ],
+  },
+}
 
 type PersonaStepProps = {
   selected: Persona | null
@@ -70,6 +109,24 @@ export function PersonaStep({ selected, onSelect, onNext, onBack }: PersonaStepP
           </button>
         ))}
       </div>
+
+      {selected && (
+        <div className="mt-4 rounded-xl border border-brand-teal/20 bg-brand-surface/50 p-4 dark:bg-brand-navy/20">
+          <p className="text-xs font-bold text-brand-primary dark:text-brand-teal">
+            {PERSONA_GUIDANCE[selected].title}
+          </p>
+          <ul className="mt-2 space-y-1.5">
+            {PERSONA_GUIDANCE[selected].bullets.map((b) => (
+              <li key={b} className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                <svg className="h-3.5 w-3.5 shrink-0 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                {b}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mt-8 flex gap-3">
         <button

@@ -1,6 +1,6 @@
 # Modelo de Pricing v1.0 — Tribux AI
 
-**Fecha:** 2026-04-08
+**Fecha:** 2026-04-18 (actualizado)
 
 ---
 

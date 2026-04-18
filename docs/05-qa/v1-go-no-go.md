@@ -13,9 +13,9 @@
 | --- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
 | 1   | **Typecheck**                           | `pnpm exec tsc --noEmit` sin errores.                                                                                                      | ✅      |
 | 1b  | **ESLint**                              | `pnpm lint` sin **errores** (warnings restantes: principalmente `no-unused-vars`; limpiar en higiene).                                     | ✅      |
-| 2   | **Tests automatizados base**            | `pnpm test` (Vitest) verde: 56 archivos, **716 tests**, 0 fallos.                                                                          | ✅      |
+| 2   | **Tests automatizados base**            | `pnpm test` (Vitest) verde: 86 archivos, **978 tests**, 0 fallos. 134/134 rutas API cubiertas.                                              | ✅      |
 | 2b  | **Build producción**                    | `pnpm build` exitoso (Next.js). Vercel deploy **Ready** en 1m 32s.                                                                         | ✅      |
-| 3   | **IA configurada**                      | `ANTHROPIC_API_KEY` en Vercel (Mar 13). Deploy exitoso con 10 env vars.                                                                     | ✅      |
+| 3   | **IA configurada**                      | `ANTHROPIC_API_KEY` en Vercel (Mar 13). Deploy exitoso con 16+ env vars. Creditos Anthropic pendientes de recarga.                           | ✅      |
 | 4   | **Auth + onboarding + primer proyecto** | Login funcional en staging. Usuario existente con onboarding completado y proyecto activo.                                                   | ✅      |
 | 5   | **Phase 00 + Phase 01 (KIRO)**          | Usuario confirmó flujo completo en staging (Phases 00-07 recorridas).                                                                       | ✅      |
 | 6   | **Agentes + Equipo**                    | Pendiente verificación formal: chat CTO, threads, paywall en agentes Builder.                                                               | ⬜      |
@@ -57,7 +57,31 @@ Listado completo: `docs/05-qa/e2e-tests.md`.
 
 Los ítems de la tabla **Criterios (bloqueantes)** siguen marcándose con evidencia por entorno (staging/prod) antes del release.
 
-### Registro baseline — 2026-04-08 (actual)
+### Registro baseline — 2026-04-18 (actual)
+
+| Comando                  | Resultado                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `pnpm exec tsc --noEmit` | ✅ OK (9 warnings en test file, 0 en produccion)                                                               |
+| `pnpm test`              | ✅ **978** tests (**86** archivos) — 134/134 rutas API cubiertas. Coverage 50% business logic.                  |
+| `pnpm build`             | ✅ OK — Vercel deploy **Ready**                                                                                |
+| Vercel staging           | ✅ **Ready** — `https://tribux-ai.vercel.app` — 16+ env vars                                                  |
+| Auth staging             | ✅ Login funcional, 3 usuarios en DB                                                                           |
+| Pricing                  | ✅ $49/$149/$299/$699 — Starter/Builder/Pro/Agency                                                             |
+| Rebrand                  | ✅ Tribux AI en toda la UI, logo T orbital, 0 refs a AI Squad                                                  |
+| Cuentas master           | ✅ GitHub org TRIBUX-AI + Supabase org TRIBUX.AI + Vercel personal                                             |
+| Feedback system          | ✅ Bidireccional user↔admin + QA Analyst agent                                                                 |
+| Marketing module         | ✅ 6 modos + chat + artefactos en admin backoffice                                                             |
+| Agentic pipeline         | ✅ Auto-deploy → Monitor → Auto-fix → New cycle (10/10)                                                       |
+| Persona UX               | ✅ 8/8 fases adaptadas por persona                                                                             |
+| A11y                     | ✅ 77 aria/role attrs, modales con role=dialog                                                                 |
+| Design tokens            | ✅ 83% hex migrados a brand utilities                                                                          |
+| React perf               | ✅ 24 React.memo/useMemo (12 → 24)                                                                            |
+
+**Commits de referencia (sesion 2026-04-18):** `3aafd56` (memo), `5ad6ec2` (coverage 50%), `768c18f` (color migration), `2ee9945` (feedback), `98a8168` (agentic gaps), `d29cfec` (pricing), `81adc5f` (PMF improvements), `9edec16` (brand audit)
+
+---
+
+### Registro baseline — 2026-04-08
 
 | Comando                  | Resultado                                                                                                     |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------- |

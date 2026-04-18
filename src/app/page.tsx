@@ -284,11 +284,104 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Comparativa vs competencia */}
+      <section className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-wider text-brand-primary dark:text-brand-teal">Comparativa</p>
+            <h2 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+              Por que Tribux AI y no otra herramienta?
+            </h2>
+          </div>
+
+          <div className="mt-12 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200 dark:border-gray-700">
+                  <th className="pb-3 text-left font-medium text-gray-500 dark:text-gray-400">Caracteristica</th>
+                  <th className="pb-3 text-center font-bold text-brand-primary dark:text-brand-teal">Tribux AI</th>
+                  <th className="pb-3 text-center font-medium text-gray-500 dark:text-gray-400">Bolt / Lovable</th>
+                  <th className="pb-3 text-center font-medium text-gray-500 dark:text-gray-400">Freelancers</th>
+                  <th className="pb-3 text-center font-medium text-gray-500 dark:text-gray-400">Agencia</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                {[
+                  ['Metodologia estructurada', '✅', '❌', '❌', '⚠️'],
+                  ['8 agentes especializados', '✅', '❌', '❌', '⚠️'],
+                  ['Control humano por fases', '✅', '❌', '✅', '✅'],
+                  ['Codigo real (Next.js)', '✅', '⚠️', '✅', '✅'],
+                  ['Deploy automatico', '✅', '✅', '❌', '⚠️'],
+                  ['Specs antes de codear', '✅', '❌', '⚠️', '⚠️'],
+                  ['Precio mensual', '$49-$699', '$20-$50', '$2K-$10K', '$15K-$50K'],
+                  ['Tiempo a MVP', 'Semanas', 'Horas (prototipo)', 'Meses', 'Meses'],
+                ].map(([feature, tribux, bolt, free, agency], i) => (
+                  <tr key={i}>
+                    <td className="py-3 font-medium text-gray-700 dark:text-gray-300">{feature}</td>
+                    <td className="py-3 text-center font-semibold text-brand-primary dark:text-brand-teal">{tribux}</td>
+                    <td className="py-3 text-center text-gray-500 dark:text-gray-400">{bolt}</td>
+                    <td className="py-3 text-center text-gray-500 dark:text-gray-400">{free}</td>
+                    <td className="py-3 text-center text-gray-500 dark:text-gray-400">{agency}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Para quien es */}
+      <section className="border-t border-gray-100 dark:border-gray-800 py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-wider text-brand-primary dark:text-brand-teal">Para quien</p>
+            <h2 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+              Tribux AI es para ti si...
+            </h2>
+          </div>
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: '💡', name: 'Emprendedora', desc: 'Tienes una idea clara pero no sabes como construirla. Quieres validar rapido sin gastar una fortuna.', plan: 'Starter $49' },
+              { icon: '🚀', name: 'Founder', desc: 'Necesitas un MVP en semanas, no meses. Tienes capital semilla pero no tienes CTO.', plan: 'Builder $149' },
+              { icon: '📋', name: 'Product Manager', desc: 'Tu equipo de ingenieria esta saturado. Necesitas validar ideas sin bloquear al equipo.', plan: 'Builder $149' },
+              { icon: '💼', name: 'Consultor', desc: 'Tus clientes piden software. Quieres ofrecer desarrollo end-to-end con margenes altos.', plan: 'Agency $699' },
+            ].map((persona) => (
+              <div key={persona.name} className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+                <span className="text-3xl">{persona.icon}</span>
+                <h3 className="mt-3 font-display text-lg font-bold text-gray-900 dark:text-white">{persona.name}</h3>
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{persona.desc}</p>
+                <p className="mt-3 text-xs font-semibold text-brand-teal">{persona.plan}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Numeros */}
+      <section className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 py-16">
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="grid grid-cols-2 gap-8 text-center sm:grid-cols-4">
+            {[
+              { num: '8', label: 'Agentes IA' },
+              { num: '8', label: 'Fases de desarrollo' },
+              { num: '28', label: 'Acciones automatizadas' },
+              { num: '134', label: 'API endpoints' },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <p className="text-4xl font-bold text-brand-primary dark:text-brand-teal">{stat.num}</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="border-t border-gray-100 dark:border-gray-800 py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-            Empieza a construir hoy
+            Tu idea merece existir
           </h2>
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
             Tu equipo de agentes IA te espera. De la idea al producto en semanas, no meses.
