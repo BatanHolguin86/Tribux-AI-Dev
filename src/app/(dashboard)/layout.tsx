@@ -5,7 +5,6 @@ import { FounderModeProvider } from '@/hooks/useFounderMode'
 import { UsageQuotaBanner } from '@/components/shared/UsageQuotaBanner'
 import { getTrialDaysRemaining } from '@/lib/plans/guards'
 import { SidebarNav } from '@/components/dashboard/SidebarNav'
-import { FeedbackButton } from '@/components/shared/FeedbackButton'
 
 export default async function DashboardLayout({
   children,
@@ -54,7 +53,6 @@ export default async function DashboardLayout({
               />
             </div>
             {children}
-            <FeedbackButton />
           </FounderModeProvider>
         </main>
       </div>
