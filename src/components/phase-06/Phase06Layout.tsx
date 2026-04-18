@@ -19,6 +19,7 @@ import { ReadinessCheckWidget } from './ReadinessCheckWidget'
 import { PhaseDocsCallout } from '@/components/shared/PhaseDocsCallout'
 import { PhaseChatPanel } from '@/components/shared/PhaseChatPanel'
 import { ExportTransferButton } from '@/components/shared/ExportTransferButton'
+import { useFounderMode, founderLabel } from '@/hooks/useFounderMode'
 
 const PHASE_OBJECTIVE =
   'Verifica checklist de lanzamiento: deploy, monitoring, dominios y documentación operacional.'
@@ -33,6 +34,7 @@ type Phase06LayoutProps = {
 const phaseAgents = getPhaseAgents(6)
 
 export function Phase06Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [] }: Phase06LayoutProps) {
+  const { isFounder, hideChecklists } = useFounderMode()
   const [categories, setCategories] = useState(initialCategories)
   const {
     actions,
@@ -111,75 +113,128 @@ export function Phase06Layout({ projectId, categories: initialCategories, initia
   const sectionsContent = (
     <div>
       <PhaseProgressHeader
-        title="Launch & Deployment"
+        title={founderLabel('Launch & Deployment', isFounder)}
         completedCount={completedCount}
         totalCount={totalCategories}
-        objective={PHASE_OBJECTIVE}
+        objective={isFounder
+          ? 'Tu producto esta casi listo para que el mundo lo vea.'
+          : PHASE_OBJECTIVE}
       />
 
       {allCompleted ? (
         <Phase06FinalGate projectId={projectId} />
       ) : (
         <>
-          <PhaseDocsCallout
-            title="Operaciones en el repositorio"
-            description="Runbooks para deploy, migraciones y observabilidad."
-            repoPaths={[
-              { label: 'Migraciones staging', path: 'docs/06-ops/apply-migrations-staging.md' },
-              { label: 'Sentry', path: 'docs/06-ops/sentry-setup.md' },
-              { label: 'Go/No-go v1 (pre-lanzamiento)', path: 'docs/05-qa/v1-go-no-go.md' },
-            ]}
-          />
           <ReadinessCheckWidget projectId={projectId} />
 
-          <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-            Items y categorias se guardan por proyecto. Parte del deploy puede ser manual (Vercel, DNS, etc.); usa los
-            runbooks y el tab{' '}
-            <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para DevOps.
-          </p>
-
-          {streamingContent && (
-            <div className="mb-4">
-              <ActionStreamingPanel
-                content={streamingContent}
-                isStreaming={!!executingAction}
-                onApplyToRepo={() => commitGeneratedFiles(executingAction ?? '')}
-                onClose={resetStreaming}
-                title="Resultado de automatizacion"
-              />
-            </div>
-          )}
-
-          <div className="grid gap-4 md:grid-cols-2">
-            {PHASE06_SECTIONS.map((sectionKey) => {
-              const category = categories.find((c) => c.key === sectionKey)!
-              const action = actions.find((a) => a.section === sectionKey)
-              const sectionExecutions = executions.filter((e) => e.section === sectionKey)
-              return (
-                <div key={sectionKey}>
-                  <AutomatedChecklistCard
-                    sectionKey={sectionKey}
-                    config={CATEGORY_CONFIGS[sectionKey]}
-                    status={category.status}
-                    itemStates={category.itemStates}
-                    onItemToggle={handleItemToggle}
-                    onToggle={() => handleToggle(sectionKey)}
-                    action={action}
-                    executions={sectionExecutions}
-                    onActionExecute={executeAction}
-                    executingAction={executingAction}
-                  />
-                  {sectionKey === 'deploy_production' && (
-                    <DeployStatusWidget projectId={projectId} />
-                  )}
+          {hideChecklists ? (
+            /* Founder view: simplified launch status */
+            <div className="space-y-4">
+              <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
+                <h3 className="font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+                  Estado del lanzamiento
+                </h3>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Tu equipo IA esta preparando todo para publicar tu producto.
+                </p>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  {categories.map((cat) => (
+                    <div
+                      key={cat.key}
+                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${
+                        cat.status === 'completed' || cat.status === 'approved'
+                          ? 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-900/10'
+                          : 'border-gray-200 dark:border-gray-700'
+                      }`}
+                    >
+                      <span className={`text-sm ${cat.status === 'completed' || cat.status === 'approved' ? 'text-green-500' : 'text-gray-400'}`}>
+                        {cat.status === 'completed' || cat.status === 'approved' ? '✓' : '○'}
+                      </span>
+                      <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                        {founderLabel((CATEGORY_CONFIGS as Record<string, { title: string }>)[cat.key]?.title ?? cat.key, isFounder)}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              )
-            })}
-          </div>
+              </div>
 
-          <div className="mt-6">
-            <ExportTransferButton projectId={projectId} />
-          </div>
+              <DeployStatusWidget projectId={projectId} />
+
+              {streamingContent && (
+                <ActionStreamingPanel
+                  content={streamingContent}
+                  isStreaming={!!executingAction}
+                  onApplyToRepo={() => commitGeneratedFiles(executingAction ?? '')}
+                  onClose={resetStreaming}
+                  title="Resultado"
+                />
+              )}
+
+              <ExportTransferButton projectId={projectId} />
+            </div>
+          ) : (
+            /* Technical view: full checklists + docs */
+            <>
+              <PhaseDocsCallout
+                title="Operaciones en el repositorio"
+                description="Runbooks para deploy, migraciones y observabilidad."
+                repoPaths={[
+                  { label: 'Migraciones staging', path: 'docs/06-ops/apply-migrations-staging.md' },
+                  { label: 'Sentry', path: 'docs/06-ops/sentry-setup.md' },
+                  { label: 'Go/No-go v1 (pre-lanzamiento)', path: 'docs/05-qa/v1-go-no-go.md' },
+                ]}
+              />
+
+              <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+                Items y categorias se guardan por proyecto. Parte del deploy puede ser manual (Vercel, DNS, etc.); usa los
+                runbooks y el tab{' '}
+                <span className="font-medium text-gray-700 dark:text-gray-300">Equipo</span> para DevOps.
+              </p>
+
+              {streamingContent && (
+                <div className="mb-4">
+                  <ActionStreamingPanel
+                    content={streamingContent}
+                    isStreaming={!!executingAction}
+                    onApplyToRepo={() => commitGeneratedFiles(executingAction ?? '')}
+                    onClose={resetStreaming}
+                    title="Resultado de automatizacion"
+                  />
+                </div>
+              )}
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {PHASE06_SECTIONS.map((sectionKey) => {
+                  const category = categories.find((c) => c.key === sectionKey)!
+                  const action = actions.find((a) => a.section === sectionKey)
+                  const sectionExecutions = executions.filter((e) => e.section === sectionKey)
+                  return (
+                    <div key={sectionKey}>
+                      <AutomatedChecklistCard
+                        sectionKey={sectionKey}
+                        config={CATEGORY_CONFIGS[sectionKey]}
+                        status={category.status}
+                        itemStates={category.itemStates}
+                        onItemToggle={handleItemToggle}
+                        onToggle={() => handleToggle(sectionKey)}
+                        action={action}
+                        executions={sectionExecutions}
+                        onActionExecute={executeAction}
+                        executingAction={executingAction}
+                      />
+                      {sectionKey === 'deploy_production' && (
+                        <DeployStatusWidget projectId={projectId} />
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div className="mt-6">
+                <ExportTransferButton projectId={projectId} />
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

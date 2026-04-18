@@ -12,12 +12,12 @@ const PLAN_DETAILS: Record<string, { name: string; price: string; features: stri
   builder: {
     name: 'Builder',
     price: '$149/mes',
-    features: ['1 proyecto', '8 agentes', 'Phases 00-06', 'Auto-build (10 tasks)'],
+    features: ['1 proyecto', '8 agentes', 'De la idea al deploy', 'Construccion automatica de codigo'],
   },
   pro: {
     name: 'Pro',
     price: '$299/mes',
-    features: ['3 proyectos', '8 agentes', 'Phases 00-07', 'Auto-build ilimitado'],
+    features: ['3 proyectos', '8 agentes', 'Todas las fases completas', 'Construccion ilimitada'],
   },
   agency: {
     name: 'Agency',
