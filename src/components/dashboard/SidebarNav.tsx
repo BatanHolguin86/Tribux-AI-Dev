@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
-  FolderKanban,
   MessageCircle,
   Settings,
   LogOut,
@@ -57,10 +56,9 @@ export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
       </div>
 
       <nav className="flex min-h-0 flex-1 flex-row gap-1 overflow-x-auto px-3 py-3 md:flex-col md:space-y-1 md:overflow-y-auto md:py-4">
-        <NavLink href="/dashboard" icon={<LayoutDashboard className="h-5 w-5" />} label="Inicio" />
-        <NavLink href="/dashboard" icon={<FolderKanban className="h-5 w-5" />} label="Proyectos" />
+        <NavLink href="/dashboard" icon={<LayoutDashboard className="h-5 w-5" />} label="Mis proyectos" />
         <NavLink href="/feedback" icon={<MessageCircle className="h-5 w-5" />} label="Feedback" />
-        <NavLink href="/settings" icon={<Settings className="h-5 w-5" />} label="Configuración" />
+        <NavLink href="/settings" icon={<Settings className="h-5 w-5" />} label="Configuracion" />
       </nav>
 
       <div className="flex border-t border-white/10 p-3 md:hidden">
