@@ -5,31 +5,31 @@ import { useFocusTrap } from '@/hooks/use-focus-trap'
 
 const PLANS = [
   {
-    key: 'free',
-    name: 'Free',
-    price: '$0',
-    features: ['Phase 00 — Discovery', '1 feature en Phase 01', 'CTO Virtual'],
-    purchasable: false,
-  },
-  {
     key: 'starter',
     name: 'Starter',
-    price: '$149/mes',
-    features: ['Todo en Free', '1 proyecto', 'CTO Virtual', '7 dias de prueba gratis'],
+    price: '$49/mes',
+    features: ['1 proyecto', 'CTO + Product Architect + UI/UX', 'Phases 00-02', '7 dias de prueba gratis'],
     purchasable: true,
   },
   {
     key: 'builder',
     name: 'Builder',
+    price: '$149/mes',
+    features: ['Todo en Starter', '1 proyecto', '8 agentes especializados', 'Phases 00-06, auto-build 10 tasks'],
+    purchasable: true,
+  },
+  {
+    key: 'pro',
+    name: 'Pro',
     price: '$299/mes',
-    features: ['Todo en Starter', '3 proyectos', '8 agentes especializados', 'Phases 02-07'],
+    features: ['Todo en Builder', '3 proyectos', '8 agentes, todas las fases', 'Auto-build ilimitado'],
     purchasable: true,
   },
   {
     key: 'agency',
     name: 'Agency',
     price: '$699/mes',
-    features: ['Todo en Builder', '10 proyectos', 'Agente Operator', 'Soporte prioritario'],
+    features: ['Todo en Pro', '10 proyectos', '8 agentes, multi-client', 'Soporte prioritario'],
     purchasable: true,
   },
 ]
@@ -57,7 +57,7 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
 
   if (!open) return null
 
-  const planOrder = ['free', 'starter', 'builder', 'agency']
+  const planOrder = ['starter', 'builder', 'pro', 'agency']
   const currentIndex = planOrder.indexOf(currentPlan)
 
   async function handleUpgrade() {

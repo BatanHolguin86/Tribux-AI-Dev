@@ -61,23 +61,25 @@ Estas bandas sirven para definir **límites de uso y precios mínimos** por plan
 
 Precios actuales (de `docs/01-specs/06-pricing-experiments.md` y `04-metrics.md`):
 
-| Plan    | Precio/mes | Proyectos | Agentes               |
-| ------- | ---------- | --------- | --------------------- |
-| Starter | $149       | 1         | CTO Virtual           |
-| Builder | $299       | 2         | Todos (8)             |
-| Agency  | $699       | 5         | Todos + multi-cliente |
+| Plan    | Precio/mes | Proyectos | Agentes                        |
+| ------- | ---------- | --------- | ------------------------------ |
+| Starter | $49        | 1         | CTO + Product Architect + UI/UX |
+| Builder | $149       | 1         | Todos (8)                      |
+| Pro     | $299       | 3         | Todos (8), todas las fases     |
+| Agency  | $699       | 10        | Todos + multi-cliente          |
 
 **Objetivo de margen bruto:** Coste de IA ≤ 25–35% del revenue por plan, para dejar margen a costes fijos, CAC y beneficio.
 
 | Plan    | Precio | Coste IA obj. (30%) | Coste IA max. por usuario/mes | Margen bruto obj. |
 | ------- | ------ | ------------------- | ----------------------------- | ----------------- |
-| Starter | $149   | ≤ ~$45              | $45                           | ~70%              |
-| Builder | $299   | ≤ ~$90              | $90                           | ~70%              |
-| Agency  | $699   | ≤ ~$210             | $210                          | ~70%              |
+| Starter | $49    | ≤ ~$14.70           | $14.70                        | ~70%              |
+| Builder | $149   | ≤ ~$44.70           | $44.70                        | ~70%              |
+| Pro     | $299   | ≤ ~$89.70           | $89.70                        | ~70%              |
+| Agency  | $699   | ≤ ~$209.70          | $209.70                       | ~70%              |
 
 **Conclusión:** Con las bandas de uso “normal” anteriores, los precios actuales son compatibles con **margen bruto > 60%** siempre que:
 
-- El coste real de IA por usuario se mantenga dentro de las bandas indicadas (Starter &lt; ~$45, Builder &lt; ~$90, Agency &lt; ~$210).
+- El coste real de IA por usuario se mantenga dentro de las bandas indicadas (Starter &lt; ~$14.70, Builder &lt; ~$44.70, Pro &lt; ~$89.70, Agency &lt; ~$209.70).
 - Se apliquen **límites y guardas** (véase sección 5) para evitar abusos.
 
 ---
@@ -111,7 +113,7 @@ Precios actuales (de `docs/01-specs/06-pricing-experiments.md` y `04-metrics.md`
 
 ### 5.1 Reglas operativas
 
-1. **Precios actuales ($149 / $299 / $699)** se mantienen como referencia; el coste de IA por usuario debe quedar por debajo del 30–35% del precio para margen bruto ≥ 60%.
+1. **Precios actuales ($49 / $149 / $299 / $699)** se mantienen como referencia; el coste de IA por usuario debe quedar por debajo del 30–35% del precio para margen bruto ≥ 60%.
 2. **Límites de uso por plan:** Definir cuotas mensuales de mensajes de agentes (y opcionalmente de generaciones de documentos/diseños) y mostrarlas en UI o en condiciones de uso; si se superan, upgrade o mensaje claro.
 3. **Trial:** Si hay trial (7 o 14 días), acotar a un número máximo de mensajes o de proyectos para que el coste medio por trialista esté acotado (ej. &lt; $5–10 por trialista).
 4. **Enterprise:** Precio y límites negociados; idealmente coste de IA + margen explícito en el contrato.
@@ -134,6 +136,6 @@ Precios actuales (de `docs/01-specs/06-pricing-experiments.md` y `04-metrics.md`
 ## 6. Resumen: rentabilidad desde el lanzamiento
 
 - **Estructura de costos:** Fijos bajos (Vercel, Supabase, etc.); variable dominante = tokens Anthropic/OpenAI.
-- **Unit economics:** Con precios $149 / $299 / $699 y coste de IA por usuario dentro de las bandas indicadas, el margen bruto puede ser ≥ 60–70% desde el día 1.
+- **Unit economics:** Con precios $49 / $149 / $299 / $699 y coste de IA por usuario dentro de las bandas indicadas, el margen bruto puede ser ≥ 60–70% desde el día 1.
 - **Escalabilidad:** Coste escala con uso real; mejoras de producto (truncamiento, cache, cuotas) mejoran margen sin subir precios.
 - **Acción inmediata:** Definir e implementar cuotas por plan (mensajes/mes, generaciones/mes) y dashboard o logs de coste de IA por usuario/proyecto para validar y afinar estos números con datos reales.

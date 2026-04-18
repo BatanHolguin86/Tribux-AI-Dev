@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react'
 import { useFocusTrap } from '@/hooks/use-focus-trap'
 
 const PLANS = [
-  { key: 'starter', name: 'Starter', price: '$149/mes', projects: '1 proyecto' },
-  { key: 'builder', name: 'Builder', price: '$299/mes', projects: '3 proyectos' },
+  { key: 'starter', name: 'Starter', price: '$49/mes', projects: '1 proyecto' },
+  { key: 'builder', name: 'Builder', price: '$149/mes', projects: '1 proyecto' },
+  { key: 'pro', name: 'Pro', price: '$299/mes', projects: '3 proyectos' },
   { key: 'agency', name: 'Agency', price: '$699/mes', projects: '10 proyectos' },
   { key: 'enterprise', name: 'Enterprise', price: 'Contactar', projects: 'Ilimitados' },
 ]
 
-const PLAN_ORDER = ['starter', 'builder', 'agency', 'enterprise']
+const PLAN_ORDER = ['starter', 'builder', 'pro', 'agency', 'enterprise']
 
 type PlanLimitModalProps = {
   open: boolean

@@ -84,11 +84,18 @@ describe('AGENTS registry', () => {
     expect(AGENT_MAP['operator'].id).toBe('operator')
   })
 
-  it('specialist agents require builder plan', () => {
+  it('starter agents require starter plan', () => {
+    const starterAgents: AgentType[] = ['product_architect', 'ui_ux_designer']
+    for (const id of starterAgents) {
+      const agent = AGENTS.find((a) => a.id === id)
+      expect(agent).toBeDefined()
+      expect(agent!.planRequired).toBe('starter')
+    }
+  })
+
+  it('builder agents require builder plan', () => {
     const builderAgents: AgentType[] = [
-      'product_architect',
       'system_architect',
-      'ui_ux_designer',
       'lead_developer',
       'db_admin',
       'qa_engineer',

@@ -33,14 +33,14 @@ Nadie combina: METODOLOGÍA ESTRUCTURADA + EQUIPO DE AGENTES IA ESPECIALIZADOS +
 
 ## Personas objetivo
 
-### Santiago Reyes — Founder No-Técnico ($299/mes, Plan Builder)
+### Santiago Reyes — Founder No-Técnico ($149/mes, Plan Builder)
 - 34 años, Co-founder & CEO startup early-stage, LATAM/España
 - Tiene idea clara + capital semilla ($50k–$200k), no tiene CTO
 - Pain: costo equipo técnico ($15k–$25k/mes), freelancers poco confiables, no puede evaluar calidad técnica
 - Quiere: MVP en 60–90 días, control sobre visión, demostrar tracción a inversores
 - Quote: "Tengo muy claro el problema del mercado. Lo que no tengo es la capacidad de construir el producto."
 
-### Valentina Mora — PM Senior ($299/mes, Plan Builder)
+### Valentina Mora — PM Senior ($149/mes, Plan Builder)
 - 31 años, Senior PM en empresa mediana (50–200 empleados), LATAM
 - Equipo de ingeniería saturado, necesita validar ideas rápido
 - Pain: cuello de botella de ingeniería, specs incompletos, ciclos de 3–6 meses
@@ -54,7 +54,7 @@ Nadie combina: METODOLOGÍA ESTRUCTURADA + EQUIPO DE AGENTES IA ESPECIALIZADOS +
 - Quiere: ofrecer desarrollo end-to-end sin equipo interno, proceso repetible
 - Quote: "Mis clientes me piden software. Yo sé de estrategia, no de código."
 
-### Camila Torres — Emprendedora Digital ($149/mes, Plan Starter)
+### Camila Torres — Emprendedora Digital ($49/mes, Plan Starter)
 - 27 años, emprendedora independiente, LATAM
 - Idea clara del problema, sin claridad sobre primer paso técnico
 - Pain: no sabe por dónde empezar, miedo a gastar mal sus ahorros ($2k–$10k), sin red técnica
@@ -66,8 +66,9 @@ Nadie combina: METODOLOGÍA ESTRUCTURADA + EQUIPO DE AGENTES IA ESPECIALIZADOS +
 
 | Plan | Precio | Proyectos | Agentes | Budget IA | Target |
 |------|--------|-----------|---------|-----------|--------|
-| Starter | $149/mes | 1 | CTO Virtual | $44.70 | Emprendedores (Camila) |
-| Builder | $299/mes | 3 | 8 agentes | $89.70 | Founders/PMs (Santiago, Valentina) |
+| Starter | $49/mes | 1 | CTO + Product Architect + UI/UX | $14.70 | Emprendedores (Camila) |
+| Builder | $149/mes | 1 | 8 agentes | $44.70 | Founders/PMs (Santiago, Valentina) |
+| Pro | $299/mes | 3 | 8 agentes, todas las fases | $89.70 | Power users |
 | Agency | $699/mes | 10 | 8 agentes + multi-client | $209.70 | Consultores (Rodrigo) |
 | Enterprise | Custom | Ilimitados | Todo + SLA | $500+ | Empresas |
 
@@ -166,11 +167,11 @@ Tu enfoque ahora es ventas y conversión. Puedes:
 - Documentar **manejo de objeciones** frecuentes con respuestas probadas
 - Crear **propuestas y one-pagers** por segmento
 - Diseñar el **proceso de venta** (self-serve vs sales-assisted vs enterprise)
-- Proponer **estrategias de upsell** (Starter → Builder → Agency)
+- Proponer **estrategias de upsell** (Starter → Builder → Pro → Agency)
 - Crear **email sequences** de nurturing y conversión
 - Diseñar **calculadoras de ROI** para prospects
 
-El argumento central siempre es: fracción del costo de equipo técnico ($149-$699 vs $15k-$25k/mes) con metodología y control.`,
+El argumento central siempre es: fracción del costo de equipo técnico ($49-$699 vs $15k-$25k/mes) con metodología y control.`,
 
   competitive: `## Modo activo: COMPETITIVE INTELLIGENCE
 

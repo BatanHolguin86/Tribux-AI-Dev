@@ -16,30 +16,30 @@ describe('quota system with credits', () => {
   })
 
   it('effective budget increases with credits', () => {
-    const baseBudget = 44.7 // Starter
+    const baseBudget = 14.7 // Starter
     const credits = 50 // bought a medium pack
     const effectiveBudget = baseBudget + credits
-    expect(effectiveBudget).toBe(94.7)
+    expect(effectiveBudget).toBe(64.7)
   })
 
   it('usedPct is calculated against effective budget', () => {
-    const baseBudget = 44.7
+    const baseBudget = 14.7
     const credits = 25
-    const effectiveBudget = baseBudget + credits // 69.7
-    const used = 50
+    const effectiveBudget = baseBudget + credits // 39.7
+    const used = 30
     const usedPct = Math.round((used / effectiveBudget) * 100)
-    // Without credits: 50/44.7 = 112% (exceeded)
-    // With credits: 50/69.7 = 72% (ok)
-    expect(usedPct).toBe(72)
+    // Without credits: 30/14.7 = 204% (exceeded)
+    // With credits: 30/39.7 = 76% (ok)
+    expect(usedPct).toBe(76)
   })
 
   it('user is not blocked when credits cover the overage', () => {
-    const baseBudget = 44.7
+    const baseBudget = 14.7
     const credits = 50
     const effectiveBudget = baseBudget + credits
-    const used = 60
+    const used = 40
     const usedPct = Math.round((used / effectiveBudget) * 100)
-    // 60/94.7 = 63% — well within budget
+    // 40/64.7 = 62% — well within budget
     expect(usedPct).toBeLessThan(80)
   })
 

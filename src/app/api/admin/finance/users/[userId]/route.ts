@@ -46,8 +46,9 @@ export async function GET(
   const events = usageRes.data ?? []
 
   const planPrice: Record<string, number> = {
-    starter: 149,
-    builder: 299,
+    starter: 49,
+    builder: 149,
+    pro: 299,
     agency: 699,
     enterprise: 0,
   }

@@ -77,7 +77,7 @@ export async function syncMonthOverage(month: string): Promise<{ synced: number;
     .in('plan', uniquePlans)
 
   const FALLBACK_BUDGET: Record<string, number> = {
-    starter: 44.7, builder: 89.7, agency: 209.7, enterprise: 500,
+    starter: 14.7, builder: 44.7, pro: 89.7, agency: 209.7, enterprise: 500,
   }
   const budgetByPlan = new Map<string, { budget: number; multiplier: number }>()
   for (const t of targets ?? []) {

@@ -10,8 +10,9 @@
 
 | Plan | Precio | Proyectos | Agentes | Budget IA | Margen target |
 |------|--------|-----------|---------|-----------|---------------|
-| **Starter** | $149/mes | 1 | CTO Virtual | $44.70 | 70% |
-| **Builder** | $299/mes | 3 | 8 agentes | $89.70 | 70% |
+| **Starter** | $49/mes | 1 | CTO + Product Architect + UI/UX | $14.70 | 70% |
+| **Builder** | $149/mes | 1 | 8 agentes | $44.70 | 70% |
+| **Pro** | $299/mes | 3 | 8 agentes, todas las fases | $89.70 | 70% |
 | **Agency** | $699/mes | 10 | 8 agentes + multi-client | $209.70 | 70% |
 | **Enterprise** | Custom | Ilimitados | Todo + SLA | $500+ | 70% |
 
@@ -73,34 +74,34 @@ Los creditos se aplican al mes corriente. No se acumulan al siguiente mes.
 
 ## 4. Consumo por user persona
 
-### Camila (emprendedora) — Plan Starter $149/mes
+### Camila (emprendedora) — Plan Starter $49/mes
 
-- **Perfil:** 1 proyecto, uso moderado, pocas iteraciones
-- **Tasks por proyecto:** 5-10
+- **Perfil:** 1 proyecto, uso moderado, Phases 00-02
+- **Tasks por proyecto:** 0 (no incluye auto-build)
 - **Chat:** 15-25 turnos/mes
-- **Costo IA real:** $12-20/mes
-- **Budget disponible:** $44.70
-- **Margen real:** 87-92%
-- **Top-up probable:** No (lejos del limite)
+- **Costo IA real:** $4-10/mes
+- **Budget disponible:** $14.70
+- **Margen real:** 80-92%
+- **Top-up probable:** Raro (uso ligero)
 
-### Santiago (founder tecnico) — Plan Builder $299/mes
+### Santiago (founder tecnico) — Plan Builder $149/mes
 
-- **Perfil:** 1-2 proyectos, iteraciones frecuentes, usa todos los agentes
-- **Tasks por proyecto:** 15-20
+- **Perfil:** 1 proyecto, iteraciones frecuentes, usa todos los agentes
+- **Tasks por proyecto:** 10 (auto-build incluido)
 - **Chat:** 40-80 turnos/mes
-- **Costo IA real:** $30-45/mes
-- **Budget disponible:** $89.70
-- **Margen real:** 85-90%
+- **Costo IA real:** $20-35/mes
+- **Budget disponible:** $44.70
+- **Margen real:** 77-87%
 - **Top-up probable:** Ocasional en meses de desarrollo intenso
 
-### Valentina (PM) — Plan Builder $299/mes
+### Valentina (PM) — Plan Pro $299/mes
 
-- **Perfil:** 2-3 proyectos, mas specs que codigo, heavy en fases 00-02
+- **Perfil:** 2-3 proyectos, mas specs que codigo, heavy en todas las fases
 - **Tasks por proyecto:** 10-15
 - **Chat:** 50-100 turnos/mes
-- **Costo IA real:** $25-35/mes
+- **Costo IA real:** $30-50/mes
 - **Budget disponible:** $89.70
-- **Margen real:** 88-92%
+- **Margen real:** 83-90%
 - **Top-up probable:** Raro
 
 ### Rodrigo (consultor) — Plan Agency $699/mes
@@ -143,7 +144,7 @@ Estos son los costos que el USUARIO de Tribux genera en las 3 plataformas master
 | Resend (free tier) | $0 |
 | **Total base** | **$46/mes** |
 
-Breakeven: 1 usuario Starter ($149) cubre los costos de plataforma con margen.
+Breakeven: 1 usuario Builder ($149) cubre los costos de plataforma con margen.
 
 ---
 
@@ -152,7 +153,7 @@ Breakeven: 1 usuario Starter ($149) cubre los costos de plataforma con margen.
 ```
 Usuario usa Tribux
     │
-    ├─ Plan mensual ($149-699) → ingreso recurrente
+    ├─ Plan mensual ($49-699) → ingreso recurrente
     │
     ├─ Consumo normal (< budget) → margen 70-92%
     │
