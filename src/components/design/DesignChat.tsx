@@ -153,7 +153,7 @@ export function DesignChat({
           const text = getTextContent(msg)
           return (
             <div key={msg.id}>
-              <ChatMessage role={msg.role as 'user' | 'assistant'} content={text} />
+              <ChatMessage role={msg.role as 'user' | 'assistant'} content={text} agentName={msg.role === 'assistant' ? 'UI/UX Designer' : undefined} agentIcon={msg.role === 'assistant' ? '🎨' : undefined} />
               {msg.role === 'assistant' && <CopyButton content={text} />}
             </div>
           )

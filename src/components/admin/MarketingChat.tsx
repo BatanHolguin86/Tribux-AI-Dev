@@ -383,6 +383,8 @@ export function MarketingChat() {
                 key={msg.id}
                 role={msg.role as 'user' | 'assistant'}
                 content={text}
+                agentName={msg.role === 'assistant' ? 'Marketing Strategist' : undefined}
+                agentIcon={msg.role === 'assistant' ? '📊' : undefined}
               />
             )
           })}

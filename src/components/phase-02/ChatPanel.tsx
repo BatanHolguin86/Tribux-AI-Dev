@@ -255,6 +255,8 @@ export function ChatPanel({
               key={msg.id}
               role={msg.role as 'user' | 'assistant'}
               content={cleanText}
+              agentName={msg.role === 'assistant' ? 'CTO Virtual' : undefined}
+              agentIcon={msg.role === 'assistant' ? '🧠' : undefined}
             />
           )
         })}

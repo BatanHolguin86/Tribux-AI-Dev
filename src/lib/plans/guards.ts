@@ -1,6 +1,7 @@
 import type { Plan, SubscriptionStatus } from '@/types/user'
 
 const PLAN_HIERARCHY: Record<Plan, number> = {
+  free: -1,
   starter: 0,
   builder: 1,
   agency: 2,
@@ -144,6 +145,7 @@ export function canCreateProject(
 ): boolean {
   const status = getUserPlanStatus(profile)
   const limits: Record<Plan, number> = {
+    free: 1,
     starter: 1,
     builder: 3,
     agency: 10,

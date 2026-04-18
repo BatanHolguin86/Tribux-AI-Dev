@@ -9,6 +9,7 @@ import { ChatMessage } from '@/components/shared/chat/ChatMessage'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
 import { ChatErrorBanner } from '@/components/shared/chat/ChatErrorBanner'
 import { EmptyResponseBanner } from '@/components/shared/chat/EmptyResponseBanner'
+import { AGENT_MAP } from '@/lib/ai/agents'
 import { ToolCallRenderer } from '@/components/shared/chat/ToolCallRenderer'
 import { MessageActions } from './MessageActions'
 import { ProactiveSuggestions } from './ProactiveSuggestions'
@@ -268,6 +269,8 @@ export function AgentChat({
                   role={msg.role as 'user' | 'assistant'}
                   content={text}
                   projectId={projectId}
+                  agentName={msg.role === 'assistant' ? (AGENT_MAP[agentType as keyof typeof AGENT_MAP]?.name ?? 'CTO Virtual') : undefined}
+                  agentIcon={msg.role === 'assistant' ? (AGENT_MAP[agentType as keyof typeof AGENT_MAP]?.icon ?? '🧠') : undefined}
                 />
               )}
               {msg.role === 'assistant' && text && (

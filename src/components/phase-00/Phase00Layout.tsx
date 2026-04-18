@@ -10,6 +10,8 @@ import { SectionNav } from './SectionNav'
 import { ChatPanel } from './ChatPanel'
 import { DocumentPanel } from './DocumentPanel'
 import { Phase00FinalGate } from './Phase00FinalGate'
+import { GuidedDiscoveryWizard } from './GuidedDiscoveryWizard'
+import { useFounderMode } from '@/hooks/useFounderMode'
 
 type SectionData = {
   key: Phase00Section
@@ -38,9 +40,34 @@ export function Phase00Layout({
   initialActiveSection,
 }: Phase00LayoutProps) {
   const router = useRouter()
+  const { isFounder } = useFounderMode()
   const [sections, setSections] = useState(initialSections)
   const [activeSection, setActiveSection] = useState<Phase00Section>(initialActiveSection)
   const [mobileTab, setMobileTab] = useState<'chat' | 'document'>('chat')
+  const [wizardSubmitting, setWizardSubmitting] = useState(false)
+
+  // Show guided discovery wizard for founders with no existing conversations
+  const allSectionsEmpty = sections.every(
+    (s) => s.messages.length === 0 && s.document === null,
+  )
+  const [showWizard, setShowWizard] = useState(isFounder && allSectionsEmpty)
+
+  async function handleWizardComplete(answers: { problem: string; audience: string; solution: string }) {
+    setWizardSubmitting(true)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/phases/0/guided-discovery`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(answers),
+      })
+      if (res.ok) {
+        setShowWizard(false)
+        router.refresh()
+      }
+    } catch { /* silent */ } finally {
+      setWizardSubmitting(false)
+    }
+  }
 
   const currentSection = sections.find((s) => s.key === activeSection)!
   const allApproved = sections.every((s) => s.status === 'approved')
@@ -163,7 +190,14 @@ export function Phase00Layout({
         />
       )}
     >
-      {sectionsContent}
+      {showWizard ? (
+        <GuidedDiscoveryWizard
+          onComplete={handleWizardComplete}
+          isSubmitting={wizardSubmitting}
+        />
+      ) : (
+        sectionsContent
+      )}
     </PhaseWorkspaceTabs>
   )
 }

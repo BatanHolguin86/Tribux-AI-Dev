@@ -93,6 +93,7 @@ agentEntries.push(['operator', { ...devops, id: 'operator' as AgentType }])
 export const AGENT_MAP: Record<AgentType, AgentMeta> = Object.fromEntries(agentEntries) as Record<AgentType, AgentMeta>
 
 const PLAN_HIERARCHY: Record<Plan, number> = {
+  free: -1,
   starter: 0,
   builder: 1,
   agency: 2,

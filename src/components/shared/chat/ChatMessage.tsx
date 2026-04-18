@@ -16,6 +16,8 @@ type ChatMessageProps = {
   content: string
   createdAt?: string
   projectId?: string
+  agentName?: string
+  agentIcon?: string
 }
 
 function renderInline(text: string): React.ReactNode[] {
@@ -385,7 +387,7 @@ function ActionButton({ action, projectId }: { action: ActionSuggestion; project
   )
 }
 
-export function ChatMessage({ role, content, createdAt, projectId }: ChatMessageProps) {
+export function ChatMessage({ role, content, createdAt, projectId, agentName, agentIcon }: ChatMessageProps) {
   const isUser = role === 'user'
   const { cleanText, action } = isUser ? { cleanText: content, action: null } : extractAction(content)
 
@@ -394,12 +396,15 @@ export function ChatMessage({ role, content, createdAt, projectId }: ChatMessage
       {/* Avatar */}
       {!isUser && (
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#E8F4F8] text-sm dark:bg-[#0F2B46]">
-          🧠
+          {agentIcon ?? '🧠'}
         </div>
       )}
 
       {/* Bubble */}
       <div className={`max-w-[85%] min-w-0 ${isUser ? 'text-right' : ''}`}>
+        {!isUser && agentName && (
+          <p className="mb-0.5 text-[10px] font-medium text-[#94A3B8]">{agentName}</p>
+        )}
         <div
           className={`inline-block px-4 py-3 text-sm leading-relaxed ${
             isUser
@@ -420,7 +425,7 @@ export function ChatMessage({ role, content, createdAt, projectId }: ChatMessage
       {/* User badge */}
       {isUser && (
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46] text-[10px] font-bold text-white">
-          Tú
+          Tu
         </div>
       )}
     </div>

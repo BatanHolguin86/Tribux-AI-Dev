@@ -4,6 +4,11 @@ import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 const PLAN_DETAILS: Record<string, { name: string; price: string; features: string[] }> = {
+  free: {
+    name: 'Free',
+    price: '$0/mes',
+    features: ['1 proyecto', 'CTO Virtual', 'Phase 00 + 01'],
+  },
   starter: {
     name: 'Starter',
     price: '$149/mes',
@@ -76,7 +81,7 @@ export function BillingSection({
     }
   }, [billingStatus])
 
-  const planOrder = ['starter', 'builder', 'agency', 'enterprise']
+  const planOrder = ['free', 'starter', 'builder', 'agency', 'enterprise']
   const currentIndex = planOrder.indexOf(currentPlan)
   const statusInfo = STATUS_LABELS[subscriptionStatus] ?? STATUS_LABELS.free
   const planDetail = PLAN_DETAILS[currentPlan]

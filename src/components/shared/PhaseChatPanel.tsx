@@ -145,6 +145,8 @@ export function PhaseChatPanel({ projectId, phaseNumber, initialMessages }: Phas
               role={msg.role as 'user' | 'assistant'}
               content={cleanText}
               projectId={projectId}
+              agentName={msg.role === 'assistant' ? 'CTO Virtual' : undefined}
+              agentIcon={msg.role === 'assistant' ? '🧠' : undefined}
             />
           )
         })}
