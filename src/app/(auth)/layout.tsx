@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Accede a tu cuenta',
+  title: 'Tribux — Construye tu producto con agentes IA',
   description:
-    'Inicia sesion o crea tu cuenta en Tribux para construir productos tecnologicos con agentes IA.',
+    'Inicia sesion o crea tu cuenta en Tribux. Un equipo de 8 agentes IA que te guian de la idea al lanzamiento.',
 }
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {

@@ -15,19 +15,14 @@ const PHASES = [
 ]
 
 const AGENTS = [
-  { name: 'CTO Virtual', desc: 'Tu punto de contacto principal. Guia cada decision.', icon: '🧠' },
-  { name: 'Product Architect', desc: 'Define alcance, prioriza features y valida product-market fit.', icon: '📐' },
-  { name: 'System Architect', desc: 'Elige tecnologias, define patrones y crea diagramas.', icon: '🏛️' },
-  {
-    name: 'UI/UX Designer',
-    desc: 'Hub Diseño & UX: pantallas guardadas + kit (style guide, componentes, flujos, responsive) con contexto Discovery.',
-    icon: '🎨',
-  },
-  { name: 'Lead Developer', desc: 'Escribe codigo, resuelve bugs y aplica best practices.', icon: '👨‍💻' },
-  { name: 'DB Admin', desc: 'Esquemas, queries, RLS y migraciones.', icon: '🗄️' },
-  { name: 'QA Engineer', desc: 'Test cases, estrategia de testing y checklists.', icon: '✅' },
-  { name: 'DevOps Engineer', desc: 'CI/CD, deploy, monitoring e infraestructura.', icon: '⚡' },
-  { name: 'Operator', desc: 'Repos, pipelines y planes de deploy listos para ejecutar.', icon: '🛠️' },
+  { name: 'CTO Virtual', desc: 'Lidera tu proyecto. Coordina al equipo y toma decisiones tecnicas.', icon: '🧠' },
+  { name: 'Product Architect', desc: 'Define que construir, prioriza features y valida tu idea de negocio.', icon: '📐' },
+  { name: 'System Architect', desc: 'Diseña la arquitectura, elige tecnologias y crea los planos tecnicos.', icon: '🏛️' },
+  { name: 'UI/UX Designer', desc: 'Diseña la experiencia: wireframes, mockups y el look & feel de tu producto.', icon: '🎨' },
+  { name: 'Lead Developer', desc: 'Escribe el codigo, resuelve problemas y aplica las mejores practicas.', icon: '💻' },
+  { name: 'DB Admin', desc: 'Diseña tu base de datos, optimiza consultas y protege tu informacion.', icon: '🗄️' },
+  { name: 'QA Engineer', desc: 'Prueba todo: genera tests automaticos y asegura la calidad.', icon: '🧪' },
+  { name: 'DevOps & Operations', desc: 'Configura deploy, CI/CD, monitoring e infraestructura completa.', icon: '🚀' },
 ]
 
 const PLANS = [
@@ -35,32 +30,32 @@ const PLANS = [
     name: 'Starter',
     price: '$49',
     period: '/mes',
-    features: ['1 proyecto', 'Fases 00–02 (Idea + Specs + Arquitectura)', 'CTO + Product Architect + UI/UX', 'Valida tu idea'],
-    cta: 'Comenzar',
+    features: ['1 proyecto', 'Valida y diseña tu producto', '3 agentes especializados', 'Ideal para explorar tu idea'],
+    cta: 'Probar 7 dias gratis',
     popular: false,
   },
   {
     name: 'Builder',
     price: '$149',
     period: '/mes',
-    features: ['1 proyecto', 'Fases 00–06 (Idea hasta Deploy)', '8 agentes IA', 'Auto-build (10 tasks)'],
-    cta: 'Comenzar',
+    features: ['1 proyecto', 'De la idea al deploy', '8 agentes IA', 'Construccion automatica de codigo'],
+    cta: 'Probar 7 dias gratis',
     popular: true,
   },
   {
     name: 'Pro',
     price: '$299',
     period: '/mes',
-    features: ['3 proyectos', 'Todas las fases (00–07)', '8 agentes IA', 'Auto-build ilimitado'],
-    cta: 'Comenzar',
+    features: ['3 proyectos', 'Todas las fases completas', '8 agentes IA', 'Construccion ilimitada'],
+    cta: 'Probar 7 dias gratis',
     popular: false,
   },
   {
     name: 'Agency',
     price: '$699',
     period: '/mes',
-    features: ['10 proyectos', 'Todas las fases', 'Multi-client', 'Soporte prioritario'],
-    cta: 'Comenzar',
+    features: ['10 proyectos', 'Gestiona multiples clientes', '8 agentes IA', 'Soporte prioritario'],
+    cta: 'Probar 7 dias gratis',
     popular: false,
   },
 ]
@@ -95,7 +90,7 @@ export default async function HomePage() {
               href="/register"
               className="rounded-lg bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
             >
-              Comenzar gratis
+              Empieza tu prueba gratis
             </Link>
           </div>
         </div>
@@ -107,25 +102,24 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-6xl px-6 py-24 sm:py-32 lg:py-40">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#0EA5A3]/30 dark:border-[#0F2B46] bg-[#E8F4F8] dark:bg-[#0F2B46]/20 px-4 py-1.5 text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#E8F4F8]0 animate-pulse" />
-              7 dias gratis — sin tarjeta de credito
+              <span className="h-1.5 w-1.5 rounded-full bg-[#0EA5A3] animate-pulse" />
+              Prueba 7 dias gratis — sin tarjeta de credito
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
-              Tu idea, tu decision.{' '}
+              Construye tu producto con{' '}
               <span className="bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] bg-clip-text text-transparent">
-                Tu producto.
+                un equipo de agentes IA
               </span>
             </h1>
             <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 sm:text-xl">
-              Un equipo de 8 agentes IA especializados que te guian por 8 fases estructuradas
-              para construir cualquier producto tecnologico — desde una web simple hasta un SaaS complejo.
+              De la idea al lanzamiento en semanas. Sin saber programar. Sin contratar equipo.
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Link
                 href="/register"
                 className="w-full rounded-xl bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110 sm:w-auto"
               >
-                Comenzar gratis
+                Empieza tu prueba gratis
               </Link>
               <a
                 href="#como-funciona"
@@ -142,19 +136,19 @@ export default async function HomePage() {
                 <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                8 fases estructuradas
+                Tu lideras, la IA ejecuta
               </div>
               <div className="flex items-center gap-1.5">
                 <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                8 agentes IA
+                De idea a producto en semanas
               </div>
               <div className="flex items-center gap-1.5">
                 <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                Tu controlas todo
+                Sin programar
               </div>
             </div>
           </div>
@@ -200,10 +194,10 @@ export default async function HomePage() {
           <div className="text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-[#0F2B46] dark:text-[#0EA5A3]">Tu equipo</p>
             <h2 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-              8 agentes IA especializados
+              Tu equipo de 8 agentes IA
             </h2>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
-              Cada agente domina su area. Tu decides, ellos ejecutan.
+              Cada agente es especialista en su area. Tu lideras, ellos ejecutan.
             </p>
           </div>
 
@@ -303,7 +297,7 @@ export default async function HomePage() {
             href="/register"
             className="mt-8 inline-block rounded-xl bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110"
           >
-            Comenzar gratis — 7 dias sin costo
+            Empieza tu prueba gratis — 7 dias sin costo
           </Link>
         </div>
       </section>
@@ -311,14 +305,23 @@ export default async function HomePage() {
       {/* Footer */}
       <footer className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 py-12">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div className="flex items-center gap-2.5">
-              <TribuxLogo size={28} />
-              <span className="text-sm font-semibold text-gray-900 dark:text-white">Tribux</span>
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+              <div className="flex items-center gap-2.5">
+                <TribuxLogo size={28} />
+                <span className="text-sm font-semibold text-gray-900 dark:text-white">Tribux</span>
+              </div>
+              <div className="flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
+                <a href="mailto:hola@tribux.dev" className="transition-colors hover:text-gray-700 dark:hover:text-gray-300">Contacto</a>
+                <Link href="/login" className="transition-colors hover:text-gray-700 dark:hover:text-gray-300">Iniciar sesion</Link>
+                <Link href="/register" className="transition-colors hover:text-gray-700 dark:hover:text-gray-300">Crear cuenta</Link>
+              </div>
             </div>
-            <p className="text-xs text-gray-400 dark:text-gray-500">
-              &copy; {new Date().getFullYear()} Tribux. Todos los derechos reservados.
-            </p>
+            <div className="border-t border-gray-200 dark:border-gray-800 pt-6 text-center">
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                &copy; {new Date().getFullYear()} Tribux. Todos los derechos reservados.
+              </p>
+            </div>
           </div>
         </div>
       </footer>
