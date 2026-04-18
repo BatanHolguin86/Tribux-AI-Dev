@@ -259,7 +259,7 @@ function ActionBreakdown({ data }: { data: CostSummary }) {
                 <span className="text-[10px] text-gray-400">{cat.calls} llamadas</span>
               </div>
               <div className="flex items-center gap-3 text-xs">
-                <span className="text-gray-400">{fmtTokens(cat.inputTokens + cat.outputTokens)} tok</span>
+                <span className="text-gray-400">{fmtTokens(cat.inputTokens + cat.outputTokens)} uds</span>
                 <span className="font-semibold text-gray-800 dark:text-gray-200 tabular-nums w-14 text-right">{fmtUSD(cat.costUsd)}</span>
                 <span className="text-gray-400 w-8 text-right">{cat.pct}%</span>
               </div>
@@ -274,7 +274,7 @@ function ActionBreakdown({ data }: { data: CostSummary }) {
         ))}
       </div>
       <div className="mt-3 flex justify-between border-t border-gray-100 pt-3 dark:border-gray-800 text-xs">
-        <span className="text-gray-400">{fmtTokens(data.totalInputTokens)} input · {fmtTokens(data.totalOutputTokens)} output</span>
+        <span className="text-gray-400">{fmtTokens(data.totalInputTokens + data.totalOutputTokens)} unidades de IA procesadas</span>
         <span className="font-bold text-gray-900 dark:text-gray-100">{fmtUSD(data.aiCostAllTime)} total AI</span>
       </div>
     </div>

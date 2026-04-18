@@ -8,28 +8,28 @@ const PLANS = [
     key: 'starter',
     name: 'Starter',
     price: '$49/mes',
-    features: ['1 proyecto', 'CTO + Product Architect + UI/UX', 'Phases 00-02', '7 dias de prueba gratis'],
+    features: ['1 proyecto', '3 agentes (CTO + Producto + Diseno)', 'Valida y diseña tu producto'],
     purchasable: true,
   },
   {
     key: 'builder',
     name: 'Builder',
     price: '$149/mes',
-    features: ['Todo en Starter', '1 proyecto', '8 agentes especializados', 'Phases 00-06, auto-build 10 tasks'],
+    features: ['Todo en Starter', '8 agentes especializados', 'Construccion automatica de codigo'],
     purchasable: true,
   },
   {
     key: 'pro',
     name: 'Pro',
     price: '$299/mes',
-    features: ['Todo en Builder', '3 proyectos', '8 agentes, todas las fases', 'Auto-build ilimitado'],
+    features: ['Todo en Builder', '3 proyectos', 'Construccion ilimitada'],
     purchasable: true,
   },
   {
     key: 'agency',
     name: 'Agency',
     price: '$699/mes',
-    features: ['Todo en Pro', '10 proyectos', '8 agentes, multi-client', 'Soporte prioritario'],
+    features: ['Todo en Pro', '10 proyectos', 'Multiples clientes', 'Soporte prioritario'],
     purchasable: true,
   },
 ]
@@ -97,8 +97,8 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
       <div ref={trapRef} role="dialog" aria-modal="true" className="relative z-10 w-full max-w-2xl rounded-xl bg-white dark:bg-gray-900 p-6 shadow-xl dark:shadow-black/30">
         <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">
           {feature
-            ? `Upgrade para acceder a ${feature}`
-            : 'Upgrade tu plan'}
+            ? `Mejora tu plan para acceder a ${feature}`
+            : 'Mejora tu plan'}
         </h2>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Tu plan actual no incluye esta funcionalidad. Elige un plan para continuar.
@@ -165,7 +165,7 @@ export function PaywallModal({ open, currentPlan, feature, onClose }: PaywallMod
             disabled={!selectedPlan || loading}
             className="flex-1 rounded-lg bg-[#0F2B46] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Procesando...' : 'Upgrade'}
+            {loading ? 'Procesando...' : 'Mejorar plan'}
           </button>
         </div>
       </div>

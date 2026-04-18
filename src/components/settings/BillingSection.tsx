@@ -22,7 +22,7 @@ const PLAN_DETAILS: Record<string, { name: string; price: string; features: stri
   agency: {
     name: 'Agency',
     price: '$699/mes',
-    features: ['10 proyectos', '8 agentes', 'Multi-client', 'Soporte prioritario'],
+    features: ['10 proyectos', '8 agentes', 'Multiples clientes', 'Soporte prioritario'],
   },
   enterprise: {
     name: 'Enterprise',
@@ -217,7 +217,7 @@ export function BillingSection({
                         disabled={loading === plan}
                         className="mt-3 w-full rounded-md bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
                       >
-                        {loading === plan ? 'Procesando...' : 'Upgrade'}
+                        {loading === plan ? 'Procesando...' : 'Mejorar plan'}
                       </button>
                     ) : null}
                   </div>

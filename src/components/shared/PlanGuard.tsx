@@ -25,7 +25,7 @@ export function PlanGuard({ hasAccess, currentPlan, feature, children }: PlanGua
           {feature ? `${feature} requiere un plan superior` : 'Funcionalidad premium'}
         </h2>
         <p className="max-w-md text-sm text-gray-600 dark:text-gray-400">
-          Tu plan actual no incluye acceso a esta funcionalidad. Upgrade para desbloquear todas las
+          Tu plan actual no incluye acceso a esta funcionalidad. Mejora tu plan para desbloquear todas las
           capacidades de Tribux AI.
         </p>
         <button

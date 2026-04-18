@@ -24,13 +24,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </p>
         <div className="mt-10 flex gap-4 text-sm text-[#0EA5A3]">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#0EA5A3]" />8 fases estructuradas
+            <span className="h-2 w-2 rounded-full bg-[#0EA5A3]" />Tu lideras, la IA ejecuta
           </div>
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#0EA5A3]" />8 agentes IA
+            <span className="h-2 w-2 rounded-full bg-[#0EA5A3]" />De idea a producto en semanas
           </div>
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#0EA5A3]" />Tu controlas
+            <span className="h-2 w-2 rounded-full bg-[#0EA5A3]" />Sin programar
           </div>
         </div>
       </div>
