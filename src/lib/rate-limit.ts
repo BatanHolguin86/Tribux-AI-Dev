@@ -1,8 +1,21 @@
 /**
- * In-memory rate limiter for API routes.
- * Limits requests per IP within a sliding window.
- * Suitable for serverless (Vercel) — state resets on cold start,
- * which is acceptable for auth rate limiting (brute force mitigation).
+ * Rate limiter for API routes.
+ *
+ * Current implementation: IN-MEMORY (Map per serverless instance).
+ * Suitable for single-instance (Vercel Hobby) and low-traffic.
+ *
+ * SCALING NOTE: When traffic exceeds ~50 concurrent users or you move
+ * to multi-instance (Vercel Pro/Enterprise), replace the `store` Map
+ * with Upstash Redis (@upstash/ratelimit). The interface stays the same:
+ *
+ *   import { Ratelimit } from '@upstash/ratelimit'
+ *   import { Redis } from '@upstash/redis'
+ *   const ratelimit = new Ratelimit({
+ *     redis: Redis.fromEnv(),
+ *     limiter: Ratelimit.slidingWindow(maxAttempts, `${windowMs}ms`),
+ *   })
+ *
+ * See: docs/02-architecture/decisions/ for scaling plan.
  */
 
 type RateLimitEntry = {
