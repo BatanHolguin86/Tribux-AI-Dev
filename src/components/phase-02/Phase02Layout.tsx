@@ -112,7 +112,7 @@ export function Phase02Layout({
           <div className="flex items-center gap-2">
             <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
               <div
-                className="h-1.5 rounded-full bg-[#0F2B46] transition-all"
+                className="h-1.5 rounded-full bg-brand-primary transition-all"
                 style={{ width: `${(approvedCount / totalSections) * 100}%` }}
               />
             </div>
@@ -160,7 +160,7 @@ export function Phase02Layout({
               onClick={() => setMobileTab('chat')}
               className={`flex-1 py-2 text-sm font-medium transition-colors ${
                 mobileTab === 'chat'
-                  ? 'border-b-2 border-[#0EA5A3] text-[#0F2B46] dark:text-[#0EA5A3]'
+                  ? 'border-b-2 border-brand-teal text-brand-primary dark:text-brand-teal'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
@@ -170,7 +170,7 @@ export function Phase02Layout({
               onClick={() => setMobileTab('document')}
               className={`flex-1 py-2 text-sm font-medium transition-colors ${
                 mobileTab === 'document'
-                  ? 'border-b-2 border-[#0EA5A3] text-[#0F2B46] dark:text-[#0EA5A3]'
+                  ? 'border-b-2 border-brand-teal text-brand-primary dark:text-brand-teal'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >

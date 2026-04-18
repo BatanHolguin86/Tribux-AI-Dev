@@ -58,7 +58,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="font-display text-lg font-display font-bold text-[#0F2B46] dark:text-gray-100">
+          <h2 className="font-display text-lg font-display font-bold text-brand-primary dark:text-gray-100">
             {progress === 100 ? '🎉' : '🚀'} Tu app esta {progress}% lista
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -66,7 +66,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
           </p>
         </div>
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm dark:bg-gray-800">
-          <span className="text-lg font-display font-bold text-[#0F2B46] dark:text-[#0EA5A3]">{progress}%</span>
+          <span className="text-lg font-display font-bold text-brand-primary dark:text-brand-teal">{progress}%</span>
         </div>
       </div>
 
@@ -80,16 +80,16 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
 
       {/* Task stats (if in dev phase) */}
       {taskStats && taskStats.total > 0 && (
-        <div className="mb-4 rounded-lg bg-[#E8F4F8] px-4 py-2.5 dark:bg-[#0F2B46]/20">
+        <div className="mb-4 rounded-lg bg-brand-surface px-4 py-2.5 dark:bg-brand-primary/20">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#0F2B46] dark:text-[#C5E4EC]">
+            <span className="text-xs font-medium text-brand-primary dark:text-[#C5E4EC]">
               Tasks de desarrollo
             </span>
-            <span className="text-xs font-bold text-[#0F2B46] dark:text-[#C5E4EC]">
+            <span className="text-xs font-bold text-brand-primary dark:text-[#C5E4EC]">
               {taskStats.done}/{taskStats.total}
             </span>
           </div>
-          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#C5E4EC] dark:bg-[#0A1F33]">
+          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#C5E4EC] dark:bg-brand-navy">
             <div
               className="h-full rounded-full gradient-phase"
               style={{ width: `${(taskStats.done / taskStats.total) * 100}%` }}
@@ -112,7 +112,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
               key={phaseNum}
               className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                 isActive
-                  ? 'bg-[#0EA5A3]/10 dark:bg-[#0F2B46]/20'
+                  ? 'bg-brand-teal/10 dark:bg-brand-primary/20'
                   : status === 'completed'
                     ? 'opacity-70'
                     : 'opacity-40'
@@ -121,7 +121,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
               <span className="text-base">{icon}</span>
               <span className={`font-medium ${
                 isActive
-                  ? 'text-[#0EA5A3] dark:text-[#0EA5A3]'
+                  ? 'text-brand-teal dark:text-brand-teal'
                   : status === 'completed'
                     ? 'text-gray-600 line-through dark:text-gray-400'
                     : 'text-gray-400 dark:text-gray-500'
@@ -129,7 +129,7 @@ export function ProgressDashboard({ phases, projectName, taskStats }: ProgressDa
                 {label}
               </span>
               {isActive && (
-                <span className="ml-auto h-1.5 w-1.5 animate-pulse rounded-full bg-[#0EA5A3]" />
+                <span className="ml-auto h-1.5 w-1.5 animate-pulse rounded-full bg-brand-teal" />
               )}
             </div>
           )

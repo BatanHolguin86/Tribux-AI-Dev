@@ -64,7 +64,7 @@ export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
       <div className="flex border-t border-white/10 p-3 md:hidden">
         <div className="flex w-full items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0EA5A3] text-[10px] font-bold text-white">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-teal text-[10px] font-bold text-white">
               {initials}
             </div>
             <span className="truncate text-xs text-white/80">{displayName}</span>
@@ -87,7 +87,7 @@ export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
 
       <div className="hidden border-t border-white/10 p-4 md:block">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0EA5A3] text-xs font-bold text-white">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-teal text-xs font-bold text-white">
             {initials}
           </div>
           <div className="min-w-0 flex-1">

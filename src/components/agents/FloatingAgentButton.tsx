@@ -14,7 +14,7 @@ export function FloatingAgentButton({ projectId }: FloatingAgentButtonProps) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#0F2B46] text-white shadow-lg transition-transform hover:scale-105 hover:bg-[#0A1F33]"
+        className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-brand-primary text-white shadow-lg transition-transform hover:scale-105 hover:bg-brand-navy"
         title="Chat con agentes"
       >
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

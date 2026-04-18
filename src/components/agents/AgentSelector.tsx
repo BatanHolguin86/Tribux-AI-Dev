@@ -37,9 +37,9 @@ export function AgentSelector({ agents, activeAgent, onSelect }: AgentSelectorPr
   const specialized = agents.filter((a) => a.id !== 'cto_virtual')
 
   return (
-    <div className="flex flex-col rounded-lg border border-[#E2E8F0] dark:border-gray-700 bg-white dark:bg-gray-900">
+    <div className="flex flex-col rounded-lg border border-brand-border dark:border-gray-700 bg-white dark:bg-gray-900">
       <div className="border-b border-gray-100 dark:border-gray-800 px-3 py-2">
-        <h3 className="text-xs font-semibold uppercase text-[#64748B] dark:text-[#94A3B8]">Agentes</h3>
+        <h3 className="text-xs font-semibold uppercase text-brand-muted dark:text-brand-muted">Agentes</h3>
       </div>
 
       <div className="flex-1 space-y-1 overflow-y-auto p-2">
@@ -55,7 +55,7 @@ export function AgentSelector({ agents, activeAgent, onSelect }: AgentSelectorPr
         />
 
         <div className="px-3 py-1.5">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8] dark:text-[#64748B]">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-muted dark:text-brand-muted">
             Especializados
           </p>
         </div>

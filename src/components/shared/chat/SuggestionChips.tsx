@@ -16,7 +16,7 @@ export function SuggestionChips({ suggestions, onSelect, visible }: Props) {
           key={i}
           type="button"
           onClick={() => onSelect(text)}
-          className="rounded-full border border-[#0EA5A3]/30 bg-[#0EA5A3]/5 px-4 py-2 text-sm font-medium text-[#0EA5A3] transition-all hover:border-[#0EA5A3]/50 hover:bg-[#0EA5A3]/10 hover:shadow-sm dark:border-[#0EA5A3]/20 dark:bg-[#0EA5A3]/10 dark:text-[#0EA5A3] dark:hover:bg-[#0EA5A3]/20"
+          className="rounded-full border border-brand-teal/30 bg-brand-teal/5 px-4 py-2 text-sm font-medium text-brand-teal transition-all hover:border-brand-teal/50 hover:bg-brand-teal/10 hover:shadow-sm dark:border-brand-teal/20 dark:bg-brand-teal/10 dark:text-brand-teal dark:hover:bg-brand-teal/20"
         >
           {text}
         </button>

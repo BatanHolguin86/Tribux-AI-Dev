@@ -14,7 +14,7 @@ const STEP_META = [
 function StepIcon({ status }: { status: StepStatus }) {
   if (status === 'running' || status === 'polling') {
     return (
-      <svg className="h-5 w-5 animate-spin text-[#0EA5A3]" fill="none" viewBox="0 0 24 24">
+      <svg className="h-5 w-5 animate-spin text-brand-teal" fill="none" viewBox="0 0 24 24">
         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
       </svg>
@@ -54,14 +54,14 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
   if (!platformReady) {
     return (
       <div className="mb-6 space-y-3">
-        <div className="rounded-xl border-2 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-5">
+        <div className="rounded-xl border-2 border-brand-amber/30 bg-brand-amber/5 p-5">
           <div className="flex items-start gap-3">
             <span className="text-2xl">⚙️</span>
             <div>
-              <h3 className="font-display text-sm font-bold text-[#0F2B46] dark:text-white">
+              <h3 className="font-display text-sm font-bold text-brand-primary dark:text-white">
                 La configuracion automatica no esta disponible aun
               </h3>
-              <p className="mt-1 text-xs text-[#64748B] dark:text-gray-400">
+              <p className="mt-1 text-xs text-brand-muted dark:text-gray-400">
                 Elige una de estas opciones para preparar tu app:
               </p>
             </div>
@@ -70,29 +70,29 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
 
         <div className="grid gap-3 sm:grid-cols-2">
           {/* Option 1: Contact admin */}
-          <div className="rounded-xl border border-[#E2E8F0] bg-white p-5 dark:border-[#1E3A55] dark:bg-[#0F2B46]">
+          <div className="rounded-xl border border-brand-border bg-white p-5 dark:border-brand-border-dark dark:bg-brand-primary">
             <div className="mb-3 text-2xl">📩</div>
-            <h4 className="font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+            <h4 className="font-display text-sm font-semibold text-brand-primary dark:text-white">
               Pedir al administrador
             </h4>
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-brand-muted">
               El admin puede activar la configuracion automatica en minutos. Solo necesita conectar GitHub, Supabase y Vercel una vez.
             </p>
             <a
               href="mailto:admin@aisquad.dev?subject=Activar%20configuracion%20automatica&body=Hola%2C%20necesito%20que%20actives%20la%20configuracion%20automatica%20(One-Click%20Setup)%20en%20%2Fadmin%2Fplatform-setup.%20Gracias!"
-              className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-[#0EA5A3] px-3 py-2 text-xs font-medium text-[#0EA5A3] transition-colors hover:bg-[#0EA5A3]/5"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-brand-teal px-3 py-2 text-xs font-medium text-brand-teal transition-colors hover:bg-brand-teal/5"
             >
               Contactar administrador
             </a>
           </div>
 
           {/* Option 2: Do it yourself with CTO */}
-          <div className="rounded-xl border border-[#E2E8F0] bg-white p-5 dark:border-[#1E3A55] dark:bg-[#0F2B46]">
+          <div className="rounded-xl border border-brand-border bg-white p-5 dark:border-brand-border-dark dark:bg-brand-primary">
             <div className="mb-3 text-2xl">🤖</div>
-            <h4 className="font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+            <h4 className="font-display text-sm font-semibold text-brand-primary dark:text-white">
               Configurar con ayuda del CTO
             </h4>
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-brand-muted">
               El CTO Virtual te guia paso a paso para crear tu repositorio, base de datos y hosting manualmente.
             </p>
             <button
@@ -101,7 +101,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
                 const tabBtn = document.querySelector('[data-tab="herramientas"]') as HTMLButtonElement
                 if (tabBtn) tabBtn.click()
               }}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-[#0F2B46] px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-[#0A1F33]"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-brand-primary px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-brand-navy"
             >
               Abrir chat con CTO
             </button>
@@ -137,7 +137,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
   }
 
   return (
-    <div className="mb-6 rounded-xl border-2 border-[#0EA5A3]/30 bg-gradient-to-b from-[#E8F4F8]/60 to-white p-6 dark:border-[#0F2B46] dark:from-[#0F2B46]/30 dark:to-gray-900">
+    <div className="mb-6 rounded-xl border-2 border-brand-teal/30 bg-gradient-to-b from-[#E8F4F8]/60 to-white p-6 dark:border-brand-primary dark:from-[#0F2B46]/30 dark:to-gray-900">
       <div className="flex items-start gap-4">
         <span className="text-3xl">⚡</span>
         <div className="flex-1">
@@ -171,7 +171,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
                         href={step.data.repoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-[#0F2B46] underline dark:text-[#0EA5A3]"
+                        className="text-xs text-brand-primary underline dark:text-brand-teal"
                       >
                         Ver →
                       </a>
@@ -198,7 +198,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
             <button
               onClick={handleClick}
               disabled={isRunning}
-              className="mt-4 rounded-lg bg-[#0F2B46] px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+              className="mt-4 rounded-lg bg-brand-primary px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy disabled:opacity-50"
             >
               Configurar todo automaticamente
             </button>
@@ -207,7 +207,7 @@ export function OneClickSetupCard({ projectId, platformReady, existingSetup }: O
           {(error && !isRunning) && (
             <button
               onClick={handleClick}
-              className="mt-2 text-xs font-medium text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
+              className="mt-2 text-xs font-medium text-brand-primary underline hover:text-brand-primary dark:text-brand-teal"
             >
               Reintentar
             </button>

@@ -70,7 +70,7 @@ const INFRA_LABELS: Record<keyof InfraCosts, { name: string; desc: string }> = {
 
 const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   active: { label: 'Activo', classes: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' },
-  trialing: { label: 'Trial', classes: 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20 text-[#0F2B46] dark:text-[#0EA5A3]' },
+  trialing: { label: 'Trial', classes: 'bg-brand-surface dark:bg-brand-primary/20 text-brand-primary dark:text-brand-teal' },
   canceled: { label: 'Cancelado', classes: 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' },
   free: { label: 'Free', classes: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' },
   past_due: { label: 'Pendiente', classes: 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400' },
@@ -98,13 +98,13 @@ function KpiCard({
 }) {
   const valueColor = {
     default: 'text-gray-900 dark:text-white',
-    revenue: 'text-[#0F2B46] dark:text-[#0EA5A3]',
+    revenue: 'text-brand-primary dark:text-brand-teal',
     cost: 'text-red-600 dark:text-red-400',
     profit: 'text-emerald-600 dark:text-emerald-400',
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-[#0EA5A3] dark:hover:border-[#0A1F33]">
+    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-brand-teal dark:hover:border-[#0A1F33]">
       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
       <p className={`mt-2 text-2xl font-display font-bold ${valueColor[variant]}`}>{value}</p>
       {subtitle && <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{subtitle}</p>}
@@ -144,7 +144,7 @@ export function FinanceOverviewTable() {
   if (loading || !data) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0EA5A3]" />
+        <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-brand-teal/30 border-t-[#0EA5A3]" />
       </div>
     )
   }
@@ -169,7 +169,7 @@ export function FinanceOverviewTable() {
         type="month"
         value={month || currentMonthLabel}
         onChange={(e) => setMonth(e.target.value || '')}
-        className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+        className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
       />
 
       {/* KPI cards */}
@@ -229,21 +229,21 @@ export function FinanceOverviewTable() {
                 </span>
               </div>
             ))}
-            <div className="flex items-center justify-between rounded-lg bg-[#E8F4F8] dark:bg-[#0F2B46]/20 px-4 py-3 border border-[#0EA5A3]/30 dark:border-[#0F2B46]">
+            <div className="flex items-center justify-between rounded-lg bg-brand-surface dark:bg-brand-primary/20 px-4 py-3 border border-brand-teal/30 dark:border-brand-primary">
               <div>
-                <span className="text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
+                <span className="text-sm font-medium text-brand-primary dark:text-brand-teal">
                   Costo IA
                 </span>
-                <span className="block text-[11px] text-[#0EA5A3] dark:text-[#0EA5A3] mt-0.5">
+                <span className="block text-[11px] text-brand-teal dark:text-brand-teal mt-0.5">
                   Variable por uso
                 </span>
               </div>
-              <span className="text-sm font-semibold text-[#0F2B46] dark:text-[#0EA5A3] tabular-nums">
+              <span className="text-sm font-semibold text-brand-primary dark:text-brand-teal tabular-nums">
                 {formatUsd(summary.totalCostCurrentMonthUsd)}
               </span>
             </div>
           </div>
-          <div className="mt-4 flex items-center justify-between rounded-lg bg-gradient-to-r from-[#E8F4F8] via-white to-[#E8F4F8] dark:from-[#0A1F33]/20 dark:via-gray-900 dark:to-[#0A1F33]/20 px-4 py-3 border border-[#0EA5A3]/30 dark:border-[#0F2B46]">
+          <div className="mt-4 flex items-center justify-between rounded-lg bg-gradient-to-r from-[#E8F4F8] via-white to-[#E8F4F8] dark:from-[#0A1F33]/20 dark:via-gray-900 dark:to-[#0A1F33]/20 px-4 py-3 border border-brand-teal/30 dark:border-brand-primary">
             <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">Total costos del mes</span>
             <span className="text-lg font-display font-bold text-gray-900 dark:text-white tabular-nums">
               {formatUsd(summary.totalCostsUsd)}
@@ -291,7 +291,7 @@ export function FinanceOverviewTable() {
                   return (
                     <tr key={gr.plan} className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30">
                       <td className="py-3 pr-4">
-                        <span className="inline-flex rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2.5 py-0.5 text-[11px] font-bold text-[#0F2B46] dark:text-[#0EA5A3] uppercase">
+                        <span className="inline-flex rounded-full bg-brand-surface dark:bg-brand-primary/30 px-2.5 py-0.5 text-[11px] font-bold text-brand-primary dark:text-brand-teal uppercase">
                           {gr.plan}
                         </span>
                         <span className="ml-2 text-xs text-gray-400">{gr.activeUsersOnPlan} activos</span>
@@ -402,7 +402,7 @@ export function FinanceOverviewTable() {
                       </div>
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className="inline-flex rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2.5 py-0.5 text-[11px] font-bold text-[#0F2B46] dark:text-[#0EA5A3] uppercase">
+                      <span className="inline-flex rounded-full bg-brand-surface dark:bg-brand-primary/30 px-2.5 py-0.5 text-[11px] font-bold text-brand-primary dark:text-brand-teal uppercase">
                         {u.plan}
                       </span>
                     </td>

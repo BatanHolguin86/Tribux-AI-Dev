@@ -22,7 +22,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
   const phaseName = PHASE_NAMES[project.active_phase] ?? 'Unknown'
 
   return (
-    <div className="group rounded-xl border border-[#E2E8F0] dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-900/20 transition-all hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600">
+    <div className="group rounded-xl border border-brand-border dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-900/20 transition-all hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600">
       <div className="p-5">
         {/* Header: industry + menu */}
         <div className="flex items-start justify-between">
@@ -30,7 +30,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="rounded-lg p-1.5 text-[#94A3B8] dark:text-[#64748B] opacity-0 transition-all group-hover:opacity-100 hover:bg-[#F1F5F9] dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-[#94A3B8]"
+              className="rounded-lg p-1.5 text-brand-muted dark:text-brand-muted opacity-0 transition-all group-hover:opacity-100 hover:bg-[#F1F5F9] dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-brand-muted"
               aria-label="Menu del proyecto"
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -42,7 +42,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
             {menuOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-                <div className="absolute right-0 z-20 mt-1 w-40 rounded-xl border border-[#E2E8F0] dark:border-gray-700 bg-white dark:bg-gray-900 py-1 shadow-lg dark:shadow-black/30">
+                <div className="absolute right-0 z-20 mt-1 w-40 rounded-xl border border-brand-border dark:border-gray-700 bg-white dark:bg-gray-900 py-1 shadow-lg dark:shadow-black/30">
                   <button
                     onClick={() => {
                       setMenuOpen(false)
@@ -50,7 +50,7 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
                     }}
                     className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[#334155] dark:text-gray-300 hover:bg-[#F8FAFC] dark:hover:bg-gray-800"
                   >
-                    <svg className="h-3.5 w-3.5 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="h-3.5 w-3.5 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                     </svg>
                     Editar
@@ -74,17 +74,17 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
         </div>
 
         {/* Name + description */}
-        <h3 className="mt-2 text-base font-semibold text-[#0F2B46] dark:text-gray-100">{project.name}</h3>
+        <h3 className="mt-2 text-base font-semibold text-brand-primary dark:text-gray-100">{project.name}</h3>
         {project.description && (
-          <p className="mt-1 line-clamp-2 text-sm text-[#64748B] dark:text-[#94A3B8]">{project.description}</p>
+          <p className="mt-1 line-clamp-2 text-sm text-brand-muted dark:text-brand-muted">{project.description}</p>
         )}
 
         {/* Active phase + progress */}
         <div className="mt-3 flex items-center gap-2">
-          <span className="rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/20 px-2 py-0.5 text-[10px] font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">
+          <span className="rounded-full bg-brand-surface dark:bg-brand-primary/20 px-2 py-0.5 text-[10px] font-semibold text-brand-primary dark:text-brand-teal">
             Phase {String(project.active_phase).padStart(2, '0')}
           </span>
-          <span className="text-xs font-medium text-gray-600 dark:text-[#94A3B8]">{phaseName}</span>
+          <span className="text-xs font-medium text-gray-600 dark:text-brand-muted">{phaseName}</span>
           {project.cycle_number > 1 && (
             <span className="rounded-full bg-amber-100 dark:bg-amber-900/20 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-400">
               Ciclo {project.cycle_number}
@@ -103,8 +103,8 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
         )}
 
         {/* Next action */}
-        <div className="mt-3 flex items-center gap-1.5 text-xs text-[#64748B] dark:text-[#94A3B8]">
-          <svg className="h-3.5 w-3.5 text-[#94A3B8] dark:text-[#64748B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <div className="mt-3 flex items-center gap-1.5 text-xs text-brand-muted dark:text-brand-muted">
+          <svg className="h-3.5 w-3.5 text-brand-muted dark:text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
           <span className="font-medium text-[#334155] dark:text-gray-300">{project.next_action}</span>
@@ -112,11 +112,11 @@ export function ProjectCard({ project, onEdit, onArchive }: ProjectCardProps) {
 
         {/* Footer */}
         <div className="mt-4 flex items-center justify-between border-t border-gray-100 dark:border-gray-800 pt-4">
-          <span className="text-xs text-[#94A3B8] dark:text-[#64748B]">{formatRelativeDate(project.last_activity)}</span>
+          <span className="text-xs text-brand-muted dark:text-brand-muted">{formatRelativeDate(project.last_activity)}</span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setExpanded(!expanded)}
-              className="rounded-lg p-1.5 text-[#94A3B8] dark:text-[#64748B] hover:bg-[#F1F5F9] dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-[#94A3B8] transition-colors"
+              className="rounded-lg p-1.5 text-brand-muted dark:text-brand-muted hover:bg-[#F1F5F9] dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-brand-muted transition-colors"
               title={expanded ? 'Contraer' : 'Expandir timeline'}
             >
               <svg

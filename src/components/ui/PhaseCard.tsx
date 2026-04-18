@@ -42,10 +42,10 @@ export function PhaseCard({
     <button
       onClick={onClick}
       disabled={isLocked}
-      className={`w-full rounded-xl border bg-white p-5 text-left transition-all dark:bg-[#0F2B46] ${
+      className={`w-full rounded-xl border bg-white p-5 text-left transition-all dark:bg-brand-primary ${
         isLocked
-          ? 'cursor-not-allowed border-[#E2E8F0]/50 opacity-50 dark:border-[#1E3A55]/50'
-          : 'border-[#E2E8F0] hover:border-[#0EA5A3]/50 hover:shadow-md dark:border-[#1E3A55] dark:hover:border-[#0EA5A3]/50'
+          ? 'cursor-not-allowed border-brand-border/50 opacity-50 dark:border-brand-border-dark/50'
+          : 'border-brand-border hover:border-brand-teal/50 hover:shadow-md dark:border-brand-border-dark dark:hover:border-brand-teal/50'
       }`}
     >
       {/* Header */}
@@ -58,17 +58,17 @@ export function PhaseCard({
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="font-display text-sm font-bold text-[#0F2B46] dark:text-white">{title}</h3>
+            <h3 className="font-display text-sm font-bold text-brand-primary dark:text-white">{title}</h3>
             {hasGate && <StatusBadge variant="gate" />}
             {status === 'completed' && <StatusBadge variant="completed" label="Completada" />}
           </div>
-          <p className="mt-0.5 text-xs text-[#94A3B8]">{description}</p>
+          <p className="mt-0.5 text-xs text-brand-muted">{description}</p>
         </div>
       </div>
 
       {/* Progress bar */}
       <div className="mt-4">
-        <div className="h-2 overflow-hidden rounded-full bg-[#F1F5F9] dark:bg-[#0A1F33]">
+        <div className="h-2 overflow-hidden rounded-full bg-[#F1F5F9] dark:bg-brand-navy">
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{
@@ -77,7 +77,7 @@ export function PhaseCard({
             }}
           />
         </div>
-        <p className="mt-1.5 text-right text-[10px] text-[#94A3B8]">{progress}% completa</p>
+        <p className="mt-1.5 text-right text-[10px] text-brand-muted">{progress}% completa</p>
       </div>
     </button>
   )

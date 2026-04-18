@@ -111,7 +111,7 @@ export function PhaseChatPanel({ projectId, phaseNumber, initialMessages }: Phas
         try { parsed = JSON.parse(match[1]) } catch { return null }
         if (!parsed) return null
         return (
-          <div className="mx-3 my-2 rounded-lg border-l-4 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-3 text-sm text-[#F59E0B] dark:text-[#F59E0B]" role="alert">
+          <div className="mx-3 my-2 rounded-lg border-l-4 border-brand-amber/30 bg-brand-amber/5 p-3 text-sm text-brand-amber dark:text-brand-amber" role="alert">
             <p className="text-xs font-medium">{parsed.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}</p>
             <p className="mt-0.5 text-xs opacity-80">{parsed.message}</p>
           </div>
@@ -122,8 +122,8 @@ export function PhaseChatPanel({ projectId, phaseNumber, initialMessages }: Phas
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
         {messages.length === 0 && !isLoading && (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#0EA5A3]/30 border-t-[#0F2B46]" />
-            <p className="text-sm text-[#0F2B46] font-medium">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-teal/30 border-t-[#0F2B46]" />
+            <p className="text-sm text-brand-primary font-medium">
               El CTO esta analizando {phaseName}...
             </p>
             <p className="text-xs text-gray-400">

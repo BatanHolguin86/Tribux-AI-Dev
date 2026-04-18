@@ -189,7 +189,7 @@ export function ExternalToolImportModal({
               onClick={() => { setActiveTab(tab.id); resetState() }}
               className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'border-b-2 border-[#0EA5A3] text-[#0F2B46] dark:text-[#0EA5A3]'
+                  ? 'border-b-2 border-brand-teal text-brand-primary dark:text-brand-teal'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
@@ -222,7 +222,7 @@ export function ExternalToolImportModal({
                   onClick={() => setDesignType(t)}
                   className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                     designType === t
-                      ? 'bg-[#0F2B46] text-white'
+                      ? 'bg-brand-primary text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300'
                   }`}
                 >
@@ -281,7 +281,7 @@ export function ExternalToolImportModal({
                               type="checkbox"
                               checked={selectedFrames.has(frame.node_id)}
                               onChange={() => toggleFrame(frame.node_id)}
-                              className="rounded border-gray-300 text-[#0F2B46] focus:ring-[#0EA5A3]"
+                              className="rounded border-gray-300 text-brand-primary focus:ring-[#0EA5A3]"
                             />
                             <span className="text-gray-900 dark:text-gray-100">{frame.name}</span>
                             <span className="text-xs text-gray-400">{frame.page}</span>
@@ -390,7 +390,7 @@ export function ExternalToolImportModal({
               (activeTab === 'v0' && (!v0Content.trim() || !v0ScreenName.trim())) ||
               (activeTab === 'lovable' && (!lovableUrl.trim() || !lovableScreenName.trim()))
             }
-            className="rounded-md bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
+            className="rounded-md bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-navy disabled:opacity-50"
           >
             {loading
               ? 'Procesando...'

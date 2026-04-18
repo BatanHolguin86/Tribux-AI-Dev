@@ -91,7 +91,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
               id="edit-name"
               type="text"
               {...register('name')}
-              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             />
             {errors.name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>}
           </div>
@@ -104,7 +104,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
               id="edit-desc"
               rows={3}
               {...register('description')}
-              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             />
           </div>
 
@@ -117,7 +117,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
               type="url"
               placeholder="https://github.com/usuario/repo"
               {...register('repo_url')}
-              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             />
             {errors.repo_url && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.repo_url.message}</p>}
             <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
@@ -136,7 +136,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
                 type="text"
                 placeholder="abcdefghijklmnop"
                 {...register('supabase_project_ref')}
-                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
               />
               <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
                 URL de Supabase: supabase.com/dashboard/project/<strong>TU_REF</strong>
@@ -151,7 +151,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
                 type="password"
                 placeholder={project?.has_supabase_token ? '••••••••  (guardado)' : 'sbp_xxxxxxxxxxxxxxxx'}
                 {...register('supabase_access_token')}
-                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+                className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
               />
               <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
                 Genera uno en supabase.com/dashboard/account/tokens. Permite ejecutar SQL desde la app.
@@ -174,7 +174,7 @@ export function EditProjectModal({ project, onClose, onUpdated }: EditProjectMod
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 rounded-lg bg-[#0F2B46] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+              className="flex-1 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy disabled:opacity-50"
             >
               {isSubmitting ? 'Guardando...' : 'Guardar cambios'}
             </button>

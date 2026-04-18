@@ -140,7 +140,7 @@ export function ReadinessCheckWidget({ projectId }: { projectId: string }) {
                       href={check.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
+                      className="text-xs text-brand-primary underline hover:text-brand-primary dark:text-brand-teal"
                     >
                       Ver →
                     </a>

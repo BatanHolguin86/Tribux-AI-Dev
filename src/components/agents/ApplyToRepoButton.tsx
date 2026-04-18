@@ -81,7 +81,7 @@ export function ApplyToRepoButton({ content, projectId, repoUrl }: ApplyToRepoBu
     return (
       <button
         onClick={() => setExpanded(true)}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-[#E8F4F8] px-3 py-1.5 text-xs font-medium text-[#0F2B46] ring-1 ring-[#0EA5A3]/30 transition-colors hover:bg-[#E8F4F8] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3] dark:ring-[#0F2B46]/50"
+        className="inline-flex items-center gap-1.5 rounded-lg bg-brand-surface px-3 py-1.5 text-xs font-medium text-brand-primary ring-1 ring-[#0EA5A3]/30 transition-colors hover:bg-brand-surface dark:bg-brand-primary/20 dark:text-brand-teal dark:ring-[#0F2B46]/50"
       >
         <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -92,8 +92,8 @@ export function ApplyToRepoButton({ content, projectId, repoUrl }: ApplyToRepoBu
   }
 
   return (
-    <div className="mt-2 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8]/50 p-3 dark:border-[#0F2B46]/50 dark:bg-[#0F2B46]/10">
-      <div className="mb-2 text-xs font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
+    <div className="mt-2 rounded-lg border border-brand-teal/30 bg-brand-surface/50 p-3 dark:border-brand-primary/50 dark:bg-brand-primary/10">
+      <div className="mb-2 text-xs font-medium text-brand-primary dark:text-brand-teal">
         Archivos a aplicar:
       </div>
       <ul className="mb-3 space-y-1">
@@ -112,7 +112,7 @@ export function ApplyToRepoButton({ content, projectId, repoUrl }: ApplyToRepoBu
         value={commitMessage}
         onChange={(e) => setCommitMessage(e.target.value)}
         placeholder="Mensaje de commit..."
-        className="mb-2 w-full rounded-md border border-gray-300 px-2.5 py-1.5 text-xs dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+        className="mb-2 w-full rounded-md border border-gray-300 px-2.5 py-1.5 text-xs dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
       />
 
       {error && (
@@ -129,7 +129,7 @@ export function ApplyToRepoButton({ content, projectId, repoUrl }: ApplyToRepoBu
         <button
           onClick={handleApply}
           disabled={applying || !commitMessage.trim()}
-          className="rounded-md bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+          className="rounded-md bg-brand-primary px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-navy disabled:opacity-50"
         >
           {applying ? 'Aplicando...' : 'Confirmar y aplicar'}
         </button>

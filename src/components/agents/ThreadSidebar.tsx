@@ -62,7 +62,7 @@ export function ThreadSidebar({
       <div className="flex-1 space-y-0.5 overflow-y-auto p-1.5">
         <button
           onClick={onNewThread}
-          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#0F2B46] dark:text-[#0EA5A3] transition-colors hover:bg-[#E8F4F8] dark:hover:bg-[#0F2B46]/20"
+          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-primary dark:text-brand-teal transition-colors hover:bg-brand-surface dark:hover:bg-brand-primary/20"
         >
           <span>+</span> Nueva conversacion
         </button>

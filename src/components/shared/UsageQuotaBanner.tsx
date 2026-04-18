@@ -79,7 +79,7 @@ export function UsageQuotaBanner() {
             {quota.canTopUp && (quota.status === 'exceeded' || quota.status === 'whale') && (
               <button
                 onClick={() => setShowModal(true)}
-                className="rounded-lg bg-[#0F2B46] px-3 py-1 text-xs font-semibold text-white transition-colors hover:bg-[#0A1F33]"
+                className="rounded-lg bg-brand-primary px-3 py-1 text-xs font-semibold text-white transition-colors hover:bg-brand-navy"
               >
                 Comprar creditos
               </button>

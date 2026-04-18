@@ -127,7 +127,7 @@ export function DesignChat({
         try { parsed = JSON.parse(match[1]) } catch { return null }
         if (!parsed) return null
         return (
-          <div className="mx-3 my-2 rounded-lg border-l-4 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-3 text-sm text-[#F59E0B] dark:text-[#F59E0B]" role="alert">
+          <div className="mx-3 my-2 rounded-lg border-l-4 border-brand-amber/30 bg-brand-amber/5 p-3 text-sm text-brand-amber dark:text-brand-amber" role="alert">
             <p className="text-xs font-medium">{parsed.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}</p>
             <p className="mt-0.5 text-xs opacity-80">{parsed.message}</p>
           </div>
@@ -135,7 +135,7 @@ export function DesignChat({
       })()}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4" role="log" aria-live="polite">
         {messages.length === 0 && isLoading && (
-          <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-dashed border-[#0EA5A3]/30 bg-[#E8F4F8]/40 px-6 py-10 text-center dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/20">
+          <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-dashed border-brand-teal/30 bg-brand-surface/40 px-6 py-10 text-center dark:border-brand-primary/40 dark:bg-brand-navy/20">
             <div
               className="h-11 w-11 animate-pulse rounded-full bg-gradient-to-br from-[#0EA5A3] to-[#0EA5A3] opacity-80"
               aria-hidden
@@ -185,8 +185,8 @@ export function DesignChat({
           </div>
         )}
         {caminoABusy && (
-          <div className="mb-2 flex items-center gap-2 rounded-md border border-[#0EA5A3]/30 bg-[#E8F4F8]/80 px-3 py-2 text-xs text-[#0F2B46] dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/30 dark:text-[#E8F4F8]">
-            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[#0EA5A3] border-t-transparent" />
+          <div className="mb-2 flex items-center gap-2 rounded-md border border-brand-teal/30 bg-brand-surface/80 px-3 py-2 text-xs text-brand-primary dark:border-brand-primary/40 dark:bg-brand-navy/30 dark:text-[#E8F4F8]">
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-brand-teal border-t-transparent" />
             Generando pantallas en el servidor (Camino A)… puede tardar hasta ~1 min.
           </div>
         )}

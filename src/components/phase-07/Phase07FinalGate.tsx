@@ -86,7 +86,7 @@ export function Phase07FinalGate({ projectId }: Phase07FinalGateProps) {
           <button
             onClick={handleNewCycle}
             disabled={startingCycle}
-            className="rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#0A1F33] disabled:opacity-50"
+            className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-navy disabled:opacity-50"
           >
             {startingCycle ? 'Iniciando...' : 'Iniciar nuevo ciclo'}
           </button>
@@ -94,7 +94,7 @@ export function Phase07FinalGate({ projectId }: Phase07FinalGateProps) {
       ) : !showConfirm ? (
         <button
           onClick={() => setShowConfirm(true)}
-          className="mt-4 rounded-lg bg-[#0F2B46] px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33]"
+          className="mt-4 rounded-lg bg-brand-primary px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy"
         >
           Completar ciclo IA DLC
         </button>
@@ -111,7 +111,7 @@ export function Phase07FinalGate({ projectId }: Phase07FinalGateProps) {
             <button
               onClick={handleApprove}
               disabled={isApproving}
-              className="rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#0A1F33] disabled:opacity-50"
+              className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-navy disabled:opacity-50"
             >
               {isApproving ? 'Aprobando...' : 'Confirmar'}
             </button>

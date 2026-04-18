@@ -8,21 +8,21 @@
 export function EmptyResponseBanner() {
   return (
     <div
-      className="mx-3 my-2 rounded-xl border border-[#F59E0B]/30 bg-[#F59E0B]/5 p-4"
+      className="mx-3 my-2 rounded-xl border border-brand-amber/30 bg-brand-amber/5 p-4"
       role="alert"
     >
       <div className="flex items-start gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F59E0B]/10 text-lg">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-amber/10 text-lg">
           💳
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-display font-semibold text-[#F59E0B]">
+          <p className="text-sm font-display font-semibold text-brand-amber">
             No se recibio respuesta del asistente
           </p>
-          <p className="mt-1 text-xs text-[#64748B] dark:text-gray-400">
+          <p className="mt-1 text-xs text-brand-muted dark:text-gray-400">
             Esto puede ocurrir si los creditos de IA estan agotados o si hubo un problema temporal con el servicio.
           </p>
-          <p className="mt-2 text-[10px] text-[#94A3B8]">
+          <p className="mt-2 text-[10px] text-brand-muted">
             Verifica tus creditos en console.anthropic.com o contacta al administrador.
           </p>
         </div>

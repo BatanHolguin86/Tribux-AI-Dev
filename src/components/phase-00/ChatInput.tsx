@@ -40,7 +40,7 @@ export function ChatInput({ value, onChange, onSubmit, onStop, isLoading, disabl
         placeholder="Escribe tu respuesta..."
         disabled={disabled || isLoading}
         rows={1}
-        className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] disabled:opacity-50"
+        className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] disabled:opacity-50"
       />
       {isLoading ? (
         <button
@@ -53,7 +53,7 @@ export function ChatInput({ value, onChange, onSubmit, onStop, isLoading, disabl
         <button
           onClick={onSubmit}
           disabled={!value.trim() || disabled}
-          className="shrink-0 rounded-lg bg-[#0F2B46] px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+          className="shrink-0 rounded-lg bg-brand-primary px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy disabled:opacity-50"
         >
           Enviar
         </button>

@@ -11,8 +11,8 @@ export function DashboardHeader({ summary, onCreateProject }: DashboardHeaderPro
   return (
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-2xl font-display font-bold text-[#0F2B46] dark:text-gray-100">Tus proyectos</h1>
-        <p className="mt-1 text-sm text-[#64748B] dark:text-[#94A3B8]">
+        <h1 className="text-2xl font-display font-bold text-brand-primary dark:text-gray-100">Tus proyectos</h1>
+        <p className="mt-1 text-sm text-brand-muted dark:text-brand-muted">
           {summary.total_active === 0
             ? 'Crea tu primer proyecto para comenzar'
             : `${summary.total_active} proyecto${summary.total_active !== 1 ? 's' : ''} activo${summary.total_active !== 1 ? 's' : ''}`}

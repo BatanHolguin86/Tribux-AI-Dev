@@ -43,7 +43,7 @@ function renderInline(text: string): React.ReactNode[] {
     if (code <= bold && code <= italic && codeMatch) {
       if (codeMatch.index! > 0) parts.push(remaining.slice(0, codeMatch.index!))
       parts.push(
-        <code key={keyIdx++} className="rounded bg-[#E8F4F8] px-2 py-0.5 font-mono text-xs text-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3]">
+        <code key={keyIdx++} className="rounded bg-brand-surface px-2 py-0.5 font-mono text-xs text-brand-primary dark:bg-brand-primary/20 dark:text-brand-teal">
           {codeMatch[1]}
         </code>
       )
@@ -120,7 +120,7 @@ function HtmlPreview({ content }: { content: string }) {
         <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vista previa</span>
         <button
           onClick={() => setShowCode(!showCode)}
-          className="text-[10px] font-medium text-[#0F2B46] dark:text-[#0EA5A3] hover:text-[#0F2B46] dark:hover:text-[#0EA5A3]"
+          className="text-[10px] font-medium text-brand-primary dark:text-brand-teal hover:text-brand-primary dark:hover:text-brand-teal"
         >
           {showCode ? 'Ver diseño' : 'Ver código'}
         </button>
@@ -303,7 +303,7 @@ function renderTextContent(text: string, isUser: boolean, keyPrefix: string): Re
         <Tag
           key={`${keyPrefix}-${pi}`}
           className={`my-1.5 space-y-1 pl-4 ${isNumbered ? 'list-decimal' : 'list-disc'} ${
-            isUser ? 'marker:text-[#0EA5A3]' : 'marker:text-[#0EA5A3] dark:marker:text-[#0EA5A3]'
+            isUser ? 'marker:text-brand-teal' : 'marker:text-brand-teal dark:marker:text-brand-teal'
           }`}
         >
           {items.map((item, li) => {
@@ -371,7 +371,7 @@ function ActionButton({ action, projectId }: { action: ActionSuggestion; project
   return (
     <button
       onClick={handleClick}
-      className="mt-2 flex items-center gap-1.5 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] px-3 py-1.5 text-xs font-medium text-[#0F2B46] transition-colors hover:bg-[#E8F4F8] dark:border-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3] dark:hover:bg-[#0F2B46]/50"
+      className="mt-2 flex items-center gap-1.5 rounded-lg border border-brand-teal/30 bg-brand-surface px-3 py-1.5 text-xs font-medium text-brand-primary transition-colors hover:bg-brand-surface dark:border-brand-primary dark:bg-brand-primary/30 dark:text-brand-teal dark:hover:bg-brand-primary/50"
     >
       {action.type === 'navigate' ? (
         <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -395,7 +395,7 @@ export function ChatMessage({ role, content, createdAt, projectId, agentName, ag
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
       {/* Avatar */}
       {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#E8F4F8] text-sm dark:bg-[#0F2B46]">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-surface text-sm dark:bg-brand-primary">
           {agentIcon ?? '🧠'}
         </div>
       )}
@@ -403,20 +403,20 @@ export function ChatMessage({ role, content, createdAt, projectId, agentName, ag
       {/* Bubble */}
       <div className={`max-w-[85%] min-w-0 ${isUser ? 'text-right' : ''}`}>
         {!isUser && agentName && (
-          <p className="mb-0.5 text-[10px] font-medium text-[#94A3B8]">{agentName}</p>
+          <p className="mb-0.5 text-[10px] font-medium text-brand-muted">{agentName}</p>
         )}
         <div
           className={`inline-block px-4 py-3 text-sm leading-relaxed ${
             isUser
-              ? 'rounded-2xl rounded-tr-md bg-[#0F2B46] text-white'
-              : 'rounded-2xl rounded-tl-md border border-[#E2E8F0] bg-white text-[#0F2B46] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200'
+              ? 'rounded-2xl rounded-tr-md bg-brand-primary text-white'
+              : 'rounded-2xl rounded-tl-md border border-brand-border bg-white text-brand-primary dark:border-brand-border-dark dark:bg-brand-primary dark:text-gray-200'
           }`}
         >
           {renderMarkdown(cleanText, isUser)}
         </div>
         {action && <ActionButton action={action} projectId={projectId} />}
         {createdAt && (
-          <p className={`mt-1 text-[10px] text-[#94A3B8] ${isUser ? 'text-right' : ''}`}>
+          <p className={`mt-1 text-[10px] text-brand-muted ${isUser ? 'text-right' : ''}`}>
             {formatRelativeDate(createdAt)}
           </p>
         )}
@@ -424,7 +424,7 @@ export function ChatMessage({ role, content, createdAt, projectId, agentName, ag
 
       {/* User badge */}
       {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46] text-[10px] font-bold text-white">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-primary text-[10px] font-bold text-white">
           Tu
         </div>
       )}

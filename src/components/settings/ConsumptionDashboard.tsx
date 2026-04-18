@@ -51,14 +51,14 @@ const PLAN_LABELS: Record<string, string> = {
 }
 
 const STATUS_CONFIG: Record<string, { color: string; bg: string; label: string }> = {
-  ok: { color: 'text-[#0EA5A3]', bg: 'bg-[#0EA5A3]', label: 'Normal' },
+  ok: { color: 'text-brand-teal', bg: 'bg-brand-teal', label: 'Normal' },
   warning: { color: 'text-amber-600', bg: 'bg-amber-400', label: 'Cerca del limite' },
   exceeded: { color: 'text-orange-600', bg: 'bg-orange-500', label: 'Limite alcanzado' },
   whale: { color: 'text-red-600', bg: 'bg-red-500', label: 'Excedido' },
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  chat: 'bg-[#0EA5A3]', build: 'bg-[#0F2B46]', docs: 'bg-blue-500',
+  chat: 'bg-brand-teal', build: 'bg-brand-primary', docs: 'bg-blue-500',
   testing: 'bg-green-500', infra: 'bg-purple-500', deploy: 'bg-amber-500',
   design: 'bg-pink-500', analysis: 'bg-indigo-500', other: 'bg-gray-400',
 }
@@ -88,7 +88,7 @@ export function ConsumptionDashboard() {
     return (
       <section className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
         <div className="flex items-center justify-center py-12">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#0EA5A3] border-t-transparent" />
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand-teal border-t-transparent" />
         </div>
       </section>
     )
@@ -115,7 +115,7 @@ export function ConsumptionDashboard() {
         <div className="mt-5 rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-2xl font-display font-bold text-[#0F2B46] dark:text-white">
+              <p className="text-2xl font-display font-bold text-brand-primary dark:text-white">
                 ${quota.usedUsd.toFixed(2)}
                 <span className="ml-1 text-sm font-normal text-gray-400">
                   / ${quota.effectiveBudgetUsd.toFixed(2)}
@@ -126,7 +126,7 @@ export function ConsumptionDashboard() {
                   {PLAN_LABELS[quota.plan]} — Budget mensual
                 </span>
                 {quota.creditsUsd > 0 && (
-                  <span className="rounded bg-[#0EA5A3]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#0EA5A3]">
+                  <span className="rounded bg-brand-teal/10 px-1.5 py-0.5 text-[10px] font-medium text-brand-teal">
                     +${quota.creditsUsd.toFixed(0)} creditos
                   </span>
                 )}
@@ -160,7 +160,7 @@ export function ConsumptionDashboard() {
           {quota.canTopUp && (quota.status === 'exceeded' || quota.status === 'whale') && (
             <button
               onClick={() => setShowTopUp(true)}
-              className="mt-3 w-full rounded-lg bg-[#0F2B46] py-2 text-sm font-medium text-white hover:bg-[#0A1F33]"
+              className="mt-3 w-full rounded-lg bg-brand-primary py-2 text-sm font-medium text-white hover:bg-brand-navy"
             >
               Comprar creditos para seguir construyendo
             </button>
@@ -209,7 +209,7 @@ export function ConsumptionDashboard() {
                       ${m.costUsd.toFixed(0)}
                     </span>
                     <div
-                      className={`w-full rounded-t ${isCurrent ? 'bg-[#0EA5A3]' : 'bg-gray-200 dark:bg-gray-700'}`}
+                      className={`w-full rounded-t ${isCurrent ? 'bg-brand-teal' : 'bg-gray-200 dark:bg-gray-700'}`}
                       style={{ height: barH }}
                     />
                     <span className="text-[9px] text-gray-400">

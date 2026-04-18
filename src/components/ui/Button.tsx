@@ -13,11 +13,11 @@ type ButtonProps = {
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary: 'bg-[#0F2B46] text-white hover:bg-[#0A1F33] shadow-sm',
-  secondary: 'bg-[#0EA5A3] text-white hover:bg-[#0C8C8A] shadow-sm',
-  outline: 'border border-[#E2E8F0] bg-white text-[#0F2B46] hover:bg-[#F8FAFC] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-white dark:hover:bg-[#0A1F33]',
-  accent: 'bg-[#F59E0B] text-white hover:bg-[#D97706] shadow-sm',
-  ghost: 'text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F2B46] dark:hover:bg-white/5 dark:hover:text-white',
+  primary: 'bg-brand-primary text-white hover:bg-brand-navy shadow-sm',
+  secondary: 'bg-brand-teal text-white hover:bg-[#0C8C8A] shadow-sm',
+  outline: 'border border-brand-border bg-white text-brand-primary hover:bg-[#F8FAFC] dark:border-brand-border-dark dark:bg-brand-primary dark:text-white dark:hover:bg-brand-navy',
+  accent: 'bg-brand-amber text-white hover:bg-[#D97706] shadow-sm',
+  ghost: 'text-brand-muted hover:bg-[#F1F5F9] hover:text-brand-primary dark:hover:bg-white/5 dark:hover:text-white',
   danger: 'bg-[#EF4444] text-white hover:bg-[#DC2626] shadow-sm',
 }
 

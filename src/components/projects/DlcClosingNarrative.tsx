@@ -10,12 +10,12 @@ export function DlcClosingNarrative({ variant = 'project' }: DlcClosingNarrative
 
   return (
     <div
-      className={`rounded-xl border border-[#0EA5A3]/30/80 bg-[#E8F4F8]/40 px-3 py-2.5 text-xs leading-relaxed text-gray-700 dark:border-[#0F2B46]/35 dark:bg-[#0A1F33]/20 dark:text-gray-300 ${
+      className={`rounded-xl border border-brand-teal/30/80 bg-brand-surface/40 px-3 py-2.5 text-xs leading-relaxed text-gray-700 dark:border-brand-primary/35 dark:bg-brand-navy/20 dark:text-gray-300 ${
         isDash ? 'mt-4' : 'mb-4'
       }`}
     >
       <p>
-        <span className="font-semibold text-[#0F2B46] dark:text-[#0EA5A3]/30">
+        <span className="font-semibold text-brand-primary dark:text-brand-teal/30">
           {isDash ? 'Metodología IA DLC — ' : 'Diseña, construye y lanza — '}
         </span>
         {isDash

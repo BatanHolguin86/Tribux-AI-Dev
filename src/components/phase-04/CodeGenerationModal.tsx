@@ -113,8 +113,8 @@ export function CodeGenerationModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-5 py-3 dark:border-gray-700 dark:bg-gray-800">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0F2B46]">
-              <span className="text-sm font-bold text-[#0EA5A3]">T</span>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-primary">
+              <span className="text-sm font-bold text-brand-teal">T</span>
             </div>
             <div>
               <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -127,8 +127,8 @@ export function CodeGenerationModal({
           </div>
           <div className="flex items-center gap-2">
             {isStreaming && (
-              <span className="flex items-center gap-1.5 text-xs text-[#0F2B46] dark:text-[#0EA5A3]">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#E8F4F8]0" />
+              <span className="flex items-center gap-1.5 text-xs text-brand-primary dark:text-brand-teal">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-surface0" />
                 Generando...
               </span>
             )}
@@ -175,7 +175,7 @@ export function CodeGenerationModal({
           {!content && isStreaming && (
             <div className="flex items-center justify-center py-12">
               <div className="flex flex-col items-center gap-3">
-                <svg className="h-8 w-8 animate-spin text-[#0EA5A3]" fill="none" viewBox="0 0 24 24">
+                <svg className="h-8 w-8 animate-spin text-brand-teal" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
@@ -209,7 +209,7 @@ export function CodeGenerationModal({
                 href={commitResult.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-2 text-[#0F2B46] underline dark:text-[#0EA5A3]"
+                className="ml-2 text-brand-primary underline dark:text-brand-teal"
               >
                 Ver commit
               </a>

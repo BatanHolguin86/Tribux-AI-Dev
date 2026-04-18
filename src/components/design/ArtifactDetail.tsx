@@ -152,7 +152,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
               href={artifact.external_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
+              className="text-xs text-brand-primary underline hover:text-brand-primary dark:text-brand-teal"
             >
               Abrir original →
             </a>
@@ -180,7 +180,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
                 onClick={() => setDevice(key)}
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                   device === key
-                    ? 'bg-[#0F2B46] text-white'
+                    ? 'bg-brand-primary text-white'
                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
                 }`}
               >
@@ -196,7 +196,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
 
       {/* CTA: align generated visual with the 6 design-kit tools */}
       {displayContent && status !== 'generating' && (
-        <div className="mb-4 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8]/60 p-4 dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/20">
+        <div className="mb-4 rounded-lg border border-brand-teal/30 bg-brand-surface/60 p-4 dark:border-brand-primary/40 dark:bg-brand-navy/20">
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             Siguiente paso: sistema de diseño (CTO + UI/UX)
           </h3>
@@ -210,14 +210,14 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
           <ul className="mt-2 grid gap-1 text-xs text-gray-700 dark:text-gray-300 sm:grid-cols-2">
             {DESIGN_KIT_NEXT_STEPS.map((step) => (
               <li key={step.id} className="flex items-center gap-1.5">
-                <span className="text-[#0F2B46] dark:text-[#0EA5A3]">→</span>
+                <span className="text-brand-primary dark:text-brand-teal">→</span>
                 {step.label}
               </li>
             ))}
           </ul>
           <Link
             href={`/projects/${projectId}/designs`}
-            className="mt-3 inline-flex text-sm font-medium text-[#0F2B46] hover:text-[#0F2B46] dark:text-[#0EA5A3] dark:hover:text-[#0EA5A3]"
+            className="mt-3 inline-flex text-sm font-medium text-brand-primary hover:text-brand-primary dark:text-brand-teal dark:hover:text-brand-teal"
           >
             Ir a Diseño &amp; UX (hub) →
           </Link>
@@ -272,7 +272,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
               value={refineInput}
               onChange={(e) => setRefineInput(e.target.value)}
               placeholder="Ej: Cambia el boton a azul, agrega un sidebar, hazlo mas minimalista..."
-              className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
               disabled={isRefining}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -284,7 +284,7 @@ export function ArtifactDetail({ projectId, artifact, content }: ArtifactDetailP
             <button
               onClick={handleRefine}
               disabled={isRefining || !refineInput.trim()}
-              className="rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+              className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy disabled:opacity-50"
             >
               {isRefining ? 'Refinando...' : 'Refinar'}
             </button>

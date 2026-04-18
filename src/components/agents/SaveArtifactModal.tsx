@@ -80,7 +80,7 @@ export function SaveArtifactModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Arquitectura de pagos"
               autoFocus
-              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             />
           </div>
 
@@ -89,7 +89,7 @@ export function SaveArtifactModal({
             <select
               value={phaseNumber}
               onChange={(e) => setPhaseNumber(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             >
               {PHASE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -120,7 +120,7 @@ export function SaveArtifactModal({
           <button
             onClick={handleSave}
             disabled={saving || !name.trim()}
-            className="rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white shadow-sm dark:shadow-gray-900/20 hover:bg-[#0A1F33] disabled:opacity-50"
+            className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white shadow-sm dark:shadow-gray-900/20 hover:bg-brand-navy disabled:opacity-50"
           >
             {saving ? 'Guardando...' : 'Guardar artifact'}
           </button>

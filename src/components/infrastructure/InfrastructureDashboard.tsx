@@ -153,7 +153,7 @@ function GitHubConfigForm({
   }
 
   return (
-    <div className="mt-3 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8]/50 p-3 dark:border-[#0A1F33]/40 dark:bg-[#0F2B46]/10">
+    <div className="mt-3 rounded-lg border border-brand-teal/30 bg-brand-surface/50 p-3 dark:border-[#0A1F33]/40 dark:bg-brand-primary/10">
       <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">URL del repositorio GitHub</p>
       <input
         ref={inputRef}
@@ -162,14 +162,14 @@ function GitHubConfigForm({
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') onCancel() }}
         placeholder="https://github.com/usuario/repositorio"
-        className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+        className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
       />
       {error && <p className="mt-1.5 text-[11px] text-rose-600 dark:text-rose-400">{error}</p>}
       <div className="mt-2.5 flex gap-2">
         <button
           onClick={handleSave}
           disabled={saving || !value.trim()}
-          className="rounded-lg bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50 transition-colors"
+          className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-navy disabled:opacity-50 transition-colors"
         >
           {saving ? 'Guardando…' : 'Guardar y verificar'}
         </button>
@@ -229,7 +229,7 @@ function SupabaseConfigForm({
   }
 
   return (
-    <div className="mt-3 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8]/50 p-3 dark:border-[#0A1F33]/40 dark:bg-[#0F2B46]/10 space-y-2">
+    <div className="mt-3 rounded-lg border border-brand-teal/30 bg-brand-surface/50 p-3 dark:border-[#0A1F33]/40 dark:bg-brand-primary/10 space-y-2">
       <div>
         <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Project Reference</p>
         <input
@@ -238,7 +238,7 @@ function SupabaseConfigForm({
           value={ref}
           onChange={(e) => setRef(e.target.value)}
           placeholder="abcdefghijklmnop"
-          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
         />
         <p className="mt-0.5 text-[10px] text-gray-400">Encuéntralo en Settings → General de tu proyecto Supabase</p>
       </div>
@@ -250,7 +250,7 @@ function SupabaseConfigForm({
           onChange={(e) => setToken(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') onCancel() }}
           placeholder="sbp_••••••••••••••••••••••"
-          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
         />
         <p className="mt-0.5 text-[10px] text-gray-400">Settings → API → service_role key</p>
       </div>
@@ -259,7 +259,7 @@ function SupabaseConfigForm({
         <button
           onClick={handleSave}
           disabled={saving || !ref.trim()}
-          className="rounded-lg bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50 transition-colors"
+          className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-navy disabled:opacity-50 transition-colors"
         >
           {saving ? 'Guardando…' : 'Guardar y verificar'}
         </button>
@@ -336,7 +336,7 @@ function ActionConfigPanel({
   const phaseNum = String(actionPhase).padStart(2, '0')
 
   return (
-    <div className="mt-3 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8]/50 p-3 dark:border-[#0A1F33]/40 dark:bg-[#0F2B46]/10">
+    <div className="mt-3 rounded-lg border border-brand-teal/30 bg-brand-surface/50 p-3 dark:border-[#0A1F33]/40 dark:bg-brand-primary/10">
       {status === 'idle' && (
         <>
           <p className="text-xs text-gray-600 dark:text-gray-400 mb-2.5">
@@ -346,7 +346,7 @@ function ActionConfigPanel({
           <div className="flex gap-2">
             <button
               onClick={handleRun}
-              className="rounded-lg bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0A1F33] transition-colors"
+              className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-navy transition-colors"
             >
               Generar workflow ahora
             </button>
@@ -363,7 +363,7 @@ function ActionConfigPanel({
         </>
       )}
       {status === 'running' && (
-        <div className="flex items-center gap-2 text-xs text-[#0F2B46] dark:text-[#0EA5A3]">
+        <div className="flex items-center gap-2 text-xs text-brand-primary dark:text-brand-teal">
           <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -379,7 +379,7 @@ function ActionConfigPanel({
       {status === 'error' && (
         <div>
           <p className="text-xs text-rose-600 dark:text-rose-400">{errorMsg}</p>
-          <button onClick={() => setStatus('idle')} className="mt-1.5 text-xs text-[#0F2B46] hover:underline">
+          <button onClick={() => setStatus('idle')} className="mt-1.5 text-xs text-brand-primary hover:underline">
             Reintentar
           </button>
         </div>
@@ -568,7 +568,7 @@ function ServiceCard({
             ))}
           </div>
           {isActionable && (
-            <span className={`text-[11px] font-medium transition-colors ${expanded ? 'text-[#0F2B46] dark:text-[#0EA5A3]' : 'text-rose-500 dark:text-rose-400'}`}>
+            <span className={`text-[11px] font-medium transition-colors ${expanded ? 'text-brand-primary dark:text-brand-teal' : 'text-rose-500 dark:text-rose-400'}`}>
               {expanded ? 'Cerrar ↑' : 'Configurar →'}
             </span>
           )}
@@ -624,7 +624,7 @@ function DetailRow({ label, value, href }: { label: string; value: string; href?
       <span className="text-[11px] text-gray-400 dark:text-gray-500 shrink-0">{label}</span>
       {href ? (
         <a href={href} target="_blank" rel="noopener noreferrer"
-          className="truncate text-[11px] font-medium text-[#0F2B46] hover:underline dark:text-[#0EA5A3] max-w-[220px]"
+          className="truncate text-[11px] font-medium text-brand-primary hover:underline dark:text-brand-teal max-w-[220px]"
           onClick={(e) => e.stopPropagation()}
         >
           {value}
@@ -740,7 +740,7 @@ export function InfrastructureDashboard({
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Estado de las integraciones necesarias para operar{' '}
             <span className="font-medium text-gray-700 dark:text-gray-300">{projectName}</span>{' '}
-            en producción. <span className="text-[#0F2B46] dark:text-[#0EA5A3]">Haz clic en las cards rojas para configurar.</span>
+            en producción. <span className="text-brand-primary dark:text-brand-teal">Haz clic en las cards rojas para configurar.</span>
           </p>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">

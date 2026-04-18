@@ -76,7 +76,7 @@ export function AutomatedChecklistCard({
             onClick={() => onActionExecute(action.actionName)}
             disabled={isExecuting}
             title={action.description}
-            className="flex items-center gap-1.5 rounded-lg bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-brand-navy disabled:opacity-50"
           >
             {isExecuting ? (
               <>
@@ -134,7 +134,7 @@ export function AutomatedChecklistCard({
                     href={commitUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#0F2B46] dark:text-[#0EA5A3] underline"
+                    className="text-brand-primary dark:text-brand-teal underline"
                   >
                     Ver commit en GitHub
                   </a>
@@ -193,7 +193,7 @@ export function AutomatedChecklistCard({
         className={`w-full rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
           isCompleted
             ? 'border border-green-300 dark:border-green-700 bg-white dark:bg-gray-900 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20'
-            : 'bg-[#0F2B46] text-white shadow-sm hover:bg-[#0A1F33]'
+            : 'bg-brand-primary text-white shadow-sm hover:bg-brand-navy'
         }`}
       >
         {isCompleted ? 'Desmarcar categoria' : 'Marcar como completada'}

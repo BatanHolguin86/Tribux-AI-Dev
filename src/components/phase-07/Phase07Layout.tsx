@@ -142,7 +142,7 @@ export function Phase07Layout({ projectId, categories: initialCategories, initia
             /* Founder view: simplified iteration summary */
             <div className="space-y-4">
               <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
-                <h3 className="font-display text-sm font-semibold text-[#0F2B46] dark:text-white">Proximos pasos de tu producto</h3>
+                <h3 className="font-display text-sm font-semibold text-brand-primary dark:text-white">Proximos pasos de tu producto</h3>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   Tu equipo IA analizara el feedback y las metricas para recomendarte mejoras.
                   Usa el tab Equipo para hablar con el Product Architect.

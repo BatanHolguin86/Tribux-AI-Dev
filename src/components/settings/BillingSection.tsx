@@ -119,13 +119,13 @@ export function BillingSection({
       <h2 className="text-lg font-display font-semibold text-gray-900 dark:text-gray-100">Plan y facturacion</h2>
 
       {searchParams.get('upgrade') === 'true' && !isPaid && (
-        <div className="mt-3 flex items-start gap-3 rounded-lg border border-[#F59E0B]/30 bg-[#F59E0B]/5 px-4 py-3">
+        <div className="mt-3 flex items-start gap-3 rounded-lg border border-brand-amber/30 bg-brand-amber/5 px-4 py-3">
           <span className="text-lg">⚡</span>
           <div>
-            <p className="text-sm font-medium text-[#0F2B46] dark:text-white">
+            <p className="text-sm font-medium text-brand-primary dark:text-white">
               Necesitas mas capacidad de IA
             </p>
-            <p className="mt-0.5 text-xs text-[#64748B] dark:text-gray-400">
+            <p className="mt-0.5 text-xs text-brand-muted dark:text-gray-400">
               Alcanzaste el limite de tu plan actual. Mejora para continuar construyendo sin interrupciones.
             </p>
           </div>
@@ -194,28 +194,28 @@ export function BillingSection({
                     key={plan}
                     className={`rounded-lg border-2 p-4 ${
                       isCurrent
-                        ? 'border-[#0EA5A3] bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
+                        ? 'border-brand-teal bg-brand-surface dark:bg-brand-primary/20'
                         : isUpgrade
                           ? 'border-gray-200 dark:border-gray-700'
                           : 'border-gray-200 dark:border-gray-700 opacity-50'
                     }`}
                   >
                     <p className="font-semibold text-gray-900 dark:text-gray-100">{detail.name}</p>
-                    <p className="text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">{detail.price}</p>
+                    <p className="text-sm font-medium text-brand-primary dark:text-brand-teal">{detail.price}</p>
                     <ul className="mt-2 space-y-1">
                       {detail.features.map((f) => (
                         <li key={f} className="text-xs text-gray-500 dark:text-gray-400">{f}</li>
                       ))}
                     </ul>
                     {isCurrent ? (
-                      <span className="mt-3 inline-block text-xs font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
+                      <span className="mt-3 inline-block text-xs font-medium text-brand-primary dark:text-brand-teal">
                         Plan actual
                       </span>
                     ) : isUpgrade ? (
                       <button
                         onClick={() => handleUpgrade(plan)}
                         disabled={loading === plan}
-                        className="mt-3 w-full rounded-md bg-[#0F2B46] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
+                        className="mt-3 w-full rounded-md bg-brand-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-navy disabled:opacity-50"
                       >
                         {loading === plan ? 'Procesando...' : 'Mejorar plan'}
                       </button>

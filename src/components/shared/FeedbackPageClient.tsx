@@ -165,7 +165,7 @@ export function FeedbackPageClient() {
         {view !== 'new' && view !== 'confirmation' && (
           <button
             onClick={() => { setView('new'); setCategory(null) }}
-            className="rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white hover:bg-[#0A1F33]"
+            className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-navy"
           >
             Nuevo feedback
           </button>
@@ -180,11 +180,11 @@ export function FeedbackPageClient() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="font-display text-lg font-bold text-[#0F2B46] dark:text-white">Recibido</h2>
+          <h2 className="font-display text-lg font-bold text-brand-primary dark:text-white">Recibido</h2>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{CONFIRMATION_MESSAGES[confirmationCategory]}</p>
           <button
             onClick={() => setView('list')}
-            className="mt-6 rounded-lg bg-[#0F2B46] px-6 py-2 text-sm font-medium text-white hover:bg-[#0A1F33]"
+            className="mt-6 rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-white hover:bg-brand-navy"
           >
             Ver mis tickets
           </button>
@@ -194,7 +194,7 @@ export function FeedbackPageClient() {
       {/* NEW TICKET */}
       {view === 'new' && (
         <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
-          <button onClick={() => setView('list')} className="mb-4 text-xs text-[#0EA5A3] hover:underline">← Volver</button>
+          <button onClick={() => setView('list')} className="mb-4 text-xs text-brand-teal hover:underline">← Volver</button>
 
           {!category ? (
             <>
@@ -204,7 +204,7 @@ export function FeedbackPageClient() {
                   <button
                     key={cat.value}
                     onClick={() => setCategory(cat.value)}
-                    className="flex items-center gap-3 rounded-xl border border-gray-200 p-4 text-left transition-colors hover:border-[#0EA5A3]/30 hover:bg-[#E8F4F8]/30 dark:border-gray-700 dark:hover:bg-[#0F2B46]/20"
+                    className="flex items-center gap-3 rounded-xl border border-gray-200 p-4 text-left transition-colors hover:border-brand-teal/30 hover:bg-brand-surface/30 dark:border-gray-700 dark:hover:bg-brand-primary/20"
                   >
                     <span className="text-2xl">{cat.icon}</span>
                     <div>
@@ -220,14 +220,14 @@ export function FeedbackPageClient() {
               <div className="flex items-center gap-2">
                 <span>{CATEGORIES.find((c) => c.value === category)?.icon}</span>
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{CATEGORIES.find((c) => c.value === category)?.label}</span>
-                <button onClick={() => setCategory(null)} className="text-[10px] text-[#0EA5A3] underline">Cambiar</button>
+                <button onClick={() => setCategory(null)} className="text-[10px] text-brand-teal underline">Cambiar</button>
               </div>
               <input
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Asunto (breve)"
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
+                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm dark:border-gray-700 dark:bg-brand-primary dark:text-white"
               />
               <textarea
                 value={message}
@@ -235,7 +235,7 @@ export function FeedbackPageClient() {
                 placeholder="Describe tu feedback con el mayor detalle posible..."
                 rows={6}
                 aria-label="Mensaje de feedback"
-                className="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
+                className="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm dark:border-gray-700 dark:bg-brand-primary dark:text-white"
               />
               {/* Image upload */}
               <div>
@@ -281,7 +281,7 @@ export function FeedbackPageClient() {
                 onClick={handleSubmit}
                 disabled={submitting || !subject.trim() || !message.trim()}
                 aria-label="Enviar feedback"
-                className="w-full rounded-lg bg-[#0F2B46] py-2.5 text-sm font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
+                className="w-full rounded-lg bg-brand-primary py-2.5 text-sm font-medium text-white hover:bg-brand-navy disabled:opacity-50"
               >
                 {submitting ? 'Enviando...' : 'Enviar feedback'}
               </button>
@@ -295,7 +295,7 @@ export function FeedbackPageClient() {
         <div className="space-y-3">
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#0EA5A3] border-t-transparent" />
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand-teal border-t-transparent" />
             </div>
           ) : tickets.length === 0 ? (
             <div className="rounded-xl border border-gray-200 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-900">
@@ -309,7 +309,7 @@ export function FeedbackPageClient() {
                 <button
                   key={t.id}
                   onClick={() => openTicket(t.id)}
-                  className="w-full rounded-xl border border-gray-200 bg-white p-4 text-left transition-colors hover:border-[#0EA5A3]/20 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800/50"
+                  className="w-full rounded-xl border border-gray-200 bg-white p-4 text-left transition-colors hover:border-brand-teal/20 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800/50"
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-lg">{catIcon}</span>
@@ -332,7 +332,7 @@ export function FeedbackPageClient() {
       {view === 'detail' && (
         <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
           <div className="border-b border-gray-100 px-5 py-3 dark:border-gray-800">
-            <button onClick={() => { setView('list'); setActiveTicketId(null) }} className="mb-2 text-xs text-[#0EA5A3] hover:underline">← Volver</button>
+            <button onClick={() => { setView('list'); setActiveTicketId(null) }} className="mb-2 text-xs text-brand-teal hover:underline">← Volver</button>
             <h2 className="text-sm font-bold text-gray-900 dark:text-white">
               {tickets.find((t) => t.id === activeTicketId)?.subject}
             </h2>
@@ -343,8 +343,8 @@ export function FeedbackPageClient() {
               <div key={msg.id} className={`flex ${msg.sender_type === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
                   msg.sender_type === 'user'
-                    ? 'rounded-tr-md bg-[#0F2B46] text-white'
-                    : 'rounded-tl-md border border-[#0EA5A3]/20 bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46] dark:text-gray-200'
+                    ? 'rounded-tr-md bg-brand-primary text-white'
+                    : 'rounded-tl-md border border-brand-teal/20 bg-brand-surface text-brand-primary dark:bg-brand-primary dark:text-gray-200'
                 }`}>
                   {msg.sender_type !== 'user' && (
                     <p className="mb-1 text-[10px] font-bold opacity-60">Equipo Tribux AI</p>
@@ -366,12 +366,12 @@ export function FeedbackPageClient() {
                 onChange={(e) => setReply(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleReply()}
                 placeholder="Escribe tu respuesta..."
-                className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
+                className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-brand-primary dark:text-white"
               />
               <button
                 onClick={handleReply}
                 disabled={sendingReply || !reply.trim()}
-                className="shrink-0 rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                className="shrink-0 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
               >
                 Enviar
               </button>

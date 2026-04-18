@@ -12,9 +12,9 @@ type KnowledgeEntryCardProps = {
 const CATEGORY_COLORS: Record<string, string> = {
   documentos: 'bg-[#3B82F6]/10 text-[#3B82F6]',
   decisiones: 'bg-[#8B5CF6]/10 text-[#8B5CF6]',
-  guias: 'bg-[#0EA5A3]/10 text-[#0EA5A3]',
+  guias: 'bg-brand-teal/10 text-brand-teal',
   artefactos: 'bg-[#EC4899]/10 text-[#EC4899]',
-  notas: 'bg-[#F59E0B]/10 text-[#F59E0B]',
+  notas: 'bg-brand-amber/10 text-brand-amber',
 }
 
 const PHASE_LABELS: Record<number, string> = {
@@ -54,7 +54,7 @@ export function KnowledgeEntryCard({
       onClick={onClick}
       className={`w-full px-4 py-3.5 text-left transition-all ${
         isSelected
-          ? 'border-l-3 border-l-[#0EA5A3] bg-[#0EA5A3]/5'
+          ? 'border-l-3 border-l-[#0EA5A3] bg-brand-teal/5'
           : 'border-l-3 border-l-transparent hover:bg-[#F8FAFC] dark:hover:bg-white/5'
       }`}
     >
@@ -67,19 +67,19 @@ export function KnowledgeEntryCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             {entry.is_pinned && (
-              <span className="text-[#F59E0B] text-xs">📌</span>
+              <span className="text-brand-amber text-xs">📌</span>
             )}
             <h3 className={`truncate text-sm font-medium ${
               isSelected
-                ? 'text-[#0F2B46] dark:text-[#0EA5A3]'
-                : 'text-[#0F2B46] dark:text-gray-100'
+                ? 'text-brand-primary dark:text-brand-teal'
+                : 'text-brand-primary dark:text-gray-100'
             }`}>
               {humanizeTitle(entry.title)}
             </h3>
           </div>
 
           {entry.summary && (
-            <p className="mt-0.5 line-clamp-1 text-xs text-[#94A3B8]">
+            <p className="mt-0.5 line-clamp-1 text-xs text-brand-muted">
               {entry.summary}
             </p>
           )}
@@ -89,11 +89,11 @@ export function KnowledgeEntryCard({
               {KB_CATEGORY_LABELS[entry.category]}
             </span>
             {phaseLabel && (
-              <span className="text-[10px] text-[#94A3B8]">
+              <span className="text-[10px] text-brand-muted">
                 {phaseLabel}
               </span>
             )}
-            <span className="text-[10px] text-[#94A3B8]">{dateStr}</span>
+            <span className="text-[10px] text-brand-muted">{dateStr}</span>
           </div>
         </div>
       </div>

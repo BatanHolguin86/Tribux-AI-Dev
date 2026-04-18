@@ -128,7 +128,7 @@ export function FeedbackDashboard() {
   return (
     <div className="flex h-[calc(100vh-8rem)] gap-4">
       {/* Left: Ticket list */}
-      <div className="flex w-80 shrink-0 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#0A1F33]">
+      <div className="flex w-80 shrink-0 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-brand-navy">
         <div className="border-b border-gray-100 px-4 py-3 dark:border-gray-800">
           <h1 className="font-display text-base font-bold text-gray-900 dark:text-white">
             Feedback {newCount > 0 && <span className="ml-1 rounded-full bg-red-500 px-2 py-0.5 text-[10px] text-white">{newCount}</span>}
@@ -144,7 +144,7 @@ export function FeedbackDashboard() {
               onClick={() => { setActiveCategory(tab.value); setActiveTicket(null) }}
               className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-medium transition-colors ${
                 activeCategory === tab.value
-                  ? 'bg-[#0F2B46] text-white'
+                  ? 'bg-brand-primary text-white'
                   : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
               }`}
             >
@@ -157,7 +157,7 @@ export function FeedbackDashboard() {
         <div className="flex-1 overflow-y-auto p-2">
           {loading ? (
             <div className="flex justify-center py-8">
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#0EA5A3] border-t-transparent" />
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand-teal border-t-transparent" />
             </div>
           ) : tickets.length === 0 ? (
             <p className="py-8 text-center text-xs text-gray-400">Sin tickets</p>
@@ -169,7 +169,7 @@ export function FeedbackDashboard() {
                   onClick={() => openTicket(t)}
                   className={`w-full rounded-lg px-3 py-2.5 text-left transition-colors ${
                     activeTicket?.id === t.id
-                      ? 'bg-[#0EA5A3]/10 dark:bg-[#0F2B46]/30'
+                      ? 'bg-brand-teal/10 dark:bg-brand-primary/30'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
                   }`}
                 >
@@ -190,7 +190,7 @@ export function FeedbackDashboard() {
       </div>
 
       {/* Right: Ticket detail */}
-      <div className="flex flex-1 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#0A1F33]">
+      <div className="flex flex-1 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-brand-navy">
         {!activeTicket ? (
           <div className="flex flex-1 items-center justify-center">
             <p className="text-sm text-gray-400">Selecciona un ticket para ver el detalle</p>
@@ -244,7 +244,7 @@ export function FeedbackDashboard() {
                     msg.sender_type === 'user'
                       ? 'rounded-tl-md bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
                       : msg.sender_type === 'admin'
-                        ? 'rounded-tr-md bg-[#0F2B46] text-white'
+                        ? 'rounded-tr-md bg-brand-primary text-white'
                         : 'rounded-tr-md border border-purple-200 bg-purple-50 text-purple-900 dark:border-purple-800 dark:bg-purple-900/20 dark:text-purple-200'
                   }`}>
                     <p className="mb-1 text-[10px] font-bold opacity-60">
@@ -289,12 +289,12 @@ export function FeedbackDashboard() {
                   onChange={(e) => setReply(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendReply()}
                   placeholder="Responder al usuario..."
-                  className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
+                  className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-brand-primary dark:text-white"
                 />
                 <button
                   onClick={sendReply}
                   disabled={sendingReply || !reply.trim()}
-                  className="shrink-0 rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
+                  className="shrink-0 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-navy disabled:opacity-50"
                 >
                   Enviar
                 </button>

@@ -16,7 +16,7 @@ function PhaseIcon({ status }: { status: string }) {
   }
   if (status === 'active') {
     return (
-      <svg className="h-3.5 w-3.5 animate-pulse text-[#0F2B46] dark:text-[#0EA5A3]" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="h-3.5 w-3.5 animate-pulse text-brand-primary dark:text-brand-teal" fill="currentColor" viewBox="0 0 24 24">
         <path d="M8 5v14l11-7z" />
       </svg>
     )
@@ -44,7 +44,7 @@ export function PhaseTimeline({ phases, variant }: PhaseTimelineProps) {
               phase.status === 'completed'
                 ? 'bg-green-100 dark:bg-green-900/30'
                 : phase.status === 'active'
-                  ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/30'
+                  ? 'bg-brand-surface dark:bg-brand-primary/30'
                   : 'bg-gray-100 dark:bg-gray-800'
             }`}
             title={PHASES_META[phase.phase_number]?.name}
@@ -67,7 +67,7 @@ export function PhaseTimeline({ phases, variant }: PhaseTimelineProps) {
                 phase.status === 'completed'
                   ? 'bg-green-100 dark:bg-green-900/30'
                   : phase.status === 'active'
-                    ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/30'
+                    ? 'bg-brand-surface dark:bg-brand-primary/30'
                     : 'bg-gray-100 dark:bg-gray-800'
               }`}
             >
@@ -84,7 +84,7 @@ export function PhaseTimeline({ phases, variant }: PhaseTimelineProps) {
                 phase.status === 'completed'
                   ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
                   : phase.status === 'active'
-                    ? 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20 text-[#0F2B46] dark:text-[#0EA5A3]'
+                    ? 'bg-brand-surface dark:bg-brand-primary/20 text-brand-primary dark:text-brand-teal'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
               }`}
             >

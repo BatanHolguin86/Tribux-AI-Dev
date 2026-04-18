@@ -44,11 +44,11 @@ export async function AgentActivityFeed() {
 
   if (!threads?.length) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700/50 dark:bg-[#0F2B46]">
-        <h3 className="mb-3 font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+      <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700/50 dark:bg-brand-primary">
+        <h3 className="mb-3 font-display text-sm font-semibold text-brand-primary dark:text-white">
           Actividad de agentes
         </h3>
-        <p className="text-sm text-[#94A3B8]">
+        <p className="text-sm text-brand-muted">
           Sin actividad reciente. Inicia una conversación con un agente en el tab Equipo de un proyecto.
         </p>
       </div>
@@ -56,8 +56,8 @@ export async function AgentActivityFeed() {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700/50 dark:bg-[#0F2B46]">
-      <h3 className="mb-3 font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+    <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700/50 dark:bg-brand-primary">
+      <h3 className="mb-3 font-display text-sm font-semibold text-brand-primary dark:text-white">
         Actividad reciente
       </h3>
       <div className="space-y-3">
@@ -85,14 +85,14 @@ export async function AgentActivityFeed() {
                 {agent.icon}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-[#0F2B46] dark:text-white">
-                  {agent.name} <span className="font-normal text-[#94A3B8]">en</span> {projectName}
+                <p className="truncate text-sm font-medium text-brand-primary dark:text-white">
+                  {agent.name} <span className="font-normal text-brand-muted">en</span> {projectName}
                 </p>
-                <p className="truncate text-xs text-[#94A3B8]">
+                <p className="truncate text-xs text-brand-muted">
                   {thread.title ?? `${thread.message_count} mensajes`}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-1 text-[10px] text-[#94A3B8]">
+              <div className="flex shrink-0 items-center gap-1 text-[10px] text-brand-muted">
                 <Clock className="h-3 w-3" aria-hidden />
                 {timeAgo}
               </div>

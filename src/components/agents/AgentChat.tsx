@@ -196,7 +196,7 @@ export function AgentChat({
         try { parsed = JSON.parse(match[1]) } catch { return null }
         if (!parsed) return null
         return (
-          <div className="mx-3 my-2 rounded-lg border-l-4 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-3 text-sm text-[#F59E0B] dark:text-[#F59E0B]" role="alert">
+          <div className="mx-3 my-2 rounded-lg border-l-4 border-brand-amber/30 bg-brand-amber/5 p-3 text-sm text-brand-amber dark:text-brand-amber" role="alert">
             <p className="text-xs font-medium">{parsed.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}</p>
             <p className="mt-0.5 text-xs opacity-80">{parsed.message}</p>
           </div>

@@ -50,10 +50,10 @@ function ProjectGrid({
         {groups.map(([client, clientProjects]) => (
           <div key={client}>
             <div className="mb-3 flex items-center gap-2">
-              <span className="text-xs font-display font-semibold uppercase tracking-wider text-[#94A3B8]">
+              <span className="text-xs font-display font-semibold uppercase tracking-wider text-brand-muted">
                 {client}
               </span>
-              <span className="rounded-full bg-[#E8F4F8] px-2 py-0.5 text-[10px] font-medium text-[#0F2B46]">
+              <span className="rounded-full bg-brand-surface px-2 py-0.5 text-[10px] font-medium text-brand-primary">
                 {clientProjects.length}
               </span>
             </div>
@@ -158,7 +158,7 @@ export function ProjectsGrid({ projects: initialProjects }: ProjectsGridProps) {
             value={search}
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Buscar proyectos..."
-            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pl-10 pr-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] sm:w-72"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 pl-10 pr-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] sm:w-72"
           />
         </div>
         <div className="flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1">

@@ -53,7 +53,7 @@ export function PhaseTeamPanel({ phaseNumber, agentTypes, onGoToSecciones }: Pha
                 key={agentType}
                 className={`rounded-xl border p-3 ${
                   isLeader
-                    ? 'border-[#0EA5A3]/30 bg-[#E8F4F8]/30 dark:border-[#0F2B46]/50 dark:bg-[#0A1F33]/10'
+                    ? 'border-brand-teal/30 bg-brand-surface/30 dark:border-brand-primary/50 dark:bg-brand-navy/10'
                     : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
                 }`}
               >
@@ -67,7 +67,7 @@ export function PhaseTeamPanel({ phaseNumber, agentTypes, onGoToSecciones }: Pha
                         {agent.name}
                       </p>
                       {isLeader && (
-                        <span className="rounded-full bg-[#E8F4F8] px-1.5 py-0.5 text-[9px] font-bold text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3]">
+                        <span className="rounded-full bg-brand-surface px-1.5 py-0.5 text-[9px] font-bold text-brand-primary dark:bg-brand-primary/30 dark:text-brand-teal">
                           Lider
                         </span>
                       )}
@@ -137,14 +137,14 @@ export function PhaseTeamPanel({ phaseNumber, agentTypes, onGoToSecciones }: Pha
 
       {/* CTA to go work */}
       {onGoToSecciones && (
-        <div className="rounded-xl border border-[#0EA5A3]/30 bg-[#E8F4F8]/50 p-4 dark:border-[#0F2B46]/40 dark:bg-[#0A1F33]/20">
+        <div className="rounded-xl border border-brand-teal/30 bg-brand-surface/50 p-4 dark:border-brand-primary/40 dark:bg-brand-navy/20">
           <p className="text-sm text-gray-700 dark:text-gray-300">
             El trabajo real ocurre en <span className="font-semibold">Secciones</span>. Cada seccion tiene un chat
             donde el CTO coordina a los especialistas. Tu rol: validar cada entregable para avanzar a la siguiente seccion.
           </p>
           <button
             onClick={onGoToSecciones}
-            className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0A1F33]"
+            className="mt-3 inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-navy"
           >
             Ir a Secciones
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

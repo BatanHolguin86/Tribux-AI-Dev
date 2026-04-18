@@ -66,23 +66,23 @@ export function ProactiveSuggestions({
 
   if (loading) {
     return (
-      <div className="mx-4 mb-4 animate-pulse rounded-lg border border-[#E8F4F8] bg-[#E8F4F8] p-4">
-        <div className="h-3 w-40 rounded bg-[#0EA5A3]/30" />
+      <div className="mx-4 mb-4 animate-pulse rounded-lg border border-[#E8F4F8] bg-brand-surface p-4">
+        <div className="h-3 w-40 rounded bg-brand-teal/30" />
         <div className="mt-3 space-y-2">
-          <div className="h-8 rounded bg-[#E8F4F8]" />
-          <div className="h-8 rounded bg-[#E8F4F8]" />
+          <div className="h-8 rounded bg-brand-surface" />
+          <div className="h-8 rounded bg-brand-surface" />
         </div>
       </div>
     )
   }
 
   return (
-    <div className="mx-4 mb-4 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] p-4">
+    <div className="mx-4 mb-4 rounded-lg border border-brand-teal/30 bg-brand-surface p-4">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-[#0F2B46]">Sugerencias basadas en tu proyecto</p>
+        <p className="text-xs font-semibold text-brand-primary">Sugerencias basadas en tu proyecto</p>
         <button
           onClick={() => setDismissed(true)}
-          className="rounded p-1 text-[#0EA5A3] hover:text-[#0F2B46]"
+          className="rounded p-1 text-brand-teal hover:text-brand-primary"
           aria-label="Descartar sugerencias"
         >
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,7 +95,7 @@ export function ProactiveSuggestions({
           <button
             key={s.id}
             onClick={() => onSuggestionClick(s.text)}
-            className="px-3 py-1.5 rounded-full border border-[#0EA5A3] text-[#0EA5A3] text-sm font-medium bg-white hover:bg-[#0EA5A3]/5 transition-colors cursor-pointer text-left"
+            className="px-3 py-1.5 rounded-full border border-brand-teal text-brand-teal text-sm font-medium bg-white hover:bg-brand-teal/5 transition-colors cursor-pointer text-left"
           >
             {s.text}
           </button>

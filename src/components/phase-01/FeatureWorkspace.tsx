@@ -156,7 +156,7 @@ export function FeatureWorkspace({
               onClick={() => setMobileTab(tab)}
               className={`flex-1 rounded-lg py-1.5 text-xs font-medium transition-colors ${
                 mobileTab === tab
-                  ? 'bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46]/40 dark:text-[#0EA5A3]'
+                  ? 'bg-brand-surface text-brand-primary dark:bg-brand-primary/40 dark:text-brand-teal'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >

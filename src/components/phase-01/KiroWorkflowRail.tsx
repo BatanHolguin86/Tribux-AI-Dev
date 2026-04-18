@@ -63,7 +63,7 @@ const stepPillClass = (
     approved
       ? 'bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-200 dark:ring-emerald-800'
       : current
-        ? 'bg-[#E8F4F8] text-[#0F2B46] ring-[#0EA5A3]/30 dark:bg-[#0F2B46]/40 dark:text-[#0EA5A3]/30 dark:ring-[#0A1F33]'
+        ? 'bg-brand-surface text-brand-primary ring-[#0EA5A3]/30 dark:bg-brand-primary/40 dark:text-brand-teal/30 dark:ring-[#0A1F33]'
         : locked
           ? 'bg-gray-50 text-gray-400 ring-gray-200 dark:bg-gray-800 dark:text-gray-500 dark:ring-gray-700'
           : 'bg-white text-gray-600 ring-gray-200 dark:bg-gray-900 dark:text-gray-400 dark:ring-gray-700'
@@ -75,7 +75,7 @@ export function KiroWorkflowRail({ documents, activeDocType, onStepClick }: Kiro
   return (
     <div className="rounded-xl border border-gray-200 bg-gradient-to-r from-[#E8F4F8]/80 to-white px-3 py-2.5 dark:border-gray-700 dark:from-[#0A1F33]/25 dark:to-gray-900">
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F2B46] dark:text-[#0EA5A3]">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-brand-primary dark:text-brand-teal">
           Spec KIRO
         </span>
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">

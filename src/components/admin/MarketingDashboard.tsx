@@ -68,10 +68,10 @@ export function MarketingDashboard() {
   const threadCount = threads.length
 
   const kpis = [
-    { label: 'Total Artefactos', value: totalArtifacts, color: 'text-[#0F2B46] dark:text-white' },
+    { label: 'Total Artefactos', value: totalArtifacts, color: 'text-brand-primary dark:text-white' },
     { label: 'Aprobados', value: approvedCount, color: 'text-green-600 dark:text-green-400' },
     { label: 'Experimentos', value: experimentCount, color: 'text-amber-600 dark:text-amber-400' },
-    { label: 'Hilos de Chat', value: threadCount, color: 'text-[#0EA5A3]' },
+    { label: 'Hilos de Chat', value: threadCount, color: 'text-brand-teal' },
   ]
 
   return (
@@ -88,7 +88,7 @@ export function MarketingDashboard() {
         </div>
         <Link
           href="/admin/marketing/chat"
-          className="flex items-center gap-2 rounded-lg bg-[#0EA5A3] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#0EA5A3]/90 transition-colors"
+          className="flex items-center gap-2 rounded-lg bg-brand-teal px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-teal/90 transition-colors"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
@@ -109,7 +109,7 @@ export function MarketingDashboard() {
           {kpis.map((kpi) => (
             <div
               key={kpi.label}
-              className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-[#0A1F33]"
+              className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-brand-navy"
             >
               <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{kpi.label}</p>
               <p className={`mt-1 text-2xl font-bold ${kpi.color}`}>{kpi.value}</p>
@@ -119,7 +119,7 @@ export function MarketingDashboard() {
       )}
 
       {/* Mode overview */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-[#0A1F33]">
+      <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-brand-navy">
         <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Modos del Agente</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {(Object.keys(MARKETING_MODES) as MarketingMode[]).map((mode) => {
@@ -134,7 +134,7 @@ export function MarketingDashboard() {
               <Link
                 key={mode}
                 href={`/admin/marketing/chat`}
-                className="rounded-lg border border-gray-100 p-3 text-center hover:border-[#0EA5A3]/30 hover:bg-[#0EA5A3]/5 transition-colors dark:border-gray-800 dark:hover:border-[#0EA5A3]/30"
+                className="rounded-lg border border-gray-100 p-3 text-center hover:border-brand-teal/30 hover:bg-brand-teal/5 transition-colors dark:border-gray-800 dark:hover:border-brand-teal/30"
               >
                 <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${MODE_COLORS[mode]}`}>
                   {MARKETING_MODES[mode].label}
@@ -148,12 +148,12 @@ export function MarketingDashboard() {
       </div>
 
       {/* Recent artifacts */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-[#0A1F33]">
+      <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-brand-navy">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Artefactos Recientes</h2>
           <Link
             href="/admin/marketing/artifacts"
-            className="text-xs font-medium text-[#0EA5A3] hover:underline"
+            className="text-xs font-medium text-brand-teal hover:underline"
           >
             Ver todos
           </Link>

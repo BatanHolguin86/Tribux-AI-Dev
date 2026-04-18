@@ -20,12 +20,12 @@ export function DashboardGreeting({ displayName }: Props) {
   return (
     <div>
       <div className="flex items-center gap-2">
-        <Sparkles className="h-5 w-5 text-[#0EA5A3]" aria-hidden />
-        <h1 className="font-display text-2xl font-bold text-[#0F2B46] dark:text-white">
+        <Sparkles className="h-5 w-5 text-brand-teal" aria-hidden />
+        <h1 className="font-display text-2xl font-bold text-brand-primary dark:text-white">
           {greeting}, {first}
         </h1>
       </div>
-      <p className="mt-0.5 text-sm text-[#94A3B8]">
+      <p className="mt-0.5 text-sm text-brand-muted">
         Tus proyectos y progreso.
       </p>
     </div>

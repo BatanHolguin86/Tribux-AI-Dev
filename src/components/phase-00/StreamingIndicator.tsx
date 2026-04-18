@@ -3,7 +3,7 @@
 export function StreamingIndicator() {
   return (
     <div className="flex gap-3">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#E8F4F8] text-[10px] font-bold text-[#0F2B46] dark:text-[#0EA5A3] shadow-sm dark:shadow-gray-900/20">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-surface text-[10px] font-bold text-brand-primary dark:text-brand-teal shadow-sm dark:shadow-gray-900/20">
         AI
       </div>
       <div className="inline-flex items-center gap-1 rounded-2xl rounded-bl-md bg-gray-100 dark:bg-gray-800 px-4 py-3">

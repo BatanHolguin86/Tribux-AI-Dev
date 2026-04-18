@@ -83,8 +83,8 @@ export function FeatureSuggestions({ projectId, onAccepted }: FeatureSuggestions
     <div className="rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
       {!fetched || error ? (
         <div className="p-4 text-center">
-          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30">
-            <svg className="h-5 w-5 text-[#0F2B46] dark:text-[#0EA5A3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-surface dark:bg-brand-primary/30">
+            <svg className="h-5 w-5 text-brand-primary dark:text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
             </svg>
           </div>
@@ -102,7 +102,7 @@ export function FeatureSuggestions({ projectId, onAccepted }: FeatureSuggestions
           <button
             onClick={fetchSuggestions}
             disabled={loading}
-            className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#0F2B46] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+            className="mt-3 inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-navy disabled:opacity-50"
           >
             {loading ? (
               <>
@@ -127,7 +127,7 @@ export function FeatureSuggestions({ projectId, onAccepted }: FeatureSuggestions
               <button
                 onClick={addAll}
                 disabled={addingAll || addingIdx !== null}
-                className="text-xs font-medium text-[#0F2B46] transition-colors hover:text-[#0F2B46] disabled:opacity-50 dark:text-[#0EA5A3] dark:hover:text-[#0EA5A3]"
+                className="text-xs font-medium text-brand-primary transition-colors hover:text-brand-primary disabled:opacity-50 dark:text-brand-teal dark:hover:text-brand-teal"
               >
                 {addingAll ? 'Agregando...' : 'Agregar todas'}
               </button>
@@ -149,11 +149,11 @@ export function FeatureSuggestions({ projectId, onAccepted }: FeatureSuggestions
                 <button
                   onClick={() => addFeature(i)}
                   disabled={addingIdx !== null || addingAll}
-                  className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition-all hover:border-[#0EA5A3] hover:bg-[#E8F4F8] hover:text-[#0F2B46] disabled:opacity-50 dark:border-gray-700 dark:hover:border-[#0A1F33] dark:hover:bg-[#0F2B46]/20 dark:hover:text-[#0EA5A3]"
+                  className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition-all hover:border-brand-teal hover:bg-brand-surface hover:text-brand-primary disabled:opacity-50 dark:border-gray-700 dark:hover:border-[#0A1F33] dark:hover:bg-brand-primary/20 dark:hover:text-brand-teal"
                   title="Agregar este feature"
                 >
                   {addingIdx === i ? (
-                    <div className="h-3 w-3 animate-spin rounded-full border-2 border-[#0EA5A3] border-t-[#0F2B46]" />
+                    <div className="h-3 w-3 animate-spin rounded-full border-2 border-brand-teal border-t-[#0F2B46]" />
                   ) : (
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

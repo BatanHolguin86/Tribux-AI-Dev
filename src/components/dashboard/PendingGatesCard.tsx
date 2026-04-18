@@ -25,13 +25,13 @@ export async function PendingGatesCard() {
   if (!pendingGates?.length) return null
 
   return (
-    <div className="rounded-xl border-2 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-5 dark:bg-[#F59E0B]/10">
+    <div className="rounded-xl border-2 border-brand-amber/30 bg-brand-amber/5 p-5 dark:bg-brand-amber/10">
       <div className="mb-3 flex items-center gap-2">
-        <ShieldAlert className="h-5 w-5 shrink-0 text-[#F59E0B]" aria-hidden />
-        <h3 className="font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+        <ShieldAlert className="h-5 w-5 shrink-0 text-brand-amber" aria-hidden />
+        <h3 className="font-display text-sm font-semibold text-brand-primary dark:text-white">
           Pendiente tu aprobación
         </h3>
-        <span className="rounded-full bg-[#F59E0B] px-2 py-0.5 text-[10px] font-bold text-white">
+        <span className="rounded-full bg-brand-amber px-2 py-0.5 text-[10px] font-bold text-white">
           {pendingGates.length}
         </span>
       </div>
@@ -44,15 +44,15 @@ export async function PendingGatesCard() {
             <Link
               key={gate.id}
               href={`/projects/${gate.project_id}/phase/${phaseNum}`}
-              className="flex items-center justify-between rounded-lg bg-white p-3 transition-colors hover:shadow-sm dark:bg-[#0F2B46]"
+              className="flex items-center justify-between rounded-lg bg-white p-3 transition-colors hover:shadow-sm dark:bg-brand-primary"
             >
               <div>
-                <p className="text-sm font-medium text-[#0F2B46] dark:text-white">{projectName}</p>
-                <p className="text-xs text-[#94A3B8]">
+                <p className="text-sm font-medium text-brand-primary dark:text-white">{projectName}</p>
+                <p className="text-xs text-brand-muted">
                   Phase {phaseNum} — {PHASE_NAMES[gate.phase_number] ?? `Fase ${phaseNum}`}
                 </p>
               </div>
-              <span className="rounded-lg bg-[#F59E0B] px-3 py-1.5 text-xs font-semibold text-white">
+              <span className="rounded-lg bg-brand-amber px-3 py-1.5 text-xs font-semibold text-white">
                 Revisar
               </span>
             </Link>

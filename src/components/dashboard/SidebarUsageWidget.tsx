@@ -22,7 +22,7 @@ const PLAN_LABELS: Record<string, string> = {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  ok: 'bg-[#0EA5A3]',
+  ok: 'bg-brand-teal',
   warning: 'bg-amber-400',
   exceeded: 'bg-orange-500',
   whale: 'bg-red-500',
@@ -75,7 +75,7 @@ export function SidebarUsageWidget() {
 
         {/* Credits indicator */}
         {quota.creditsUsd > 0 && (
-          <p className="mt-0.5 text-[10px] text-[#0EA5A3]/70">
+          <p className="mt-0.5 text-[10px] text-brand-teal/70">
             +${quota.creditsUsd.toFixed(0)} creditos extra
           </p>
         )}
@@ -84,7 +84,7 @@ export function SidebarUsageWidget() {
         {quota.status === 'exceeded' || quota.status === 'whale' ? (
           <Link
             href="/settings?upgrade=true"
-            className="mt-1.5 flex items-center justify-center gap-1 rounded-md bg-[#F59E0B]/20 px-2 py-1 text-[10px] font-medium text-[#F59E0B] transition-colors hover:bg-[#F59E0B]/30"
+            className="mt-1.5 flex items-center justify-center gap-1 rounded-md bg-brand-amber/20 px-2 py-1 text-[10px] font-medium text-brand-amber transition-colors hover:bg-brand-amber/30"
           >
             Comprar creditos
           </Link>

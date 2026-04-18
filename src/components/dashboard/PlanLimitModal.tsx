@@ -91,24 +91,24 @@ export function PlanLimitModal({ open, currentPlan, onClose }: PlanLimitModalPro
                 onClick={() => isUpgrade && setSelectedPlan(plan.key)}
                 className={`rounded-lg border-2 p-4 text-left transition-colors ${
                   isSelected
-                    ? 'border-[#0EA5A3] bg-[#E8F4F8] dark:bg-[#0F2B46]/20 ring-2 ring-[#0EA5A3]'
+                    ? 'border-brand-teal bg-brand-surface dark:bg-brand-primary/20 ring-2 ring-[#0EA5A3]'
                     : isCurrent
-                      ? 'border-[#0EA5A3] bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
+                      ? 'border-brand-teal bg-brand-surface dark:bg-brand-primary/20'
                       : isUpgrade
-                        ? 'border-gray-200 dark:border-gray-700 hover:border-[#0EA5A3] cursor-pointer'
+                        ? 'border-gray-200 dark:border-gray-700 hover:border-brand-teal cursor-pointer'
                         : 'border-gray-200 dark:border-gray-700 opacity-50'
                 }`}
               >
                 <p className="font-semibold text-gray-900 dark:text-gray-100">{plan.name}</p>
-                <p className="text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">{plan.price}</p>
+                <p className="text-sm font-medium text-brand-primary dark:text-brand-teal">{plan.price}</p>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{plan.projects}</p>
                 {isCurrent && (
-                  <span className="mt-2 inline-block text-xs font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
+                  <span className="mt-2 inline-block text-xs font-medium text-brand-primary dark:text-brand-teal">
                     Plan actual
                   </span>
                 )}
                 {isSelected && (
-                  <span className="mt-2 inline-block text-xs font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
+                  <span className="mt-2 inline-block text-xs font-medium text-brand-primary dark:text-brand-teal">
                     Seleccionado
                   </span>
                 )}
@@ -131,7 +131,7 @@ export function PlanLimitModal({ open, currentPlan, onClose }: PlanLimitModalPro
           <button
             onClick={handleUpgrade}
             disabled={!selectedPlan || loading}
-            className="flex-1 rounded-lg bg-[#0F2B46] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Procesando...' : 'Upgrade'}
           </button>

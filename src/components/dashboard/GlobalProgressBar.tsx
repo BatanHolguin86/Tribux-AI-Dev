@@ -28,12 +28,12 @@ export function GlobalProgressBar({ projects }: Props) {
   })
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700/50 dark:bg-[#0F2B46]">
+    <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700/50 dark:bg-brand-primary">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+        <h3 className="font-display text-sm font-semibold text-brand-primary dark:text-white">
           Progreso global
         </h3>
-        <span className="rounded-full bg-[#E8F4F8] px-2.5 py-0.5 text-xs font-bold text-[#0F2B46] dark:bg-[#0EA5A3]/20 dark:text-[#0EA5A3]">
+        <span className="rounded-full bg-brand-surface px-2.5 py-0.5 text-xs font-bold text-brand-primary dark:bg-brand-teal/20 dark:text-brand-teal">
           {overallProgress}%
         </span>
       </div>

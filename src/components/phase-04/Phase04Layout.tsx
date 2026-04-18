@@ -158,13 +158,13 @@ export function Phase04Layout({
                 {pendingTasks.length > 0 && (
                   <button
                     onClick={() => setShowBuildSession(true)}
-                    className="mt-4 w-full rounded-lg bg-[#0EA5A3] py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0C8C8A]"
+                    className="mt-4 w-full rounded-lg bg-brand-teal py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0C8C8A]"
                   >
                     🏗️ Construir {pendingTasks.length} features pendientes
                   </button>
                 )}
                 <CIStatusWidget projectId={projectId} />
-                <p className="mt-3 text-xs text-[#94A3B8]">
+                <p className="mt-3 text-xs text-brand-muted">
                   {doneTasks} de {totalTasks} features construidas
                 </p>
               </div>
@@ -180,7 +180,7 @@ export function Phase04Layout({
                 {repoUrl && pendingTasks.length > 1 && (
                   <button
                     onClick={() => setShowBuildSession(true)}
-                    className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[#0EA5A3]/30 bg-[#E8F4F8] px-3 py-1.5 text-xs font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3] dark:hover:border-[#0EA5A3]"
+                    className="flex shrink-0 items-center gap-1.5 rounded-lg border border-brand-teal/30 bg-brand-surface px-3 py-1.5 text-xs font-medium text-brand-primary transition-colors hover:border-brand-teal hover:bg-brand-surface dark:border-brand-primary dark:bg-brand-primary/20 dark:text-brand-teal dark:hover:border-brand-teal"
                   >
                     🏗️ Build All ({pendingTasks.length})
                   </button>

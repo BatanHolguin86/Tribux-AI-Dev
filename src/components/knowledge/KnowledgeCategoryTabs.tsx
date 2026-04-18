@@ -12,9 +12,9 @@ type KnowledgeCategoryTabsProps = {
 const CATEGORY_ACTIVE_COLORS: Record<string, string> = {
   documentos: 'bg-[#3B82F6]/10 text-[#3B82F6]',
   decisiones: 'bg-[#8B5CF6]/10 text-[#8B5CF6]',
-  guias: 'bg-[#0EA5A3]/10 text-[#0EA5A3]',
+  guias: 'bg-brand-teal/10 text-brand-teal',
   artefactos: 'bg-[#EC4899]/10 text-[#EC4899]',
-  notas: 'bg-[#F59E0B]/10 text-[#F59E0B]',
+  notas: 'bg-brand-amber/10 text-brand-amber',
 }
 
 export function KnowledgeCategoryTabs({
@@ -30,8 +30,8 @@ export function KnowledgeCategoryTabs({
         onClick={() => onChange(null)}
         className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
           active === null
-            ? 'bg-[#0F2B46] text-white shadow-sm'
-            : 'text-[#64748B] hover:bg-[#F1F5F9] dark:text-[#94A3B8] dark:hover:bg-white/5'
+            ? 'bg-brand-primary text-white shadow-sm'
+            : 'text-brand-muted hover:bg-[#F1F5F9] dark:text-brand-muted dark:hover:bg-white/5'
         }`}
       >
         Todos
@@ -48,7 +48,7 @@ export function KnowledgeCategoryTabs({
             className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
               active === cat
                 ? `${activeColor} shadow-sm`
-                : 'text-[#64748B] hover:bg-[#F1F5F9] dark:text-[#94A3B8] dark:hover:bg-white/5'
+                : 'text-brand-muted hover:bg-[#F1F5F9] dark:text-brand-muted dark:hover:bg-white/5'
             }`}
           >
             <span className="text-[11px]">{KB_CATEGORY_ICONS[cat]}</span>

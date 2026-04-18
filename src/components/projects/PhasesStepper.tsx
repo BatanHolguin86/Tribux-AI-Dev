@@ -62,7 +62,7 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
           <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-white/50">
             Fases del proyecto
           </h3>
-          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-[#0EA5A3]">
+          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-brand-teal">
             {progress}%
           </span>
         </div>
@@ -117,7 +117,7 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             href={`/projects/${projectId}/knowledge`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/knowledge')
-                ? 'bg-[#0EA5A3]/15'
+                ? 'bg-brand-teal/15'
                 : 'hover:bg-white/5'
             }`}
           >
@@ -126,7 +126,7 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             </div>
             <span
               className={`text-sm font-medium ${
-                pathname?.includes('/knowledge') ? 'text-[#0EA5A3]' : 'text-white/70'
+                pathname?.includes('/knowledge') ? 'text-brand-teal' : 'text-white/70'
               }`}
             >
               Base de Conocimiento
@@ -137,7 +137,7 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             href={`/projects/${projectId}/infrastructure`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/infrastructure')
-                ? 'bg-[#0EA5A3]/15'
+                ? 'bg-brand-teal/15'
                 : 'hover:bg-white/5'
             }`}
           >
@@ -146,7 +146,7 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             </div>
             <span
               className={`text-sm font-medium ${
-                pathname?.includes('/infrastructure') ? 'text-[#0EA5A3]' : 'text-white/70'
+                pathname?.includes('/infrastructure') ? 'text-brand-teal' : 'text-white/70'
               }`}
             >
               Infraestructura
@@ -157,7 +157,7 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             href={`/projects/${projectId}/costs`}
             className={`flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
               pathname?.includes('/costs')
-                ? 'bg-[#0EA5A3]/15'
+                ? 'bg-brand-teal/15'
                 : 'hover:bg-white/5'
             }`}
           >
@@ -166,7 +166,7 @@ export function PhasesStepper({ projectId, phases }: PhasesStepperProps) {
             </div>
             <span
               className={`text-sm font-medium ${
-                pathname?.includes('/costs') ? 'text-[#0EA5A3]' : 'text-white/70'
+                pathname?.includes('/costs') ? 'text-brand-teal' : 'text-white/70'
               }`}
             >
               Control de Costos
@@ -229,7 +229,7 @@ function StepperItem({
     <div
       className={`group relative flex items-center gap-3 rounded-lg px-2.5 py-2 transition-all ${
         isActive
-          ? 'bg-[#0EA5A3]/20'
+          ? 'bg-brand-teal/20'
           : status === 'completed'
             ? 'hover:bg-white/5'
             : status === 'active'
@@ -275,7 +275,7 @@ function StepperItem({
           <span
             className={`block truncate text-sm font-medium leading-tight ${
               isActive
-                ? 'font-semibold text-[#0EA5A3]'
+                ? 'font-semibold text-brand-teal'
                 : status === 'completed'
                   ? 'text-white/80'
                   : status === 'active'
@@ -288,7 +288,7 @@ function StepperItem({
           <span
             className={`text-[10px] leading-tight ${
               isActive
-                ? 'text-[#0EA5A3]'
+                ? 'text-brand-teal'
                 : status === 'completed'
                   ? 'text-green-400'
                   : 'text-white/40'
@@ -318,7 +318,7 @@ function StepperItem({
 
       {/* Active indicator (teal dot) */}
       {isActive && !canReset && (
-        <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#0EA5A3]" />
+        <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-teal" />
       )}
     </div>
   )

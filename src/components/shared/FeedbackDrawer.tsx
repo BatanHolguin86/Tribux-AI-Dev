@@ -132,7 +132,7 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative ml-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-[#0A1F33] sm:ml-auto" role="dialog" aria-modal="true" aria-label="Feedback">
+      <div className="relative ml-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-brand-navy sm:ml-auto" role="dialog" aria-modal="true" aria-label="Feedback">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
           <div className="flex items-center gap-2">
@@ -146,7 +146,7 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
                 </svg>
               </button>
             )}
-            <h2 className="font-display text-sm font-bold text-[#0F2B46] dark:text-white">
+            <h2 className="font-display text-sm font-bold text-brand-primary dark:text-white">
               {view === 'list' && 'Feedback'}
               {view === 'new' && 'Nuevo feedback'}
               {view === 'detail' && 'Conversacion'}
@@ -167,14 +167,14 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
             <div className="p-4">
               <button
                 onClick={() => setView('new')}
-                className="mb-4 w-full rounded-lg bg-[#0F2B46] py-2.5 text-sm font-medium text-white hover:bg-[#0A1F33]"
+                className="mb-4 w-full rounded-lg bg-brand-primary py-2.5 text-sm font-medium text-white hover:bg-brand-navy"
               >
                 Nuevo feedback
               </button>
 
               {loading ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#0EA5A3] border-t-transparent" />
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand-teal border-t-transparent" />
                 </div>
               ) : tickets.length === 0 ? (
                 <p className="py-8 text-center text-xs text-gray-400">Sin mensajes aun</p>
@@ -216,7 +216,7 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
                       <button
                         key={cat.value}
                         onClick={() => setCategory(cat.value)}
-                        className="flex w-full items-center gap-3 rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-[#0EA5A3]/30 hover:bg-[#E8F4F8]/50 dark:border-gray-700 dark:hover:bg-[#0F2B46]/30"
+                        className="flex w-full items-center gap-3 rounded-lg border border-gray-200 p-3 text-left transition-colors hover:border-brand-teal/30 hover:bg-brand-surface/50 dark:border-gray-700 dark:hover:bg-brand-primary/30"
                       >
                         <span className="text-xl">{cat.icon}</span>
                         <div>
@@ -234,26 +234,26 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
                     <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                       {CATEGORIES.find((c) => c.value === category)?.label}
                     </span>
-                    <button onClick={() => setCategory(null)} className="text-[10px] text-[#0EA5A3] underline">Cambiar</button>
+                    <button onClick={() => setCategory(null)} className="text-[10px] text-brand-teal underline">Cambiar</button>
                   </div>
                   <input
                     type="text"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     placeholder="Asunto (breve)"
-                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-brand-primary dark:text-white"
                   />
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Describe tu feedback..."
                     rows={5}
-                    className="w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
+                    className="w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-brand-primary dark:text-white"
                   />
                   <button
                     onClick={handleSubmit}
                     disabled={submitting || !subject.trim() || !message.trim()}
-                    className="w-full rounded-lg bg-[#0F2B46] py-2.5 text-sm font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
+                    className="w-full rounded-lg bg-brand-primary py-2.5 text-sm font-medium text-white hover:bg-brand-navy disabled:opacity-50"
                   >
                     {submitting ? 'Enviando...' : 'Enviar feedback'}
                   </button>
@@ -270,13 +270,13 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="font-display text-lg font-bold text-[#0F2B46] dark:text-white">Recibido</h3>
+              <h3 className="font-display text-lg font-bold text-brand-primary dark:text-white">Recibido</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 {CONFIRMATION_MESSAGES[confirmationCategory]}
               </p>
               <button
                 onClick={() => setView('list')}
-                className="mt-6 rounded-lg bg-[#0F2B46] px-6 py-2 text-sm font-medium text-white hover:bg-[#0A1F33]"
+                className="mt-6 rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-white hover:bg-brand-navy"
               >
                 Ver mis tickets
               </button>
@@ -291,9 +291,9 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
                   <div key={msg.id} className={`flex ${msg.sender_type === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
                       msg.sender_type === 'user'
-                        ? 'rounded-tr-md bg-[#0F2B46] text-white'
+                        ? 'rounded-tr-md bg-brand-primary text-white'
                         : msg.sender_type === 'admin'
-                          ? 'rounded-tl-md border border-[#0EA5A3]/30 bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46] dark:text-gray-200'
+                          ? 'rounded-tl-md border border-brand-teal/30 bg-brand-surface text-brand-primary dark:bg-brand-primary dark:text-gray-200'
                           : 'rounded-tl-md border border-purple-200 bg-purple-50 text-purple-900 dark:border-purple-800 dark:bg-purple-900/20 dark:text-purple-200'
                     }`}>
                       {msg.sender_type !== 'user' && (
@@ -328,12 +328,12 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
                     onChange={(e) => setReply(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleReply()}
                     placeholder="Escribe tu respuesta..."
-                    className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
+                    className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-brand-primary dark:text-white"
                   />
                   <button
                     onClick={handleReply}
                     disabled={sendingReply || !reply.trim()}
-                    className="shrink-0 rounded-lg bg-[#0F2B46] px-3 py-2 text-white disabled:opacity-50"
+                    className="shrink-0 rounded-lg bg-brand-primary px-3 py-2 text-white disabled:opacity-50"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />

@@ -59,7 +59,7 @@ export function ChatInput({
     suggestionChipsVisible
 
   return (
-    <div className="border-t border-[#E2E8F0] bg-[#F8FAFC] dark:border-[#1E3A55] dark:bg-[#0A1F33]">
+    <div className="border-t border-brand-border bg-[#F8FAFC] dark:border-brand-border-dark dark:bg-brand-navy">
       {chips ? (
         <SuggestionChips
           suggestions={suggestionChips}
@@ -98,7 +98,7 @@ export function ChatInput({
         placeholder={placeholder ?? "Escribe tu respuesta..."}
         disabled={disabled || isLoading}
         rows={1}
-        className="flex-1 resize-none rounded-xl border border-[#E2E8F0] bg-white px-4 py-2.5 text-sm text-[#0F2B46] transition-colors placeholder:text-[#94A3B8] focus:border-[#0EA5A3] focus:outline-none focus:ring-2 focus:ring-[#0EA5A3]/20 disabled:opacity-50 dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200 dark:placeholder:text-gray-500 dark:focus:border-[#0EA5A3]"
+        className="flex-1 resize-none rounded-xl border border-brand-border bg-white px-4 py-2.5 text-sm text-brand-primary transition-colors placeholder:text-brand-muted focus:border-brand-teal focus:outline-none focus:ring-2 focus:ring-[#0EA5A3]/20 disabled:opacity-50 dark:border-brand-border-dark dark:bg-brand-primary dark:text-gray-200 dark:placeholder:text-gray-500 dark:focus:border-brand-teal"
       />
       {hasAttachments && (
         <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -119,7 +119,7 @@ export function ChatInput({
         <button
           onClick={onSubmit}
           disabled={!value.trim() || disabled}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0EA5A3] text-white shadow-sm transition-all hover:bg-[#0C8C8A] disabled:opacity-40"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-teal text-white shadow-sm transition-all hover:bg-[#0C8C8A] disabled:opacity-40"
           title="Enviar"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -44,7 +44,7 @@ export function ProjectStep({ defaultValues, onSubmit, onBack }: ProjectStepProp
             id="name"
             type="text"
             {...register('name')}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             placeholder="Ej: Mi App de Delivery"
           />
           {errors.name && (
@@ -61,7 +61,7 @@ export function ProjectStep({ defaultValues, onSubmit, onBack }: ProjectStepProp
             id="description"
             rows={3}
             {...register('description')}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             placeholder="Que problema resuelve? Para quien es?"
           />
         </div>
@@ -75,7 +75,7 @@ export function ProjectStep({ defaultValues, onSubmit, onBack }: ProjectStepProp
             id="industry"
             type="text"
             {...register('industry')}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             placeholder="Ej: Fintech, Salud, Educacion"
           />
         </div>
@@ -90,7 +90,7 @@ export function ProjectStep({ defaultValues, onSubmit, onBack }: ProjectStepProp
           </button>
           <button
             type="submit"
-            className="flex-1 rounded-lg bg-[#0F2B46] px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33]"
+            className="flex-1 rounded-lg bg-brand-primary px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy"
           >
             Continuar
           </button>

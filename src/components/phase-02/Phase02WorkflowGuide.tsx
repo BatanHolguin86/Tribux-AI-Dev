@@ -64,8 +64,8 @@ export function Phase02WorkflowGuide({
 
   return (
     <div className="mb-6 space-y-4">
-      <div className="rounded-2xl border border-[#0EA5A3]/30/80 bg-gradient-to-br from-[#E8F4F8]/95 via-white to-[#E8F4F8]/60 p-5 shadow-sm dark:border-[#0F2B46]/35 dark:from-[#0A1F33]/25 dark:via-gray-950 dark:to-[#0A1F33]/20">
-        <p className="text-[11px] font-bold uppercase tracking-wide text-[#0F2B46] dark:text-[#0EA5A3]">
+      <div className="rounded-2xl border border-brand-teal/30/80 bg-gradient-to-br from-[#E8F4F8]/95 via-white to-[#E8F4F8]/60 p-5 shadow-sm dark:border-brand-primary/35 dark:from-[#0A1F33]/25 dark:via-gray-950 dark:to-[#0A1F33]/20">
+        <p className="text-[11px] font-bold uppercase tracking-wide text-brand-primary dark:text-brand-teal">
           Phase 02 — Un solo flujo: Arquitectura &amp; Diseño
         </p>
         <h2 className="mt-1 text-lg font-display font-semibold text-gray-900 dark:text-gray-100">
@@ -106,7 +106,7 @@ export function Phase02WorkflowGuide({
                 !isDesign && (hasDoc || onSectionClick) ? 'cursor-pointer hover:shadow-md' : ''
               } ${
                 step.status === 'current'
-                  ? 'border-[#0EA5A3] shadow-md shadow-[#E8F4F8]/50 dark:border-[#0EA5A3] dark:shadow-[#0F2B46]/20'
+                  ? 'border-brand-teal shadow-md shadow-[#E8F4F8]/50 dark:border-brand-teal dark:shadow-[#0F2B46]/20'
                   : 'border-gray-200 dark:border-gray-700'
               } ${isDesign ? 'bg-gradient-to-b from-fuchsia-50/80 to-white dark:from-fuchsia-950/20 dark:to-gray-950' : 'bg-white dark:bg-gray-900'}`}
             >
@@ -141,7 +141,7 @@ export function Phase02WorkflowGuide({
                   {preview}...
                 </p>
               ) : hasDoc ? (
-                <p className="mt-1 text-xs text-[#0EA5A3]">
+                <p className="mt-1 text-xs text-brand-teal">
                   Documento generado — click para ver
                 </p>
               ) : (
@@ -165,16 +165,16 @@ export function Phase02WorkflowGuide({
                   Ir a Phase 02
                 </a>
               ) : !isDesign && hasDoc ? (
-                <p className="mt-2 text-[10px] font-medium text-[#0EA5A3]">
+                <p className="mt-2 text-[10px] font-medium text-brand-teal">
                   {isExpanded ? 'Click para cerrar' : 'Click para ver'}
                 </p>
               ) : null}
 
               {isExpanded && sectionData?.documentContent && (
-                <div className="mt-3 max-h-64 overflow-y-auto rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3 dark:border-[#1E3A55] dark:bg-[#0A1F33]"
+                <div className="mt-3 max-h-64 overflow-y-auto rounded-lg border border-brand-border bg-[#F8FAFC] p-3 dark:border-brand-border-dark dark:bg-brand-navy"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <pre className="whitespace-pre-wrap text-xs leading-relaxed text-[#0F2B46] dark:text-gray-300">
+                  <pre className="whitespace-pre-wrap text-xs leading-relaxed text-brand-primary dark:text-gray-300">
                     {sectionData.documentContent}
                   </pre>
                 </div>

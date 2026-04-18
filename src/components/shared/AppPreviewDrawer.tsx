@@ -94,7 +94,7 @@ export function AppPreviewDrawer({
       {/* Floating button */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-30 flex items-center gap-2 rounded-full bg-[#0EA5A3] px-5 py-3 text-sm font-medium text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:scale-105 hover:shadow-xl"
+        className="fixed bottom-6 right-6 z-30 flex items-center gap-2 rounded-full bg-brand-teal px-5 py-3 text-sm font-medium text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:scale-105 hover:shadow-xl"
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -110,11 +110,11 @@ export function AppPreviewDrawer({
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
 
           {/* Panel */}
-          <div className="relative ml-auto flex h-full w-full max-w-5xl flex-col bg-white shadow-2xl dark:bg-[#0A1F33]" role="dialog" aria-modal="true">
+          <div className="relative ml-auto flex h-full w-full max-w-5xl flex-col bg-white shadow-2xl dark:bg-brand-navy" role="dialog" aria-modal="true">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] px-4 py-3 dark:border-[#1E3A55]">
+            <div className="flex items-center justify-between border-b border-brand-border px-4 py-3 dark:border-brand-border-dark">
               <div className="flex items-center gap-3">
-                <h2 className="font-display text-sm font-bold text-[#0F2B46] dark:text-white">
+                <h2 className="font-display text-sm font-bold text-brand-primary dark:text-white">
                   {hideCode ? 'Preview de tu app' : 'Preview & Codigo'}
                 </h2>
                 {preview?.url && (
@@ -128,11 +128,11 @@ export function AppPreviewDrawer({
               <div className="flex items-center gap-2">
                 {/* Tabs — hide code tab for founders */}
                 {!hideCode && (
-                  <div className="flex rounded-lg bg-[#F1F5F9] p-0.5 dark:bg-[#0F2B46]">
+                  <div className="flex rounded-lg bg-[#F1F5F9] p-0.5 dark:bg-brand-primary">
                     <button
                       onClick={() => setActiveTab('preview')}
                       className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                        activeTab === 'preview' ? 'bg-white text-[#0F2B46] shadow-sm dark:bg-[#1E3A55] dark:text-white' : 'text-[#94A3B8]'
+                        activeTab === 'preview' ? 'bg-white text-brand-primary shadow-sm dark:bg-[#1E3A55] dark:text-white' : 'text-brand-muted'
                       }`}
                     >
                       Preview
@@ -140,7 +140,7 @@ export function AppPreviewDrawer({
                     <button
                       onClick={() => setActiveTab('code')}
                       className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                        activeTab === 'code' ? 'bg-white text-[#0F2B46] shadow-sm dark:bg-[#1E3A55] dark:text-white' : 'text-[#94A3B8]'
+                        activeTab === 'code' ? 'bg-white text-brand-primary shadow-sm dark:bg-[#1E3A55] dark:text-white' : 'text-brand-muted'
                       }`}
                     >
                       Codigo
@@ -157,8 +157,8 @@ export function AppPreviewDrawer({
                         onClick={() => setDevice(key)}
                         className={`rounded-md px-2 py-1 text-sm ${
                           device === key
-                            ? 'bg-[#E8F4F8] text-[#0F2B46] dark:bg-[#0F2B46] dark:text-[#0EA5A3]'
-                            : 'text-[#94A3B8]'
+                            ? 'bg-brand-surface text-brand-primary dark:bg-brand-primary dark:text-brand-teal'
+                            : 'text-brand-muted'
                         }`}
                       >
                         {icon}
@@ -173,7 +173,7 @@ export function AppPreviewDrawer({
                     href={preview.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-md px-2 py-1 text-xs text-[#0EA5A3] hover:bg-[#E8F4F8]"
+                    className="rounded-md px-2 py-1 text-xs text-brand-teal hover:bg-brand-surface"
                   >
                     Abrir ↗
                   </a>
@@ -183,7 +183,7 @@ export function AppPreviewDrawer({
                 <button
                   onClick={() => setOpen(false)}
                   aria-label="Cerrar preview"
-                  className="rounded-md p-1.5 text-[#94A3B8] hover:bg-[#F1F5F9] hover:text-[#0F2B46] dark:hover:bg-[#0F2B46]"
+                  className="rounded-md p-1.5 text-brand-muted hover:bg-[#F1F5F9] hover:text-brand-primary dark:hover:bg-brand-primary"
                 >
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -198,7 +198,7 @@ export function AppPreviewDrawer({
                 <div className="flex h-full items-start justify-center bg-[#F1F5F9] p-4 dark:bg-[#071826]">
                   {preview?.url ? (
                     <div
-                      className="h-full overflow-hidden rounded-xl border border-[#E2E8F0] bg-white shadow-lg dark:border-[#1E3A55]"
+                      className="h-full overflow-hidden rounded-xl border border-brand-border bg-white shadow-lg dark:border-brand-border-dark"
                       style={{ width: typeof deviceWidth === 'number' ? `${deviceWidth}px` : deviceWidth }}
                     >
                       <iframe
@@ -212,10 +212,10 @@ export function AppPreviewDrawer({
                     <div className="flex h-full w-full items-center justify-center">
                       <div className="text-center">
                         <div className="text-4xl">🚧</div>
-                        <p className="mt-3 font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+                        <p className="mt-3 font-display text-sm font-semibold text-brand-primary dark:text-white">
                           Preview no disponible aun
                         </p>
-                        <p className="mt-1 text-xs text-[#94A3B8]">
+                        <p className="mt-1 text-xs text-brand-muted">
                           El preview estara disponible cuando el codigo se construya y se depliegue.
                         </p>
                       </div>
@@ -225,8 +225,8 @@ export function AppPreviewDrawer({
               ) : (
                 <div className="flex h-full">
                   {/* File tree */}
-                  <div className="w-56 shrink-0 overflow-y-auto border-r border-[#E2E8F0] bg-[#F8FAFC] p-3 dark:border-[#1E3A55] dark:bg-[#0A1F33]">
-                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8]">Archivos</p>
+                  <div className="w-56 shrink-0 overflow-y-auto border-r border-brand-border bg-[#F8FAFC] p-3 dark:border-brand-border-dark dark:bg-brand-navy">
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-brand-muted">Archivos</p>
                     <div className="space-y-0.5">
                       {files.map((file) => (
                         <button
@@ -234,24 +234,24 @@ export function AppPreviewDrawer({
                           onClick={() => loadFile(file.path)}
                           className={`w-full rounded-md px-2 py-1.5 text-left text-xs transition-colors ${
                             selectedFile === file.path
-                              ? 'bg-[#0EA5A3]/10 text-[#0EA5A3]'
-                              : 'text-[#64748B] hover:bg-[#E8F4F8] dark:hover:bg-[#0F2B46]'
+                              ? 'bg-brand-teal/10 text-brand-teal'
+                              : 'text-brand-muted hover:bg-brand-surface dark:hover:bg-brand-primary'
                           }`}
                         >
                           <span className="font-mono">{file.path.split('/').pop()}</span>
-                          <span className="ml-1 text-[9px] text-[#94A3B8]">{file.path}</span>
+                          <span className="ml-1 text-[9px] text-brand-muted">{file.path}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
                   {/* Code view */}
-                  <div className="flex-1 overflow-auto bg-[#0A1F33] p-4">
+                  <div className="flex-1 overflow-auto bg-brand-navy p-4">
                     {selectedFile ? (
                       <div>
-                        <p className="mb-2 text-xs text-[#94A3B8]">{selectedFile}</p>
+                        <p className="mb-2 text-xs text-brand-muted">{selectedFile}</p>
                         {loadingFile ? (
-                          <div className="flex items-center gap-2 text-xs text-[#94A3B8]">
+                          <div className="flex items-center gap-2 text-xs text-brand-muted">
                             <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -265,7 +265,7 @@ export function AppPreviewDrawer({
                         )}
                       </div>
                     ) : (
-                      <div className="flex h-full items-center justify-center text-xs text-[#94A3B8]">
+                      <div className="flex h-full items-center justify-center text-xs text-brand-muted">
                         Selecciona un archivo para ver su codigo
                       </div>
                     )}

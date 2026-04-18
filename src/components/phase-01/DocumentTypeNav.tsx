@@ -47,7 +47,7 @@ export function DocumentTypeNav({ documents, activeDocType, onSelect }: Document
               disabled={isLocked}
               className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 isActive
-                  ? 'bg-[#E8F4F8] text-[#0F2B46]'
+                  ? 'bg-brand-surface text-brand-primary'
                   : isLocked
                     ? 'cursor-not-allowed text-gray-300'
                     : 'text-gray-600 hover:bg-gray-100'

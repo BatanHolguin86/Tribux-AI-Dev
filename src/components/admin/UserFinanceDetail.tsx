@@ -44,7 +44,7 @@ type DetailResponse = {
 
 const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   active: { label: 'Activo', classes: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' },
-  trialing: { label: 'Trial', classes: 'bg-[#E8F4F8] dark:bg-[#0F2B46]/20 text-[#0F2B46] dark:text-[#0EA5A3]' },
+  trialing: { label: 'Trial', classes: 'bg-brand-surface dark:bg-brand-primary/20 text-brand-primary dark:text-brand-teal' },
   canceled: { label: 'Cancelado', classes: 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' },
   free: { label: 'Free', classes: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400' },
   past_due: { label: 'Pendiente', classes: 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400' },
@@ -108,13 +108,13 @@ function KpiCard({
 }) {
   const valueColor = {
     default: 'text-gray-900 dark:text-white',
-    revenue: 'text-[#0F2B46] dark:text-[#0EA5A3]',
+    revenue: 'text-brand-primary dark:text-brand-teal',
     cost: 'text-red-600 dark:text-red-400',
     profit: 'text-emerald-600 dark:text-emerald-400',
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-[#0EA5A3] dark:hover:border-[#0A1F33]">
+    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 transition-all hover:shadow-md hover:border-brand-teal dark:hover:border-[#0A1F33]">
       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
       <p className={`mt-2 text-2xl font-display font-bold ${valueColor[variant]}`}>{value}</p>
       {subtitle && <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{subtitle}</p>}
@@ -149,7 +149,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
   if (loading || !data) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0EA5A3]" />
+        <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-brand-teal/30 border-t-[#0EA5A3]" />
       </div>
     )
   }
@@ -181,7 +181,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
               <h1 className="text-xl font-display font-bold text-gray-900 dark:text-white tracking-tight">
                 {user.fullName || 'Usuario'}
               </h1>
-              <span className="inline-flex rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2.5 py-0.5 text-[11px] font-bold text-[#0F2B46] dark:text-[#0EA5A3] uppercase">
+              <span className="inline-flex rounded-full bg-brand-surface dark:bg-brand-primary/30 px-2.5 py-0.5 text-[11px] font-bold text-brand-primary dark:text-brand-teal uppercase">
                 {user.plan}
               </span>
               <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-medium ${status.classes}`}>
@@ -340,7 +340,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
                         <span className="font-medium text-gray-900 dark:text-gray-100 text-[13px]">
                           {EVENT_LABELS[row.eventType] || row.eventType}
                         </span>
-                        <span className="inline-flex rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30 px-2 py-0.5 text-[10px] font-bold text-[#0F2B46] dark:text-[#0EA5A3] tabular-nums">
+                        <span className="inline-flex rounded-full bg-brand-surface dark:bg-brand-primary/30 px-2 py-0.5 text-[10px] font-bold text-brand-primary dark:text-brand-teal tabular-nums">
                           {pct.toFixed(0)}%
                         </span>
                       </div>
@@ -445,7 +445,7 @@ export function UserFinanceDetail({ userId }: { userId: string }) {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right text-[13px] text-gray-600 dark:text-gray-400 tabular-nums whitespace-nowrap">
-                      <span className="text-[#0F2B46] dark:text-[#0EA5A3]">{e.inputTokens.toLocaleString()}</span>
+                      <span className="text-brand-primary dark:text-brand-teal">{e.inputTokens.toLocaleString()}</span>
                       <span className="text-gray-300 dark:text-gray-600 mx-1">/</span>
                       <span>{e.outputTokens.toLocaleString()}</span>
                     </td>

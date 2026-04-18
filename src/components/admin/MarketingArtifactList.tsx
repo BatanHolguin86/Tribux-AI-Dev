@@ -128,7 +128,7 @@ export function MarketingArtifactList() {
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#0A1F33] dark:text-gray-300"
+          className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 dark:border-gray-700 dark:bg-brand-navy dark:text-gray-300"
         >
           {TYPE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -137,7 +137,7 @@ export function MarketingArtifactList() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#0A1F33] dark:text-gray-300"
+          className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 dark:border-gray-700 dark:bg-brand-navy dark:text-gray-300"
         >
           {STATUS_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -156,7 +156,7 @@ export function MarketingArtifactList() {
           ))}
         </div>
       ) : artifacts.length === 0 ? (
-        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center dark:border-gray-800 dark:bg-[#0A1F33]">
+        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center dark:border-gray-800 dark:bg-brand-navy">
           <p className="text-sm text-gray-400 dark:text-gray-500">
             No hay artefactos{filterType || filterStatus ? ' con estos filtros' : ' aun'}. Usa el Marketing Strategist para generar documentos estrategicos.
           </p>
@@ -166,7 +166,7 @@ export function MarketingArtifactList() {
           {artifacts.map((artifact) => (
             <div
               key={artifact.id}
-              className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#0A1F33] overflow-hidden"
+              className="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-brand-navy overflow-hidden"
             >
               {/* Card header */}
               <div

@@ -53,7 +53,7 @@ export function GuidedDiscoveryWizard({ onComplete, isSubmitting }: GuidedDiscov
           <div className="mx-auto mb-4">
             <TribuxLogo size={48} />
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0F2B46] dark:text-white">
+          <h1 className="font-display text-2xl font-bold text-brand-primary dark:text-white">
             Cuentanos tu idea
           </h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -68,9 +68,9 @@ export function GuidedDiscoveryWizard({ onComplete, isSubmitting }: GuidedDiscov
               key={i}
               className={`h-2 rounded-full transition-all duration-300 ${
                 i === step
-                  ? 'w-8 bg-[#0EA5A3]'
+                  ? 'w-8 bg-brand-teal'
                   : i < step
-                    ? 'w-2 bg-[#0EA5A3]/50'
+                    ? 'w-2 bg-brand-teal/50'
                     : 'w-2 bg-gray-200 dark:bg-gray-700'
               }`}
             />
@@ -78,11 +78,11 @@ export function GuidedDiscoveryWizard({ onComplete, isSubmitting }: GuidedDiscov
         </div>
 
         {/* Question card */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-[#0A1F33]">
-          <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-[#0EA5A3]">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-brand-navy">
+          <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-brand-teal">
             Paso {step + 1} de 3
           </div>
-          <h2 className="font-display text-lg font-bold text-[#0F2B46] dark:text-white">
+          <h2 className="font-display text-lg font-bold text-brand-primary dark:text-white">
             {currentStep.title}
           </h2>
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -94,7 +94,7 @@ export function GuidedDiscoveryWizard({ onComplete, isSubmitting }: GuidedDiscov
             onChange={(e) => setAnswers({ ...answers, [currentStep.field]: e.target.value })}
             placeholder={currentStep.placeholder}
             rows={5}
-            className="mt-4 w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-[#0F2B46] dark:text-gray-100 dark:placeholder-gray-500"
+            className="mt-4 w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-brand-primary dark:text-gray-100 dark:placeholder-gray-500"
             autoFocus
           />
 
@@ -113,7 +113,7 @@ export function GuidedDiscoveryWizard({ onComplete, isSubmitting }: GuidedDiscov
             <button
               onClick={handleNext}
               disabled={!canProceed || isSubmitting}
-              className="rounded-lg bg-[#0F2B46] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+              className="rounded-lg bg-brand-primary px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-navy disabled:opacity-50"
             >
               {isSubmitting
                 ? 'Tu equipo IA esta analizando...'

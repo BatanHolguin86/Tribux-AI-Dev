@@ -11,7 +11,7 @@ export function EmptyState({ title, description, action }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 py-20">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#E8F4F8] to-[#E8F4F8] dark:from-[#0F2B46]/30 dark:to-[#0F2B46]/30">
-        <svg className="h-8 w-8 text-[#0EA5A3] dark:text-[#0EA5A3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <svg className="h-8 w-8 text-brand-teal dark:text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

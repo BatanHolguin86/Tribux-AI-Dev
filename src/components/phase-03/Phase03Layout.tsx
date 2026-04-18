@@ -125,19 +125,19 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
       {allSetupDone ? (
         <div className="rounded-xl border-2 border-[#10B981]/30 bg-[#10B981]/5 p-6 text-center">
           <div className="mb-3 text-4xl">✅</div>
-          <h3 className="font-display text-lg font-display font-bold text-[#0F2B46] dark:text-white">Tu app esta lista</h3>
+          <h3 className="font-display text-lg font-display font-bold text-brand-primary dark:text-white">Tu app esta lista</h3>
           <div className="mt-4 flex justify-center gap-3">
             {[
               { label: 'Codigo', done: existingSetup.hasRepo },
               { label: 'Base de datos', done: existingSetup.hasSupabase },
               { label: 'Hosting', done: existingSetup.hasVercel },
             ].map((item) => (
-              <span key={item.label} className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#10B981] shadow-sm dark:bg-[#0F2B46]">
+              <span key={item.label} className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#10B981] shadow-sm dark:bg-brand-primary">
                 ✓ {item.label}
               </span>
             ))}
           </div>
-          <p className="mt-4 text-xs text-[#94A3B8]">La infraestructura esta configurada. Continua a construir tu app.</p>
+          <p className="mt-4 text-xs text-brand-muted">La infraestructura esta configurada. Continua a construir tu app.</p>
         </div>
       ) : (
         <OneClickSetupCard
@@ -170,7 +170,7 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
           />
 
           <details className="mt-4">
-            <summary className="cursor-pointer rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3 text-sm font-medium text-[#0F2B46] hover:bg-[#E8F4F8] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200">
+            <summary className="cursor-pointer rounded-lg border border-brand-border bg-[#F8FAFC] px-4 py-3 text-sm font-medium text-brand-primary hover:bg-brand-surface dark:border-brand-border-dark dark:bg-brand-primary dark:text-gray-200">
               Ver detalle tecnico ({completedCount}/{totalCategories} categorias)
             </summary>
             <div className="mt-3 grid gap-4 md:grid-cols-2">
@@ -231,7 +231,7 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
               { label: 'Infra', path: 'infrastructure/supabase/migrations/' },
             ]}
           />
-          <p className="mb-4 text-sm text-[#94A3B8]">
+          <p className="mb-4 text-sm text-brand-muted">
             Marca cada item al completarlo. Cuando la categoria este lista, usa Marcar como completada.
           </p>
 

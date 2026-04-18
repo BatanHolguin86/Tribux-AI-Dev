@@ -34,7 +34,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
           },
         ].map((item) => (
           <div key={item.title} className="flex gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4">
-            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#0F2B46] text-xs text-white">
+            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-primary text-xs text-white">
               ✓
             </div>
             <div>
@@ -47,7 +47,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
 
       <button
         onClick={onNext}
-        className="mt-8 w-full rounded-lg bg-[#0F2B46] px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33]"
+        className="mt-8 w-full rounded-lg bg-brand-primary px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy"
       >
         Comenzar
       </button>

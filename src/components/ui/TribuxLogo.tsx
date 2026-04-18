@@ -27,7 +27,7 @@ export function TribuxLogo({ size = 32, className = '' }: TribuxLogoProps) {
         stroke="currentColor"
         strokeWidth="1"
         strokeDasharray="3 4"
-        className="text-[#0EA5A3]/40"
+        className="text-brand-teal/40"
       />
 
       {/* Orbital dots */}

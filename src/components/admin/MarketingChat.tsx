@@ -260,12 +260,12 @@ export function MarketingChat() {
   return (
     <div className="flex h-[calc(100vh-8rem)] gap-4">
       {/* Sidebar — Thread list */}
-      <div className="flex w-72 shrink-0 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#0A1F33]">
+      <div className="flex w-72 shrink-0 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-brand-navy">
         <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-800">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Conversaciones</h3>
           <button
             onClick={() => { setActiveThreadId(null); setMessages([]) }}
-            className="rounded-lg p-1.5 text-[#0EA5A3] hover:bg-[#0EA5A3]/10 transition-colors"
+            className="rounded-lg p-1.5 text-brand-teal hover:bg-brand-teal/10 transition-colors"
             title="Nueva conversacion"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -288,7 +288,7 @@ export function MarketingChat() {
               key={thread.id}
               className={`group flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer transition-colors ${
                 activeThreadId === thread.id
-                  ? 'bg-[#0EA5A3]/10 text-[#0EA5A3]'
+                  ? 'bg-brand-teal/10 text-brand-teal'
                   : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50'
               }`}
               onClick={() => setActiveThreadId(thread.id)}
@@ -316,7 +316,7 @@ export function MarketingChat() {
       </div>
 
       {/* Main chat area */}
-      <div className="flex flex-1 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#0A1F33]">
+      <div className="flex flex-1 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-brand-navy">
         {/* Mode selector */}
         <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3 dark:border-gray-800 overflow-x-auto">
           {(Object.keys(MARKETING_MODES) as MarketingMode[]).map((mode) => (
@@ -338,7 +338,7 @@ export function MarketingChat() {
             <button
               onClick={() => void saveAsArtifact()}
               disabled={savingArtifact}
-              className="ml-auto shrink-0 flex items-center gap-1.5 rounded-lg border border-[#0EA5A3]/30 px-3 py-1 text-xs font-medium text-[#0EA5A3] hover:bg-[#0EA5A3]/10 transition-colors disabled:opacity-50"
+              className="ml-auto shrink-0 flex items-center gap-1.5 rounded-lg border border-brand-teal/30 px-3 py-1 text-xs font-medium text-brand-teal hover:bg-brand-teal/10 transition-colors disabled:opacity-50"
             >
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
@@ -361,8 +361,8 @@ export function MarketingChat() {
 
           {!loadingMessages && messages.length === 0 && !isLoading && (
             <div className="flex flex-col items-center justify-center py-12">
-              <div className="mb-4 rounded-full bg-[#0EA5A3]/10 p-4">
-                <svg className="h-8 w-8 text-[#0EA5A3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <div className="mb-4 rounded-full bg-brand-teal/10 p-4">
+                <svg className="h-8 w-8 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
                 </svg>
               </div>

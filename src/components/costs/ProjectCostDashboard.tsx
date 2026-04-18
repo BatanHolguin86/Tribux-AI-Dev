@@ -83,11 +83,11 @@ function isCurrentMonth(m: string): boolean {
 // ── Category color ────────────────────────────────────────────────────────────
 
 const CAT_COLORS: Record<string, string> = {
-  chat:   'bg-[#0EA5A3]',
+  chat:   'bg-brand-teal',
   code:   'bg-blue-500',
   tests:  'bg-emerald-500',
   data:   'bg-amber-500',
-  docs:   'bg-[#0EA5A3]',
+  docs:   'bg-brand-teal',
   deploy: 'bg-orange-500',
   growth: 'bg-pink-500',
 }
@@ -96,9 +96,9 @@ const CAT_COLORS: Record<string, string> = {
 
 function StatCard({ label, value, sub, highlight }: { label: string; value: string; sub?: string; highlight?: boolean }) {
   return (
-    <div className={`rounded-xl border p-4 ${highlight ? 'border-[#0EA5A3]/30 bg-[#E8F4F8] dark:border-[#0A1F33]/40 dark:bg-[#0F2B46]/10' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'}`}>
+    <div className={`rounded-xl border p-4 ${highlight ? 'border-brand-teal/30 bg-brand-surface dark:border-[#0A1F33]/40 dark:bg-brand-primary/10' : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'}`}>
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-      <p className={`text-2xl font-display font-bold tabular-nums ${highlight ? 'text-[#0F2B46] dark:text-[#0EA5A3]' : 'text-gray-900 dark:text-gray-100'}`}>{value}</p>
+      <p className={`text-2xl font-display font-bold tabular-nums ${highlight ? 'text-brand-primary dark:text-brand-teal' : 'text-gray-900 dark:text-gray-100'}`}>{value}</p>
       {sub && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{sub}</p>}
     </div>
   )
@@ -173,14 +173,14 @@ function PlanUsageBar({ data, projectId }: { data: CostSummary; projectId: strin
       <div className="flex items-center justify-between mb-3">
         <SectionTitle>Consumo del plan este mes</SectionTitle>
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-          Plan <span className="text-[#0F2B46] dark:text-[#0EA5A3] font-semibold">{planLabel}</span> · {fmtUSD(data.planBudgetUsd)}/mes
+          Plan <span className="text-brand-primary dark:text-brand-teal font-semibold">{planLabel}</span> · {fmtUSD(data.planBudgetUsd)}/mes
         </span>
       </div>
 
       {/* Stacked progress bar */}
       <div className="mb-3 h-3 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800 flex">
         {thisPct > 0 && (
-          <div className="h-full bg-[#0EA5A3] transition-all duration-700" style={{ width: `${thisPct}%` }} title={`Este proyecto: ${fmtUSD(thisProjectCost)}`} />
+          <div className="h-full bg-brand-teal transition-all duration-700" style={{ width: `${thisPct}%` }} title={`Este proyecto: ${fmtUSD(thisProjectCost)}`} />
         )}
         {otherPct > 0 && (
           <div className="h-full bg-gray-400 dark:bg-gray-600 transition-all duration-700" style={{ width: `${otherPct}%` }} title={`Otros proyectos: ${fmtUSD(otherCost)}`} />
@@ -189,7 +189,7 @@ function PlanUsageBar({ data, projectId }: { data: CostSummary; projectId: strin
 
       <div className="grid grid-cols-3 gap-2 text-xs">
         <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#0EA5A3]" />
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-brand-teal" />
           <div>
             <p className="font-medium text-gray-700 dark:text-gray-300">Este proyecto</p>
             <p className="text-gray-400">{fmtUSD(thisProjectCost)} · {Math.round(thisPct)}%</p>
@@ -334,7 +334,7 @@ function InfraConfig({
               <select
                 value={currentTier}
                 onChange={(e) => handleChange(id, e.target.value)}
-                className="flex-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs text-gray-700 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                className="flex-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs text-gray-700 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
               >
                 {Object.entries(svc.tiers).map(([key, t]) => (
                   <option key={key} value={key}>{t.label}</option>
@@ -399,16 +399,16 @@ function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthl
             {rows.map((row) => {
               const isCurrent = isCurrentMonth(row.month)
               return (
-                <tr key={row.month} className={isCurrent ? 'bg-[#E8F4F8]/50 dark:bg-[#0F2B46]/10' : ''}>
+                <tr key={row.month} className={isCurrent ? 'bg-brand-surface/50 dark:bg-brand-primary/10' : ''}>
                   <td className="py-2 font-medium text-gray-700 dark:text-gray-300">
                     {fmtMonth(row.month)}
                     {isCurrent && (
-                      <span className="ml-1.5 rounded bg-[#E8F4F8] px-1 py-0.5 text-[9px] font-semibold text-[#0F2B46] dark:bg-[#0F2B46]/30 dark:text-[#0EA5A3] uppercase tracking-wide">
+                      <span className="ml-1.5 rounded bg-brand-surface px-1 py-0.5 text-[9px] font-semibold text-brand-primary dark:bg-brand-primary/30 dark:text-brand-teal uppercase tracking-wide">
                         en curso
                       </span>
                     )}
                   </td>
-                  <td className="py-2 text-right tabular-nums text-[#0F2B46] dark:text-[#0EA5A3] font-medium">{fmtUSD(row.aiCostUsd)}</td>
+                  <td className="py-2 text-right tabular-nums text-brand-primary dark:text-brand-teal font-medium">{fmtUSD(row.aiCostUsd)}</td>
                   <td className="py-2 text-right tabular-nums text-gray-500 dark:text-gray-400">{fmtUSD(row.infraCost)}</td>
                   <td className="py-2 text-right tabular-nums font-semibold text-gray-800 dark:text-gray-200">{fmtUSD(row.total)}</td>
                   <td className="py-2 text-right tabular-nums text-gray-500 dark:text-gray-400">{fmtUSD(row.cumulative)}</td>
@@ -419,7 +419,7 @@ function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthl
           <tfoot>
             <tr className="border-t-2 border-gray-200 dark:border-gray-700">
               <td className="pt-2 font-semibold text-gray-700 dark:text-gray-300">Total</td>
-              <td className="pt-2 text-right tabular-nums font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">{fmtUSD(data.aiCostAllTime)}</td>
+              <td className="pt-2 text-right tabular-nums font-semibold text-brand-primary dark:text-brand-teal">{fmtUSD(data.aiCostAllTime)}</td>
               <td className="pt-2 text-right tabular-nums text-gray-500">—</td>
               <td className="pt-2 text-right tabular-nums font-bold text-gray-900 dark:text-gray-100">{fmtUSD(rows[rows.length - 1]?.cumulative ?? 0)}</td>
               <td />
@@ -469,7 +469,7 @@ function ProjectPnL({
   ]
 
   return (
-    <div className="rounded-xl border-2 border-[#0F2B46]/10 bg-gradient-to-b from-white to-gray-50/50 p-5 dark:border-[#0EA5A3]/10 dark:from-gray-900 dark:to-gray-900/50">
+    <div className="rounded-xl border-2 border-brand-primary/10 bg-gradient-to-b from-white to-gray-50/50 p-5 dark:border-brand-teal/10 dark:from-gray-900 dark:to-gray-900/50">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-base">📊</span>
         <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200">P&L del Proyecto — Cuanto cobrar</h2>
@@ -496,8 +496,8 @@ function ProjectPnL({
             </div>
           )}
           <div className="flex items-center justify-between border-t border-gray-200 pt-2 dark:border-gray-700">
-            <span className="text-sm font-semibold text-[#0F2B46] dark:text-[#0EA5A3]">Total invertido</span>
-            <span className="text-lg font-display font-bold tabular-nums text-[#0F2B46] dark:text-[#0EA5A3]">{fmtUSD(totalInvestment)}</span>
+            <span className="text-sm font-semibold text-brand-primary dark:text-brand-teal">Total invertido</span>
+            <span className="text-lg font-display font-bold tabular-nums text-brand-primary dark:text-brand-teal">{fmtUSD(totalInvestment)}</span>
           </div>
         </div>
       </div>
@@ -511,10 +511,10 @@ function ProjectPnL({
             return (
               <div key={m.factor} className={`rounded-lg border p-3 text-center ${
                 m.factor === 3
-                  ? 'border-[#0EA5A3]/30 bg-[#E8F4F8] dark:bg-[#0F2B46]/20'
+                  ? 'border-brand-teal/30 bg-brand-surface dark:bg-brand-primary/20'
                   : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
               }`}>
-                <p className="text-lg font-display font-bold tabular-nums text-[#0F2B46] dark:text-white">
+                <p className="text-lg font-display font-bold tabular-nums text-brand-primary dark:text-white">
                   {fmtUSD(price)}
                 </p>
                 <p className="text-[11px] font-medium text-gray-700 dark:text-gray-300">{m.label}</p>

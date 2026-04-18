@@ -78,7 +78,7 @@ export function CreateProjectModal({ open, onClose, onCreated }: CreateProjectMo
               id="create-name"
               type="text"
               {...register('name')}
-              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
               placeholder="Mi plataforma de delivery"
             />
             {errors.name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>}
@@ -92,7 +92,7 @@ export function CreateProjectModal({ open, onClose, onCreated }: CreateProjectMo
               id="create-desc"
               rows={3}
               {...register('description')}
-              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
             />
           </div>
 
@@ -104,7 +104,7 @@ export function CreateProjectModal({ open, onClose, onCreated }: CreateProjectMo
               id="create-industry"
               type="text"
               {...register('industry')}
-              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm shadow-sm dark:bg-gray-800 dark:text-gray-100 focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
               placeholder="Ej: Fintech, Salud, Educacion"
             />
           </div>
@@ -124,7 +124,7 @@ export function CreateProjectModal({ open, onClose, onCreated }: CreateProjectMo
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 rounded-lg bg-[#0F2B46] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+              className="flex-1 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy disabled:opacity-50"
             >
               {isSubmitting ? 'Creando...' : 'Crear proyecto'}
             </button>

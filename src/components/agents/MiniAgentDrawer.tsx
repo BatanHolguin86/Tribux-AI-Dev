@@ -89,7 +89,7 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
         <div className="flex items-center gap-1">
           <button
             onClick={() => router.push(`/projects/${projectId}/phase/00`)}
-            className="rounded p-1.5 text-xs text-[#0F2B46] hover:bg-[#E8F4F8]"
+            className="rounded p-1.5 text-xs text-brand-primary hover:bg-brand-surface"
           >
             Ver en fase
           </button>
@@ -124,7 +124,7 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
               <div
                 className={`inline-block max-w-[85%] rounded-xl px-3 py-2 text-xs ${
                   isUser
-                    ? 'rounded-br-sm bg-[#0F2B46] text-white'
+                    ? 'rounded-br-sm bg-brand-primary text-white'
                     : 'rounded-bl-sm bg-gray-100 text-gray-800'
                 }`}
               >

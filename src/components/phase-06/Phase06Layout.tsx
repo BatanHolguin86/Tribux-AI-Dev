@@ -131,7 +131,7 @@ export function Phase06Layout({ projectId, categories: initialCategories, initia
             /* Founder view: simplified launch status */
             <div className="space-y-4">
               <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
-                <h3 className="font-display text-sm font-semibold text-[#0F2B46] dark:text-white">
+                <h3 className="font-display text-sm font-semibold text-brand-primary dark:text-white">
                   Estado del lanzamiento
                 </h3>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">

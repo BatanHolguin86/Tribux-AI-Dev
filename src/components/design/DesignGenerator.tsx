@@ -194,7 +194,7 @@ export function DesignGenerator({
       <div>
         <button
           onClick={handleBack}
-          className="mb-4 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-[#0F2B46] dark:hover:text-[#0EA5A3]"
+          className="mb-4 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-brand-primary dark:hover:text-brand-teal"
           aria-label="Volver al hub de Diseño y UX"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -205,11 +205,11 @@ export function DesignGenerator({
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#E8F4F8] dark:bg-[#0F2B46]/30 text-xl shadow-sm">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-surface dark:bg-brand-primary/30 text-xl shadow-sm">
               {resolvedTemplate.icon}
             </span>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-[#0F2B46] dark:text-[#0EA5A3]">
+              <p className="text-[10px] font-bold uppercase tracking-wide text-brand-primary dark:text-brand-teal">
                 Camino B · Agente UI/UX
               </p>
               <h2 className="text-lg font-display font-bold text-gray-900 dark:text-gray-100">{resolvedTemplate.title}</h2>
@@ -229,7 +229,7 @@ export function DesignGenerator({
           </summary>
           <div className="space-y-3 border-t border-gray-200 px-4 py-3 text-xs dark:border-gray-700">
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-[#0F2B46] shadow-sm ring-1 ring-[#0EA5A3]/30 dark:bg-gray-900 dark:text-[#0EA5A3]/30 dark:ring-[#0F2B46]">
+              <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-brand-primary shadow-sm ring-1 ring-[#0EA5A3]/30 dark:bg-gray-900 dark:text-brand-teal/30 dark:ring-[#0F2B46]">
                 1 · Alineación CTO
               </span>
               <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-fuchsia-800 shadow-sm ring-1 ring-fuchsia-200 dark:bg-gray-900 dark:text-fuchsia-200 dark:ring-fuchsia-800">
@@ -290,7 +290,7 @@ export function DesignGenerator({
           </div>
         </details>
 
-        <div className="flex flex-col rounded-xl border-2 border-[#0EA5A3]/30/80 bg-white shadow-sm dark:border-[#0F2B46]/50 dark:bg-gray-900">
+        <div className="flex flex-col rounded-xl border-2 border-brand-teal/30/80 bg-white shadow-sm dark:border-brand-primary/50 dark:bg-gray-900">
           <div className="border-b border-gray-100 px-3 py-2 dark:border-gray-800">
             <p className="text-center text-[11px] font-medium text-gray-500 dark:text-gray-400">
               Conversación · UI/UX Designer
@@ -313,28 +313,28 @@ export function DesignGenerator({
   return (
     <div>
       <header className="mb-6">
-        <h1 className="text-2xl font-display font-bold tracking-tight text-[#0F2B46] dark:text-gray-100">Disena tu app</h1>
-        <p className="mt-1 text-sm text-[#64748B] dark:text-gray-400">
+        <h1 className="text-2xl font-display font-bold tracking-tight text-brand-primary dark:text-gray-100">Disena tu app</h1>
+        <p className="mt-1 text-sm text-brand-muted dark:text-gray-400">
           Selecciona tus features, elige el nivel de detalle y genera los diseños visuales.
         </p>
       </header>
 
       {/* Main action: generate designs from features */}
-      <section className="relative mb-8 rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm dark:border-[#1E3A55] dark:bg-[#0F2B46] md:p-6">
+      <section className="relative mb-8 rounded-2xl border border-brand-border bg-white p-5 shadow-sm dark:border-brand-border-dark dark:bg-brand-primary md:p-6">
         {isGenerating && (
           <div
-            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl bg-white/90 p-6 text-center backdrop-blur-sm dark:bg-[#0F2B46]/90"
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl bg-white/90 p-6 text-center backdrop-blur-sm dark:bg-brand-primary/90"
             role="status"
           >
-            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0EA5A3]" />
-            <p className="mt-4 text-sm font-display font-semibold text-[#0F2B46] dark:text-white">Generando diseños...</p>
-            <p className="mt-1 text-xs text-[#94A3B8]">Esto puede tomar hasta 1 minuto</p>
+            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-brand-teal/30 border-t-[#0EA5A3]" />
+            <p className="mt-4 text-sm font-display font-semibold text-brand-primary dark:text-white">Generando diseños...</p>
+            <p className="mt-1 text-xs text-brand-muted">Esto puede tomar hasta 1 minuto</p>
           </div>
         )}
         <div className="space-y-5">
           {/* Feature selector */}
           <div>
-            <p className="mb-3 text-sm font-display font-semibold text-[#0F2B46] dark:text-gray-100">
+            <p className="mb-3 text-sm font-display font-semibold text-brand-primary dark:text-gray-100">
               1. Selecciona features
             </p>
             {(() => {
@@ -343,8 +343,8 @@ export function DesignGenerator({
 
               if (completedFeatures.length === 0) {
                 return (
-                  <div className="rounded-xl border border-dashed border-[#E2E8F0] bg-[#F8FAFC] px-4 py-6 text-center dark:border-[#1E3A55] dark:bg-[#0A1F33]">
-                    <p className="text-sm text-[#94A3B8]">Completa specs en Phase 01 para desbloquear el diseno.</p>
+                  <div className="rounded-xl border border-dashed border-brand-border bg-[#F8FAFC] px-4 py-6 text-center dark:border-brand-border-dark dark:bg-brand-navy">
+                    <p className="text-sm text-brand-muted">Completa specs en Phase 01 para desbloquear el diseno.</p>
                   </div>
                 )
               }
@@ -356,8 +356,8 @@ export function DesignGenerator({
                       key={feature.id}
                       className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 px-4 py-3 transition-all ${
                         selectedFeatures.has(feature.id)
-                          ? 'border-[#0EA5A3] bg-[#0EA5A3]/5'
-                          : 'border-[#E2E8F0] bg-white hover:border-[#0EA5A3]/50 dark:border-[#1E3A55] dark:bg-[#0F2B46]'
+                          ? 'border-brand-teal bg-brand-teal/5'
+                          : 'border-brand-border bg-white hover:border-brand-teal/50 dark:border-brand-border-dark dark:bg-brand-primary'
                       }`}
                     >
                       <input
@@ -370,15 +370,15 @@ export function DesignGenerator({
                             return next
                           })
                         }}
-                        className="h-4 w-4 rounded border-[#E2E8F0] text-[#0EA5A3] focus:ring-[#0EA5A3]"
+                        className="h-4 w-4 rounded border-brand-border text-brand-teal focus:ring-[#0EA5A3]"
                       />
-                      <span className="flex-1 text-sm font-medium text-[#0F2B46] dark:text-gray-100">{feature.name}</span>
+                      <span className="flex-1 text-sm font-medium text-brand-primary dark:text-gray-100">{feature.name}</span>
                       <span className="rounded-full bg-[#10B981]/10 px-2 py-0.5 text-[10px] font-medium text-[#10B981]">Listo</span>
                     </label>
                   ))}
                   {pending.length > 0 && (
                     <details className="mt-2">
-                      <summary className="cursor-pointer text-xs text-[#94A3B8] hover:text-[#64748B]">
+                      <summary className="cursor-pointer text-xs text-brand-muted hover:text-brand-muted">
                         {pending.length} feature(s) pendientes de completar
                       </summary>
                       <div className="mt-2 space-y-1 pl-2">
@@ -388,8 +388,8 @@ export function DesignGenerator({
                           if (!feature.hasDesign) missing.push('Diseno')
                           if (!feature.hasTasks) missing.push('Tasks')
                           return (
-                            <div key={feature.id} className="flex items-center gap-2 py-1 text-xs text-[#94A3B8]">
-                              <span className="h-4 w-4 rounded border border-[#E2E8F0]" />
+                            <div key={feature.id} className="flex items-center gap-2 py-1 text-xs text-brand-muted">
+                              <span className="h-4 w-4 rounded border border-brand-border" />
                               <span>{feature.name}</span>
                               <span className="text-[10px] text-[#EF4444]">Falta: {missing.join(', ')}</span>
                             </div>
@@ -399,7 +399,7 @@ export function DesignGenerator({
                     </details>
                   )}
                   {selectedFeatures.size > 0 && (
-                    <p className="text-xs font-medium text-[#0EA5A3]">{selectedFeatures.size} seleccionado(s)</p>
+                    <p className="text-xs font-medium text-brand-teal">{selectedFeatures.size} seleccionado(s)</p>
                   )}
                 </div>
               )
@@ -408,7 +408,7 @@ export function DesignGenerator({
 
           {/* Design type — pill buttons */}
           <div>
-            <p className="mb-3 text-sm font-display font-semibold text-[#0F2B46] dark:text-gray-100">
+            <p className="mb-3 text-sm font-display font-semibold text-brand-primary dark:text-gray-100">
               2. Nivel de detalle
             </p>
             <div className="flex gap-2">
@@ -423,8 +423,8 @@ export function DesignGenerator({
                   onClick={() => setType(opt.value)}
                   className={`flex-1 rounded-xl border-2 px-3 py-3 text-center transition-all ${
                     type === opt.value
-                      ? 'border-[#0EA5A3] bg-[#0EA5A3]/5 text-[#0F2B46] dark:text-white'
-                      : 'border-[#E2E8F0] bg-white text-[#64748B] hover:border-[#0EA5A3]/50 dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-400'
+                      ? 'border-brand-teal bg-brand-teal/5 text-brand-primary dark:text-white'
+                      : 'border-brand-border bg-white text-brand-muted hover:border-brand-teal/50 dark:border-brand-border-dark dark:bg-brand-primary dark:text-gray-400'
                   }`}
                 >
                   <p className="text-sm font-medium">{opt.label}</p>
@@ -436,7 +436,7 @@ export function DesignGenerator({
 
           {/* Optional refinement */}
           <div>
-            <p className="mb-2 text-sm font-display font-semibold text-[#0F2B46] dark:text-gray-100">
+            <p className="mb-2 text-sm font-display font-semibold text-brand-primary dark:text-gray-100">
               3. Instrucciones (opcional)
             </p>
             <input
@@ -444,14 +444,14 @@ export function DesignGenerator({
               value={screensInput}
               onChange={(e) => setScreensInput(e.target.value)}
               placeholder="Pantallas extra: Landing, Perfil..."
-              className="w-full rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2.5 text-sm text-[#0F2B46] placeholder:text-[#94A3B8] focus:border-[#0EA5A3] focus:outline-none focus:ring-2 focus:ring-[#0EA5A3]/20 dark:border-[#1E3A55] dark:bg-[#0A1F33] dark:text-gray-200"
+              className="w-full rounded-xl border border-brand-border bg-[#F8FAFC] px-4 py-2.5 text-sm text-brand-primary placeholder:text-brand-muted focus:border-brand-teal focus:outline-none focus:ring-2 focus:ring-[#0EA5A3]/20 dark:border-brand-border-dark dark:bg-brand-navy dark:text-gray-200"
             />
             <textarea
               value={refinement}
               onChange={(e) => setRefinement(e.target.value)}
               placeholder="Ej: estilo minimalista, enfasis en CTA principal..."
               rows={2}
-              className="mt-2 w-full resize-none rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2.5 text-sm text-[#0F2B46] placeholder:text-[#94A3B8] focus:border-[#0EA5A3] focus:outline-none focus:ring-2 focus:ring-[#0EA5A3]/20 dark:border-[#1E3A55] dark:bg-[#0A1F33] dark:text-gray-200"
+              className="mt-2 w-full resize-none rounded-xl border border-brand-border bg-[#F8FAFC] px-4 py-2.5 text-sm text-brand-primary placeholder:text-brand-muted focus:border-brand-teal focus:outline-none focus:ring-2 focus:ring-[#0EA5A3]/20 dark:border-brand-border-dark dark:bg-brand-navy dark:text-gray-200"
             />
           </div>
 
@@ -466,7 +466,7 @@ export function DesignGenerator({
             type="button"
             onClick={handleGenerateFromSpecs}
             disabled={(selectedFeatures.size === 0 && !screensInput.trim()) || isGenerating}
-            className="w-full rounded-xl bg-[#0EA5A3] py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0C8C8A] disabled:opacity-40"
+            className="w-full rounded-xl bg-brand-teal py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0C8C8A] disabled:opacity-40"
           >
             {isGenerating ? 'Generando diseños...' : `Generar diseños${selectedFeatures.size > 0 ? ` (${selectedFeatures.size} features)` : ''}`}
           </button>
@@ -479,7 +479,7 @@ export function DesignGenerator({
         <button
           type="button"
           onClick={() => setShowExternalImport(true)}
-          className="flex items-center gap-2 rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-sm font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200 dark:hover:border-[#0EA5A3]"
+          className="flex items-center gap-2 rounded-lg border border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-primary transition-colors hover:border-brand-teal hover:bg-brand-surface dark:border-brand-border-dark dark:bg-brand-primary dark:text-gray-200 dark:hover:border-brand-teal"
         >
           🎨 Importar desde Figma, V0 o Lovable
         </button>
@@ -488,7 +488,7 @@ export function DesignGenerator({
         <button
           type="button"
           onClick={() => handleSelectTemplate('wireframes')}
-          className="flex items-center gap-2 rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-sm font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#1E3A55] dark:bg-[#0F2B46] dark:text-gray-200 dark:hover:border-[#0EA5A3]"
+          className="flex items-center gap-2 rounded-lg border border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-primary transition-colors hover:border-brand-teal hover:bg-brand-surface dark:border-brand-border-dark dark:bg-brand-primary dark:text-gray-200 dark:hover:border-brand-teal"
         >
           💬 Chat con el disenador IA
         </button>
@@ -505,15 +505,15 @@ export function DesignGenerator({
 
       {/* Diseños generados */}
       <div className="mt-8">
-        <h3 className="mb-1 text-sm font-display font-semibold uppercase tracking-wider text-[#94A3B8]">
+        <h3 className="mb-1 text-sm font-display font-semibold uppercase tracking-wider text-brand-muted">
           Diseños generados
         </h3>
-        <p className="mb-3 text-xs text-[#94A3B8]">
+        <p className="mb-3 text-xs text-brand-muted">
           Haz click en un diseño para verlo, aprobarlo o refinarlo.
         </p>
         {artifacts.length === 0 ? (
           <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50/70 px-4 py-8 text-center dark:border-gray-600 dark:bg-gray-900/40">
-            <p className="text-sm text-[#94A3B8]">
+            <p className="text-sm text-brand-muted">
               Aun no hay diseños. Selecciona features arriba y genera tus primeros wireframes.
             </p>
           </div>
@@ -523,7 +523,7 @@ export function DesignGenerator({
               <Link
                 key={artifact.id}
                 href={`/projects/${projectId}/designs/${artifact.id}`}
-                className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2.5 transition-colors hover:border-[#0EA5A3] hover:bg-gray-50 dark:hover:bg-gray-800 sm:px-4 sm:py-3"
+                className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2.5 transition-colors hover:border-brand-teal hover:bg-gray-50 dark:hover:bg-gray-800 sm:px-4 sm:py-3"
               >
                 <div className="flex min-w-0 flex-1 items-center gap-3">
                   <div className="relative h-20 w-[5.5rem] shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">

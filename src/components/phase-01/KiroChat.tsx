@@ -259,7 +259,7 @@ export function KiroChat({
         {/* Auto-drafting state */}
         {autoDrafting && (
           <div className="flex flex-col items-center justify-center gap-3 py-16">
-            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-[#0EA5A3]/30 border-t-[#0F2B46]" />
+            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-brand-teal/30 border-t-[#0F2B46]" />
             <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
               Generando {docLabel}...
             </p>
@@ -272,7 +272,7 @@ export function KiroChat({
         {/* Design waiting state */}
         {!autoDrafting && messages.length === 0 && !isLoading && !hasDocument && (
           <div className="flex flex-col items-center justify-center gap-3 py-16">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#0EA5A3]/30 border-t-[#0F2B46]" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-teal/30 border-t-[#0F2B46]" />
             <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Preparando propuesta...</p>
           </div>
         )}
@@ -395,7 +395,7 @@ export function KiroChat({
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Describe los cambios..."
                   autoFocus
-                  className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-[#0EA5A3] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
+                  className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-brand-teal focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && feedback.trim()) handleRevision(feedback)
                     if (e.key === 'Escape') { setShowRevision(false); setFeedback('') }
@@ -404,7 +404,7 @@ export function KiroChat({
                 <button
                   onClick={() => feedback.trim() && handleRevision(feedback)}
                   disabled={!feedback.trim()}
-                  className="rounded-xl bg-[#0F2B46] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0A1F33] disabled:opacity-40"
+                  className="rounded-xl bg-brand-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-navy disabled:opacity-40"
                 >
                   Enviar
                 </button>

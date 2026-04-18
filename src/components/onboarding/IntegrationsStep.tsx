@@ -55,7 +55,7 @@ export function IntegrationsStep({ defaultValues, onSubmit, onBack, onSkip }: In
               id="repo_url"
               type="url"
               {...register('repo_url')}
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
               placeholder="https://github.com/usuario/mi-proyecto"
             />
             {errors.repo_url && (
@@ -96,7 +96,7 @@ export function IntegrationsStep({ defaultValues, onSubmit, onBack, onSkip }: In
                 id="supabase_ref"
                 type="text"
                 {...register('supabase_project_ref')}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
                 placeholder="abcdefghijklmnop"
               />
               <p className="mt-1 text-xs text-gray-400">
@@ -113,7 +113,7 @@ export function IntegrationsStep({ defaultValues, onSubmit, onBack, onSkip }: In
                 id="supabase_token"
                 type="password"
                 {...register('supabase_access_token')}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-[#0EA5A3] focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
                 placeholder="sbp_xxxxxxxxxxxxxxxx"
               />
               <p className="mt-1 text-xs text-gray-400">
@@ -140,7 +140,7 @@ export function IntegrationsStep({ defaultValues, onSubmit, onBack, onSkip }: In
           </button>
           <button
             type="submit"
-            className="flex-1 rounded-lg bg-[#0F2B46] px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33]"
+            className="flex-1 rounded-lg bg-brand-primary px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy"
           >
             Continuar
           </button>

@@ -148,7 +148,7 @@ export function KnowledgeLayout({
           <ExportButton projectId={projectId} />
           <button
             onClick={() => setShowEditor(true)}
-            className="flex items-center gap-1.5 rounded-lg bg-[#0F2B46] px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0A1F33]"
+            className="flex items-center gap-1.5 rounded-lg bg-brand-primary px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

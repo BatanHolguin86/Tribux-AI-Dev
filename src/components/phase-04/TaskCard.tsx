@@ -42,7 +42,7 @@ export function TaskCard({ task, isDragging, onStatusChange, onGenerateCode, onA
     >
       {/* Task key */}
       <div className="mb-1 flex items-center justify-between">
-        <span className="rounded bg-[#E8F4F8] px-1.5 py-0.5 text-[10px] font-bold text-[#0F2B46] dark:bg-[#0F2B46]/40 dark:text-[#0EA5A3]">
+        <span className="rounded bg-brand-surface px-1.5 py-0.5 text-[10px] font-bold text-brand-primary dark:bg-brand-primary/40 dark:text-brand-teal">
           {task.task_key}
         </span>
         {task.category && (
@@ -68,7 +68,7 @@ export function TaskCard({ task, isDragging, onStatusChange, onGenerateCode, onA
             onGenerateCode(task)
           }}
           onPointerDown={(e) => e.stopPropagation()}
-          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded border border-[#0EA5A3]/30 bg-[#E8F4F8] py-1 text-[10px] font-medium text-[#0F2B46] transition-colors hover:border-[#0EA5A3] hover:bg-[#E8F4F8] dark:border-[#0F2B46] dark:bg-[#0F2B46]/20 dark:text-[#0EA5A3] dark:hover:border-[#0EA5A3] dark:hover:bg-[#0F2B46]/40"
+          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded border border-brand-teal/30 bg-brand-surface py-1 text-[10px] font-medium text-brand-primary transition-colors hover:border-brand-teal hover:bg-brand-surface dark:border-brand-primary dark:bg-brand-primary/20 dark:text-brand-teal dark:hover:border-brand-teal dark:hover:bg-brand-primary/40"
         >
           <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -99,7 +99,7 @@ export function TaskCard({ task, isDragging, onStatusChange, onGenerateCode, onA
             onStatusChange(task.id, nextStatus)
           }}
           onPointerDown={(e) => e.stopPropagation()}
-          className="mt-2 w-full rounded border border-gray-200 py-1 text-[10px] font-medium text-gray-500 transition-colors hover:border-[#0EA5A3] hover:text-[#0F2B46] dark:border-gray-600 dark:text-gray-400 dark:hover:border-[#0A1F33] dark:hover:text-[#0EA5A3]"
+          className="mt-2 w-full rounded border border-gray-200 py-1 text-[10px] font-medium text-gray-500 transition-colors hover:border-brand-teal hover:text-brand-primary dark:border-gray-600 dark:text-gray-400 dark:hover:border-[#0A1F33] dark:hover:text-brand-teal"
         >
           Mover a {TASK_STATUS_LABELS[nextStatus]}
         </button>

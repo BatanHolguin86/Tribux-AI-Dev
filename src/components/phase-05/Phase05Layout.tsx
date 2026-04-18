@@ -119,7 +119,7 @@ export function Phase05Layout({ projectId, categories: initialCategories, initia
         objective="Verificacion automatica de que tu app funciona correctamente."
       />
 
-      <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 dark:border-[#1E3A55] dark:bg-[#0F2B46]">
+      <div className="rounded-xl border border-brand-border bg-white p-6 dark:border-brand-border-dark dark:bg-brand-primary">
         <div className="mb-4">
           <CIStatusWidget projectId={projectId} />
         </div>
@@ -128,14 +128,14 @@ export function Phase05Layout({ projectId, categories: initialCategories, initia
           {categories.map((cat) => {
             const isDone = cat.status === 'completed' || cat.status === 'approved'
             return (
-              <div key={cat.key} className="flex items-center justify-between rounded-lg border border-[#E2E8F0] px-4 py-3 dark:border-[#1E3A55]">
-                <span className="text-sm text-[#0F2B46] dark:text-gray-200">
+              <div key={cat.key} className="flex items-center justify-between rounded-lg border border-brand-border px-4 py-3 dark:border-brand-border-dark">
+                <span className="text-sm text-brand-primary dark:text-gray-200">
                   {isPM ? cat.label : cat.label.replace('Unit Tests', 'Verificaciones basicas').replace('Integration Tests', 'Verificaciones de conexion').replace('E2E Tests', 'Verificaciones completas').replace('Test Plan', 'Plan de verificacion').replace('QA Report', 'Reporte de calidad')}
                 </span>
                 <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                   isDone
                     ? 'bg-[#10B981]/10 text-[#10B981]'
-                    : 'bg-[#94A3B8]/10 text-[#94A3B8]'
+                    : 'bg-[#94A3B8]/10 text-brand-muted'
                 }`}>
                   {isDone ? '✓ Pasa' : 'Pendiente'}
                 </span>
@@ -144,8 +144,8 @@ export function Phase05Layout({ projectId, categories: initialCategories, initia
           })}
         </div>
 
-        <div className="mt-4 rounded-lg bg-[#F8FAFC] p-3 dark:bg-[#0A1F33]">
-          <p className="text-xs text-[#94A3B8]">
+        <div className="mt-4 rounded-lg bg-[#F8FAFC] p-3 dark:bg-brand-navy">
+          <p className="text-xs text-brand-muted">
             Las verificaciones se ejecutan automaticamente via CI cuando el codigo se construye.
             {isPM && ' Tu equipo de ingenieria puede ver el detalle en la tab Equipo.'}
           </p>

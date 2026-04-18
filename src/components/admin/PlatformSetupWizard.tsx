@@ -86,7 +86,7 @@ export function PlatformSetupWizard() {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#0EA5A3] border-t-transparent" />
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand-teal border-t-transparent" />
         </div>
       ) : (
         PROVIDERS.map((provider) => (
@@ -234,7 +234,7 @@ function ProviderCard({
             href={config.helpUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block text-xs text-[#0F2B46] underline hover:text-[#0F2B46] dark:text-[#0EA5A3]"
+            className="inline-block text-xs text-brand-primary underline hover:text-brand-primary dark:text-brand-teal"
           >
             {config.helpText}
           </a>
@@ -260,7 +260,7 @@ function ProviderCard({
             <button
               onClick={handleSave}
               disabled={saving || !token.trim()}
-              className="rounded-md bg-[#0F2B46] px-4 py-2 text-xs font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
+              className="rounded-md bg-brand-primary px-4 py-2 text-xs font-medium text-white hover:bg-brand-navy disabled:opacity-50"
             >
               {saving ? 'Guardando...' : 'Guardar'}
             </button>

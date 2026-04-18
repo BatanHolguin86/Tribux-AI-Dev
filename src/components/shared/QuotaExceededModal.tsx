@@ -74,7 +74,7 @@ export function QuotaExceededModal({
         <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-gray-700 dark:bg-gray-900">
           <div className="text-center">
             <div className="text-4xl">✅</div>
-            <h2 className="mt-3 font-display text-lg font-bold text-[#0F2B46] dark:text-white">
+            <h2 className="mt-3 font-display text-lg font-bold text-brand-primary dark:text-white">
               Creditos agregados
             </h2>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -83,7 +83,7 @@ export function QuotaExceededModal({
             </p>
             <button
               onClick={onClose}
-              className="mt-4 w-full rounded-lg bg-[#0F2B46] py-2.5 text-sm font-medium text-white hover:bg-[#0A1F33]"
+              className="mt-4 w-full rounded-lg bg-brand-primary py-2.5 text-sm font-medium text-white hover:bg-brand-navy"
             >
               Continuar
             </button>
@@ -98,11 +98,11 @@ export function QuotaExceededModal({
       <div className="w-full max-w-lg rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-gray-700 dark:bg-gray-900">
         {/* Header */}
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F59E0B]/10">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-amber/10">
             <span className="text-xl">⚡</span>
           </div>
           <div className="flex-1">
-            <h2 id="quota-modal-title" className="font-display text-lg font-bold text-[#0F2B46] dark:text-white">
+            <h2 id="quota-modal-title" className="font-display text-lg font-bold text-brand-primary dark:text-white">
               Necesitas mas creditos de IA
             </h2>
             <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
@@ -130,14 +130,14 @@ export function QuotaExceededModal({
                 onClick={() => setSelectedPack(pack)}
                 className={`rounded-xl border-2 p-4 text-center transition-all ${
                   isSelected
-                    ? 'border-[#0EA5A3] bg-[#E8F4F8] dark:bg-[#0F2B46]/30'
+                    ? 'border-brand-teal bg-brand-surface dark:bg-brand-primary/30'
                     : 'border-gray-200 bg-white hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600'
                 }`}
               >
-                <p className="font-display text-xl font-bold text-[#0F2B46] dark:text-white">
+                <p className="font-display text-xl font-bold text-brand-primary dark:text-white">
                   ${pack.priceUsd}
                 </p>
-                <p className="mt-0.5 text-xs font-medium text-[#0EA5A3]">
+                <p className="mt-0.5 text-xs font-medium text-brand-teal">
                   {pack.label}
                 </p>
                 <p className="mt-1 text-[10px] text-gray-400">
@@ -173,7 +173,7 @@ export function QuotaExceededModal({
           <button
             onClick={handlePurchase}
             disabled={!selectedPack || loading}
-            className="flex-1 rounded-lg bg-[#0F2B46] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0A1F33] disabled:opacity-50"
+            className="flex-1 rounded-lg bg-brand-primary py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-navy disabled:opacity-50"
           >
             {loading ? 'Procesando...' : selectedPack ? `Comprar $${selectedPack.priceUsd}` : 'Selecciona un pack'}
           </button>

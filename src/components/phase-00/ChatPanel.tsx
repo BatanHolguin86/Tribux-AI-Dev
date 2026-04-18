@@ -205,7 +205,7 @@ export function ChatPanel({
         try { parsed = JSON.parse(match[1]) } catch { return null }
         if (!parsed) return null
         return (
-          <div className="mx-3 my-2 rounded-lg border-l-4 border-[#F59E0B]/30 bg-[#F59E0B]/5 p-3 text-sm text-[#F59E0B] dark:text-[#F59E0B]" role="alert">
+          <div className="mx-3 my-2 rounded-lg border-l-4 border-brand-amber/30 bg-brand-amber/5 p-3 text-sm text-brand-amber dark:text-brand-amber" role="alert">
             <p className="text-xs font-medium">{parsed.error === 'credits_insufficient' ? 'Creditos insuficientes' : 'Error de conexion'}</p>
             <p className="mt-0.5 text-xs opacity-80">{parsed.message}</p>
           </div>
@@ -215,8 +215,8 @@ export function ChatPanel({
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3" role="log" aria-live="polite">
         {messages.length === 0 && !isLoading && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E8F4F8] dark:bg-[#0F2B46]/30">
-              <svg className="h-5 w-5 text-[#0EA5A3] dark:text-[#0EA5A3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-surface dark:bg-brand-primary/30">
+              <svg className="h-5 w-5 text-brand-teal dark:text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>

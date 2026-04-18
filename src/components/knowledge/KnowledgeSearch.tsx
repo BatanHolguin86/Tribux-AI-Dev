@@ -41,7 +41,7 @@ export function KnowledgeSearch({ value, onChange }: KnowledgeSearchProps) {
         defaultValue={value}
         onChange={(e) => handleChange(e.target.value)}
         placeholder="Buscar en la base de conocimiento..."
-        className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-3 text-sm placeholder:text-gray-400 focus:border-[#0EA5A3] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
+        className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-3 text-sm placeholder:text-gray-400 focus:border-brand-teal focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0EA5A3] dark:border-gray-700 dark:bg-gray-800 dark:placeholder:text-gray-500 dark:focus:bg-gray-900"
       />
     </div>
   )

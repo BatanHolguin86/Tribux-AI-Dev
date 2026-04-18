@@ -85,7 +85,7 @@ function StepDot({
       : status === 'error'
         ? 'bg-red-500 text-white'
         : status === 'running'
-          ? 'bg-[#E8F4F8]0 text-white animate-pulse'
+          ? 'bg-brand-surface0 text-white animate-pulse'
           : 'bg-gray-200 text-gray-400 dark:bg-gray-700 dark:text-gray-500'
   const labelCls =
     status === 'pending'
@@ -331,7 +331,7 @@ export function AutoBuildPanel({ projectId, task, isOpen, onClose, onTaskStatusC
               <div className="max-h-44 overflow-y-auto rounded-lg bg-gray-950 p-3">
                 <pre className="text-xs text-gray-300">{codeText.slice(-2500)}</pre>
                 {stage === 'code-running' && (
-                  <span className="mt-1 block animate-pulse text-xs text-[#0EA5A3]">▌</span>
+                  <span className="mt-1 block animate-pulse text-xs text-brand-teal">▌</span>
                 )}
               </div>
             </div>
@@ -412,7 +412,7 @@ export function AutoBuildPanel({ projectId, task, isOpen, onClose, onTaskStatusC
             <div className="flex gap-2">
               <button
                 onClick={() => void runGeneration()}
-                className="flex-1 rounded-lg bg-[#0F2B46] py-2 text-sm font-medium text-white transition-colors hover:bg-[#0A1F33]"
+                className="flex-1 rounded-lg bg-brand-primary py-2 text-sm font-medium text-white transition-colors hover:bg-brand-navy"
               >
                 ✓ Aprobar Plan — Generar Código
               </button>
@@ -482,7 +482,7 @@ export function AutoBuildPanel({ projectId, task, isOpen, onClose, onTaskStatusC
             <div className="flex gap-2">
               <button
                 onClick={() => void runAnalysis()}
-                className="flex-1 rounded-lg bg-[#0F2B46] py-2 text-sm font-medium text-white transition-colors hover:bg-[#0A1F33]"
+                className="flex-1 rounded-lg bg-brand-primary py-2 text-sm font-medium text-white transition-colors hover:bg-brand-navy"
               >
                 🔄 Reintentar desde el inicio
               </button>
@@ -498,7 +498,7 @@ export function AutoBuildPanel({ projectId, task, isOpen, onClose, onTaskStatusC
           {/* Running indicator */}
           {isRunning && (
             <p className="text-center text-xs text-gray-400">
-              <span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[#0EA5A3] align-middle" />
+              <span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand-teal align-middle" />
               {runningLabel[stage]}
             </p>
           )}

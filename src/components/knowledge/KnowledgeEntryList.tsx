@@ -19,7 +19,7 @@ export function KnowledgeEntryList({
   if (loading && entries.length === 0) {
     return (
       <div className="flex flex-1 items-center justify-center py-12">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#0EA5A3]/30 border-t-[#0F2B46]" />
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand-teal/30 border-t-[#0F2B46]" />
       </div>
     )
   }
