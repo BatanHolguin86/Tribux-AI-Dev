@@ -327,6 +327,62 @@ export const PHASE_ACTIONS: ActionDefinition[] = [
     type: 'ai-report',
     streaming: true,
   },
+
+  // ── Phase 06: Autonomous Deploy Pipeline ──
+  {
+    actionName: 'auto-deploy',
+    phaseNumber: 6,
+    section: 'deploy_production',
+    itemIndices: [0, 1, 2, 3],
+    label: 'Deploy autonomo',
+    description: 'Deploy completo: release → verificacion → smoke test → rollback automatico si falla.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'external-api',
+    streaming: true,
+    confirmRequired: true,
+  },
+  {
+    actionName: 'monitor-post-deploy',
+    phaseNumber: 6,
+    section: 'launch_checklist',
+    itemIndices: [0, 1, 2],
+    label: 'Monitoring post-deploy',
+    description: '3 health checks cada 1 minuto. Si 2 fallan consecutivamente → rollback automatico.',
+    prerequisites: [],
+    type: 'external-api',
+    streaming: false,
+  },
+  {
+    actionName: 'auto-fix',
+    phaseNumber: 6,
+    section: 'deploy_production',
+    itemIndices: [],
+    label: 'Auto-fix de bug',
+    description: 'Analiza error de produccion, genera fix automatico y crea PR.',
+    prerequisites: [
+      { type: 'field-exists', field: 'repo_url' },
+      { type: 'env-exists', env: 'GITHUB_TOKEN' },
+    ],
+    type: 'ai-generate-commit',
+    streaming: false,
+  },
+
+  // ── Phase 07: Autonomous Iteration ──
+  {
+    actionName: 'new-cycle',
+    phaseNumber: 7,
+    section: 'backlog',
+    itemIndices: [0, 1, 2],
+    label: 'Iniciar nuevo ciclo',
+    description: 'Lee backlog de Phase 07, crea features en Phase 01 y arranca nuevo ciclo automaticamente.',
+    prerequisites: [],
+    type: 'external-api',
+    streaming: false,
+    confirmRequired: true,
+  },
 ]
 
 export function getActionsForPhase(phaseNumber: number): ActionDefinition[] {
