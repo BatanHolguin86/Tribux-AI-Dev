@@ -1,4 +1,4 @@
-# System Architecture — Tribux
+# System Architecture — Tribux AI
 
 **Phase:** 02 — Architecture & Design
 **Fecha:** 2026-03-08
@@ -290,7 +290,7 @@ RESEND_API_KEY=re_...                      # SERVER ONLY
 NEXT_PUBLIC_SENTRY_DSN=https://...         # Public (client tracking)
 SENTRY_AUTH_TOKEN=sntrys_...               # SERVER ONLY (source maps)
 
-# App (URL pública de Tribux; usar el dominio o preview real en cada entorno)
+# App (URL pública de Tribux AI; usar el dominio o preview real en cada entorno)
 NEXT_PUBLIC_APP_URL=https://app.tribux.com
 ```
 
@@ -378,7 +378,7 @@ Key config per use case:
 │  Environments:                                                   │
 │  ├─ Local:   localhost:3000 + Supabase local                    │
 │  ├─ Staging: preview deployments + Supabase staging project     │
-│  └─ Prod:    dominio Tribux + Supabase production project       │
+│  └─ Prod:    dominio Tribux AI + Supabase production project       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

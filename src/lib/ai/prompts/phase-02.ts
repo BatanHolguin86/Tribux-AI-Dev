@@ -349,7 +349,7 @@ export function buildDocumentGenerationPrompt(
     context.designArtifactsSummary ?? '',
   )
 
-  return `ROL: Eres el CTO Virtual de Tribux. Genera un documento formal de arquitectura basado en la conversacion.
+  return `ROL: Eres el CTO Virtual de Tribux AI. Genera un documento formal de arquitectura basado en la conversacion.
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.name}

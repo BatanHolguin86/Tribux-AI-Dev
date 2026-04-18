@@ -1,6 +1,6 @@
 # Phase 00 — Discovery Brief
 
-## Tribux
+## Tribux AI
 
 **Fecha:** 2026-03-05
 **Fase:** 00 — Discovery & Ideation
@@ -10,7 +10,7 @@
 
 ## Resumen Ejecutivo
 
-Tribux es una plataforma SaaS B2B que permite a estrategas de negocio sin experiencia tecnica desarrollar **cualquier producto o solucion tecnologica** end-to-end — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos — actuando como CEO/CPO de un equipo de agentes IA especializados que sigue la metodologia IA DLC de 8 fases.
+Tribux AI es una plataforma SaaS B2B que permite a estrategas de negocio sin experiencia tecnica desarrollar **cualquier producto o solucion tecnologica** end-to-end — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos — actuando como CEO/CPO de un equipo de agentes IA especializados que sigue la metodologia IA DLC de 8 fases.
 
 **El insight central:** El mercado tiene herramientas para tecnicos o herramientas simplificadas que no escalan. Nadie ha construido la capa de metodologia y proceso que haga la IA generativa accesible y confiable para founders, PMs y consultores no-tecnicos.
 
@@ -55,7 +55,7 @@ Los cuatro perfiles comparten tres atributos clave: mentalidad experimentadora, 
 
 **Para** emprendedores digitales, founders no-tecnicos, product managers y consultores
 **Que** tienen clara su idea de negocio pero no saben por donde empezar a construirla tecnicamente
-**Tribux es** una plataforma de desarrollo dirigido por IA con metodologia estructurada
+**Tribux AI es** una plataforma de desarrollo dirigido por IA con metodologia estructurada
 **A diferencia de** no-code tools (que no escalan), generadores de codigo (sin proceso) y agencias (caras y lentas)
 **Nuestra solucion** convierte la idea clara que ya tienen en cualquier producto o solucion tecnologica real — desde interfaces hasta productos complejos con integraciones y agentes IA — con velocidad, calidad y control estrategico, a una fraccion del costo de un equipo tecnico tradicional
 

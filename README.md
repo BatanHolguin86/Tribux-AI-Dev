@@ -1,4 +1,4 @@
-# Tribux
+# Tribux AI
 
 Metodología **IA DLC** (AI-Driven Development Lifecycle): del discovery al lanzamiento, con KIRO specs y agentes especializados.
 

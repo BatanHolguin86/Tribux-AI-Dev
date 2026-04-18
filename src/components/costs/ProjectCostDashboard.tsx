@@ -389,7 +389,7 @@ function MonthlyHistory({ data, infraMonthly }: { data: CostSummary; infraMonthl
           <thead>
             <tr className="border-b border-gray-100 dark:border-gray-800">
               <th className="pb-2 text-left font-medium text-gray-400">Mes</th>
-              <th className="pb-2 text-right font-medium text-gray-400">Tribux</th>
+              <th className="pb-2 text-right font-medium text-gray-400">Tribux AI</th>
               <th className="pb-2 text-right font-medium text-gray-400">Infra est.</th>
               <th className="pb-2 text-right font-medium text-gray-400">Total mes</th>
               <th className="pb-2 text-right font-medium text-gray-400">Acumulado</th>
@@ -485,7 +485,7 @@ function ProjectPnL({
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">
-              Suscripcion Tribux ({monthsActive} {monthsActive === 1 ? 'mes' : 'meses'}, prorrateado {totalProjects > 1 ? `1/${totalProjects} proyectos` : ''})
+              Suscripcion Tribux AI ({monthsActive} {monthsActive === 1 ? 'mes' : 'meses'}, prorrateado {totalProjects > 1 ? `1/${totalProjects} proyectos` : ''})
             </span>
             <span className="font-medium tabular-nums text-gray-900 dark:text-white">{fmtUSD(subscriptionTotal)}</span>
           </div>

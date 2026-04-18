@@ -1,19 +1,19 @@
 # Product Requirements Document (PRD)
 
-## Tribux
+## Tribux AI
 
 **Version:** 1.0
 **Fecha:** 2026-03-06
-**Autor:** Orquestador IA — Tribux
+**Autor:** Orquestador IA — Tribux AI
 **Status:** Pendiente aprobacion CEO/CPO
 
 ---
 
 ## 1. Objetivo del Producto
 
-Tribux es una plataforma SaaS B2B que permite a personas sin experiencia tecnica construir **cualquier producto o solucion tecnologica** end-to-end — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos — actuando como CEO/CPO de un equipo de agentes IA especializados que ejecuta la metodologia IA DLC (AI-Driven Development Lifecycle) de 8 fases.
+Tribux AI es una plataforma SaaS B2B que permite a personas sin experiencia tecnica construir **cualquier producto o solucion tecnologica** end-to-end — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos — actuando como CEO/CPO de un equipo de agentes IA especializados que ejecuta la metodologia IA DLC (AI-Driven Development Lifecycle) de 8 fases.
 
-**El problema que resuelve:** La brecha entre tener una idea de negocio clara y saber como construir el producto tecnologico que la materializa. Los usuarios llegan con vision; Tribux les da el equipo, el proceso y la ejecucion.
+**El problema que resuelve:** La brecha entre tener una idea de negocio clara y saber como construir el producto tecnologico que la materializa. Los usuarios llegan con vision; Tribux AI les da el equipo, el proceso y la ejecucion.
 
 **La promesa central:** Tu idea, tu decision. Nuestro equipo, nuestro proceso. Tu producto.
 
@@ -48,7 +48,7 @@ El mercado esta fragmentado entre herramientas para tecnicos (que excluyen al us
 
 ## 3.1 Use Case Foco — Alcance del Producto
 
-**Objetivo de Tribux:** Los cuatro usuarios objetivo (Founder, PM, Consultor, Emprendedor) tienen la capacidad de desarrollar **cualquier producto o solucion tecnologica** desde la interfaz de la plataforma — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos.
+**Objetivo de Tribux AI:** Los cuatro usuarios objetivo (Founder, PM, Consultor, Emprendedor) tienen la capacidad de desarrollar **cualquier producto o solucion tecnologica** desde la interfaz de la plataforma — desde interfaces simples hasta productos complejos con integraciones, soluciones basadas en IA y agentes autonomos.
 
 ### Espectro de casos de uso soportados
 
@@ -109,7 +109,7 @@ Landing page
     → /register (email o Google)
     → Email de confirmacion (si aplica)
     → /onboarding (4 pasos)
-        Paso 1: Bienvenida + que es Tribux
+        Paso 1: Bienvenida + que es Tribux AI
         Paso 2: Seleccion de perfil (persona)
         Paso 3: Crear primer proyecto (nombre, descripcion, industria)
         Paso 4: Vision de las 8 fases IA DLC

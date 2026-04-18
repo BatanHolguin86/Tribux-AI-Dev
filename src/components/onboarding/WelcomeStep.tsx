@@ -13,7 +13,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
         <TribuxLogo size={64} />
       </div>
 
-      <h1 className="text-3xl font-bold text-gray-900">Te damos la bienvenida a Tribux</h1>
+      <h1 className="text-3xl font-bold text-gray-900">Te damos la bienvenida a Tribux AI</h1>
       <p className="mt-3 text-lg text-gray-600">
         Tu equipo de agentes IA esta listo para construir tu producto.
       </p>

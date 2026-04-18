@@ -128,7 +128,7 @@ export async function POST(
             await commitMultipleFiles(
               project.repo_url,
               filesToCommit,
-              `docs: add retrospective for cycle ${cycle} (Tribux Phase 07)`,
+              `docs: add retrospective for cycle ${cycle} (Tribux AI Phase 07)`,
             )
           }
 

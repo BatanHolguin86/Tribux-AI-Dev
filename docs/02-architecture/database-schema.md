@@ -1,4 +1,4 @@
-# Database Schema — Tribux
+# Database Schema — Tribux AI
 
 **Phase:** 02 — Architecture & Design
 **Fecha:** 2026-03-08

@@ -1,4 +1,4 @@
--- Seed data for Tribux
+-- Seed data for Tribux AI
 -- This file is for local development only
 
 -- No seed data needed for MVP — all data is user-generated

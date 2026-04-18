@@ -1,5 +1,5 @@
 -- Marketing module tables for admin backoffice
--- Used by the Marketing Strategist agent for Tribux's own commercial strategy
+-- Used by the Marketing Strategist agent for Tribux AI's own commercial strategy
 
 -- Chat threads with the marketing agent
 create table marketing_chat_threads (

@@ -97,7 +97,7 @@ export default function AdminLoginPage() {
             <TribuxLogo size={48} />
           </div>
           <h2 className="text-3xl font-bold text-white tracking-tight">
-            Tribux
+            Tribux AI
           </h2>
           <p className="mt-2 text-lg text-[#0EA5A3]/30">
             Control financiero
@@ -172,7 +172,7 @@ export default function AdminLoginPage() {
           </form>
 
           <p className="text-center text-xs text-gray-400 dark:text-gray-500">
-            Acceso exclusivo para administradores de Tribux.
+            Acceso exclusivo para administradores de Tribux AI.
           </p>
         </div>
       </div>

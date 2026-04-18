@@ -137,7 +137,7 @@ export async function POST(
           const commitResult = await commitMultipleFiles(
             project.repo_url!,
             filesToCommit,
-            'test: add E2E tests (Tribux Phase 05)',
+            'test: add E2E tests (Tribux AI Phase 05)',
           )
 
           // 12. Auto-check e2e_tests items

@@ -31,7 +31,7 @@ const PLANS = [
     price: '$49',
     period: '/mes',
     features: ['1 proyecto', 'Valida y diseña tu producto', '3 agentes especializados', 'Ideal para explorar tu idea'],
-    cta: 'Probar 7 dias gratis',
+    cta: 'Comenzar',
     popular: false,
   },
   {
@@ -39,7 +39,7 @@ const PLANS = [
     price: '$149',
     period: '/mes',
     features: ['1 proyecto', 'De la idea al deploy', '8 agentes IA', 'Construccion automatica de codigo'],
-    cta: 'Probar 7 dias gratis',
+    cta: 'Comenzar',
     popular: true,
   },
   {
@@ -47,7 +47,7 @@ const PLANS = [
     price: '$299',
     period: '/mes',
     features: ['3 proyectos', 'Todas las fases completas', '8 agentes IA', 'Construccion ilimitada'],
-    cta: 'Probar 7 dias gratis',
+    cta: 'Comenzar',
     popular: false,
   },
   {
@@ -55,7 +55,7 @@ const PLANS = [
     price: '$699',
     period: '/mes',
     features: ['10 proyectos', 'Gestiona multiples clientes', '8 agentes IA', 'Soporte prioritario'],
-    cta: 'Probar 7 dias gratis',
+    cta: 'Comenzar',
     popular: false,
   },
 ]
@@ -77,7 +77,7 @@ export default async function HomePage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
             <TribuxLogo size={32} />
-            <span className="text-lg font-display font-bold text-gray-900 dark:text-white">Tribux</span>
+            <span className="text-lg font-display font-bold text-gray-900 dark:text-white">Tribux AI</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
@@ -90,7 +90,7 @@ export default async function HomePage() {
               href="/register"
               className="rounded-lg bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
             >
-              Empieza tu prueba gratis
+              Comenzar ahora
             </Link>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#0EA5A3]/30 dark:border-[#0F2B46] bg-[#E8F4F8] dark:bg-[#0F2B46]/20 px-4 py-1.5 text-sm font-medium text-[#0F2B46] dark:text-[#0EA5A3]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#0EA5A3] animate-pulse" />
-              Prueba 7 dias gratis — sin tarjeta de credito
+              Desde $49/mes — cancela cuando quieras
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
               Construye tu producto con{' '}
@@ -119,7 +119,7 @@ export default async function HomePage() {
                 href="/register"
                 className="w-full rounded-xl bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110 sm:w-auto"
               >
-                Empieza tu prueba gratis
+                Comenzar ahora
               </Link>
               <a
                 href="#como-funciona"
@@ -225,7 +225,7 @@ export default async function HomePage() {
               Elige tu plan
             </h2>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
-              7 dias gratis con acceso completo. Sin tarjeta de credito.
+              Desde $49/mes. Cancela cuando quieras.
             </p>
           </div>
 
@@ -297,7 +297,7 @@ export default async function HomePage() {
             href="/register"
             className="mt-8 inline-block rounded-xl bg-gradient-to-r from-[#0F2B46] to-[#0EA5A3] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-[#0EA5A3]/25 transition-all hover:shadow-xl hover:shadow-[#0EA5A3]/30 hover:brightness-110"
           >
-            Empieza tu prueba gratis — 7 dias sin costo
+            Comenzar ahora — desde $49/mes
           </Link>
         </div>
       </section>
@@ -309,7 +309,7 @@ export default async function HomePage() {
             <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
               <div className="flex items-center gap-2.5">
                 <TribuxLogo size={28} />
-                <span className="text-sm font-semibold text-gray-900 dark:text-white">Tribux</span>
+                <span className="text-sm font-semibold text-gray-900 dark:text-white">Tribux AI</span>
               </div>
               <div className="flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400">
                 <a href="mailto:hola@tribux.dev" className="transition-colors hover:text-gray-700 dark:hover:text-gray-300">Contacto</a>
@@ -319,7 +319,7 @@ export default async function HomePage() {
             </div>
             <div className="border-t border-gray-200 dark:border-gray-800 pt-6 text-center">
               <p className="text-xs text-gray-400 dark:text-gray-500">
-                &copy; {new Date().getFullYear()} Tribux. Todos los derechos reservados.
+                &copy; {new Date().getFullYear()} Tribux AI. Todos los derechos reservados.
               </p>
             </div>
           </div>

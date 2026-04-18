@@ -31,7 +31,7 @@ export function parseGitHubUrl(url: string): { owner: string; repo: string } | n
 function getHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'Tribux',
+    'User-Agent': 'Tribux AI',
   }
   const token = process.env.GITHUB_TOKEN
   if (token) {

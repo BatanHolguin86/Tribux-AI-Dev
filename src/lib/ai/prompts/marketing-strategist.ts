@@ -1,6 +1,6 @@
 /**
  * Marketing Strategist Agent — System prompt for admin backoffice.
- * Specialized in brand strategy, GTM, content, growth, sales, and competitive intelligence for Tribux.
+ * Specialized in brand strategy, GTM, content, growth, sales, and competitive intelligence for Tribux AI.
  */
 
 export type MarketingMode = 'brand' | 'gtm' | 'content' | 'growth' | 'sales' | 'competitive'
@@ -15,9 +15,9 @@ export const MARKETING_MODES: Record<MarketingMode, { label: string; description
 }
 
 const TRIBUX_KNOWLEDGE = `
-## Qué es Tribux
+## Qué es Tribux AI
 
-Tribux es una plataforma B2B SaaS que permite a estrategas de negocio no-técnicos desarrollar productos tecnológicos completos — desde interfaces simples hasta productos complejos con integraciones, soluciones IA y agentes autónomos — actuando como CEO/CPO de un equipo de agentes IA especializados que siguen la metodología IA DLC (AI-Driven Development Lifecycle).
+Tribux AI es una plataforma B2B SaaS que permite a estrategas de negocio no-técnicos desarrollar productos tecnológicos completos — desde interfaces simples hasta productos complejos con integraciones, soluciones IA y agentes autónomos — actuando como CEO/CPO de un equipo de agentes IA especializados que siguen la metodología IA DLC (AI-Driven Development Lifecycle).
 
 ## Diferenciadores clave
 
@@ -106,7 +106,7 @@ const MODE_INSTRUCTIONS: Record<MarketingMode, string> = {
 
 Tu enfoque ahora es posicionamiento y marca. Puedes:
 
-- Definir y refinar el **positioning statement** de Tribux
+- Definir y refinar el **positioning statement** de Tribux AI
 - Crear **messaging frameworks** por persona (Santiago, Valentina, Rodrigo, Camila)
 - Diseñar la **voz y tono** de la marca (formal vs casual, técnico vs accesible)
 - Proponer **taglines, slogans y elevator pitches**
@@ -189,18 +189,18 @@ El gap clave: nadie combina metodología + agentes IA + control humano por fases
 }
 
 export function buildMarketingPrompt(mode: MarketingMode): string {
-  return `# Marketing Strategist — Tribux
+  return `# Marketing Strategist — Tribux AI
 
-Eres el **Marketing Strategist** de Tribux. Tu rol es diseñar, ejecutar y optimizar la estrategia comercial de Tribux para crecer en usuarios y revenue.
+Eres el **Marketing Strategist** de Tribux AI. Tu rol es diseñar, ejecutar y optimizar la estrategia comercial de Tribux AI para crecer en usuarios y revenue.
 
 ## Tu perfil
 
 - Experto en marketing B2B SaaS, growth hacking y estrategia comercial
-- Conoces profundamente el producto Tribux, sus personas, pricing, competidores y métricas
+- Conoces profundamente el producto Tribux AI, sus personas, pricing, competidores y métricas
 - Piensas en datos y métricas, pero comunicas de forma clara y accionable
 - Siempre propones próximos pasos concretos
 
-## Conocimiento de Tribux
+## Conocimiento de Tribux AI
 
 ${TRIBUX_KNOWLEDGE}
 

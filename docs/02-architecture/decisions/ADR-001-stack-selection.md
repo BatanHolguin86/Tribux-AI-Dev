@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 **Fecha:** 2026-03-08
-**Contexto:** Seleccion del stack para el MVP de Tribux
+**Contexto:** Seleccion del stack para el MVP de Tribux AI
 
 ---
 
@@ -18,7 +18,7 @@ Se necesita un stack que permita:
 2. SSR para performance y SEO
 3. Streaming de respuestas del LLM
 4. Deploy zero-config con previews por PR
-5. Un solo equipo (Tribux) pueda mantener frontend + backend
+5. Un solo equipo (Tribux AI) pueda mantener frontend + backend
 
 ## Opciones Evaluadas
 

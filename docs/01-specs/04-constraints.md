@@ -1,4 +1,4 @@
-# Constraints — Tribux
+# Constraints — Tribux AI
 
 **Version:** 1.0
 **Fecha:** 2026-03-06
@@ -50,7 +50,7 @@
 ### Tiempo y Recursos
 
 - **C-BIZ-01:** El MVP debe estar en produccion y disponible para primeros usuarios en un maximo de 12 semanas desde el inicio de Phase 03 (Environment Setup).
-- **C-BIZ-02:** El equipo de desarrollo del MVP es el Tribux (agentes IA) orquestado por el CEO/CPO. No hay headcount humano tecnico en Phase 03–06 del MVP.
+- **C-BIZ-02:** El equipo de desarrollo del MVP es Tribux AI (agentes IA) orquestado por el CEO/CPO. No hay headcount humano tecnico en Phase 03–06 del MVP.
 - **C-BIZ-03:** El presupuesto mensual de infraestructura para el MVP no puede superar $200/mes hasta alcanzar $5k MRR. Stack elegido: Vercel Hobby/Pro ($0–$20), Supabase Free/Pro ($0–$25), Anthropic API ($50–$100 estimado para usuarios beta), Resend ($0–$20).
 
 ### Pricing y Modelo de Negocio
@@ -63,7 +63,7 @@
 
 - **C-BIZ-07:** El MVP se lanza exclusivamente en mercado hispanohablante (LATAM + Espana). No se aceptan funcionalidades exclusivas para otros mercados en v1.0.
 - **C-BIZ-08:** El producto no puede posicionarse como un generador de codigo o un IDE con IA — el diferenciador es la metodologia y el proceso, no la generacion de codigo per se.
-- **C-BIZ-09:** El nombre "Tribux" y la marca deben ser consistentes en todos los touchpoints del producto desde el MVP.
+- **C-BIZ-09:** El nombre "Tribux AI" y la marca deben ser consistentes en todos los touchpoints del producto desde el MVP.
 
 ### Legal y Contractual
 

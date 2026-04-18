@@ -83,7 +83,7 @@ export function MarketingDashboard() {
             Marketing & Ventas
           </h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Estrategia comercial de Tribux con Marketing Strategist Agent
+            Estrategia comercial de Tribux AI con Marketing Strategist Agent
           </p>
         </div>
         <Link

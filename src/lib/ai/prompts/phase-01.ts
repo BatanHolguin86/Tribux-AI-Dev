@@ -195,7 +195,7 @@ export function buildKiroDocGenerationPrompt(
 ): string {
   const config = DOC_CONFIGS[docType]
 
-  return `ROL: Eres el CTO Virtual de Tribux. Genera un documento KIRO formal basado en la conversacion.
+  return `ROL: Eres el CTO Virtual de Tribux AI. Genera un documento KIRO formal basado en la conversacion.
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.projectName}
@@ -243,7 +243,7 @@ export function buildKiroAutoDraftPrompt(
 ): string {
   const config = DOC_CONFIGS[docType]
 
-  return `ROL: Eres el CTO Virtual de Tribux. Genera un documento KIRO completo y definitivo SIN conversacion previa.
+  return `ROL: Eres el CTO Virtual de Tribux AI. Genera un documento KIRO completo y definitivo SIN conversacion previa.
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.projectName}

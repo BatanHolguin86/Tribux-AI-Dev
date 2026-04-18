@@ -68,7 +68,7 @@ describe('buildPhase02Prompt', () => {
 
   it('includes CTO Virtual base prompt', () => {
     const prompt = buildPhase02Prompt('system_architecture', basePhase02Context)
-    expect(prompt).toContain('ROL: Eres el CTO Virtual de Tribux')
+    expect(prompt).toContain('ROL: Eres el CTO Virtual de Tribux AI')
   })
 
   it('injects project name into the prompt', () => {
@@ -214,7 +214,7 @@ describe('buildDocumentGenerationPrompt (Phase 02)', () => {
 
   it('includes CTO role reference', () => {
     const prompt = buildDocumentGenerationPrompt('database_design', basePhase02Context)
-    expect(prompt).toContain('CTO Virtual de Tribux')
+    expect(prompt).toContain('CTO Virtual de Tribux AI')
   })
 
   it('injects project name', () => {

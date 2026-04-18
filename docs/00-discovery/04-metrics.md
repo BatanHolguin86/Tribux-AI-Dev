@@ -1,4 +1,4 @@
-# Success Metrics & KPIs — Tribux
+# Success Metrics & KPIs — Tribux AI
 
 **Fecha:** 2026-03-05
 **Fase:** Phase 00 — Discovery

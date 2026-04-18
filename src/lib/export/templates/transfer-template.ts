@@ -73,6 +73,6 @@ Esta guia describe como transferir este proyecto a un cliente o nueva organizaci
 ${steps.join('\n---\n\n')}
 ---
 
-_Generado por Tribux_
+_Generado por Tribux AI_
 `
 }

@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado  
 **Fecha:** 2026-03-08  
-**Contexto:** Phase 02 — diseño UI/UX en Tribux
+**Contexto:** Phase 02 — diseño UI/UX en Tribux AI
 
 ## Contexto
 

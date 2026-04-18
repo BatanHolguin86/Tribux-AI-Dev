@@ -46,7 +46,7 @@ export default async function AdminLayout({
           <Link href="/admin/finance" className="flex items-center gap-2">
             <TribuxLogo size={32} />
             <span className="text-base font-display font-bold text-gray-900 dark:text-gray-100">
-              Tribux
+              Tribux AI
             </span>
             <span className="hidden sm:inline-flex rounded-full bg-[#0EA5A3]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#0EA5A3]">
               BACKOFFICE

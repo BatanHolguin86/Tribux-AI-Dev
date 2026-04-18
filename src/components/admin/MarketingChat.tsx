@@ -37,7 +37,7 @@ const MODE_COLORS: Record<MarketingMode, string> = {
 
 const SUGGESTIONS: Record<MarketingMode, string[]> = {
   brand: [
-    'Define el positioning statement de Tribux',
+    'Define el positioning statement de Tribux AI',
     'Crea el messaging framework por persona',
     'Propón la voz y tono de la marca',
   ],
@@ -47,13 +47,13 @@ const SUGGESTIONS: Record<MarketingMode, string[]> = {
     'Valida el pricing por segmento',
   ],
   content: [
-    'Genera clusters de keywords SEO para Tribux',
+    'Genera clusters de keywords SEO para Tribux AI',
     'Crea un calendario editorial de 12 semanas',
     'Escribe copy para la landing page principal',
   ],
   growth: [
     'Propón 5 experimentos de crecimiento priorizados',
-    'Diseña un referral program para Tribux',
+    'Diseña un referral program para Tribux AI',
     'Optimiza el onboarding para activación',
   ],
   sales: [
@@ -62,7 +62,7 @@ const SUGGESTIONS: Record<MarketingMode, string[]> = {
     'Diseña el email sequence de nurturing',
   ],
   competitive: [
-    'Crea battle card: Tribux vs Bolt/Lovable',
+    'Crea battle card: Tribux AI vs Bolt/Lovable',
     'Matriz comparativa completa del mercado',
     'Talking points para conversaciones con prospects',
   ],

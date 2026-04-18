@@ -1,4 +1,4 @@
-# Tests E2E — Tribux
+# Tests E2E — Tribux AI
 
 ## Requisitos previos
 

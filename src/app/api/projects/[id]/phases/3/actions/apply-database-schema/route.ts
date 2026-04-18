@@ -126,7 +126,7 @@ export async function POST(
           const commitResult = await commitMultipleFiles(
             project.repo_url,
             [{ path: 'infrastructure/supabase/migrations/001_initial_schema.sql', content: providedSql }],
-            'chore: add initial database schema migration (Tribux Phase 03)',
+            'chore: add initial database schema migration (Tribux AI Phase 03)',
           )
           commitData = { sha: commitResult.sha, url: commitResult.url }
         } catch (commitError) {

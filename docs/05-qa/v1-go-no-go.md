@@ -1,4 +1,4 @@
-# Go / No-go v1.0 — Tribux
+# Go / No-go v1.0 — Tribux AI
 
 **Propósito:** Checklist corta y verificable para decidir si el producto puede etiquetarse **v1.0** y desplegarse a producción (o beta cerrada). Complementa `docs/ESTADO-DEL-PRODUCTO.md` y `docs/00-discovery/estatus-v1-y-roadmap.md`.
 
@@ -64,7 +64,7 @@ Los ítems de la tabla **Criterios (bloqueantes)** siguen marcándose con eviden
 | `pnpm exec tsc --noEmit` | ✅ OK                                                                                                          |
 | `pnpm test`              | ✅ **716** tests (**56** archivos) — incl. credit-packs, ai-usage-cleanup, quota-with-credits                  |
 | `pnpm build`             | ✅ OK — Vercel deploy **Ready** (commit `f64db4e`)                                                             |
-| Vercel staging (Tribux)  | ✅ **Ready** — `https://ai-squad-command-center.vercel.app` (slug histórico del proyecto en Vercel) — 10 env vars, build 1m 32s |
+| Vercel staging (Tribux AI)  | ✅ **Ready** — `https://ai-squad-command-center.vercel.app` (slug histórico del proyecto en Vercel) — 10 env vars, build 1m 32s |
 | Auth staging             | ✅ Login funcional, usuario con onboarding completado, proyecto activo con fases recorridas                    |
 | IA staging               | ✅ `ANTHROPIC_API_KEY` configurada en Vercel (Mar 13)                                                          |
 

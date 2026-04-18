@@ -1,4 +1,4 @@
-# Plan financiero, estructura de costos y unit economics — Tribux
+# Plan financiero, estructura de costos y unit economics — Tribux AI
 
 **Versión:** 1.0  
 **Fecha:** 2026-03  

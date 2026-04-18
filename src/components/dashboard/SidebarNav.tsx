@@ -52,11 +52,11 @@ export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
     <aside className="flex h-14 w-full shrink-0 flex-col border-b border-white/10 bg-gradient-to-b from-[#0A1F33] to-[#0F2B46] md:h-screen md:w-64 md:border-b-0 md:border-r md:border-white/10 md:shadow-[var(--shadow-sidebar)]">
       <div className="flex h-14 items-center gap-2 px-5">
         <TribuxLogo size={32} />
-        <span className="font-display text-base font-bold text-white">Tribux</span>
+        <span className="font-display text-base font-bold text-white">Tribux AI</span>
       </div>
 
       <nav className="flex min-h-0 flex-1 flex-row gap-1 overflow-x-auto px-3 py-3 md:flex-col md:space-y-1 md:overflow-y-auto md:py-4">
-        <NavLink href="/dashboard" icon={<LayoutDashboard className="h-5 w-5" />} label="Dashboard" />
+        <NavLink href="/dashboard" icon={<LayoutDashboard className="h-5 w-5" />} label="Inicio" />
         <NavLink href="/dashboard" icon={<FolderKanban className="h-5 w-5" />} label="Proyectos" />
         <NavLink href="/settings" icon={<Settings className="h-5 w-5" />} label="Configuración" />
       </nav>

@@ -393,7 +393,7 @@ function EnvVarPanel({ label, docsUrl, onCancel }: { label: string; docsUrl?: st
     <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/50">
       <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
         <span className="font-medium">{label}</span> se configura como variable de entorno en el servidor (Vercel Dashboard).
-        No es configurable desde la UI de Tribux.
+        No es configurable desde la UI de Tribux AI.
       </p>
       <div className="flex gap-2">
         {docsUrl && (

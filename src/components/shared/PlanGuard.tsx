@@ -26,7 +26,7 @@ export function PlanGuard({ hasAccess, currentPlan, feature, children }: PlanGua
         </h2>
         <p className="max-w-md text-sm text-gray-600 dark:text-gray-400">
           Tu plan actual no incluye acceso a esta funcionalidad. Upgrade para desbloquear todas las
-          capacidades de Tribux.
+          capacidades de Tribux AI.
         </p>
         <button
           onClick={() => setShowPaywall(true)}

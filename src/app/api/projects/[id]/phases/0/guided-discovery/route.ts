@@ -124,7 +124,7 @@ Basate en el problema y la solucion que describio la persona fundadora.`,
     for (const section of SECTIONS) {
       const { text, usage } = await generateText({
         model: defaultModel,
-        system: `Eres el CTO Virtual de Tribux. Una persona fundadora sin conocimientos tecnicos te dio 3 respuestas simples sobre su idea de producto. Tu trabajo es generar documentacion de discovery profesional a partir de esas respuestas.
+        system: `Eres el CTO Virtual de Tribux AI. Una persona fundadora sin conocimientos tecnicos te dio 3 respuestas simples sobre su idea de producto. Tu trabajo es generar documentacion de discovery profesional a partir de esas respuestas.
 
 Responde en espanol. Usa formato markdown con headers, listas y tablas cuando aplique. Se concreto y accionable.`,
         prompt: `${founderInput}\n\n---\n\nTAREA:\n${sectionPrompts[section]}`,

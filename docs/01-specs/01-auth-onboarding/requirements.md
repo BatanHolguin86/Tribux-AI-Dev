@@ -23,7 +23,7 @@
 
 ### Onboarding
 
-- Como nuevo usuario, quiero un flujo de onboarding guiado despues de registrarme, para entender que es Tribux, como funciona la metodologia IA DLC y que puedo construir con la plataforma.
+- Como nuevo usuario, quiero un flujo de onboarding guiado despues de registrarme, para entender que es Tribux AI, como funciona la metodologia IA DLC y que puedo construir con la plataforma.
 - Como nuevo usuario, quiero crear mi primer proyecto durante el onboarding (nombre, descripcion breve, industria), para llegar directo al valor sin pasos extra.
 - Como nuevo usuario, quiero seleccionar mi perfil de usuario (Founder, PM, Consultor, Emprendedor digital), para que la plataforma personalice la experiencia y el lenguaje segun mi contexto.
 - Como nuevo usuario, quiero ver un resumen de las 8 fases del IA DLC antes de empezar, para saber que recorrido me espera y sentirme orientado.

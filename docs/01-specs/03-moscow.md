@@ -1,6 +1,6 @@
 # Feature Priority Matrix — MoSCoW
 
-## Tribux
+## Tribux AI
 
 **Version:** 1.0
 **Fecha:** 2026-03-06

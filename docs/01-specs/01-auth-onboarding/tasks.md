@@ -49,7 +49,7 @@
 ### Onboarding — Frontend
 
 - [x] **TASK-023:** Crear pagina `/onboarding` con layout de 4 pasos y barra de progreso
-- [x] **TASK-024:** Crear componente `OnboardingStep1` — pantalla de bienvenida con intro a Tribux e IA DLC
+- [x] **TASK-024:** Crear componente `OnboardingStep1` — pantalla de bienvenida con intro a Tribux AI e IA DLC
 - [x] **TASK-025:** Crear componente `OnboardingStep2` — selector de persona (4 cards: Founder, PM, Consultor, Emprendedor)
 - [x] **TASK-026:** Crear componente `OnboardingStep3` — formulario de primer proyecto (nombre, descripcion, industria)
 - [x] **TASK-027:** Crear componente `OnboardingStep4` — timeline visual de las 8 fases IA DLC con animacion

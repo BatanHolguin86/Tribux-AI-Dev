@@ -16,7 +16,7 @@ function getToken(): string {
 function getHeaders(): Record<string, string> {
   return {
     Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'Tribux',
+    'User-Agent': 'Tribux AI',
     Authorization: `Bearer ${getToken()}`,
     'Content-Type': 'application/json',
   }

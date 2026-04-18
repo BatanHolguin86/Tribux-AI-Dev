@@ -7,7 +7,7 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null
 
-const EMAIL_FROM = process.env.EMAIL_FROM ?? 'Tribux <noreply@aisquad.dev>'
+const EMAIL_FROM = process.env.EMAIL_FROM ?? 'Tribux AI <noreply@aisquad.dev>'
 
 export async function sendEmail(to: string, subject: string, html: string) {
   if (!resend) return

@@ -55,7 +55,7 @@ export async function GET(
               headers: {
                 Authorization: `token ${process.env.GITHUB_TOKEN ?? ''}`,
                 Accept: 'application/vnd.github.v3+json',
-                'User-Agent': 'Tribux',
+                'User-Agent': 'Tribux AI',
               },
             },
           )

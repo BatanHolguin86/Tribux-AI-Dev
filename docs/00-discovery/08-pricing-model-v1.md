@@ -1,4 +1,4 @@
-# Modelo de Pricing v1.0 — Tribux
+# Modelo de Pricing v1.0 — Tribux AI
 
 **Fecha:** 2026-04-08
 
@@ -118,7 +118,7 @@ Los creditos se aplican al mes corriente. No se acumulan al siguiente mes.
 
 ## 5. Costos de infraestructura (por proyecto de usuario)
 
-Estos son los costos que el USUARIO de Tribux genera en las 3 plataformas master:
+Estos son los costos que el USUARIO de Tribux AI genera en las 3 plataformas master:
 
 | Servicio | Free tier | Limite free | Costo si excede |
 |----------|-----------|-------------|-----------------|
@@ -129,11 +129,11 @@ Estos son los costos que el USUARIO de Tribux genera en las 3 plataformas master
 **Costo operativo por usuario en free tier:** $0
 **Costo cuando se exceden free tiers:** ~$45-65/mes/usuario activo
 
-> Los free tiers de las 3 plataformas cubren los primeros 2-3 proyectos por usuario sin costo adicional para Tribux.
+> Los free tiers de las 3 plataformas cubren los primeros 2-3 proyectos por usuario sin costo adicional para Tribux AI.
 
 ---
 
-## 6. Costos de operacion de Tribux (la plataforma)
+## 6. Costos de operacion de Tribux AI (la plataforma)
 
 | Recurso | Costo mensual |
 |---------|--------------|
@@ -151,7 +151,7 @@ Breakeven: 1 usuario Builder ($149) cubre los costos de plataforma con margen.
 ## 7. Flujo de monetizacion
 
 ```
-Usuario usa Tribux
+Usuario usa Tribux AI
     │
     ├─ Plan mensual ($49-699) → ingreso recurrente
     │

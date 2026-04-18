@@ -1,4 +1,4 @@
-# Value Proposition Canvas — Tribux
+# Value Proposition Canvas — Tribux AI
 
 **Fecha:** 2026-03-05
 **Fase:** Phase 00 — Discovery
@@ -103,7 +103,7 @@
 ### Pain Relievers (Como alivia los dolores)
 
 
-| Dolor                             | Como Tribux lo alivia                                                                       |
+| Dolor                             | Como Tribux AI lo alivia                                                                       |
 | --------------------------------- | ------------------------------------------------------------------------------------------- |
 | No saber por donde empezar        | Phase 00 guia al usuario desde la idea hasta el primer spec estructurado                    |
 | Costo de equipo tecnico           | SaaS a fraccion del costo vs equipo humano                                                  |
@@ -119,7 +119,7 @@
 ### Gain Creators (Como genera los beneficios deseados)
 
 
-| Beneficio                        | Como Tribux lo crea                                                |
+| Beneficio                        | Como Tribux AI lo crea                                                |
 | -------------------------------- | ------------------------------------------------------------------ |
 | Control sin conocimiento tecnico | El CEO/CPO valida y aprueba cada fase en lenguaje de negocio       |
 | Velocidad                        | Paralelizacion de trabajo entre agentes especializados             |
@@ -134,7 +134,7 @@
 
 **Para** emprendedores digitales, founders no-tecnicos, product managers y consultores
 **Que** tienen clara su idea de negocio pero no saben por donde empezar a construirla tecnicamente
-**Tribux es** una plataforma de desarrollo dirigido por IA con metodologia estructurada
+**Tribux AI es** una plataforma de desarrollo dirigido por IA con metodologia estructurada
 **Que** orquesta un equipo de agentes especializados siguiendo la metodologia IA DLC, con validacion humana en cada fase
 **A diferencia de** contratar freelancers, agencias, herramientas no-code o generadores de codigo sin proceso
 **Nuestra solucion** convierte la idea clara que ya tienen en cualquier producto o solucion tecnologica real — desde interfaces simples hasta productos complejos con integraciones, soluciones IA y agentes autonomos — con velocidad, calidad y control estrategico, a una fraccion del costo de un equipo tecnico tradicional.

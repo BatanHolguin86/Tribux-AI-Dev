@@ -1,6 +1,6 @@
-# Análisis comparativo: Tribux vs metodología "Claude Code Project"
+# Análisis comparativo: Tribux AI vs metodología "Claude Code Project"
 
-**Objetivo:** Comparar la estructura actual del repositorio Tribux con la metodología de la imagen "Claude Code Project" (modular repository con CLAUDE.md, skills, hooks, docs, tools) y señalar coincidencias, diferencias y mejoras sugeridas.
+**Objetivo:** Comparar la estructura actual del repositorio Tribux AI con la metodología de la imagen "Claude Code Project" (modular repository con CLAUDE.md, skills, hooks, docs, tools) y señalar coincidencias, diferencias y mejoras sugeridas.
 
 ---
 
@@ -20,9 +20,9 @@ Contexto de IA enfocado y estructurado; skills para flujos reutilizables; hooks 
 
 ---
 
-## 2. Estructura actual de Tribux (resumida)
+## 2. Estructura actual de Tribux AI (resumida)
 
-| Elemento               | En Tribux                                                                                                                                                                                                                                                                                                                                         |
+| Elemento               | En Tribux AI                                                                                                                                                                                                                                                                                                                                         |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`CLAUDE.md`** (raíz) | ✅ Existe y es muy completo: rol de CTO Virtual, metodología IA DLC (8 fases), stack, formato KIRO, estructura de carpetas, convenciones, agentes, checklist de lanzamiento.                                                                                                                                                                        |
 | **`README.md`**        | ✅ Presente en raíz (y en `docs/README.md`).                                                                                                                                                                                                                                                                                                        |
@@ -36,9 +36,9 @@ Contexto de IA enfocado y estructurado; skills para flujos reutilizables; hooks 
 
 ## 3. Comparación lado a lado
 
-| Aspecto                              | Metodología imagen                                                        | Tribux                                                           | Valoración                                                                                                                                     |
+| Aspecto                              | Metodología imagen                                                        | Tribux AI                                                           | Valoración                                                                                                                                     |
 | ------------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Memoria / instrucciones globales** | `CLAUDE.md` enfocado y estructurado                                       | `CLAUDE.md` muy completo (IA DLC, KIRO, stack, convenciones)       | ✅ Cubierto; Tribux es más rico en proceso de producto.                                                                                      |
+| **Memoria / instrucciones globales** | `CLAUDE.md` enfocado y estructurado                                       | `CLAUDE.md` muy completo (IA DLC, KIRO, stack, convenciones)       | ✅ Cubierto; Tribux AI es más rico en proceso de producto.                                                                                      |
 | **Documentación de arquitectura**    | `docs/architecture.md`, carpeta de decisiones aparte                         | `docs/02-architecture/` y `docs/02-architecture/decisions/` (ADRs) | ✅ Equivalente o superior; decisiones bien documentadas.                                                                                       |
 | **Runbooks**                         | `docs/runbooks/`                                                          | Contenido en `docs/06-ops/` (migraciones, Sentry, etc.)            | ⚠️ Mismo propósito, distinto nombre; se podría crear `docs/runbooks/` y enlazar o mover desde 06-ops.                                          |
 | **Skills (flujos IA reutilizables)** | `.claude/skills/` con SKILL.md por flujo (code-review, refactor, release) | No existe; el rol y flujos están en `CLAUDE.md` y en reglas Cursor | ⚠️ Diferencia: no hay skills explícitas; podrían añadirse skills tipo "code-review", "release" si se usa Claude en el repo.                    |
@@ -59,7 +59,7 @@ Contexto de IA enfocado y estructurado; skills para flujos reutilizables; hooks 
   - Repositorio modular (app, lib, components, infrastructure, tests).
 
 - **Diferencias principales:**
-  - **Ecosistema:** La imagen asume flujos de **Claude** (`.claude/`, skills, hooks); Tribux usa **Cursor** y un único CLAUDE.md muy detallado, sin carpeta de skills ni hooks de Claude.
+  - **Ecosistema:** La imagen asume flujos de **Claude** (`.claude/`, skills, hooks); Tribux AI usa **Cursor** y un único CLAUDE.md muy detallado, sin carpeta de skills ni hooks de Claude.
   - **Skills:** No hay "skills" explícitas en formato SKILL.md; el equivalente son las reglas en `.cursor/rules/` y las instrucciones dentro de `CLAUDE.md`.
   - **Contexto por módulo:** No hay CLAUDE.md por submódulo en `src/`; todo el contexto está en raíz.
 
@@ -69,4 +69,4 @@ Contexto de IA enfocado y estructurado; skills para flujos reutilizables; hooks 
   3. **Contexto por módulo:** Añadir, si se desea, `src/app/api/CLAUDE.md` o `src/lib/supabase/CLAUDE.md` con instrucciones cortas para ese ámbito (APIs, persistencia), manteniendo el CLAUDE.md global como fuente principal.
   4. **Herramientas:** Opcionalmente crear `tools/` y colocar dentro `scripts/` y `prompts/` (o enlaces) para que la estructura coincida más con la imagen, sin obligar a mover todo el código de prompts fuera de `src/lib/ai/`.
 
-En conjunto, Tribux **cumple el espíritu** de la metodología (memoria clara, documentación, modularidad, scripts y prompts organizados) con una **estructura adaptada** a Next.js, Cursor y al proceso IA DLC/KIRO; las diferencias son sobre todo de nombres, ubicación de runbooks y ausencia de skills/hooks al estilo Claude.
+En conjunto, Tribux AI **cumple el espíritu** de la metodología (memoria clara, documentación, modularidad, scripts y prompts organizados) con una **estructura adaptada** a Next.js, Cursor y al proceso IA DLC/KIRO; las diferencias son sobre todo de nombres, ubicación de runbooks y ausencia de skills/hooks al estilo Claude.

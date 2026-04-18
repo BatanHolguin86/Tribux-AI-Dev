@@ -1,5 +1,5 @@
 -- ============================================================
--- PENDING MIGRATIONS — Tribux
+-- PENDING MIGRATIONS — Tribux AI
 -- ⚠️  Preferir aplicar los archivos numerados en orden desde:
 --     infrastructure/supabase/migrations/
 --     Este script puede quedar desfasado respecto a esa carpeta.

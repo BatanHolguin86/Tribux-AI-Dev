@@ -1,4 +1,4 @@
-# Sentry Setup — Tribux
+# Sentry Setup — Tribux AI
 
 ## 1. Crear proyecto en Sentry
 

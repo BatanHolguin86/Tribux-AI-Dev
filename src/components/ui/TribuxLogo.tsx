@@ -1,5 +1,5 @@
 /**
- * Tribux logo — "T" inside a circle with orbital dots.
+ * Tribux AI logo — "T" inside a circle with orbital dots.
  * Supports dark/light mode via className overrides.
  */
 
@@ -17,7 +17,7 @@ export function TribuxLogo({ size = 32, className = '' }: TribuxLogoProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      aria-label="Tribux"
+      aria-label="Tribux AI"
     >
       {/* Orbital ring */}
       <circle
@@ -69,7 +69,7 @@ export function TribuxIcon({ size = 20, className = '' }: TribuxLogoProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      aria-label="Tribux"
+      aria-label="Tribux AI"
     >
       <circle cx="16" cy="16" r="14" className="fill-[#0F2B46]" />
       <text

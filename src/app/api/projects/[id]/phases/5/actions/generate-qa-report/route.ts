@@ -130,7 +130,7 @@ export async function POST(
             await commitMultipleFiles(
               project.repo_url,
               filesToCommit,
-              'docs: add QA report (Tribux Phase 05)',
+              'docs: add QA report (Tribux AI Phase 05)',
             )
           }
 

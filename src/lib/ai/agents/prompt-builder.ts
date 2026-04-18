@@ -149,7 +149,7 @@ export function buildSuggestionsPrompt(context: FullProjectContext, agentType?: 
   const agentLine = agentType
     ? `\nAGENTE ACTIVO: ${agentType} — prioriza sugerencias relevantes para este tipo de agente.`
     : ''
-  return `ROL: Eres el asistente de Tribux. Analiza el estado del proyecto y genera 1-3 sugerencias proactivas.
+  return `ROL: Eres el asistente de Tribux AI. Analiza el estado del proyecto y genera 1-3 sugerencias proactivas.
 
 CONTEXTO DEL PROYECTO:
 - Nombre: ${context.name}

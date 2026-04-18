@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADRs)
 
-Registro de decisiones técnicas relevantes para Tribux. Cada ADR es autocontenido; el estado del producto en conjunto está en **`docs/ESTADO-DEL-PRODUCTO.md`**.
+Registro de decisiones técnicas relevantes para Tribux AI. Cada ADR es autocontenido; el estado del producto en conjunto está en **`docs/ESTADO-DEL-PRODUCTO.md`**.
 
 | ADR                                            | Tema                                                                   |
 | ---------------------------------------------- | ---------------------------------------------------------------------- |

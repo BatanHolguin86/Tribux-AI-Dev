@@ -11,8 +11,8 @@ Phase 03 requires users to manually create GitHub repos, Supabase projects, and 
 
 Implement platform-level automated setup:
 
-1. **Platform-level tokens** — Tribux holds its own GitHub org, Supabase org, and Vercel team. Users don't configure anything.
-2. **One Supabase project per Tribux project** — isolated databases, not shared schemas.
+1. **Platform-level tokens** — Tribux AI holds its own GitHub org, Supabase org, and Vercel team. Users don't configure anything.
+2. **One Supabase project per Tribux AI project** — isolated databases, not shared schemas.
 3. **SSE-based progress streaming** — the setup takes 1-3 minutes (Supabase provisioning), so progress is streamed to the client in real-time.
 4. **Partial failure recovery** — each step saves to DB immediately. Re-running skips already-configured services (idempotent).
 

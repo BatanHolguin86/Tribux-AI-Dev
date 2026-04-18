@@ -7,7 +7,7 @@ export function generateReadme(project: {
 }): string {
   return `# ${project.name}
 
-${project.description ?? 'Proyecto generado con Tribux.'}
+${project.description ?? 'Proyecto generado con Tribux AI.'}
 
 ## Tech Stack
 
@@ -55,6 +55,6 @@ ${project.vercelUrl ? `- **Vercel:** ${project.vercelUrl}` : ''}
 
 ---
 
-_Generado por [Tribux](https://tribux.com)_
+_Generado por [Tribux AI](https://tribux.com)_
 `
 }

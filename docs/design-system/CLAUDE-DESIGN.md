@@ -1,7 +1,7 @@
-# Tribux — Instrucciones de Design System
+# Tribux AI — Instrucciones de Design System
 
 ## Contexto
-Este proyecto es una plataforma SaaS B2B llamada Tribux. Permite a estrategas no-tecnicos construir productos tecnologicos end-to-end usando un equipo de agentes IA especializados, siguiendo la metodologia IA DLC de 8 fases.
+Este proyecto es una plataforma SaaS B2B llamada Tribux AI. Permite a estrategas no-tecnicos construir productos tecnologicos end-to-end usando un equipo de agentes IA especializados, siguiendo la metodologia IA DLC de 8 fases.
 
 ## Design System Obligatorio
 ANTES de crear o modificar cualquier componente visual, LEE el archivo `docs/design-system/DESIGN-SYSTEM.md` para conocer:

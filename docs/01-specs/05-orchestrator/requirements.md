@@ -9,7 +9,7 @@
 
 ## Contexto
 
-El Orquestador y los Agentes Especializados son el corazon inteligente de Tribux. Mientras Phase 00 y Phase 01 usan el orquestador en modo guiado (conversacion estructurada con output definido), este modulo expone el chat libre con el CTO Virtual y 7 agentes especializados (incluyendo Operator) que el usuario puede consultar en cualquier momento del proyecto. Cada agente tiene un system prompt diferente, conocimiento especializado y acceso al contexto completo del proyecto.
+El Orquestador y los Agentes Especializados son el corazon inteligente de Tribux AI. Mientras Phase 00 y Phase 01 usan el orquestador en modo guiado (conversacion estructurada con output definido), este modulo expone el chat libre con el CTO Virtual y 7 agentes especializados (incluyendo Operator) que el usuario puede consultar en cualquier momento del proyecto. Cada agente tiene un system prompt diferente, conocimiento especializado y acceso al contexto completo del proyecto.
 
 La experiencia debe sentirse como tener un equipo de expertos disponible 24/7 que conoce tu proyecto en profundidad — no como un chatbot generico al que hay que dar contexto cada vez.
 

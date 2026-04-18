@@ -1,9 +1,9 @@
 #!/bin/bash
-# Local development setup script for Tribux
+# Local development setup script for Tribux AI
 
 set -e
 
-echo "🚀 Setting up Tribux..."
+echo "🚀 Setting up Tribux AI..."
 
 # Check prerequisites
 command -v pnpm >/dev/null 2>&1 || { echo "❌ pnpm is required. Install with: npm install -g pnpm"; exit 1; }

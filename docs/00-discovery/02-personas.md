@@ -1,4 +1,4 @@
-# User Personas — Tribux
+# User Personas — Tribux AI
 
 **Fecha:** 2026-03-05
 **Fase:** Phase 00 — Discovery
@@ -32,7 +32,7 @@ Santiago tiene 8 anos de experiencia en consultoría de estrategia. Identificó 
 - **Velocidad:** Conseguir y alinear un equipo tecnico toma 2–3 meses antes de escribir una linea de codigo
 - **Riesgo:** Ha perdido tiempo y dinero con freelancers que abandonan proyectos a la mitad
 
-### Como usa Tribux
+### Como usa Tribux AI
 
 Llega con una idea clara del problema de negocio. Actua como CEO/CPO: valida specs, toma decisiones de producto en cada fase, aprueba antes de avanzar. No necesita entender como funciona el codigo — necesita entender que se esta construyendo y por que.
 
@@ -69,7 +69,7 @@ Valentina lidera la roadmap de producto de una empresa establecida. Tiene presup
 - **Velocidad de validacion:** Entre ideacion y primer feedback real pasan 3–6 meses
 - **Comunicacion con stakeholders:** Le cuesta mostrar progreso tangible sin demos funcionales
 
-### Como usa Tribux
+### Como usa Tribux AI
 
 Usa la plataforma para construir MVPs de features nuevas o productos adyacentes. Aprecia especialmente el formato KIRO porque le da estructura a sus PRDs y hace la comunicacion con ingenieria mas eficiente cuando eventualmente hace handoff.
 
@@ -106,9 +106,9 @@ Rodrigo tiene una consultora de 8 personas que ayuda a empresas tradicionales a 
 - **Propuesta de valor difusa:** Le cuesta diferenciar su consultora de otras cuando el desarrollo lo hace un tercero
 - **Escalabilidad limitada:** No puede tomar mas proyectos sin contratar mas gente
 
-### Como usa Tribux
+### Como usa Tribux AI
 
-Usa la plataforma como el "equipo tecnico" de su consultora. El actua como orquestador entre el cliente (que da la vision) y Tribux (que ejecuta). Le permite ofrecer desarrollo end-to-end como servicio sin el overhead de un equipo interno.
+Usa la plataforma como el "equipo tecnico" de su consultora. El actua como orquestador entre el cliente (que da la vision) y Tribux AI (que ejecuta). Le permite ofrecer desarrollo end-to-end como servicio sin el overhead de un equipo interno.
 
 ### Quote representativo
 
@@ -145,9 +145,9 @@ Camila tiene un trabajo estable pero lleva meses con una idea de negocio digital
 - **Presupuesto limitado:** Maneja sus ahorros personales ($2k–$10k) o bootstrapping; no tiene acceso a capital externo aun
 - **Soledad en el proceso:** Emprende sola o con un co-founder no-tecnico; no tiene equipo ni con quien validar decisiones tecnicas
 
-### Como usa Tribux
+### Como usa Tribux AI
 
-Es el usuario que mas se beneficia del punto de entrada de Phase 00. Llega sin claridad sobre que construir exactamente — Tribux la ayuda a definir eso primero (discovery), luego a especificarlo (KIRO) y finalmente a ejecutarlo paso a paso. La metodologia le da la estructura y confianza que necesita para dar el primer paso y no detenerse.
+Es el usuario que mas se beneficia del punto de entrada de Phase 00. Llega sin claridad sobre que construir exactamente — Tribux AI la ayuda a definir eso primero (discovery), luego a especificarlo (KIRO) y finalmente a ejecutarlo paso a paso. La metodologia le da la estructura y confianza que necesita para dar el primer paso y no detenerse.
 
 ### Quote representativo
 

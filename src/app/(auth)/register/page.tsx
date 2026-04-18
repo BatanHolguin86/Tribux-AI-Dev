@@ -70,7 +70,7 @@ export default function RegisterPage() {
       <div className="mb-8">
         <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-gray-100">Crea tu cuenta</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Empieza a construir tu producto con Tribux
+          Empieza a construir tu producto con Tribux AI
         </p>
       </div>
 

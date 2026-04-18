@@ -1,4 +1,4 @@
-# Requirements — Tribux
+# Requirements — Tribux AI
 
 ## EARS Notation (Easy Approach to Requirements Syntax)
 
