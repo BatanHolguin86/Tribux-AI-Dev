@@ -132,7 +132,7 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative ml-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-[#0A1F33] sm:ml-auto">
+      <div className="relative ml-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-[#0A1F33] sm:ml-auto" role="dialog" aria-modal="true" aria-label="Feedback">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
           <div className="flex items-center gap-2">
@@ -153,7 +153,7 @@ export function FeedbackDrawer({ onClose }: { onClose: () => void }) {
               {view === 'confirmation' && 'Enviado'}
             </h2>
           </div>
-          <button onClick={onClose} className="rounded p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
+          <button onClick={onClose} aria-label="Cerrar" className="rounded p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>

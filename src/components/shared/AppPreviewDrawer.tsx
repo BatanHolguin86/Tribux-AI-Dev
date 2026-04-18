@@ -110,7 +110,7 @@ export function AppPreviewDrawer({
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
 
           {/* Panel */}
-          <div className="relative ml-auto flex h-full w-full max-w-5xl flex-col bg-white shadow-2xl dark:bg-[#0A1F33]">
+          <div className="relative ml-auto flex h-full w-full max-w-5xl flex-col bg-white shadow-2xl dark:bg-[#0A1F33]" role="dialog" aria-modal="true">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#E2E8F0] px-4 py-3 dark:border-[#1E3A55]">
               <div className="flex items-center gap-3">
@@ -182,6 +182,7 @@ export function AppPreviewDrawer({
                 {/* Close */}
                 <button
                   onClick={() => setOpen(false)}
+                  aria-label="Cerrar preview"
                   className="rounded-md p-1.5 text-[#94A3B8] hover:bg-[#F1F5F9] hover:text-[#0F2B46] dark:hover:bg-[#0F2B46]"
                 >
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

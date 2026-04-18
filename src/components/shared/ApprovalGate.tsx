@@ -38,6 +38,7 @@ export function ApprovalGate({
         <button
           onClick={onApprove}
           disabled={isApproving || isRegenerating}
+          aria-label={`Aprobar seccion ${sectionLabel}`}
           className="flex-1 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
         >
           {isApproving ? 'Aprobando...' : 'Aprobar seccion'}

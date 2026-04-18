@@ -94,7 +94,7 @@ export function QuotaExceededModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="quota-modal-title">
       <div className="w-full max-w-lg rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-gray-700 dark:bg-gray-900">
         {/* Header */}
         <div className="flex items-start gap-3">
@@ -102,7 +102,7 @@ export function QuotaExceededModal({
             <span className="text-xl">⚡</span>
           </div>
           <div className="flex-1">
-            <h2 className="font-display text-lg font-bold text-[#0F2B46] dark:text-white">
+            <h2 id="quota-modal-title" className="font-display text-lg font-bold text-[#0F2B46] dark:text-white">
               Necesitas mas creditos de IA
             </h2>
             <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">

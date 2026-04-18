@@ -28,10 +28,12 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', children, className = '', ...props }, ref) => {
+  ({ variant = 'primary', size = 'md', children, className = '', disabled, ...props }, ref) => {
     return (
       <button
         ref={ref}
+        disabled={disabled}
+        aria-disabled={disabled ? 'true' : undefined}
         className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
         {...props}
       >

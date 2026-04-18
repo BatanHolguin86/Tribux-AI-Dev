@@ -35,7 +35,7 @@ export function PhaseProgressHeader({
           <p className="text-sm text-gray-600 dark:text-gray-400">{progressLine}</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+          <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700" role="progressbar" aria-valuenow={completedCount} aria-valuemax={totalCount}>
             <div
               className="h-1.5 rounded-full bg-[#0F2B46] transition-all dark:bg-[#0EA5A3]"
               style={{ width: `${pct}%` }}

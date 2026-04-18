@@ -293,7 +293,7 @@ describe('POST /api/auth/signout', () => {
     const res = await POST()
 
     expect(mockSignOut).toHaveBeenCalled()
-    expect(res.status).toBe(307)
+    expect(res.status).toBe(302)
     const location = res.headers.get('location')
     expect(location).toContain('/login')
   })
@@ -304,7 +304,7 @@ describe('POST /api/auth/signout', () => {
     const { POST } = await import('@/app/api/auth/signout/route')
     const res = await POST()
 
-    expect(res.status).toBe(307)
+    expect(res.status).toBe(302)
     expect(res.headers.get('location')).toContain('/login')
     // Ensure it does NOT redirect to /admin/login
     expect(res.headers.get('location')).not.toContain('/admin/login')
@@ -328,7 +328,7 @@ describe('POST /api/auth/admin-signout', () => {
     const res = await POST()
 
     expect(mockSignOut).toHaveBeenCalled()
-    expect(res.status).toBe(307)
+    expect(res.status).toBe(302)
     const location = res.headers.get('location')
     expect(location).toContain('/admin/login')
   })

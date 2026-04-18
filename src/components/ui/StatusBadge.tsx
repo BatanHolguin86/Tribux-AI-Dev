@@ -45,7 +45,7 @@ export function StatusBadge({ variant, label, className = '' }: StatusBadgeProps
   const config = BADGE_CONFIG[variant]
 
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full ${config.bg} px-3 py-1 text-xs font-medium ${config.text} ${className}`}>
+    <span role="status" className={`inline-flex items-center gap-1.5 rounded-full ${config.bg} px-3 py-1 text-xs font-medium ${config.text} ${className}`}>
       <span className={`h-1.5 w-1.5 rounded-full ${config.dot}`} />
       {label ?? config.defaultLabel}
     </span>

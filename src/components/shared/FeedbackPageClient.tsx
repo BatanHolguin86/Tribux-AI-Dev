@@ -234,6 +234,7 @@ export function FeedbackPageClient() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Describe tu feedback con el mayor detalle posible..."
                 rows={6}
+                aria-label="Mensaje de feedback"
                 className="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
               />
               {/* Image upload */}
@@ -244,6 +245,7 @@ export function FeedbackPageClient() {
                   accept="image/*"
                   multiple
                   onChange={handleImageSelect}
+                  aria-label="Adjuntar imagenes"
                   className="hidden"
                 />
                 <button
@@ -278,6 +280,7 @@ export function FeedbackPageClient() {
               <button
                 onClick={handleSubmit}
                 disabled={submitting || !subject.trim() || !message.trim()}
+                aria-label="Enviar feedback"
                 className="w-full rounded-lg bg-[#0F2B46] py-2.5 text-sm font-medium text-white hover:bg-[#0A1F33] disabled:opacity-50"
               >
                 {submitting ? 'Enviando...' : 'Enviar feedback'}
