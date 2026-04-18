@@ -56,6 +56,9 @@ export function FeedbackPageClient() {
   const [messages, setMessages] = useState<Message[]>([])
   const [reply, setReply] = useState('')
   const [sendingReply, setSendingReply] = useState(false)
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -65,6 +68,34 @@ export function FeedbackPageClient() {
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
+
+  function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []).slice(0, 3)
+    setImageFiles(files)
+    const previews = files.map((f) => URL.createObjectURL(f))
+    setImagePreviews(previews)
+  }
+
+  function removeImage(index: number) {
+    setImageFiles((prev) => prev.filter((_, i) => i !== index))
+    setImagePreviews((prev) => {
+      URL.revokeObjectURL(prev[index])
+      return prev.filter((_, i) => i !== index)
+    })
+  }
+
+  async function filesToBase64(files: File[]): Promise<string[]> {
+    return Promise.all(
+      files.map(
+        (file) =>
+          new Promise<string>((resolve) => {
+            const reader = new FileReader()
+            reader.onloadend = () => resolve(reader.result as string)
+            reader.readAsDataURL(file)
+          }),
+      ),
+    )
+  }
 
   function openTicket(ticketId: string) {
     setActiveTicketId(ticketId)
@@ -79,10 +110,11 @@ export function FeedbackPageClient() {
     if (!category || !subject.trim() || !message.trim()) return
     setSubmitting(true)
     try {
+      const imageUrls = imageFiles.length > 0 ? await filesToBase64(imageFiles) : []
       const res = await fetch('/api/user/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, subject: subject.trim(), message: message.trim(), pageUrl: '/feedback' }),
+        body: JSON.stringify({ category, subject: subject.trim(), message: message.trim(), imageUrls, pageUrl: '/feedback' }),
       })
       if (res.ok) {
         setConfirmationCategory(category)
@@ -90,6 +122,8 @@ export function FeedbackPageClient() {
         setCategory(null)
         setSubject('')
         setMessage('')
+        setImageFiles([])
+        setImagePreviews([])
         const ticketsRes = await fetch('/api/user/feedback')
         if (ticketsRes.ok) setTickets(await ticketsRes.json())
       }
@@ -202,6 +236,45 @@ export function FeedbackPageClient() {
                 rows={6}
                 className="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm dark:border-gray-700 dark:bg-[#0F2B46] dark:text-white"
               />
+              {/* Image upload */}
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={imageFiles.length >= 3}
+                  className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                  </svg>
+                  Adjuntar imagen ({imageFiles.length}/3)
+                </button>
+
+                {imagePreviews.length > 0 && (
+                  <div className="mt-2 flex gap-2">
+                    {imagePreviews.map((url, i) => (
+                      <div key={i} className="relative">
+                        <img src={url} alt={`Adjunto ${i + 1}`} className="h-16 w-16 rounded-lg border border-gray-200 object-cover dark:border-gray-700" />
+                        <button
+                          onClick={() => removeImage(i)}
+                          className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] text-white"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <button
                 onClick={handleSubmit}
                 disabled={submitting || !subject.trim() || !message.trim()}
