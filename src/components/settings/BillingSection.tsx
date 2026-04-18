@@ -4,25 +4,25 @@ import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 const PLAN_DETAILS: Record<string, { name: string; price: string; features: string[] }> = {
-  free: {
-    name: 'Free',
-    price: '$0/mes',
-    features: ['1 proyecto', 'CTO Virtual', 'Phase 00 + 01'],
-  },
   starter: {
     name: 'Starter',
-    price: '$149/mes',
-    features: ['1 proyecto', 'CTO Virtual', 'Phase 00-01'],
+    price: '$49/mes',
+    features: ['1 proyecto', 'CTO + Product Architect + UI/UX', 'Phases 00-02'],
   },
   builder: {
     name: 'Builder',
+    price: '$149/mes',
+    features: ['1 proyecto', '8 agentes', 'Phases 00-06', 'Auto-build (10 tasks)'],
+  },
+  pro: {
+    name: 'Pro',
     price: '$299/mes',
-    features: ['3 proyectos', '8 agentes', 'Phases 02-07', 'Diseño & UX (hub)'],
+    features: ['3 proyectos', '8 agentes', 'Phases 00-07', 'Auto-build ilimitado'],
   },
   agency: {
     name: 'Agency',
     price: '$699/mes',
-    features: ['10 proyectos', 'Agente Operator', 'Soporte prioritario'],
+    features: ['10 proyectos', '8 agentes', 'Multi-client', 'Soporte prioritario'],
   },
   enterprise: {
     name: 'Enterprise',
@@ -81,7 +81,7 @@ export function BillingSection({
     }
   }, [billingStatus])
 
-  const planOrder = ['free', 'starter', 'builder', 'agency', 'enterprise']
+  const planOrder = ['starter', 'builder', 'pro', 'agency', 'enterprise']
   const currentIndex = planOrder.indexOf(currentPlan)
   const statusInfo = STATUS_LABELS[subscriptionStatus] ?? STATUS_LABELS.free
   const planDetail = PLAN_DETAILS[currentPlan]

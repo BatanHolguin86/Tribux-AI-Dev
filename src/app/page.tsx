@@ -33,25 +33,33 @@ const AGENTS = [
 const PLANS = [
   {
     name: 'Starter',
-    price: '$149',
+    price: '$49',
     period: '/mes',
-    features: ['1 proyecto', 'Fases 00–04', 'CTO Virtual + 3 agentes', 'Soporte por email'],
+    features: ['1 proyecto', 'Fases 00–02 (Idea + Specs + Arquitectura)', 'CTO + Product Architect + UI/UX', 'Valida tu idea'],
     cta: 'Comenzar',
     popular: false,
   },
   {
     name: 'Builder',
-    price: '$299',
+    price: '$149',
     period: '/mes',
-    features: ['3 proyectos', 'Todas las fases (00–07)', '8 agentes IA', 'Soporte prioritario'],
+    features: ['1 proyecto', 'Fases 00–06 (Idea hasta Deploy)', '8 agentes IA', 'Auto-build (10 tasks)'],
     cta: 'Comenzar',
     popular: true,
+  },
+  {
+    name: 'Pro',
+    price: '$299',
+    period: '/mes',
+    features: ['3 proyectos', 'Todas las fases (00–07)', '8 agentes IA', 'Auto-build ilimitado'],
+    cta: 'Comenzar',
+    popular: false,
   },
   {
     name: 'Agency',
     price: '$699',
     period: '/mes',
-    features: ['10 proyectos', 'Todas las fases (00–07)', '8 agentes especializados', 'Soporte dedicado'],
+    features: ['10 proyectos', 'Todas las fases', 'Multi-client', 'Soporte prioritario'],
     cta: 'Comenzar',
     popular: false,
   },
@@ -227,7 +235,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="mt-16 grid gap-6 lg:grid-cols-3">
+          <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {PLANS.map((plan) => (
               <div
                 key={plan.name}

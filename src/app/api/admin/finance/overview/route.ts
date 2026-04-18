@@ -97,8 +97,9 @@ export async function GET(request: Request) {
   const totalCreditRevenue = Object.values(creditsByUser).reduce((s, c) => s + c.revenue, 0)
 
   const planPrice: Record<string, number> = {
-    starter: 149,
-    builder: 299,
+    starter: 49,
+    builder: 149,
+    pro: 299,
     agency: 699,
     enterprise: 0, // custom
   }

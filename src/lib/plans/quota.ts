@@ -69,7 +69,7 @@ export async function getUserQuota(userId: string): Promise<QuotaResult> {
 
   // Fallback budget if table not seeded yet
   const FALLBACK: Record<string, number> = {
-    free: 5, starter: 44.7, builder: 89.7, agency: 209.7, enterprise: 500,
+    starter: 14.70, builder: 44.70, pro: 89.70, agency: 209.70, enterprise: 500,
   }
   const baseBudgetUsd = Number(target?.monthly_ai_budget_usd ?? FALLBACK[plan] ?? 44.7)
   const effectiveBudgetUsd = baseBudgetUsd + creditsUsd

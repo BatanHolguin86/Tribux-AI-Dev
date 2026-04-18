@@ -27,7 +27,7 @@ export const AGENTS: AgentMeta[] = [
     specialty: 'Producto, priorizacion, scope, user stories',
     description:
       'Experto en producto: define alcance, prioriza features, escribe user stories y valida el product-market fit.',
-    planRequired: 'builder',
+    planRequired: 'starter',
   },
   {
     id: 'system_architect',
@@ -45,7 +45,7 @@ export const AGENTS: AgentMeta[] = [
     specialty: 'Wireframes, mockups, guias de estilo',
     description:
       'Disenador de experiencia: wireframes, mockups, guias de estilo y flujos de usuario basados en tus specs.',
-    planRequired: 'builder',
+    planRequired: 'starter',
   },
   {
     id: 'lead_developer',
@@ -93,11 +93,11 @@ agentEntries.push(['operator', { ...devops, id: 'operator' as AgentType }])
 export const AGENT_MAP: Record<AgentType, AgentMeta> = Object.fromEntries(agentEntries) as Record<AgentType, AgentMeta>
 
 const PLAN_HIERARCHY: Record<Plan, number> = {
-  free: -1,
   starter: 0,
   builder: 1,
-  agency: 2,
-  enterprise: 3,
+  pro: 2,
+  agency: 3,
+  enterprise: 4,
 }
 
 export function isAgentAccessible(agentPlan: Plan, userPlan: Plan): boolean {

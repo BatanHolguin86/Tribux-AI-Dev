@@ -1,6 +1,6 @@
 export type Persona = 'founder' | 'pm' | 'consultor' | 'emprendedor'
 
-export type Plan = 'free' | 'starter' | 'builder' | 'agency' | 'enterprise'
+export type Plan = 'starter' | 'builder' | 'pro' | 'agency' | 'enterprise'
 
 export type SubscriptionStatus = 'trialing' | 'active' | 'free' | 'canceled' | 'past_due'
 

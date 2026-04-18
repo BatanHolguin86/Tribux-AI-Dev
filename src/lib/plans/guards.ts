@@ -1,11 +1,11 @@
 import type { Plan, SubscriptionStatus } from '@/types/user'
 
 const PLAN_HIERARCHY: Record<Plan, number> = {
-  free: -1,
   starter: 0,
   builder: 1,
-  agency: 2,
-  enterprise: 3,
+  pro: 2,
+  agency: 3,
+  enterprise: 4,
 }
 
 const PLAN_TRIAL_DAYS = parseInt(process.env.PLAN_TRIAL_DAYS ?? '7', 10)
@@ -70,13 +70,22 @@ export function canAccessPhase(
     trial_ends_at: string | null
   },
 ): boolean {
-  // Phase 00 and 01 are always accessible
+  // Phase 00 and 01 are always accessible for any plan
   if (phaseNumber <= 1) return true
 
   const status = getUserPlanStatus(profile)
 
-  // Trial or paid users can access all phases
-  if (status.isTrialActive || status.isPaid) return true
+  // Trial users can access all phases
+  if (status.isTrialActive) return true
+
+  // Paid users: access depends on plan tier
+  if (status.isPaid) {
+    // Starter ($49): phases 00-02 only (discovery + specs + architecture)
+    if (profile.plan === 'starter') return phaseNumber <= 2
+
+    // Builder ($149)+: all phases
+    return true
+  }
 
   return false
 }
@@ -145,9 +154,9 @@ export function canCreateProject(
 ): boolean {
   const status = getUserPlanStatus(profile)
   const limits: Record<Plan, number> = {
-    free: 1,
     starter: 1,
-    builder: 3,
+    builder: 1,
+    pro: 3,
     agency: 10,
     enterprise: Infinity,
   }
