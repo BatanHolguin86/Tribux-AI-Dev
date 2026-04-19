@@ -35,7 +35,8 @@ type Phase03LayoutProps = {
 const phaseAgents = getPhaseAgents(3)
 
 export function Phase03Layout({ projectId, categories: initialCategories, initialMessages, initialExecutions = [], platformReady = false, existingSetup = { hasRepo: false, hasSupabase: false, hasVercel: false } }: Phase03LayoutProps) {
-  const allSetupDone = existingSetup.hasRepo && existingSetup.hasSupabase && existingSetup.hasVercel
+  // GitHub + Supabase are required; Vercel is optional (can be configured later in Phase 06)
+  const allSetupDone = existingSetup.hasRepo && existingSetup.hasSupabase
   const [categories, setCategories] = useState(initialCategories)
   const {
     actions,
@@ -51,7 +52,8 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
     (c) => c.status === 'completed' || c.status === 'approved',
   ).length
   const totalCategories = categories.length
-  const allCompleted = categories.every((c) => c.status === 'completed' || c.status === 'approved')
+  // Allow approval when setup is done (repo + DB), even if not all checklist categories are manually checked
+  const allCompleted = allSetupDone || categories.every((c) => c.status === 'completed' || c.status === 'approved')
 
   const handleItemToggle = useCallback(
     async (sectionKey: string, itemIndex: number) => {
