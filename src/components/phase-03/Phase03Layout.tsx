@@ -125,22 +125,30 @@ export function Phase03Layout({ projectId, categories: initialCategories, initia
       />
 
       {allSetupDone ? (
-        <div className="rounded-xl border-2 border-[#10B981]/30 bg-[#10B981]/5 p-6 text-center">
-          <div className="mb-3 text-4xl">✅</div>
-          <h3 className="font-display text-lg font-display font-bold text-brand-primary dark:text-white">Tu app esta lista</h3>
-          <div className="mt-4 flex justify-center gap-3">
-            {[
-              { label: 'Codigo', done: existingSetup.hasRepo },
-              { label: 'Base de datos', done: existingSetup.hasSupabase },
-              { label: 'Hosting', done: existingSetup.hasVercel },
-            ].map((item) => (
-              <span key={item.label} className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#10B981] shadow-sm dark:bg-brand-primary">
-                ✓ {item.label}
-              </span>
-            ))}
+        <>
+          <div className="rounded-xl border-2 border-[#10B981]/30 bg-[#10B981]/5 p-6 text-center">
+            <div className="mb-3 text-4xl">✅</div>
+            <h3 className="font-display text-lg font-display font-bold text-brand-primary dark:text-white">Tu app esta lista</h3>
+            <div className="mt-4 flex justify-center gap-3">
+              {[
+                { label: 'Codigo', done: existingSetup.hasRepo },
+                { label: 'Base de datos', done: existingSetup.hasSupabase },
+                { label: 'Hosting', done: existingSetup.hasVercel },
+              ].filter((item) => item.done).map((item) => (
+                <span key={item.label} className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#10B981] shadow-sm dark:bg-brand-primary">
+                  ✓ {item.label}
+                </span>
+              ))}
+            </div>
+            {!existingSetup.hasVercel && (
+              <p className="mt-3 text-xs text-amber-600">Hosting (Vercel) pendiente — puedes configurarlo despues en Phase 06.</p>
+            )}
+            <p className="mt-2 text-xs text-brand-muted">La infraestructura esta configurada. Continua a construir tu app.</p>
           </div>
-          <p className="mt-4 text-xs text-brand-muted">La infraestructura esta configurada. Continua a construir tu app.</p>
-        </div>
+          <div className="mt-4">
+            <Phase03FinalGate projectId={projectId} />
+          </div>
+        </>
       ) : (
         <OneClickSetupCard
           projectId={projectId}
