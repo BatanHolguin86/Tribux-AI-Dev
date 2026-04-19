@@ -43,6 +43,8 @@ type PlanGoldenRecord = {
   atRisk: boolean
 }
 
+type OpCostRow = { id: string; label: string; description: string; monthlyUsd: number }
+
 type OverviewResponse = {
   summary: {
     totalUsers: number
@@ -63,6 +65,7 @@ type OverviewResponse = {
   }
   users: UserRow[]
   planGoldenRecord: PlanGoldenRecord[]
+  operationalCosts?: OpCostRow[]
 }
 
 const INFRA_LABELS: Record<keyof InfraCosts, { name: string; desc: string }> = {
@@ -180,7 +183,7 @@ export function FinanceOverviewTable() {
     )
   }
 
-  const { summary, users, planGoldenRecord = [] } = data
+  const { summary, users, planGoldenRecord = [], operationalCosts: apiOpCosts = [] } = data
   const now = new Date()
   const currentMonthLabel =
     month || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
@@ -296,35 +299,26 @@ export function FinanceOverviewTable() {
                 </button>
               </div>
               <div className="space-y-3">
-                {infraEntries.map(([key, value]) => (
-                  <div key={key} className="flex items-center gap-3">
+                {apiOpCosts.map((cost) => (
+                  <div key={cost.id} className={`flex items-center gap-3 ${cost.monthlyUsd > 0 ? '' : 'opacity-40'}`}>
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-sm dark:bg-gray-800">
-                      {key === 'supabase' ? '🗄️' : key === 'vercel' ? '▲' : key === 'domain' ? '🌐' : key === 'sentry' ? '🔍' : key === 'resend' ? '✉️' : '⚙️'}
+                      {cost.id === 'supabase' ? '🗄️' : cost.id === 'vercel' ? '▲' : cost.id === 'domain' ? '🌐' : cost.id === 'sentry' ? '🔍' : cost.id === 'resend' ? '✉️' : cost.id === 'github' ? '📦' : cost.id === 'stripe' ? '💳' : cost.id === 'claude_code' ? '💻' : cost.id === 'anthropic_platform' ? '🤖' : '⚙️'}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{INFRA_LABELS[key].name}</p>
-                      <p className="text-[11px] text-gray-400">{INFRA_LABELS[key].desc}</p>
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{cost.label}</p>
+                      <p className="text-[11px] text-gray-400">{cost.description}</p>
                     </div>
-                    <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(value)}</span>
+                    <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(cost.monthlyUsd)}</span>
                   </div>
                 ))}
+                {/* IA variable cost (automatic) */}
                 <div className="flex items-center gap-3 rounded-xl bg-brand-teal/5 px-3 py-2 dark:bg-brand-primary/10">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-teal/10 text-sm">🤖</span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-brand-primary dark:text-brand-teal">IA producto</p>
-                    <p className="text-[11px] text-gray-400">Consumo de tus usuarios</p>
+                    <p className="text-[11px] text-gray-400">Consumo de tus usuarios (automatico)</p>
                   </div>
                   <span className="text-base font-bold tabular-nums text-brand-primary dark:text-brand-teal">{formatUsd(summary.totalCostCurrentMonthUsd)}</span>
-                </div>
-                <div className="flex items-center gap-3 opacity-50">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-dashed border-gray-300 text-sm dark:border-gray-600">💻</span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Desarrollo</p>
-                    <p className="text-[11px] text-gray-400">Via Claude Code</p>
-                  </div>
-                  <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="shrink-0 text-[11px] font-medium text-brand-teal hover:underline">
-                    Anthropic →
-                  </a>
                 </div>
               </div>
               {/* Inline edit form */}

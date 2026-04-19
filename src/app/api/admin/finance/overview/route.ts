@@ -135,28 +135,26 @@ export async function GET(request: Request) {
   const totalRevenue = totalPlanRevenue + totalCreditRevenue
 
   // Infrastructure costs (monthly estimates — update via env vars or here)
-  // Infrastructure costs: read from DB (operational_costs table, managed by admin)
-  // Fallback to env vars for backward compatibility, then to $0
+  // Operational costs: read from DB (managed by admin in backoffice)
   const { data: dbCosts } = await supabase
     .from('operational_costs')
-    .select('id, monthly_usd')
+    .select('id, label, description, monthly_usd')
+    .order('label')
 
-  const costFromDb = (id: string, envKey: string): number => {
-    const row = (dbCosts ?? []).find((c) => c.id === id)
-    if (row && Number(row.monthly_usd) > 0) return Number(row.monthly_usd)
-    return Number(process.env[envKey] ?? 0)
-  }
+  const operationalCosts = (dbCosts ?? []).map((c) => ({
+    id: c.id,
+    label: c.label,
+    description: c.description ?? '',
+    monthlyUsd: Number(c.monthly_usd),
+  }))
 
+  const totalInfraCost = operationalCosts.reduce((s, c) => s + c.monthlyUsd, 0)
+
+  // Legacy infraCosts object for backward compatibility
   const infraCosts = {
-    supabase: costFromDb('supabase', 'COST_SUPABASE_MONTHLY'),
-    vercel: costFromDb('vercel', 'COST_VERCEL_MONTHLY'),
-    anthropicPlatform: costFromDb('anthropic_platform', 'COST_ANTHROPIC_PLATFORM'),
-    domain: costFromDb('domain', 'COST_DOMAIN_MONTHLY'),
-    sentry: costFromDb('sentry', 'COST_SENTRY_MONTHLY'),
-    resend: costFromDb('resend', 'COST_RESEND_MONTHLY'),
-    other: costFromDb('other', 'COST_OTHER_MONTHLY'),
+    supabase: 0, vercel: 0, anthropicPlatform: 0,
+    domain: 0, sentry: 0, resend: 0, other: 0,
   }
-  const totalInfraCost = Object.values(infraCosts).reduce((s, v) => s + v, 0)
   const totalCosts = totalAiCost + totalInfraCost
   const netProfit = totalRevenue - totalCosts
 
@@ -220,5 +218,6 @@ export async function GET(request: Request) {
     summary,
     users: rows,
     planGoldenRecord,
+    operationalCosts,
   })
 }
