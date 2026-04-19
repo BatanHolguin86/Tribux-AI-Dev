@@ -10,8 +10,8 @@ import type { LanguageModel } from 'ai'
 import type { AgentType } from '@/types/agent'
 import { getDefaultModel, getDefaultModelId } from './models'
 
-/** Claude Opus — highest reasoning tier in our Anthropic pricing map (usage.ts). */
-export const ADVANCED_AGENT_MODEL_ID = 'claude-opus-4-6'
+/** Claude Sonnet — best balance of quality/cost. Switch to Opus when budget allows. */
+export const ADVANCED_AGENT_MODEL_ID = 'claude-sonnet-4-6'
 
 /** Default when an unknown agent slips through (should not happen if AgentType is exhaustive). */
 export const FALLBACK_AGENT_MODEL_ID = ADVANCED_AGENT_MODEL_ID
