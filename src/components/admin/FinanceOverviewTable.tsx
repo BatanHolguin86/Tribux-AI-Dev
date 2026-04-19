@@ -53,6 +53,14 @@ type OverviewResponse = {
     totalCostsUsd: number
     netProfitUsd: number
     infraCosts: InfraCosts
+    ownerView?: {
+      devCostMonthly: number
+      totalOwnerCosts: number
+      netProfitAfterDev: number
+      breakEvenUsers: number
+      activePayingUsers: number
+      trialUsers: number
+    }
   }
   users: UserRow[]
   planGoldenRecord: PlanGoldenRecord[]
@@ -248,6 +256,91 @@ export function FinanceOverviewTable() {
             <span className="text-lg font-display font-bold text-gray-900 dark:text-white tabular-nums">
               {formatUsd(summary.totalCostsUsd)}
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* Owner Investment Panel */}
+      {summary.ownerView && (
+        <div className="rounded-xl border-2 border-brand-primary/20 bg-gradient-to-br from-[#0F2B46]/5 to-white dark:from-[#0F2B46]/30 dark:to-gray-900 p-5">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-lg">👤</span>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                Inversion del Owner
+              </h3>
+              <p className="text-[11px] text-gray-400 dark:text-gray-500">
+                Tu costo total como fundador de Tribux (infra + producto + desarrollo)
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
+              <p className="text-[11px] font-medium text-gray-400">Infra (fijo)</p>
+              <p className="mt-1 text-lg font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(summary.totalInfraCostUsd)}</p>
+              <p className="text-[10px] text-gray-400">Supabase + Vercel + dominio</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
+              <p className="text-[11px] font-medium text-gray-400">IA producto (variable)</p>
+              <p className="mt-1 text-lg font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(summary.totalCostCurrentMonthUsd)}</p>
+              <p className="text-[10px] text-gray-400">Lo que consumen tus usuarios</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
+              <p className="text-[11px] font-medium text-gray-400">Desarrollo (Claude Code)</p>
+              <p className="mt-1 text-lg font-bold tabular-nums text-gray-900 dark:text-white">
+                {summary.ownerView.devCostMonthly > 0 ? formatUsd(summary.ownerView.devCostMonthly) : '—'}
+              </p>
+              <p className="text-[10px] text-gray-400">
+                {summary.ownerView.devCostMonthly > 0 ? 'Configura COST_DEVELOPMENT_MONTHLY' : 'Agrega COST_DEVELOPMENT_MONTHLY en Vercel'}
+              </p>
+            </div>
+            <div className="rounded-lg border border-brand-primary/30 bg-brand-primary/5 px-4 py-3 dark:border-brand-primary/50 dark:bg-brand-primary/10">
+              <p className="text-[11px] font-medium text-brand-primary dark:text-brand-teal">Total inversion</p>
+              <p className="mt-1 text-lg font-bold tabular-nums text-brand-primary dark:text-white">{formatUsd(summary.ownerView.totalOwnerCosts)}</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                Breakeven: {summary.ownerView.breakEvenUsers} usuarios Starter
+              </p>
+            </div>
+          </div>
+
+          {/* Revenue vs Investment bar */}
+          <div className="mt-4 rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-500">Revenue</span>
+              <span className="font-semibold text-brand-teal">{formatUsd(summary.totalRevenueCurrentMonthUsd)}</span>
+            </div>
+            <div className="mt-1.5 h-3 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+              {summary.ownerView.totalOwnerCosts > 0 && (
+                <div
+                  className={`h-full rounded-full transition-all duration-700 ${
+                    summary.totalRevenueCurrentMonthUsd >= summary.ownerView.totalOwnerCosts
+                      ? 'bg-emerald-500'
+                      : 'bg-amber-400'
+                  }`}
+                  style={{
+                    width: `${Math.min(100, (summary.totalRevenueCurrentMonthUsd / summary.ownerView.totalOwnerCosts) * 100)}%`,
+                  }}
+                />
+              )}
+            </div>
+            <div className="mt-1 flex items-center justify-between text-[10px] text-gray-400">
+              <span>$0</span>
+              <span>Breakeven: {formatUsd(summary.ownerView.totalOwnerCosts)}</span>
+            </div>
+            <div className="mt-2 flex items-center gap-4 text-xs">
+              <span className="flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                {summary.ownerView.activePayingUsers} pagando
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-brand-teal" />
+                {summary.ownerView.trialUsers} trial
+              </span>
+              <span className={`ml-auto font-semibold ${summary.ownerView.netProfitAfterDev >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                {summary.ownerView.netProfitAfterDev >= 0 ? 'Profit' : 'Deficit'}: {formatUsd(Math.abs(summary.ownerView.netProfitAfterDev))}
+              </span>
+            </div>
           </div>
         </div>
       )}

@@ -148,6 +148,16 @@ export async function GET(request: Request) {
   const totalCosts = totalAiCost + totalInfraCost
   const netProfit = totalRevenue - totalCosts
 
+  // Owner costs: development investment (manual via env vars)
+  const devCostMonthly = Number(process.env.COST_DEVELOPMENT_MONTHLY ?? 0)
+  const totalOwnerCosts = totalCosts + devCostMonthly
+  const netProfitAfterDev = totalRevenue - totalOwnerCosts
+
+  // Breakeven calculation
+  const starterPrice = planPrice.starter || 49
+  const avgCostPerUser = rows.length > 0 ? totalAiCost / Math.max(1, rows.filter(r => r.subscriptionStatus === 'active' || r.subscriptionStatus === 'trialing').length) : 0
+  const breakEvenUsers = totalOwnerCosts > 0 ? Math.ceil(totalOwnerCosts / (starterPrice - avgCostPerUser)) : 0
+
   const summary = {
     totalUsers: rows.length,
     totalCostCurrentMonthUsd: totalAiCost,
@@ -159,6 +169,15 @@ export async function GET(request: Request) {
     totalCostsUsd: totalCosts,
     netProfitUsd: netProfit,
     infraCosts,
+    // Owner investment view
+    ownerView: {
+      devCostMonthly,
+      totalOwnerCosts,
+      netProfitAfterDev: netProfitAfterDev,
+      breakEvenUsers,
+      activePayingUsers: rows.filter(r => r.subscriptionStatus === 'active').length,
+      trialUsers: rows.filter(r => r.subscriptionStatus === 'trialing').length,
+    },
   }
 
   // Golden Record: per-plan actual vs target cost comparison
