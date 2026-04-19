@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -15,10 +16,12 @@ function NavLink({
   href,
   icon,
   label,
+  badge,
 }: {
   href: string
   icon: React.ReactNode
   label: string
+  badge?: number
 }) {
   const pathname = usePathname()
   const active =
@@ -36,7 +39,12 @@ function NavLink({
       }`}
     >
       <span className="flex h-5 w-5 shrink-0 items-center justify-center">{icon}</span>
-      {label}
+      <span className="flex-1">{label}</span>
+      {badge !== undefined && badge > 0 && (
+        <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
+          {badge}
+        </span>
+      )}
     </Link>
   )
 }
@@ -48,6 +56,15 @@ type SidebarNavProps = {
 }
 
 export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
+  const [unreadFeedback, setUnreadFeedback] = useState(0)
+
+  useEffect(() => {
+    fetch('/api/user/feedback/unread-count')
+      .then((r) => (r.ok ? r.json() : { count: 0 }))
+      .then((d: { count: number }) => setUnreadFeedback(d.count))
+      .catch(() => null)
+  }, [])
+
   return (
     <aside className="flex h-14 w-full shrink-0 flex-col border-b border-white/10 bg-gradient-to-b from-[#0A1F33] to-[#0F2B46] md:h-screen md:w-64 md:border-b-0 md:border-r md:border-white/10 md:shadow-[var(--shadow-sidebar)]">
       <div className="flex h-14 items-center gap-2 px-5">
@@ -57,7 +74,7 @@ export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
 
       <nav className="flex min-h-0 flex-1 flex-row gap-1 overflow-x-auto px-3 py-3 md:flex-col md:space-y-1 md:overflow-y-auto md:py-4">
         <NavLink href="/dashboard" icon={<LayoutDashboard className="h-5 w-5" />} label="Mis proyectos" />
-        <NavLink href="/feedback" icon={<MessageCircle className="h-5 w-5" />} label="Feedback" />
+        <NavLink href="/feedback" icon={<MessageCircle className="h-5 w-5" />} label="Feedback" badge={unreadFeedback} />
         <NavLink href="/settings" icon={<Settings className="h-5 w-5" />} label="Configuracion" />
       </nav>
 
