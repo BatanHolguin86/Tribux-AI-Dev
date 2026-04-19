@@ -236,9 +236,27 @@ export function MarketingArtifactList() {
 
               {/* Expanded content */}
               {expandedId === artifact.id && (
-                <div className="border-t border-gray-100 px-5 py-4 dark:border-gray-800">
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown>{artifact.content}</ReactMarkdown>
+                <div className="border-t-2 border-brand-teal/20 bg-gray-50/50 px-6 py-5 dark:border-brand-teal/10 dark:bg-gray-800/30">
+                  {artifact.content?.trim() ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed">
+                      <ReactMarkdown>{artifact.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-400 italic">Sin contenido guardado</p>
+                  )}
+                  <div className="mt-4 flex items-center gap-2 border-t border-gray-200 pt-3 dark:border-gray-700">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigator.clipboard.writeText(artifact.content ?? '')
+                      }}
+                      className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+                    >
+                      📋 Copiar texto
+                    </button>
+                    <span className="text-[10px] text-gray-400">
+                      {(artifact.content ?? '').length} caracteres
+                    </span>
                   </div>
                 </div>
               )}
