@@ -127,8 +127,8 @@ export async function POST(request: Request) {
       model,
       system: systemPrompt,
       messages: allMessages,
-      maxOutputTokens: AI_CONFIG.chat.maxOutputTokens,
-      temperature: AI_CONFIG.chat.temperature,
+      maxOutputTokens: 2048,
+      temperature: 0.6,
       onFinish: async (response) => {
         const validatedText = validateAgentOutput(response.text)
 

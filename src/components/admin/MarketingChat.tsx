@@ -83,6 +83,7 @@ export function MarketingChat() {
   const [input, setInput] = useState('')
   const [loadingThreads, setLoadingThreads] = useState(true)
   const [savingArtifact, setSavingArtifact] = useState(false)
+  const [artifactSaved, setArtifactSaved] = useState(false)
 
   // Load threads
   const loadThreads = useCallback(async () => {
@@ -110,6 +111,7 @@ export function MarketingChat() {
   useEffect(() => {
     if (!activeThreadId) {
       setInitialMessages([])
+      setMessages([])
       return
     }
     setLoadingMessages(true)
@@ -117,18 +119,19 @@ export function MarketingChat() {
       .then((res) => res.json())
       .then((data) => {
         const msgs = (data.messages as Message[]) ?? []
-        setInitialMessages(
-          msgs.map((m, i) => ({
-            id: m.id ?? String(i),
-            role: m.role as 'user' | 'assistant',
-            parts: [{ type: 'text' as const, text: m.content }],
-          })),
-        )
+        const uiMsgs: UIMessage[] = msgs.map((m, i) => ({
+          id: m.id ?? String(i),
+          role: m.role as 'user' | 'assistant',
+          parts: [{ type: 'text' as const, text: m.content }],
+        }))
+        setInitialMessages(uiMsgs)
+        // Explicitly update useChat state so messages appear when switching threads
+        setMessages(uiMsgs)
         if (data.mode) setActiveMode(data.mode)
       })
-      .catch(() => setInitialMessages([]))
+      .catch(() => { setInitialMessages([]); setMessages([]) })
       .finally(() => setLoadingMessages(false))
-  }, [activeThreadId])
+  }, [activeThreadId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Chat hook — threadId + mode sent via transport body
   const { messages, sendMessage, status, stop, error, setMessages } = useChat({
@@ -231,7 +234,7 @@ export function MarketingChat() {
       }
 
       const title = content.split('\n')[0]?.replace(/^#+\s*/, '').slice(0, 100) || 'Sin titulo'
-      await fetch('/api/admin/marketing/artifacts', {
+      const res = await fetch('/api/admin/marketing/artifacts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -241,6 +244,10 @@ export function MarketingChat() {
           content,
         }),
       })
+      if (res.ok) {
+        setArtifactSaved(true)
+        setTimeout(() => setArtifactSaved(false), 3000)
+      }
     } catch {
       // silent
     } finally {
@@ -344,13 +351,25 @@ export function MarketingChat() {
           {messages.some((m) => m.role === 'assistant') && (
             <button
               onClick={() => void saveAsArtifact()}
-              disabled={savingArtifact}
-              className="ml-auto shrink-0 flex items-center gap-1.5 rounded-lg border border-brand-teal/30 px-3 py-1 text-xs font-medium text-brand-teal hover:bg-brand-teal/10 transition-colors disabled:opacity-50"
+              disabled={savingArtifact || artifactSaved}
+              className={`ml-auto shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-medium transition-colors disabled:opacity-70 ${
+                artifactSaved
+                  ? 'border border-green-300 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400'
+                  : 'border border-brand-teal/30 text-brand-teal hover:bg-brand-teal/10'
+              }`}
             >
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-              </svg>
-              {savingArtifact ? 'Guardando...' : 'Guardar artefacto'}
+              {artifactSaved ? (
+                <>✓ Guardado</>
+              ) : savingArtifact ? (
+                <>Guardando...</>
+              ) : (
+                <>
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                  </svg>
+                  Guardar artefacto
+                </>
+              )}
             </button>
           )}
         </div>
