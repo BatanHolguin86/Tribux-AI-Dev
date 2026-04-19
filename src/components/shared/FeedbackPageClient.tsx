@@ -58,13 +58,19 @@ export function FeedbackPageClient() {
   const [sendingReply, setSendingReply] = useState(false)
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [unreadTicketIds, setUnreadTicketIds] = useState<Set<string>>(new Set())
   const fileInputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    fetch('/api/user/feedback')
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data: Ticket[]) => setTickets(data))
+    Promise.all([
+      fetch('/api/user/feedback').then((r) => (r.ok ? r.json() : [])),
+      fetch('/api/user/feedback/unread-count').then((r) => (r.ok ? r.json() : { ticketIds: [] })),
+    ])
+      .then(([ticketData, unreadData]: [Ticket[], { ticketIds: string[] }]) => {
+        setTickets(ticketData)
+        setUnreadTicketIds(new Set(unreadData.ticketIds ?? []))
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
@@ -305,16 +311,31 @@ export function FeedbackPageClient() {
             tickets.map((t) => {
               const statusCfg = STATUS_LABELS[t.status] ?? STATUS_LABELS.nuevo
               const catIcon = CATEGORIES.find((c) => c.value === t.category)?.icon ?? '📝'
+              const hasUnread = unreadTicketIds.has(t.id)
               return (
                 <button
                   key={t.id}
-                  onClick={() => openTicket(t.id)}
-                  className="w-full rounded-xl border border-gray-200 bg-white p-4 text-left transition-colors hover:border-brand-teal/20 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800/50"
+                  onClick={() => {
+                    openTicket(t.id)
+                    setUnreadTicketIds((prev) => { const next = new Set(prev); next.delete(t.id); return next })
+                  }}
+                  className={`w-full rounded-xl border p-4 text-left transition-colors ${
+                    hasUnread
+                      ? 'border-brand-teal/40 bg-brand-teal/5 hover:bg-brand-teal/10 dark:border-brand-teal/30 dark:bg-brand-teal/5'
+                      : 'border-gray-200 bg-white hover:border-brand-teal/20 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800/50'
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-lg">{catIcon}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{t.subject}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{t.subject}</p>
+                        {hasUnread && (
+                          <span className="shrink-0 rounded-full bg-brand-teal px-2 py-0.5 text-[9px] font-bold text-white">
+                            Respuesta nueva
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[10px] text-gray-400">
                         {new Date(t.created_at).toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </p>

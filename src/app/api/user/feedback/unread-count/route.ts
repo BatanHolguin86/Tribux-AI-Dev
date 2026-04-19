@@ -2,12 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 
 /**
  * GET /api/user/feedback/unread-count
- * Returns count of tickets where the admin has replied but the user hasn't responded yet.
+ * Returns count and IDs of tickets where the admin has replied but the user hasn't responded yet.
  */
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return Response.json({ count: 0 })
+  if (!user) return Response.json({ count: 0, ticketIds: [] })
 
   // Get user's open tickets (not cerrado)
   const { data: tickets } = await supabase
@@ -16,7 +16,7 @@ export async function GET() {
     .eq('user_id', user.id)
     .neq('status', 'cerrado')
 
-  if (!tickets || tickets.length === 0) return Response.json({ count: 0 })
+  if (!tickets || tickets.length === 0) return Response.json({ count: 0, ticketIds: [] })
 
   // For each ticket, check if the latest message is from admin
   const ticketIds = tickets.map((t) => t.id)
@@ -36,7 +36,9 @@ export async function GET() {
     }
   }
 
-  const unreadCount = [...latestByTicket.values()].filter((type) => type === 'admin').length
+  const unreadTicketIds = [...latestByTicket.entries()]
+    .filter(([, type]) => type === 'admin')
+    .map(([id]) => id)
 
-  return Response.json({ count: unreadCount })
+  return Response.json({ count: unreadTicketIds.length, ticketIds: unreadTicketIds })
 }
