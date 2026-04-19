@@ -89,8 +89,14 @@ export async function POST(
     const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
     const featureSpecs = await getApprovedFeatureSpecs(projectId)
 
-    // Stream generation to keep connection alive on Vercel Hobby (10s timeout for non-streaming)
-    // Generate ONE artifact PER screen sequentially, streaming tokens to keep alive
+    // Clean up stale "generating" artifacts from previous failed attempts
+    await supabase
+      .from('design_artifacts')
+      .delete()
+      .eq('project_id', projectId)
+      .eq('status', 'generating')
+
+    // Stream generation to keep connection alive on Vercel Hobby
     const encoder = new TextEncoder()
     const responseStream = new ReadableStream({
       async start(controller) {
@@ -98,6 +104,20 @@ export async function POST(
 
         try {
           for (const screen of parsed.data.screens) {
+            // Skip if artifact already exists for this screen + type (avoid duplicates)
+            const { count } = await supabase
+              .from('design_artifacts')
+              .select('id', { count: 'exact', head: true })
+              .eq('project_id', projectId)
+              .eq('screen_name', screen)
+              .eq('type', parsed.data.type)
+              .in('status', ['draft', 'approved'])
+
+            if (count && count > 0) {
+              controller.enqueue(encoder.encode(`skip:${screen}\n`))
+              continue
+            }
+
             controller.enqueue(encoder.encode(`generating:${screen}\n`))
 
             const systemPrompt = buildDesignGenerationPrompt({
