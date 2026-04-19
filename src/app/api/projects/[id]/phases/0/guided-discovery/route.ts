@@ -1,4 +1,4 @@
-import { generateText } from 'ai'
+import { streamText } from 'ai'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { recordStreamUsage } from '@/lib/ai/usage'
@@ -120,67 +120,88 @@ Basate en el tipo de producto y audiencia.`,
 Basate en el problema y la solucion que describio la persona fundadora.`,
     }
 
-    // Generate all 5 sections sequentially
-    for (const section of SECTIONS) {
-      const { text, usage } = await generateText({
-        model: defaultModel,
-        system: `Eres el CTO Virtual de Tribux AI. Una persona fundadora sin conocimientos tecnicos te dio 3 respuestas simples sobre su idea de producto. Tu trabajo es generar documentacion de discovery profesional a partir de esas respuestas.
+    // Stream all 5 sections to keep connection alive on Vercel Hobby
+    const encoder = new TextEncoder()
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for (const sectionKey of SECTIONS) {
+            const result = streamText({
+              model: defaultModel,
+              system: `Eres el CTO Virtual de Tribux AI. Una persona fundadora sin conocimientos tecnicos te dio 3 respuestas simples sobre su idea de producto. Tu trabajo es generar documentacion de discovery profesional a partir de esas respuestas.
 
 Responde en espanol. Usa formato markdown con headers, listas y tablas cuando aplique. Se concreto y accionable.`,
-        prompt: `${founderInput}\n\n---\n\nTAREA:\n${sectionPrompts[section]}`,
-        maxOutputTokens: 2048,
-        temperature: AI_CONFIG.documentGeneration.temperature,
-      })
+              prompt: `${founderInput}\n\n---\n\nTAREA:\n${sectionPrompts[sectionKey]}`,
+              maxOutputTokens: 2048,
+              temperature: AI_CONFIG.documentGeneration.temperature,
+            })
 
-      // Save as document
-      await admin.from('project_documents').insert({
-        project_id: projectId,
-        phase_number: 0,
-        section,
-        document_type: section,
-        content: text,
-        storage_path: `projects/${projectId}/phase-00/${section}.md`,
-        version: 1,
-        status: 'draft',
-      })
+            let fullText = ''
+            for await (const chunk of result.textStream) {
+              controller.enqueue(encoder.encode(chunk))
+              fullText += chunk
+            }
 
-      // Save synthetic conversation
-      await admin.from('agent_conversations').upsert(
-        {
-          project_id: projectId,
-          phase_number: 0,
-          section,
-          agent_type: 'orchestrator',
-          messages: [
-            { role: 'user', content: `Mi idea: ${problem}\nPara: ${audience}\nSolucion: ${solution}`, created_at: new Date().toISOString() },
-            { role: 'assistant', content: text, created_at: new Date().toISOString() },
-          ],
-        },
-        { onConflict: 'project_id,phase_number,section,agent_type' },
-      )
+            const usageData = await result.usage
 
-      // Update section status
-      await admin.from('phase_sections').upsert(
-        {
-          project_id: projectId,
-          phase_number: 0,
-          section,
-          status: 'completed',
-        },
-        { onConflict: 'project_id,phase_number,section' },
-      )
+            // Save as document
+            await admin.from('project_documents').insert({
+              project_id: projectId,
+              phase_number: 0,
+              section: sectionKey,
+              document_type: sectionKey,
+              content: fullText,
+              storage_path: `projects/${projectId}/phase-00/${sectionKey}.md`,
+              version: 1,
+              status: 'draft',
+            })
 
-      // Record usage
-      await recordStreamUsage({
-        userId: user.id,
-        projectId,
-        eventType: 'phase00_generate',
-        model: null,
-        usage: { inputTokens: usage?.inputTokens, outputTokens: usage?.outputTokens },
-      })
-    }
+            // Save synthetic conversation
+            await admin.from('agent_conversations').upsert(
+              {
+                project_id: projectId,
+                phase_number: 0,
+                section: sectionKey,
+                agent_type: 'orchestrator',
+                messages: [
+                  { role: 'user', content: `Mi idea: ${problem}\nPara: ${audience}\nSolucion: ${solution}`, created_at: new Date().toISOString() },
+                  { role: 'assistant', content: fullText, created_at: new Date().toISOString() },
+                ],
+              },
+              { onConflict: 'project_id,phase_number,section,agent_type' },
+            )
 
-    return Response.json({ success: true })
+            // Update section status
+            await admin.from('phase_sections').upsert(
+              {
+                project_id: projectId,
+                phase_number: 0,
+                section: sectionKey,
+                status: 'completed',
+              },
+              { onConflict: 'project_id,phase_number,section' },
+            )
+
+            // Record usage
+            await recordStreamUsage({
+              userId: user.id,
+              projectId,
+              eventType: 'phase00_generate',
+              model: null,
+              usage: { inputTokens: usageData?.inputTokens, outputTokens: usageData?.outputTokens },
+            })
+          }
+        } catch (err) {
+          console.error('[guided-discovery] Stream error:', err)
+        } finally {
+          controller.close()
+        }
+      },
+    })
+
+    return new Response(stream, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
   } catch (error) {
     console.error('[guided-discovery] Error:', error)
     return Response.json({ error: 'internal_error' }, { status: 500 })

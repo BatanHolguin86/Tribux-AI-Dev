@@ -37,7 +37,8 @@ export function AutoGenerateCard({ projectId, missingCount }: AutoGenerateCardPr
         throw new Error(body.message ?? `Error ${res.status}`)
       }
 
-      const data = await res.json()
+      // Wait for stream to complete (documents save during stream)
+      await res.text()
       setProgress(100)
       setDone(true)
 

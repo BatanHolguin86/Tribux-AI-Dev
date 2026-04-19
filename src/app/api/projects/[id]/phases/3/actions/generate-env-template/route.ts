@@ -1,5 +1,5 @@
 import { streamText } from 'ai'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { defaultModel, DEFAULT_MODEL_ID, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildFullProjectContext } from '@/lib/ai/context-builder'
 import { extractCodeFiles } from '@/lib/ai/code-extractor'
@@ -39,13 +39,18 @@ export async function POST(
     const quotaBlock = await checkHeavyQuota(user.id)
     if (quotaBlock) return quotaBlock
 
-    // 2. Verify project belongs to user
-    const { data: project } = await supabase
+    // 2. Verify project belongs to user (admin client bypasses RLS)
+    const adminSupabase = await createAdminClient()
+    const { data: project, error: projectError } = await adminSupabase
       .from('projects')
       .select('id, repo_url, user_id')
       .eq('id', projectId)
       .eq('user_id', user.id)
       .single()
+
+    if (projectError) {
+      console.error('[generate-env-template] Project query error:', projectError)
+    }
 
     if (!project) {
       return Response.json(

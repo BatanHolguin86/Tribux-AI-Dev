@@ -125,6 +125,8 @@ export function KiroChat({
         return
       }
 
+      // Wait for stream to complete (document saves in onFinish)
+      await res.text()
       onDocumentGenerated()
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
@@ -184,6 +186,8 @@ export function KiroChat({
         return
       }
 
+      // Wait for stream to complete (document saves in onFinish)
+      await res.text()
       onDocumentGenerated()
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {

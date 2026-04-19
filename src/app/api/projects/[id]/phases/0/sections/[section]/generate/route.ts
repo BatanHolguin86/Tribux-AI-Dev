@@ -1,4 +1,4 @@
-import { generateText } from 'ai'
+import { streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import { buildProjectContext } from '@/lib/ai/context-builder'
@@ -66,7 +66,11 @@ export async function POST(
   const coreMessages = toCoreMessages(conversation.messages)
 
   try {
-    const { text, usage } = await generateText({
+    const docName = SECTION_DOC_NAMES[sectionKey]
+    const storagePath = `discovery/${docName}`
+    const docType = section === 'problem_statement' ? 'brief' : section
+
+    const result = streamText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
@@ -74,67 +78,63 @@ export async function POST(
         { role: 'user' as const, content: 'Genera el documento completo basado en nuestra conversacion.' },
       ],
       ...AI_CONFIG.documentGeneration,
+      onFinish: async (response) => {
+        try {
+          const text = response.text
+
+          // Upload to storage (best effort)
+          uploadDocument(projectId, storagePath, text).catch((err) => {
+            console.error('[Phase00 generate] uploadDocument failed', err)
+          })
+
+          // Save document record
+          await supabase
+            .from('project_documents')
+            .delete()
+            .eq('project_id', projectId)
+            .eq('phase_number', 0)
+            .eq('section', section)
+            .eq('document_type', docType)
+
+          await supabase
+            .from('project_documents')
+            .insert({
+              project_id: projectId,
+              phase_number: 0,
+              section,
+              document_type: docType,
+              storage_path: `projects/${projectId}/${storagePath}`,
+              content: text,
+              version: 1,
+              status: 'draft',
+            })
+
+          // Update section to completed
+          await supabase
+            .from('phase_sections')
+            .update({ status: 'completed' })
+            .eq('project_id', projectId)
+            .eq('phase_number', 0)
+            .eq('section', section)
+
+          // Record AI usage
+          const inputTokens = response.usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
+          const outputTokens = response.usage?.outputTokens ?? estimateTokensFromText(text)
+          recordAiUsage(supabase, {
+            userId: user.id,
+            projectId,
+            eventType: 'phase00_generate',
+            model: defaultModel?.toString?.() ?? undefined,
+            inputTokens,
+            outputTokens,
+          }).catch(() => {})
+        } catch (err) {
+          console.error('[Phase00 generate] onFinish error', err)
+        }
+      },
     })
 
-    const docName = SECTION_DOC_NAMES[sectionKey]
-    const storagePath = `discovery/${docName}`
-
-    // Upload to storage (best effort)
-    try {
-      await uploadDocument(projectId, storagePath, text)
-    } catch (err) {
-      console.error('[Phase00 generate] uploadDocument failed', err)
-    }
-
-    // Save document record
-    const docType = section === 'problem_statement' ? 'brief' : section
-    await supabase
-      .from('project_documents')
-      .delete()
-      .eq('project_id', projectId)
-      .eq('phase_number', 0)
-      .eq('section', section)
-      .eq('document_type', docType)
-
-    const { error: insertError } = await supabase
-      .from('project_documents')
-      .insert({
-        project_id: projectId,
-        phase_number: 0,
-        section,
-        document_type: docType,
-        storage_path: `projects/${projectId}/${storagePath}`,
-        content: text,
-        version: 1,
-        status: 'draft',
-      })
-
-    if (insertError) {
-      console.error('[Phase00 generate] insert failed', insertError.message)
-      return Response.json({ error: 'Failed to save document' }, { status: 500 })
-    }
-
-    // Update section to completed
-    await supabase
-      .from('phase_sections')
-      .update({ status: 'completed' })
-      .eq('project_id', projectId)
-      .eq('phase_number', 0)
-      .eq('section', section)
-
-    // Record AI usage (best effort)
-    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
-    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-    recordAiUsage(supabase, {
-      userId: user.id,
-      projectId,
-      eventType: 'phase00_generate',
-      model: defaultModel?.toString?.() ?? undefined,
-      inputTokens,
-      outputTokens,
-    }).catch(() => {})
-
-    return Response.json({ success: true })
+    return result.toTextStreamResponse()
   } catch (error) {
     console.error('[Phase00 generate] error', error)
     return Response.json(

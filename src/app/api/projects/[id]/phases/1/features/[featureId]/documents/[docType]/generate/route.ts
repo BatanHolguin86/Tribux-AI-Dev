@@ -1,4 +1,4 @@
-import { generateText } from 'ai'
+import { generateText, streamText } from 'ai'
 import { createAdminClient, createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
 import {
@@ -233,7 +233,7 @@ export async function POST(
   const featureSlug = slugify(feature?.name ?? featureId)
 
   try {
-    const { text: rawText, usage } = await generateText({
+    const result = streamText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
@@ -241,75 +241,76 @@ export async function POST(
         { role: 'user' as const, content: userMessage },
       ],
       ...AI_CONFIG.documentGeneration,
+      onFinish: async (response) => {
+        try {
+          const text = validateAgentOutput(response.text)
+
+          const storagePath = `specs/${featureSlug}/${docTypeKey}.md`
+          const storageFullPath = `projects/${projectId}/${storagePath}`
+
+          // Save to DB + storage in parallel
+          const [, upsertResult] = await Promise.all([
+            uploadDocument(projectId, storagePath, text).catch((err) => {
+              console.error('[Phase01 generate] uploadDocument failed', err)
+            }),
+            adminSupabase
+              .from('feature_documents')
+              .upsert(
+                {
+                  feature_id: featureId,
+                  project_id: projectId,
+                  document_type: docTypeKey,
+                  storage_path: storageFullPath,
+                  content: text,
+                  version: 1,
+                  status: 'draft',
+                },
+                { onConflict: 'feature_id,document_type' },
+              ),
+          ])
+
+          if (upsertResult.error) {
+            console.error('[Phase01 generate] feature_documents upsert failed', upsertResult.error)
+          }
+
+          // For auto-draft: create synthetic conversation
+          if (isAutoDraft) {
+            const now = new Date().toISOString()
+            await supabase
+              .from('agent_conversations')
+              .upsert(
+                {
+                  project_id: projectId,
+                  phase_number: 1,
+                  section,
+                  agent_type: 'orchestrator',
+                  messages: [
+                    { role: 'user', content: 'Genera el documento completo automaticamente.', created_at: now },
+                    { role: 'assistant', content: 'Documento generado automaticamente. Puedes pedir ajustes en este chat. [SECTION_READY]', created_at: now },
+                  ],
+                },
+                { onConflict: 'project_id,phase_number,section,agent_type' },
+              )
+          }
+
+          // Record AI usage
+          const inputTokens = response.usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
+          const outputTokens = response.usage?.outputTokens ?? estimateTokensFromText(response.text)
+          recordAiUsage(supabase, {
+            userId,
+            projectId,
+            eventType: isAutoDraft ? 'phase01_autodraft' : 'phase01_generate',
+            model: defaultModel?.toString?.() ?? undefined,
+            inputTokens,
+            outputTokens,
+          }).catch(() => {})
+        } catch (err) {
+          console.error('[Phase01 generate] onFinish error', err)
+        }
+      },
     })
 
-    const text = validateAgentOutput(rawText)
-
-    const storagePath = `specs/${featureSlug}/${docTypeKey}.md`
-    const storageFullPath = `projects/${projectId}/${storagePath}`
-
-    // Save to DB + storage in parallel
-    const [, upsertResult] = await Promise.all([
-      // Upload to storage (best effort)
-      uploadDocument(projectId, storagePath, text).catch((err) => {
-        console.error('[Phase01 generate] uploadDocument failed', err)
-      }),
-      // Save to DB (critical)
-      adminSupabase
-        .from('feature_documents')
-        .upsert(
-          {
-            feature_id: featureId,
-            project_id: projectId,
-            document_type: docTypeKey,
-            storage_path: storageFullPath,
-            content: text,
-            version: 1,
-            status: 'draft',
-          },
-          { onConflict: 'feature_id,document_type' },
-        ),
-    ])
-
-    if (upsertResult.error) {
-      console.error('[Phase01 generate] feature_documents upsert failed', upsertResult.error)
-      return Response.json({ error: 'Failed to save document' }, { status: 500 })
-    }
-
-    // For auto-draft: create synthetic conversation (fire and forget)
-    if (isAutoDraft) {
-      const now = new Date().toISOString()
-      supabase
-        .from('agent_conversations')
-        .upsert(
-          {
-            project_id: projectId,
-            phase_number: 1,
-            section,
-            agent_type: 'orchestrator',
-            messages: [
-              { role: 'user', content: 'Genera el documento completo automaticamente.', created_at: now },
-              { role: 'assistant', content: 'Documento generado automaticamente. Puedes pedir ajustes en este chat. [SECTION_READY]', created_at: now },
-            ],
-          },
-          { onConflict: 'project_id,phase_number,section,agent_type' },
-        )
-        .then(() => {})
-    }
-
-    // Record AI usage (fire and forget)
-    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
-    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-    recordAiUsage(supabase, {
-      userId,
-      projectId,
-      eventType: isAutoDraft ? 'phase01_autodraft' : 'phase01_generate',
-      model: defaultModel?.toString?.() ?? undefined,
-      inputTokens,
-      outputTokens,
-    }).catch(() => {})
-
-    return Response.json({ success: true })
+    return result.toTextStreamResponse()
   } catch (error) {
     console.error('[Phase01 generate] error', error)
     return Response.json(

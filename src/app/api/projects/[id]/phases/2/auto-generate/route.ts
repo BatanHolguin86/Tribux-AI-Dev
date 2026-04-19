@@ -1,4 +1,4 @@
-import { generateText } from 'ai'
+import { streamText } from 'ai'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
@@ -52,66 +52,81 @@ export async function POST(
   const context = await buildPhase02Context(projectId)
   const results: Array<{ section: string; success: boolean }> = []
 
-  for (const sectionKey of sectionsToGenerate) {
-    try {
-      const systemPrompt = buildDocumentGenerationPrompt(sectionKey as Phase02Section, context)
+  // Stream all documents to keep connection alive on Vercel Hobby
+  const encoder = new TextEncoder()
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        for (const sectionKey of sectionsToGenerate) {
+          try {
+            const systemPrompt = buildDocumentGenerationPrompt(sectionKey as Phase02Section, context)
 
-      const { text, usage } = await generateText({
-        model: defaultModel,
-        system: systemPrompt,
-        prompt: `Genera el documento completo de ${sectionKey.replace(/_/g, ' ')} para este proyecto. Basate en el Discovery aprobado y los specs KIRO. No necesitas conversacion previa — genera directamente el documento completo.`,
-        ...AI_CONFIG.documentGeneration,
-      })
+            const result = streamText({
+              model: defaultModel,
+              system: systemPrompt,
+              prompt: `Genera el documento completo de ${sectionKey.replace(/_/g, ' ')} para este proyecto. Basate en el Discovery aprobado y los specs KIRO. No necesitas conversacion previa — genera directamente el documento completo.`,
+              ...AI_CONFIG.documentGeneration,
+            })
 
-      const docName = SECTION_DOC_NAMES[sectionKey as Phase02Section]
+            let fullText = ''
+            for await (const chunk of result.textStream) {
+              controller.enqueue(encoder.encode(chunk))
+              fullText += chunk
+            }
 
-      // Save document
-      await adminClient.from('project_documents').insert({
-        project_id: projectId,
-        phase_number: 2,
-        section: sectionKey,
-        document_type: sectionKey,
-        storage_path: `projects/${projectId}/architecture/${docName}`,
-        content: text,
-        version: 1,
-        status: 'approved',
-        approved_at: new Date().toISOString(),
-      })
+            const usageData = await result.usage
+            const docName = SECTION_DOC_NAMES[sectionKey as Phase02Section]
 
-      // Update phase section
-      await adminClient.from('phase_sections').upsert(
-        {
-          project_id: projectId,
-          phase_number: 2,
-          section: sectionKey,
-          status: 'approved',
-          approved_at: new Date().toISOString(),
-        },
-        { onConflict: 'project_id,phase_number,section' },
-      )
+            // Save document
+            await adminClient.from('project_documents').insert({
+              project_id: projectId,
+              phase_number: 2,
+              section: sectionKey,
+              document_type: sectionKey,
+              storage_path: `projects/${projectId}/architecture/${docName}`,
+              content: fullText,
+              version: 1,
+              status: 'approved',
+              approved_at: new Date().toISOString(),
+            })
 
-      // Record usage
-      const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
-      const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-      recordAiUsage(supabase, {
-        userId: user.id,
-        projectId,
-        eventType: 'phase02_generate',
-        model: defaultModel?.toString?.() ?? undefined,
-        inputTokens,
-        outputTokens,
-      }).catch(() => {})
+            // Update phase section
+            await adminClient.from('phase_sections').upsert(
+              {
+                project_id: projectId,
+                phase_number: 2,
+                section: sectionKey,
+                status: 'approved',
+                approved_at: new Date().toISOString(),
+              },
+              { onConflict: 'project_id,phase_number,section' },
+            )
 
-      results.push({ section: sectionKey, success: true })
-    } catch (err) {
-      console.error(`[auto-generate] Failed for ${sectionKey}:`, err)
-      results.push({ section: sectionKey, success: false })
-    }
-  }
+            // Record usage
+            const inputTokens = usageData?.inputTokens ?? estimateTokensFromText(systemPrompt)
+            const outputTokens = usageData?.outputTokens ?? estimateTokensFromText(fullText)
+            recordAiUsage(supabase, {
+              userId: user.id,
+              projectId,
+              eventType: 'phase02_generate',
+              model: defaultModel?.toString?.() ?? undefined,
+              inputTokens,
+              outputTokens,
+            }).catch(() => {})
 
-  return Response.json({
-    generated: results.filter((r) => r.success).length,
-    total: sectionsToGenerate.length,
-    results,
+            results.push({ section: sectionKey, success: true })
+          } catch (err) {
+            console.error(`[auto-generate] Failed for ${sectionKey}:`, err)
+            results.push({ section: sectionKey, success: false })
+          }
+        }
+      } finally {
+        controller.close()
+      }
+    },
+  })
+
+  return new Response(stream, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   })
 }

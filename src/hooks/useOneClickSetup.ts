@@ -50,7 +50,7 @@ export function useOneClickSetup(projectId: string) {
         setState((prev) => ({
           ...prev,
           isRunning: false,
-          error: body.message ?? 'Error al iniciar setup',
+          error: body.message ?? body.error ?? `Error ${res.status}`,
         }))
         return
       }

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { slugifyProjectName, createRepository } from '@/lib/platform/github'
 import {
   createProject as createSupabaseProject,
@@ -49,7 +49,9 @@ export async function POST(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new Response('Unauthorized', { status: 401 })
 
-  const { data: project } = await supabase
+  // Use admin client for project query to bypass RLS (user already verified above)
+  const adminSupabase = await createAdminClient()
+  const { data: project, error: projectError } = await adminSupabase
     .from('projects')
     .select('id, name, repo_url, supabase_project_ref, vercel_project_id, user_id')
     .eq('id', projectId)
@@ -57,7 +59,11 @@ export async function POST(
     .single()
 
   if (!project) {
-    return Response.json({ error: 'not_found' }, { status: 404 })
+    console.error('[one-click-setup] Project query failed', { projectId, userId: user.id, error: projectError })
+    return Response.json(
+      { error: 'not_found', message: projectError?.message ?? 'Proyecto no encontrado' },
+      { status: 404 },
+    )
   }
 
   // Check if already fully configured

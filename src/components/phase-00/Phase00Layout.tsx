@@ -61,6 +61,8 @@ export function Phase00Layout({
         body: JSON.stringify(answers),
       })
       if (res.ok) {
+        // Wait for stream to complete (documents save during stream)
+        await res.text()
         setShowWizard(false)
         router.refresh()
       }

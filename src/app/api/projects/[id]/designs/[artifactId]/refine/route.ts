@@ -1,4 +1,4 @@
-import { generateText } from 'ai'
+import { streamText } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
@@ -92,63 +92,69 @@ export async function POST(
       .update({ status: 'generating' })
       .eq('id', artifactId)
 
-    // Generate refined design using generateText (not streamText)
-    const { text: rawText, usage } = await generateText({
+    const storagePath = artifact.storage_path || `projects/${projectId}/designs/${artifactId}.html`
+    const instruction = parsed.data.instruction
+
+    const result = streamText({
       model: defaultModel,
       system: systemPrompt,
       messages: [
         {
           role: 'user',
-          content: parsed.data.instruction,
+          content: instruction,
         },
       ],
       ...AI_CONFIG.designPrompts,
+      onFinish: async (response) => {
+        try {
+          // Clean up markdown fences if AI wrapped the HTML
+          let text = response.text.trim()
+          if (text.startsWith('```')) {
+            text = text.replace(/^```(?:html)?\s*\n?/, '').replace(/\n?```\s*$/, '')
+          }
+
+          // Upload to storage (best effort)
+          try {
+            const blob = new Blob([text], { type: 'text/html' })
+            await supabase.storage
+              .from('project-designs')
+              .upload(storagePath, blob, {
+                contentType: 'text/html',
+                upsert: true,
+              })
+          } catch (err) {
+            console.error('[Design refine] Storage upload failed', err)
+          }
+
+          // Save content in DB (reliable)
+          await supabase
+            .from('design_artifacts')
+            .update({
+              storage_path: storagePath,
+              status: 'draft',
+              content: text,
+              prompt_used: instruction.slice(0, 2000),
+            })
+            .eq('id', artifactId)
+
+          // Record AI usage
+          const inputTokens = response.usage?.inputTokens ?? estimateTokensFromText(systemPrompt + instruction)
+          const outputTokens = response.usage?.outputTokens ?? estimateTokensFromText(text)
+          recordAiUsage(supabase, {
+            userId: user.id,
+            projectId,
+            eventType: 'design_refine',
+            model: defaultModel?.toString?.() ?? undefined,
+            inputTokens,
+            outputTokens,
+          }).catch(() => {})
+        } catch (err) {
+          console.error('[Design refine] onFinish error', err)
+        }
+      },
     })
 
-    // Clean up markdown fences if AI wrapped the HTML
-    let text = rawText.trim()
-    if (text.startsWith('```')) {
-      text = text.replace(/^```(?:html)?\s*\n?/, '').replace(/\n?```\s*$/, '')
-    }
-
-    // Upload to storage (best effort)
-    const storagePath = artifact.storage_path || `projects/${projectId}/designs/${artifactId}.html`
-    try {
-      const blob = new Blob([text], { type: 'text/html' })
-      await supabase.storage
-        .from('project-designs')
-        .upload(storagePath, blob, {
-          contentType: 'text/html',
-          upsert: true,
-        })
-    } catch (err) {
-      console.error('[Design refine] Storage upload failed', err)
-    }
-
-    // Save content in DB (reliable)
-    await supabase
-      .from('design_artifacts')
-      .update({
-        storage_path: storagePath,
-        status: 'draft',
-        content: text,
-        prompt_used: parsed.data.instruction.slice(0, 2000),
-      })
-      .eq('id', artifactId)
-
-    // Record AI usage
-    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt + parsed.data.instruction)
-    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-    recordAiUsage(supabase, {
-      userId: user.id,
-      projectId,
-      eventType: 'design_refine',
-      model: defaultModel?.toString?.() ?? undefined,
-      inputTokens,
-      outputTokens,
-    }).catch(() => {})
-
-    return Response.json({ success: true, artifactId })
+    return result.toTextStreamResponse()
   } catch (error) {
     console.error('[Design refine] Error', error)
     return NextResponse.json({ error: 'Error al refinar diseno' }, { status: 500 })
