@@ -89,91 +89,100 @@ export async function POST(
     const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
     const featureSpecs = await getApprovedFeatureSpecs(projectId)
 
-    const systemPrompt = buildDesignGenerationPrompt({
-      projectName: project.name,
-      screens: parsed.data.screens,
-      type: parsed.data.type,
-      featureSpecs,
-      discoveryDocs,
-      refinement: parsed.data.refinement,
-    })
+    // Generate ONE artifact PER screen (avoids token limit cutting off multi-screen designs)
+    const results: Array<{ screen: string; artifactId: string; success: boolean }> = []
 
-    // Create artifact record with 'generating' status
-    const { data: artifact, error: insertError } = await supabase
-      .from('design_artifacts')
-      .insert({
-        project_id: projectId,
+    for (const screen of parsed.data.screens) {
+      const systemPrompt = buildDesignGenerationPrompt({
+        projectName: project.name,
+        screens: [screen],
         type: parsed.data.type,
-        screen_name: parsed.data.screens.join(', '),
-        status: 'generating',
-        prompt_used: systemPrompt.slice(0, 2000),
-        storage_path: '',
-        mime_type: 'text/markdown',
+        featureSpecs,
+        discoveryDocs,
+        refinement: parsed.data.refinement,
       })
-      .select('id')
-      .single()
 
-    if (insertError) {
-      console.error('[Design generate] Insert error', insertError)
-      return NextResponse.json({ error: 'Error al crear artefacto' }, { status: 500 })
-    }
-
-    // Generate design using generateText (not streamText) to ensure completion
-    const { text: rawText, usage } = await generateText({
-      model: defaultModel,
-      system: systemPrompt,
-      messages: [
-        {
-          role: 'user',
-          content: `Genera el HTML visual para las pantallas: ${parsed.data.screens.join(', ')}. Recuerda: responde SOLO con HTML, sin markdown.`,
-        },
-      ],
-      ...AI_CONFIG.designPrompts,
-    })
-
-    // Clean up: strip markdown code fences if AI wrapped the HTML
-    let text = rawText.trim()
-    if (text.startsWith('```')) {
-      text = text.replace(/^```(?:html)?\s*\n?/, '').replace(/\n?```\s*$/, '')
-    }
-
-    // Upload to storage (best effort — bucket may not exist)
-    const storagePath = `projects/${projectId}/designs/${artifact.id}.html`
-    try {
-      const blob = new Blob([text], { type: 'text/html' })
-      await supabase.storage
-        .from('project-designs')
-        .upload(storagePath, blob, {
-          contentType: 'text/html',
-          upsert: true,
+      // Create artifact record
+      const { data: artifact, error: insertError } = await supabase
+        .from('design_artifacts')
+        .insert({
+          project_id: projectId,
+          type: parsed.data.type,
+          screen_name: screen,
+          status: 'generating',
+          prompt_used: systemPrompt.slice(0, 2000),
+          storage_path: '',
+          mime_type: 'text/markdown',
         })
-    } catch (err) {
-      console.error('[Design generate] Storage upload failed (bucket may not exist)', err)
+        .select('id')
+        .single()
+
+      if (insertError || !artifact) {
+        console.error('[Design generate] Insert error for', screen, insertError)
+        results.push({ screen, artifactId: '', success: false })
+        continue
+      }
+
+      try {
+        const { text: rawText, usage } = await generateText({
+          model: defaultModel,
+          system: systemPrompt,
+          messages: [
+            {
+              role: 'user',
+              content: `Genera el HTML visual para la pantalla: ${screen}. Responde SOLO con HTML completo, sin markdown.`,
+            },
+          ],
+          ...AI_CONFIG.designPrompts,
+        })
+
+        let text = rawText.trim()
+        if (text.startsWith('```')) {
+          text = text.replace(/^```(?:html)?\s*\n?/, '').replace(/\n?```\s*$/, '')
+        }
+
+        // Upload to storage (best effort)
+        const storagePath = `projects/${projectId}/designs/${artifact.id}.html`
+        try {
+          const blob = new Blob([text], { type: 'text/html' })
+          await supabase.storage
+            .from('project-designs')
+            .upload(storagePath, blob, { contentType: 'text/html', upsert: true })
+        } catch (err) {
+          console.error('[Design generate] Storage upload failed', err)
+        }
+
+        await supabase
+          .from('design_artifacts')
+          .update({ storage_path: storagePath, status: 'draft', content: text })
+          .eq('id', artifact.id)
+
+        // Record usage
+        const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
+        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
+        recordAiUsage(supabase, {
+          userId: user.id,
+          projectId,
+          eventType: 'design_generate',
+          model: defaultModel?.toString?.() ?? undefined,
+          inputTokens,
+          outputTokens,
+        }).catch(() => {})
+
+        results.push({ screen, artifactId: artifact.id, success: true })
+      } catch (err) {
+        console.error('[Design generate] Generation failed for', screen, err)
+        await supabase.from('design_artifacts').update({ status: 'draft' }).eq('id', artifact.id)
+        results.push({ screen, artifactId: artifact.id, success: false })
+      }
     }
 
-    // Save content in DB (reliable) and update status
-    await supabase
-      .from('design_artifacts')
-      .update({
-        storage_path: storagePath,
-        status: 'draft',
-        content: text,
-      })
-      .eq('id', artifact.id)
-
-    // Record AI usage for financial backoffice
-    const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
-    const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-    recordAiUsage(supabase, {
-      userId: user.id,
-      projectId,
-      eventType: 'design_generate',
-      model: defaultModel?.toString?.() ?? undefined,
-      inputTokens,
-      outputTokens,
-    }).catch(() => {})
-
-    return Response.json({ success: true, artifactId: artifact.id })
+    return Response.json({
+      success: results.some((r) => r.success),
+      generated: results.filter((r) => r.success).length,
+      total: parsed.data.screens.length,
+      results,
+    })
   } catch (error) {
     console.error('[Design generate] Error', error)
     return NextResponse.json(
