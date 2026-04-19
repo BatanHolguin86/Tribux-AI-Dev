@@ -15,30 +15,31 @@ export async function GET(request: Request) {
 
   const supabase = await createClient()
   const { searchParams } = new URL(request.url)
-  const month = searchParams.get('month') // optional: YYYY-MM
-  const rangeMonths = Math.min(12, Math.max(1, parseInt(searchParams.get('months') ?? '1')))
+  const fromParam = searchParams.get('from') // YYYY-MM
+  const toParam = searchParams.get('to')     // YYYY-MM
 
   const now = new Date()
-  // End date: end of the specified month (or current month)
-  const endMonthStart = month
-    ? `${month}-01`
-    : `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-  const currentMonthEndDate = new Date(endMonthStart)
-  currentMonthEndDate.setMonth(currentMonthEndDate.getMonth() + 1)
-  const currentMonthEnd = currentMonthEndDate.toISOString().slice(0, 10) + 'T00:00:00Z'
+  const nowMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
 
-  // Start date: go back N months
-  const startDate = new Date(endMonthStart)
-  startDate.setMonth(startDate.getMonth() - (rangeMonths - 1))
-  const currentMonthStart = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-01`
+  // Period: from → to (inclusive)
+  const periodFrom = fromParam || nowMonth
+  const periodTo = toParam || nowMonth
+  const currentMonthStart = `${periodFrom}-01`
+  const endMonthDate = new Date(`${periodTo}-01`)
+  endMonthDate.setMonth(endMonthDate.getMonth() + 1)
+  const currentMonthEnd = endMonthDate.toISOString().slice(0, 10) + 'T00:00:00Z'
+
+  // Calculate number of months in range
+  const fromDate = new Date(currentMonthStart)
+  const toDate = new Date(`${periodTo}-01`)
+  const rangeMonths = Math.max(1, (toDate.getFullYear() - fromDate.getFullYear()) * 12 + toDate.getMonth() - fromDate.getMonth() + 1)
 
   // Previous period (same length, before start)
-  const prevEndDate = new Date(currentMonthStart)
   const prevStartDate = new Date(currentMonthStart)
   prevStartDate.setMonth(prevStartDate.getMonth() - rangeMonths)
   const prevMonthStart = `${prevStartDate.getFullYear()}-${String(prevStartDate.getMonth() + 1).padStart(2, '0')}-01`
 
-  const currentMonthStr = currentMonthStart.slice(0, 7)
+  const currentMonthStr = periodFrom
 
   const [profilesRes, usageCurrentRes, usagePrevRes, costTargetsRes, creditsRes] = await Promise.all([
     supabase
@@ -61,8 +62,8 @@ export async function GET(request: Request) {
     supabase
       .from('credit_purchases')
       .select('user_id, amount_usd, price_usd')
-      .gte('month', currentMonthStart.slice(0, 7))
-      .lte('month', endMonthStart.slice(0, 7))
+      .gte('month', periodFrom)
+      .lte('month', periodTo)
       .eq('status', 'completed'),
   ])
 
@@ -186,8 +187,8 @@ export async function GET(request: Request) {
     netProfitUsd: netProfit,
     infraCosts,
     rangeMonths,
-    periodStart: currentMonthStart.slice(0, 7),
-    periodEnd: endMonthStart.slice(0, 7),
+    periodStart: periodFrom,
+    periodEnd: periodTo,
     ownerView: {
       breakEvenUsers,
       activePayingUsers: rows.filter(r => r.subscriptionStatus === 'active').length,

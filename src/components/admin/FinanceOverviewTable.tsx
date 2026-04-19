@@ -131,8 +131,8 @@ export function FinanceOverviewTable() {
   const [data, setData] = useState<OverviewResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [month, setMonth] = useState<string>('')
-  const [rangeMonths, setRangeMonths] = useState<number>(1)
+  const [fromMonth, setFromMonth] = useState<string>('')
+  const [toMonth, setToMonth] = useState<string>('')
   const [editingCosts, setEditingCosts] = useState(false)
   const [opCosts, setOpCosts] = useState<OperationalCost[]>([])
   const [savingCost, setSavingCost] = useState<string | null>(null)
@@ -141,8 +141,8 @@ export function FinanceOverviewTable() {
     queueMicrotask(() => {
       setLoading(true)
       const params = new URLSearchParams()
-      if (month) params.set('month', month)
-      if (rangeMonths > 1) params.set('months', String(rangeMonths))
+      if (fromMonth) params.set('from', fromMonth)
+      if (toMonth) params.set('to', toMonth)
       const qs = params.toString() ? `?${params.toString()}` : ''
       fetch(`/api/admin/finance/overview${qs}`)
         .then((res) => {
@@ -153,7 +153,7 @@ export function FinanceOverviewTable() {
         .catch((e) => setError(e.message))
         .finally(() => setLoading(false))
     })
-  }, [month, rangeMonths])
+  }, [fromMonth, toMonth])
 
   async function loadOpCosts() {
     const res = await fetch('/api/admin/finance/costs')
@@ -169,8 +169,10 @@ export function FinanceOverviewTable() {
     })
     setSavingCost(null)
     // Refresh overview to reflect new costs
-    const params = month ? `?month=${encodeURIComponent(month)}` : ''
-    const res = await fetch(`/api/admin/finance/overview${params}`)
+    const p = new URLSearchParams()
+    if (fromMonth) p.set('from', fromMonth)
+    if (toMonth) p.set('to', toMonth)
+    const res = await fetch(`/api/admin/finance/overview${p.toString() ? `?${p.toString()}` : ''}`)
     if (res.ok) setData(await res.json())
   }
 
@@ -206,18 +208,19 @@ export function FinanceOverviewTable() {
   return (
     <div className="space-y-6">
       {/* Period selector */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-3">
+        {/* Presets */}
         {[
-          { label: 'Este mes', value: 1 },
-          { label: '3 meses', value: 3 },
-          { label: '6 meses', value: 6 },
-          { label: '12 meses', value: 12 },
+          { label: 'Este mes', from: '', to: '' },
+          { label: '3 meses', from: (() => { const d = new Date(); d.setMonth(d.getMonth() - 2); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` })(), to: '' },
+          { label: '6 meses', from: (() => { const d = new Date(); d.setMonth(d.getMonth() - 5); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` })(), to: '' },
+          { label: 'Todo', from: '2026-01', to: '' },
         ].map((opt) => (
           <button
-            key={opt.value}
-            onClick={() => { setRangeMonths(opt.value); setMonth('') }}
+            key={opt.label}
+            onClick={() => { setFromMonth(opt.from); setToMonth(opt.to) }}
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-              rangeMonths === opt.value && !month
+              fromMonth === opt.from && toMonth === opt.to
                 ? 'bg-brand-primary text-white'
                 : 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400'
             }`}
@@ -225,12 +228,24 @@ export function FinanceOverviewTable() {
             {opt.label}
           </button>
         ))}
-        <input
-          type="month"
-          value={month}
-          onChange={(e) => { setMonth(e.target.value || ''); setRangeMonths(1) }}
-          className="ml-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-        />
+
+        {/* Custom range */}
+        <div className="flex items-center gap-1.5 ml-2">
+          <span className="text-[10px] text-gray-400">Desde</span>
+          <input
+            type="month"
+            value={fromMonth}
+            onChange={(e) => setFromMonth(e.target.value || '')}
+            className="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+          />
+          <span className="text-[10px] text-gray-400">Hasta</span>
+          <input
+            type="month"
+            value={toMonth || new Date().toISOString().slice(0, 7)}
+            onChange={(e) => setToMonth(e.target.value || '')}
+            className="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+          />
+        </div>
       </div>
 
       {/* KPI cards */}
