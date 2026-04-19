@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const body = await request.json()
 
     // Support both direct { threadId, message } and useChat format { messages: [...] }
-    const threadId: string = body.threadId ?? ''
+    let threadId: string = body.threadId ?? ''
     let message: string = body.message ?? ''
     const mode: string = body.mode ?? 'brand'
 
@@ -40,18 +40,35 @@ export async function POST(request: Request) {
       }
     }
 
-    if (!threadId || !message?.trim()) {
+    if (!message?.trim()) {
       return NextResponse.json(
-        { error: 'invalid_request', message: 'Se requiere threadId y message.' },
+        { error: 'invalid_request', message: 'Se requiere un mensaje.' },
         { status: 400 },
       )
+    }
+
+    const supabase = await createClient()
+
+    // Auto-create thread if not provided
+    if (!threadId) {
+      const { data: newThread, error: threadError } = await supabase
+        .from('marketing_chat_threads')
+        .insert({ mode })
+        .select('id')
+        .single()
+
+      if (threadError || !newThread) {
+        return NextResponse.json(
+          { error: 'db_error', message: 'No se pudo crear la conversacion.' },
+          { status: 500 },
+        )
+      }
+      threadId = newThread.id
     }
 
     const activeMode: MarketingMode = VALID_MODES.has(mode as MarketingMode)
       ? (mode as MarketingMode)
       : 'brand'
-
-    const supabase = await createClient()
 
     // Fetch existing messages for this thread
     const { data: existingMessages, error: msgError } = await supabase

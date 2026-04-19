@@ -83,9 +83,6 @@ export function MarketingChat() {
   const [input, setInput] = useState('')
   const [loadingThreads, setLoadingThreads] = useState(true)
   const [savingArtifact, setSavingArtifact] = useState(false)
-  const [pendingMessage, setPendingMessage] = useState<string | null>(null)
-  const threadIdRef = useRef<string | null>(null)
-  threadIdRef.current = activeThreadId
 
   // Load threads
   const loadThreads = useCallback(async () => {
@@ -133,20 +130,12 @@ export function MarketingChat() {
       .finally(() => setLoadingMessages(false))
   }, [activeThreadId])
 
-  // Chat hook — custom fetch injects latest threadId from ref (avoids stale closure)
-  const modeRef = useRef<MarketingMode>(activeMode)
-  modeRef.current = activeMode
-
+  // Chat hook — threadId + mode sent via transport body
   const { messages, sendMessage, status, stop, error, setMessages } = useChat({
     id: activeThreadId ?? 'new',
     transport: new DefaultChatTransport({
       api: '/api/admin/marketing/chat',
-      fetch: async (url: string | URL | Request, init?: RequestInit) => {
-        const body = JSON.parse((init?.body as string) ?? '{}')
-        body.threadId = threadIdRef.current
-        body.mode = modeRef.current
-        return globalThis.fetch(url, { ...init, body: JSON.stringify(body) })
-      },
+      body: { threadId: activeThreadId, mode: activeMode },
     }),
     messages: initialMessages,
     onFinish() {
@@ -201,26 +190,22 @@ export function MarketingChat() {
   async function onSubmit() {
     if (!input.trim()) return
 
+    // If no thread exists, create one first so the transport body has the threadId.
+    // The API also auto-creates if threadId is empty, but having it avoids the error banner.
     if (!activeThreadId) {
-      // Create thread first, then queue the message for after re-render
       const threadId = await createThread()
       if (!threadId) return
-      setPendingMessage(input)
+      // Don't send yet — the re-render will update the transport body.
+      // Use a microtask to send after React applies the state update.
+      const text = input
       setInput('')
+      setTimeout(() => sendMessage({ text }), 50)
       return
     }
 
     sendMessage({ text: input })
     setInput('')
   }
-
-  // Send pending message after thread ID is applied to the transport
-  useEffect(() => {
-    if (pendingMessage && activeThreadId) {
-      sendMessage({ text: pendingMessage })
-      setPendingMessage(null)
-    }
-  }, [activeThreadId, pendingMessage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleSuggestionClick(text: string) {
     setInput(text)
