@@ -47,7 +47,7 @@ type ConsumptionData = {
 }
 
 const PLAN_LABELS: Record<string, string> = {
-  starter: 'Starter', builder: 'Builder', agency: 'Agency', enterprise: 'Enterprise',
+  starter: 'Starter', builder: 'Builder', pro: 'Pro', agency: 'Agency', enterprise: 'Enterprise',
 }
 
 const STATUS_CONFIG: Record<string, { color: string; bg: string; label: string }> = {

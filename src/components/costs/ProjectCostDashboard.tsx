@@ -166,7 +166,7 @@ function PlanUsageBar({ data, projectId }: { data: CostSummary; projectId: strin
   const thisPct = data.planBudgetUsd > 0 ? Math.min(100, (thisProjectCost / data.planBudgetUsd) * 100) : 0
   const otherPct = data.planBudgetUsd > 0 ? Math.min(100, (otherCost / data.planBudgetUsd) * 100) : 0
 
-  const planLabel = { starter: 'Starter', builder: 'Builder', agency: 'Agency', enterprise: 'Enterprise' }[data.plan] ?? data.plan
+  const planLabel = { starter: 'Starter', builder: 'Builder', pro: 'Pro', agency: 'Agency', enterprise: 'Enterprise' }[data.plan] ?? data.plan
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900 mb-6">

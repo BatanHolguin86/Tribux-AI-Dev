@@ -15,6 +15,7 @@ type QuotaExceededModalProps = {
 const PLAN_LABELS: Record<string, string> = {
   starter: 'Starter',
   builder: 'Builder',
+  pro: 'Pro',
   agency: 'Agency',
   enterprise: 'Enterprise',
 }

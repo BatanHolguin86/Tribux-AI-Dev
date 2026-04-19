@@ -97,8 +97,8 @@ export async function getUserQuota(userId: string): Promise<QuotaResult> {
     message = ''
   }
 
-  // Fire-and-forget alert for exceeded / whale (deduped by month in DB)
-  if (status === 'exceeded' || status === 'whale') {
+  // Fire-and-forget alerts (deduped by month in DB via UNIQUE constraint)
+  if (status === 'warning' || status === 'exceeded' || status === 'whale') {
     void sendQuotaAlert(userId, plan, usedUsd, effectiveBudgetUsd, usedPct, status, monthStr, admin)
   }
 
@@ -160,7 +160,7 @@ async function sendQuotaAlert(
   admin: Awaited<ReturnType<typeof createAdminClient>>,
 ): Promise<void> {
   try {
-    const alertType = status === 'whale' ? 'whale_150' : 'exceeded_100'
+    const alertType = status === 'whale' ? 'whale_150' : status === 'exceeded' ? 'exceeded_100' : 'warning_80'
 
     // Insert only if not already alerted this month (UNIQUE constraint)
     const { error } = await admin.from('quota_alerts').insert({
@@ -184,10 +184,9 @@ async function sendQuotaAlert(
 
     if (!resendKey || !adminEmail) return
 
-    const isWhale = status === 'whale'
-    const subject = isWhale
-      ? `🐋 WHALE ALERT — Usuario ${userId.slice(0, 8)} (plan ${plan}) consumió ${usedPct}%`
-      : `⚠️ Quota excedida — Usuario ${userId.slice(0, 8)} (plan ${plan}) ${usedPct}%`
+    const alertEmoji = status === 'whale' ? '🐋' : status === 'exceeded' ? '🚫' : '⚠️'
+    const alertLabel = status === 'whale' ? 'WHALE ALERT' : status === 'exceeded' ? 'Quota excedida' : 'Aviso: 80% del presupuesto'
+    const subject = `${alertEmoji} ${alertLabel} — Usuario ${userId.slice(0, 8)} (plan ${plan}) ${usedPct}%`
 
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -200,7 +199,7 @@ async function sendQuotaAlert(
         to: adminEmail,
         subject,
         html: `
-          <h2>${isWhale ? '🐋 Whale Alert' : '⚠️ Quota Excedida'}</h2>
+          <h2>${alertEmoji} ${alertLabel}</h2>
           <table>
             <tr><td><b>Usuario</b></td><td>${userId}</td></tr>
             <tr><td><b>Plan</b></td><td>${plan}</td></tr>
