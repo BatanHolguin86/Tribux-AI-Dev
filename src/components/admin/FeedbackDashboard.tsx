@@ -3,6 +3,32 @@
 import { useEffect, useState, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 
+function ImageLightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  function handleDownload() {
+    const link = document.createElement('a')
+    link.href = src
+    link.download = `feedback-image-${Date.now()}.png`
+    link.click()
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="relative max-h-[90vh] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt="Feedback image" className="max-h-[85vh] max-w-[85vw] rounded-lg object-contain" />
+        <div className="absolute right-2 top-2 flex gap-2">
+          <button onClick={handleDownload} className="rounded-full bg-white/90 p-2 text-sm shadow hover:bg-white" title="Descargar">
+            ⬇️
+          </button>
+          <button onClick={onClose} className="rounded-full bg-white/90 p-2 text-sm shadow hover:bg-white" title="Cerrar">
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 type Ticket = {
   id: string
   user_id: string
@@ -57,6 +83,7 @@ export function FeedbackDashboard() {
   const [reply, setReply] = useState('')
   const [sendingReply, setSendingReply] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
 
   const loadTickets = useCallback(async () => {
     setLoading(true)
@@ -260,11 +287,9 @@ export function FeedbackDashboard() {
                     {(msg.image_urls as string[])?.length > 0 && (
                       <div className="mt-2 flex flex-wrap gap-2">
                         {(msg.image_urls as string[]).map((url, i) => (
-                          <a
+                          <button
                             key={i}
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            onClick={() => setLightboxSrc(url)}
                             className="group relative block overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700"
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -275,9 +300,9 @@ export function FeedbackDashboard() {
                               loading="lazy"
                             />
                             <span className="absolute bottom-0 left-0 right-0 bg-black/50 px-1.5 py-0.5 text-[9px] text-white">
-                              📷 Imagen {i + 1}
+                              🔍 Imagen {i + 1}
                             </span>
-                          </a>
+                          </button>
                         ))}
                       </div>
                     )}
@@ -318,6 +343,10 @@ export function FeedbackDashboard() {
           </>
         )}
       </div>
+
+      {lightboxSrc && (
+        <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
+      )}
     </div>
   )
 }
