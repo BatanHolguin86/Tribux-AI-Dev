@@ -83,6 +83,7 @@ export function MarketingChat() {
   const [input, setInput] = useState('')
   const [loadingThreads, setLoadingThreads] = useState(true)
   const [savingArtifact, setSavingArtifact] = useState(false)
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null)
 
   // Load threads
   const loadThreads = useCallback(async () => {
@@ -190,15 +191,26 @@ export function MarketingChat() {
   async function onSubmit() {
     if (!input.trim()) return
 
-    let threadId = activeThreadId
-    if (!threadId) {
-      threadId = await createThread()
+    if (!activeThreadId) {
+      // Create thread first, then queue the message for after re-render
+      const threadId = await createThread()
       if (!threadId) return
+      setPendingMessage(input)
+      setInput('')
+      return
     }
 
     sendMessage({ text: input })
     setInput('')
   }
+
+  // Send pending message after thread ID is applied to the transport
+  useEffect(() => {
+    if (pendingMessage && activeThreadId) {
+      sendMessage({ text: pendingMessage })
+      setPendingMessage(null)
+    }
+  }, [activeThreadId, pendingMessage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleSuggestionClick(text: string) {
     setInput(text)
