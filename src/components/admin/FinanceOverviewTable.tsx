@@ -57,6 +57,9 @@ type OverviewResponse = {
     totalCostsUsd: number
     netProfitUsd: number
     infraCosts: InfraCosts
+    rangeMonths?: number
+    periodStart?: string
+    periodEnd?: string
     ownerView?: {
       breakEvenUsers: number
       activePayingUsers: number
@@ -129,6 +132,7 @@ export function FinanceOverviewTable() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [month, setMonth] = useState<string>('')
+  const [rangeMonths, setRangeMonths] = useState<number>(1)
   const [editingCosts, setEditingCosts] = useState(false)
   const [opCosts, setOpCosts] = useState<OperationalCost[]>([])
   const [savingCost, setSavingCost] = useState<string | null>(null)
@@ -136,8 +140,11 @@ export function FinanceOverviewTable() {
   useEffect(() => {
     queueMicrotask(() => {
       setLoading(true)
-      const params = month ? `?month=${encodeURIComponent(month)}` : ''
-      fetch(`/api/admin/finance/overview${params}`)
+      const params = new URLSearchParams()
+      if (month) params.set('month', month)
+      if (rangeMonths > 1) params.set('months', String(rangeMonths))
+      const qs = params.toString() ? `?${params.toString()}` : ''
+      fetch(`/api/admin/finance/overview${qs}`)
         .then((res) => {
           if (!res.ok) throw new Error(res.status === 403 ? 'Acceso denegado' : 'Error al cargar')
           return res.json()
@@ -146,7 +153,7 @@ export function FinanceOverviewTable() {
         .catch((e) => setError(e.message))
         .finally(() => setLoading(false))
     })
-  }, [month])
+  }, [month, rangeMonths])
 
   async function loadOpCosts() {
     const res = await fetch('/api/admin/finance/costs')
@@ -184,9 +191,9 @@ export function FinanceOverviewTable() {
   }
 
   const { summary, users, planGoldenRecord = [], operationalCosts: apiOpCosts = [] } = data
-  const now = new Date()
-  const currentMonthLabel =
-    month || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  const periodLabel = summary.periodStart && summary.periodEnd && summary.periodStart !== summary.periodEnd
+    ? `${summary.periodStart} a ${summary.periodEnd}`
+    : summary.periodStart ?? new Date().toISOString().slice(0, 7)
 
   const infraEntries = Object.entries(summary.infraCosts).filter(
     ([, v]) => v > 0,
@@ -198,13 +205,33 @@ export function FinanceOverviewTable() {
 
   return (
     <div className="space-y-6">
-      {/* Month selector */}
-      <input
-        type="month"
-        value={month || currentMonthLabel}
-        onChange={(e) => setMonth(e.target.value || '')}
-        className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm focus:border-brand-teal focus:outline-none focus:ring-1 focus:ring-[#0EA5A3]"
-      />
+      {/* Period selector */}
+      <div className="flex items-center gap-2">
+        {[
+          { label: 'Este mes', value: 1 },
+          { label: '3 meses', value: 3 },
+          { label: '6 meses', value: 6 },
+          { label: '12 meses', value: 12 },
+        ].map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => { setRangeMonths(opt.value); setMonth('') }}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+              rangeMonths === opt.value && !month
+                ? 'bg-brand-primary text-white'
+                : 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400'
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+        <input
+          type="month"
+          value={month}
+          onChange={(e) => { setMonth(e.target.value || ''); setRangeMonths(1) }}
+          className="ml-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+        />
+      </div>
 
       {/* KPI cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -245,7 +272,7 @@ export function FinanceOverviewTable() {
             P&L del Mes
           </h3>
           <p className="mt-0.5 text-[11px] text-brand-muted">
-            Costos operativos vs ingresos — {currentMonthLabel}
+            Costos operativos vs ingresos — {periodLabel}
           </p>
         </div>
 

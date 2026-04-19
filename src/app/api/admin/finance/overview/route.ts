@@ -15,19 +15,28 @@ export async function GET(request: Request) {
 
   const supabase = await createClient()
   const { searchParams } = new URL(request.url)
-  const month = searchParams.get('month') // optional: YYYY-MM to override "current" month
+  const month = searchParams.get('month') // optional: YYYY-MM
+  const rangeMonths = Math.min(12, Math.max(1, parseInt(searchParams.get('months') ?? '1')))
 
   const now = new Date()
-  const currentMonthStart = month
+  // End date: end of the specified month (or current month)
+  const endMonthStart = month
     ? `${month}-01`
     : `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-  const currentMonthEndDate = new Date(currentMonthStart)
+  const currentMonthEndDate = new Date(endMonthStart)
   currentMonthEndDate.setMonth(currentMonthEndDate.getMonth() + 1)
   const currentMonthEnd = currentMonthEndDate.toISOString().slice(0, 10) + 'T00:00:00Z'
-  const prevMonthEndDate = new Date(currentMonthStart)
-  prevMonthEndDate.setDate(0)
-  const prevMonthStart =
-    `${prevMonthEndDate.getFullYear()}-${String(prevMonthEndDate.getMonth() + 1).padStart(2, '0')}-01`
+
+  // Start date: go back N months
+  const startDate = new Date(endMonthStart)
+  startDate.setMonth(startDate.getMonth() - (rangeMonths - 1))
+  const currentMonthStart = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-01`
+
+  // Previous period (same length, before start)
+  const prevEndDate = new Date(currentMonthStart)
+  const prevStartDate = new Date(currentMonthStart)
+  prevStartDate.setMonth(prevStartDate.getMonth() - rangeMonths)
+  const prevMonthStart = `${prevStartDate.getFullYear()}-${String(prevStartDate.getMonth() + 1).padStart(2, '0')}-01`
 
   const currentMonthStr = currentMonthStart.slice(0, 7)
 
@@ -52,7 +61,8 @@ export async function GET(request: Request) {
     supabase
       .from('credit_purchases')
       .select('user_id, amount_usd, price_usd')
-      .eq('month', currentMonthStr)
+      .gte('month', currentMonthStart.slice(0, 7))
+      .lte('month', endMonthStart.slice(0, 7))
       .eq('status', 'completed'),
   ])
 
@@ -148,7 +158,8 @@ export async function GET(request: Request) {
     monthlyUsd: Number(c.monthly_usd),
   }))
 
-  const totalInfraCost = operationalCosts.reduce((s, c) => s + c.monthlyUsd, 0)
+  const monthlyInfraCost = operationalCosts.reduce((s, c) => s + c.monthlyUsd, 0)
+  const totalInfraCost = monthlyInfraCost * rangeMonths
 
   // Legacy infraCosts object for backward compatibility
   const infraCosts = {
@@ -174,6 +185,9 @@ export async function GET(request: Request) {
     totalCostsUsd: totalCosts,
     netProfitUsd: netProfit,
     infraCosts,
+    rangeMonths,
+    periodStart: currentMonthStart.slice(0, 7),
+    periodEnd: endMonthStart.slice(0, 7),
     ownerView: {
       breakEvenUsers,
       activePayingUsers: rows.filter(r => r.subscriptionStatus === 'active').length,
