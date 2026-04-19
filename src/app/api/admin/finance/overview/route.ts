@@ -135,11 +135,13 @@ export async function GET(request: Request) {
   const totalRevenue = totalPlanRevenue + totalCreditRevenue
 
   // Infrastructure costs (monthly estimates — update via env vars or here)
+  // Infrastructure costs: only show what's explicitly configured in env vars.
+  // No defaults — if not set, it's $0 (avoids showing invented numbers).
   const infraCosts = {
-    supabase: Number(process.env.COST_SUPABASE_MONTHLY ?? 25),
-    vercel: Number(process.env.COST_VERCEL_MONTHLY ?? 20),
+    supabase: Number(process.env.COST_SUPABASE_MONTHLY ?? 0),
+    vercel: Number(process.env.COST_VERCEL_MONTHLY ?? 0),
     anthropicPlatform: Number(process.env.COST_ANTHROPIC_PLATFORM ?? 0),
-    domain: Number(process.env.COST_DOMAIN_MONTHLY ?? 1),
+    domain: Number(process.env.COST_DOMAIN_MONTHLY ?? 0),
     sentry: Number(process.env.COST_SENTRY_MONTHLY ?? 0),
     resend: Number(process.env.COST_RESEND_MONTHLY ?? 0),
     other: Number(process.env.COST_OTHER_MONTHLY ?? 0),
