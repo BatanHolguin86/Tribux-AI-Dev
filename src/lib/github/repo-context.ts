@@ -1,8 +1,11 @@
 /**
  * Fetches public GitHub repo context (file tree + recent commits)
  * for injection into agent prompts. Works with public repos without auth.
- * If GITHUB_TOKEN is set, also works with private repos.
+ * If a GitHub token is configured (platform_config or GITHUB_TOKEN env),
+ * also works with private repos.
  */
+
+import { getPlatformToken } from '@/lib/platform/config'
 
 const GITHUB_API = 'https://api.github.com'
 const CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
@@ -28,14 +31,18 @@ export function parseGitHubUrl(url: string): { owner: string; repo: string } | n
   }
 }
 
-function getHeaders(): Record<string, string> {
+async function getHeaders(): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github.v3+json',
     'User-Agent': 'Tribux AI',
   }
-  const token = process.env.GITHUB_TOKEN
-  if (token) {
-    headers.Authorization = `Bearer ${token}`
+  let ghToken = process.env.GITHUB_TOKEN ?? ''
+  try {
+    const platform = await getPlatformToken('github')
+    ghToken = platform.token
+  } catch { /* fallback to GITHUB_TOKEN env var */ }
+  if (ghToken) {
+    headers.Authorization = `Bearer ${ghToken}`
   }
   return headers
 }
@@ -43,7 +50,7 @@ function getHeaders(): Record<string, string> {
 async function fetchTree(owner: string, repo: string): Promise<string> {
   const res = await fetch(
     `${GITHUB_API}/repos/${owner}/${repo}/git/trees/HEAD?recursive=1`,
-    { headers: getHeaders(), next: { revalidate: 300 } }
+    { headers: await getHeaders(), next: { revalidate: 300 } }
   )
   if (!res.ok) return ''
 
@@ -74,7 +81,7 @@ async function fetchTree(owner: string, repo: string): Promise<string> {
 async function fetchRecentCommits(owner: string, repo: string): Promise<string> {
   const res = await fetch(
     `${GITHUB_API}/repos/${owner}/${repo}/commits?per_page=10`,
-    { headers: getHeaders(), next: { revalidate: 300 } }
+    { headers: await getHeaders(), next: { revalidate: 300 } }
   )
   if (!res.ok) return ''
 

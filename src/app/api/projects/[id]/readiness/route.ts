@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { parseGitHubUrl } from '@/lib/github/repo-context'
 import { getLatestWorkflowRun, getLatestGitHubDeployment } from '@/lib/github/workflows'
+import { getPlatformToken } from '@/lib/platform/config'
 
 export const maxDuration = 30
 
@@ -49,11 +50,18 @@ export async function GET(
         checks.push({ id: 'github', label: 'Repositorio GitHub', status: 'fail', detail: 'URL invalida' })
       } else {
         try {
+          // Use platform token (PLATFORM_GITHUB_TOKEN) for private org repos
+          let ghToken = process.env.GITHUB_TOKEN ?? ''
+          try {
+            const platform = await getPlatformToken('github')
+            ghToken = platform.token
+          } catch { /* fallback to GITHUB_TOKEN */ }
+
           const res = await fetch(
             `https://api.github.com/repos/${parsed.owner}/${parsed.repo}`,
             {
               headers: {
-                Authorization: `token ${process.env.GITHUB_TOKEN ?? ''}`,
+                Authorization: `token ${ghToken}`,
                 Accept: 'application/vnd.github.v3+json',
                 'User-Agent': 'Tribux AI',
               },
@@ -73,18 +81,20 @@ export async function GET(
     }
 
     // ── 2. Supabase ───────────────────────────────────────────────────────────
-    if (!project.supabase_project_ref || !project.supabase_access_token) {
+    if (!project.supabase_project_ref) {
       checks.push({
         id: 'supabase',
         label: 'Base de datos (Supabase)',
-        status: project.supabase_project_ref ? 'warn' : 'fail',
-        detail: !project.supabase_project_ref ? 'No configurado' : 'Falta access token',
+        status: 'fail',
+        detail: 'No configurado',
       })
     } else {
       try {
+        // Use platform management token (PLATFORM_SUPABASE_TOKEN), not the project's service role key
+        const platform = await getPlatformToken('supabase')
         const res = await fetch(
           `https://api.supabase.com/v1/projects/${project.supabase_project_ref}`,
-          { headers: { Authorization: `Bearer ${project.supabase_access_token}` } },
+          { headers: { Authorization: `Bearer ${platform.token}` } },
         )
         checks.push({
           id: 'supabase',
@@ -93,7 +103,12 @@ export async function GET(
           detail: res.ok ? `Proyecto ${project.supabase_project_ref}` : `HTTP ${res.status}`,
         })
       } catch {
-        checks.push({ id: 'supabase', label: 'Base de datos (Supabase)', status: 'warn', detail: 'Error de conexion' })
+        checks.push({
+          id: 'supabase',
+          label: 'Base de datos (Supabase)',
+          status: 'warn',
+          detail: 'No se pudo verificar — token de management no configurado',
+        })
       }
     }
 

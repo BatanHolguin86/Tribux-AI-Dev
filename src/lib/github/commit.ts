@@ -4,20 +4,26 @@
  */
 
 import { parseGitHubUrl } from './repo-context'
+import { getPlatformToken } from '@/lib/platform/config'
 
 const GITHUB_API = 'https://api.github.com'
 
-function getToken(): string {
-  const token = process.env.GITHUB_TOKEN
-  if (!token) throw new Error('GITHUB_TOKEN is required to commit files')
-  return token
+async function resolveToken(): Promise<string> {
+  let ghToken = process.env.GITHUB_TOKEN ?? ''
+  try {
+    const platform = await getPlatformToken('github')
+    ghToken = platform.token
+  } catch { /* fallback to GITHUB_TOKEN env var */ }
+  if (!ghToken) throw new Error('GitHub token is required to commit files (platform_config or GITHUB_TOKEN env)')
+  return ghToken
 }
 
-function getHeaders(): Record<string, string> {
+async function getHeaders(): Promise<Record<string, string>> {
+  const token = await resolveToken()
   return {
     Accept: 'application/vnd.github.v3+json',
     'User-Agent': 'Tribux AI',
-    Authorization: `Bearer ${getToken()}`,
+    Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
   }
 }
@@ -53,7 +59,7 @@ export async function commitMultipleFiles(
   if (!parsed) throw new Error('Invalid GitHub URL')
 
   const { owner, repo } = parsed
-  const headers = getHeaders()
+  const headers = await getHeaders()
   const base = `${GITHUB_API}/repos/${owner}/${repo}`
 
   // 1. Get current HEAD ref
@@ -157,7 +163,7 @@ export async function createBranch(
   if (!parsed) return { created: false, error: 'Invalid repo URL' }
 
   const { owner, repo } = parsed
-  const headers = getHeaders()
+  const headers = await getHeaders()
   const base = `${GITHUB_API}/repos/${owner}/${repo}`
 
   // Get base branch SHA
@@ -200,7 +206,7 @@ export async function createPullRequest(
   if (!parsed) return { success: false, error: 'Invalid repo URL' }
 
   const { owner, repo } = parsed
-  const headers = getHeaders()
+  const headers = await getHeaders()
 
   const res = await fetch(`${GITHUB_API}/repos/${owner}/${repo}/pulls`, {
     method: 'POST',
@@ -234,7 +240,7 @@ export async function mergePullRequest(
   if (!parsed) return { success: false, error: 'Invalid repo URL' }
 
   const { owner, repo } = parsed
-  const headers = getHeaders()
+  const headers = await getHeaders()
 
   const res = await fetch(`${GITHUB_API}/repos/${owner}/${repo}/pulls/${prNumber}/merge`, {
     method: 'PUT',

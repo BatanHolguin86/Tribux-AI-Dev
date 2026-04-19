@@ -4,16 +4,21 @@
  */
 
 import { parseGitHubUrl } from './repo-context'
+import { getPlatformToken } from '@/lib/platform/config'
 
 const GITHUB_API = 'https://api.github.com'
 
-function getHeaders(): Record<string, string> {
-  const token = process.env.GITHUB_TOKEN
-  if (!token) throw new Error('GITHUB_TOKEN is required for workflow operations')
+async function getHeaders(): Promise<Record<string, string>> {
+  let ghToken = process.env.GITHUB_TOKEN ?? ''
+  try {
+    const platform = await getPlatformToken('github')
+    ghToken = platform.token
+  } catch { /* fallback to GITHUB_TOKEN env var */ }
+  if (!ghToken) throw new Error('GitHub token is required for workflow operations (platform_config or GITHUB_TOKEN env)')
   return {
     Accept: 'application/vnd.github.v3+json',
     'User-Agent': 'Tribux AI',
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${ghToken}`,
     'Content-Type': 'application/json',
   }
 }
@@ -45,7 +50,7 @@ export async function triggerWorkflowDispatch(
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: getHeaders(),
+      headers: await getHeaders(),
       body: JSON.stringify({
         ref: branch,
         ...(inputs ? { inputs } : {}),
@@ -76,7 +81,7 @@ export async function getLatestWorkflowRun(
   const url = `${GITHUB_API}/repos/${owner}/${repo}/actions/workflows/${workflowFileName}/runs?branch=${branch}&per_page=1`
 
   try {
-    const res = await fetch(url, { headers: getHeaders() })
+    const res = await fetch(url, { headers: await getHeaders() })
     if (!res.ok) return null
 
     const data = await res.json()
@@ -110,7 +115,7 @@ export async function getWorkflowRun(
   const url = `${GITHUB_API}/repos/${owner}/${repo}/actions/runs/${runId}`
 
   try {
-    const res = await fetch(url, { headers: getHeaders() })
+    const res = await fetch(url, { headers: await getHeaders() })
     if (!res.ok) return null
 
     const run = await res.json()
@@ -142,7 +147,7 @@ export async function getLatestCIRun(
   const url = `${GITHUB_API}/repos/${owner}/${repo}/actions/runs?branch=${branch}&per_page=5&event=push`
 
   try {
-    const res = await fetch(url, { headers: getHeaders() })
+    const res = await fetch(url, { headers: await getHeaders() })
     if (!res.ok) return null
 
     const data = await res.json()
@@ -180,7 +185,7 @@ export async function getCIJobLogs(
     // Get jobs for this run
     const jobsRes = await fetch(
       `${GITHUB_API}/repos/${owner}/${repo}/actions/runs/${runId}/jobs`,
-      { headers: getHeaders() },
+      { headers: await getHeaders() },
     )
     if (!jobsRes.ok) return `Could not fetch jobs (${jobsRes.status})`
 
@@ -208,7 +213,7 @@ export async function getCIJobLogs(
       // Fetch log for this job
       const logRes = await fetch(
         `${GITHUB_API}/repos/${owner}/${repo}/actions/jobs/${job.id}/logs`,
-        { headers: getHeaders() },
+        { headers: await getHeaders() },
       )
 
       if (logRes.ok) {
@@ -249,7 +254,7 @@ export async function getLatestGitHubDeployment(
     // 1. Get latest deployment for environment
     const deplRes = await fetch(
       `${GITHUB_API}/repos/${owner}/${repo}/deployments?environment=${encodeURIComponent(environment)}&per_page=1`,
-      { headers: getHeaders() },
+      { headers: await getHeaders() },
     )
     if (!deplRes.ok) return null
 
@@ -260,7 +265,7 @@ export async function getLatestGitHubDeployment(
     // 2. Get its latest status
     const statusRes = await fetch(
       `${GITHUB_API}/repos/${owner}/${repo}/deployments/${deployment.id}/statuses?per_page=1`,
-      { headers: getHeaders() },
+      { headers: await getHeaders() },
     )
     if (!statusRes.ok) return null
 
@@ -294,7 +299,7 @@ export async function getPreviewDeployment(
     // Fetch recent deployments for Preview environment
     const res = await fetch(
       `${GITHUB_API}/repos/${owner}/${repo}/deployments?environment=Preview&per_page=10`,
-      { headers: getHeaders() },
+      { headers: await getHeaders() },
     )
     if (!res.ok) return null
 
@@ -309,7 +314,7 @@ export async function getPreviewDeployment(
     // Get status
     const statusRes = await fetch(
       `${GITHUB_API}/repos/${owner}/${repo}/deployments/${match.id}/statuses?per_page=1`,
-      { headers: getHeaders() },
+      { headers: await getHeaders() },
     )
     if (!statusRes.ok) return null
 
@@ -344,7 +349,7 @@ export async function createGitHubRelease(
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: getHeaders(),
+      headers: await getHeaders(),
       body: JSON.stringify({
         tag_name: tagName,
         name: releaseName,
@@ -380,7 +385,7 @@ export async function getRollbackTarget(
   const url = `${GITHUB_API}/repos/${owner}/${repo}/releases?per_page=2`
 
   try {
-    const res = await fetch(url, { headers: getHeaders() })
+    const res = await fetch(url, { headers: await getHeaders() })
     if (!res.ok) return null
 
     const releases = (await res.json()) as Array<{
@@ -429,7 +434,7 @@ export async function createRollbackRelease(
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: getHeaders(),
+      headers: await getHeaders(),
       body: JSON.stringify({
         tag_name: tagName,
         target_commitish: targetCommitSha,

@@ -4,6 +4,7 @@ import { autoCheckItems } from '@/lib/actions/auto-check'
 import { recordActionStart, recordActionComplete } from '@/lib/actions/execute'
 import { getActionByName } from '@/lib/actions/action-registry'
 import { checkRateLimit, getClientIp, ACTION_RATE_LIMIT } from '@/lib/rate-limit'
+import { getPlatformToken } from '@/lib/platform/config'
 
 export const maxDuration = 60
 
@@ -69,19 +70,27 @@ export async function POST(
     }
 
     // 5. Collect Vercel Analytics if token available
-    if (process.env.VERCEL_TOKEN) {
+    let vercelToken = process.env.VERCEL_TOKEN ?? ''
+    let vercelTeamId = process.env.VERCEL_TEAM_ID ?? ''
+    try {
+      const platform = await getPlatformToken('vercel')
+      vercelToken = platform.token
+      vercelTeamId = platform.metadata.team_id ?? vercelTeamId
+    } catch { /* fallback to VERCEL_TOKEN env var */ }
+
+    if (vercelToken) {
       try {
         const parsed = project.repo_url ? parseGitHubUrl(project.repo_url) : null
         const repoName = parsed ? parsed.repo : null
 
         if (repoName) {
-          const teamParam = process.env.VERCEL_TEAM_ID ? `&teamId=${process.env.VERCEL_TEAM_ID}` : ''
+          const teamParam = vercelTeamId ? `&teamId=${vercelTeamId}` : ''
 
           // Fetch recent deployments for basic metrics
           const deploymentsRes = await fetch(
             `https://api.vercel.com/v6/deployments?projectId=${encodeURIComponent(repoName)}&limit=5${teamParam}`,
             {
-              headers: { Authorization: `Bearer ${process.env.VERCEL_TOKEN}` },
+              headers: { Authorization: `Bearer ${vercelToken}` },
             },
           )
 

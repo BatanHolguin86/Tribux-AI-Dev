@@ -3,16 +3,21 @@
  */
 
 import { parseGitHubUrl } from './repo-context'
+import { getPlatformToken } from '@/lib/platform/config'
 
 const GITHUB_API = 'https://api.github.com'
 
-function getHeaders(): Record<string, string> {
+async function getHeaders(): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github.v3+json',
     'User-Agent': 'Tribux AI',
   }
-  const token = process.env.GITHUB_TOKEN
-  if (token) headers.Authorization = `Bearer ${token}`
+  let ghToken = process.env.GITHUB_TOKEN ?? ''
+  try {
+    const platform = await getPlatformToken('github')
+    ghToken = platform.token
+  } catch { /* fallback to GITHUB_TOKEN env var */ }
+  if (ghToken) headers.Authorization = `Bearer ${ghToken}`
   return headers
 }
 
@@ -32,7 +37,7 @@ export async function fetchFileContent(
   const url = `${GITHUB_API}/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}?ref=${branch}`
 
   try {
-    const res = await fetch(url, { headers: getHeaders() })
+    const res = await fetch(url, { headers: await getHeaders() })
     if (!res.ok) return null
 
     const data = await res.json()
@@ -89,7 +94,7 @@ export async function searchCode(
   const url = `${GITHUB_API}/search/code?q=${q}&per_page=10`
 
   try {
-    const res = await fetch(url, { headers: getHeaders() })
+    const res = await fetch(url, { headers: await getHeaders() })
     if (!res.ok) return []
 
     const data = await res.json()
@@ -123,7 +128,7 @@ export async function fetchDirectoryListing(
   const url = `${GITHUB_API}/repos/${owner}/${repo}/contents/${encodeURIComponent(dirPath)}?ref=${branch}`
 
   try {
-    const res = await fetch(url, { headers: getHeaders() })
+    const res = await fetch(url, { headers: await getHeaders() })
     if (!res.ok) return []
 
     const data = await res.json()
