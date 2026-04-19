@@ -24,30 +24,69 @@ type MiniAgentDrawerProps = {
 
 export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
   const router = useRouter()
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const [input, setInput] = useState('')
   const [threadId, setThreadId] = useState<string | null>(null)
-  const [ready, setReady] = useState(false)
+  const [creating, setCreating] = useState(true)
 
   // Create a thread on mount
   useEffect(() => {
-    async function init() {
-      const res = await fetch(
-        `/api/projects/${projectId}/agents/cto_virtual/threads`,
-        { method: 'POST' },
-      )
-      if (res.ok) {
-        const data = await res.json()
-        setThreadId(data.id)
-        setReady(true)
-      }
-    }
-    init()
+    fetch(`/api/projects/${projectId}/agents/cto_virtual/threads`, { method: 'POST' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data?.id) setThreadId(data.id) })
+      .catch(() => {})
+      .finally(() => setCreating(false))
   }, [projectId])
+
+  return (
+    <div className="fixed bottom-0 right-0 z-50 flex h-[500px] w-[400px] flex-col rounded-tl-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-900">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-800">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">🧠</span>
+          <span className="text-sm font-semibold text-gray-900 dark:text-white">CTO Virtual</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => router.push(`/projects/${projectId}/phase/00`)}
+            className="rounded p-1.5 text-xs text-brand-primary hover:bg-brand-surface dark:text-brand-teal"
+          >
+            Ver en fase
+          </button>
+          <button
+            onClick={onClose}
+            className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800"
+            aria-label="Cerrar panel"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Body: show loading until thread is ready, then mount chat */}
+      {creating ? (
+        <div className="flex flex-1 items-center justify-center">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand-teal/30 border-t-brand-teal" />
+        </div>
+      ) : !threadId ? (
+        <div className="flex flex-1 items-center justify-center px-4 text-center text-xs text-gray-400">
+          No se pudo iniciar la conversacion. Intenta recargar la pagina.
+        </div>
+      ) : (
+        <MiniAgentChatBody projectId={projectId} threadId={threadId} />
+      )}
+    </div>
+  )
+}
+
+/** Inner component that only mounts AFTER threadId is available */
+function MiniAgentChatBody({ projectId, threadId }: { projectId: string; threadId: string }) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [input, setInput] = useState('')
 
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new DefaultChatTransport({
-      api: `/api/projects/${projectId}/agents/cto_virtual/threads/${threadId ?? 'pending'}/chat`,
+      api: `/api/projects/${projectId}/agents/cto_virtual/threads/${threadId}/chat`,
     }),
     messages: [],
   })
@@ -73,42 +112,16 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
   }, [messages, isLoading])
 
   function onSubmit() {
-    if (!input.trim() || !ready) return
+    if (!input.trim()) return
     sendMessage({ text: input })
     setInput('')
   }
 
   return (
-    <div className="fixed bottom-0 right-0 z-50 flex h-[500px] w-[400px] flex-col rounded-tl-xl border border-gray-200 bg-white shadow-2xl">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">🧠</span>
-          <span className="text-sm font-semibold text-gray-900">CTO Virtual</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => router.push(`/projects/${projectId}/phase/00`)}
-            className="rounded p-1.5 text-xs text-brand-primary hover:bg-brand-surface"
-          >
-            Ver en fase
-          </button>
-          <button
-            onClick={onClose}
-            className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            aria-label="Cerrar panel"
-          >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
+    <>
       {error && <ChatErrorBanner error={error} />}
       {emptyResponseError && !error && <EmptyResponseBanner />}
 
-      {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {messages.length === 0 && !isLoading && (
           <div className="flex items-center justify-center py-8 text-xs text-gray-400">
@@ -125,7 +138,7 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
                 className={`inline-block max-w-[85%] rounded-xl px-3 py-2 text-xs ${
                   isUser
                     ? 'rounded-br-sm bg-brand-primary text-white'
-                    : 'rounded-bl-sm bg-gray-100 text-gray-800'
+                    : 'rounded-bl-sm bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
                 }`}
               >
                 <div className="whitespace-pre-wrap">{text}</div>
@@ -137,15 +150,13 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
         {isLoading && <StreamingIndicator />}
       </div>
 
-      {/* Input */}
       <ChatInput
         value={input}
         onChange={setInput}
         onSubmit={onSubmit}
         onStop={stop}
         isLoading={isLoading}
-        disabled={!ready}
       />
-    </div>
+    </>
   )
 }
