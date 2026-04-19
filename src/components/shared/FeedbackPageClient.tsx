@@ -317,7 +317,10 @@ export function FeedbackPageClient() {
                   key={t.id}
                   onClick={() => {
                     openTicket(t.id)
-                    setUnreadTicketIds((prev) => { const next = new Set(prev); next.delete(t.id); return next })
+                    if (hasUnread) {
+                      setUnreadTicketIds((prev) => { const next = new Set(prev); next.delete(t.id); return next })
+                      window.dispatchEvent(new Event('feedback-read'))
+                    }
                   }}
                   className={`w-full rounded-xl border p-4 text-left transition-colors ${
                     hasUnread

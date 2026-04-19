@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -58,12 +58,19 @@ type SidebarNavProps = {
 export function SidebarNav({ displayName, email, initials }: SidebarNavProps) {
   const [unreadFeedback, setUnreadFeedback] = useState(0)
 
-  useEffect(() => {
+  const fetchUnread = useCallback(() => {
     fetch('/api/user/feedback/unread-count')
       .then((r) => (r.ok ? r.json() : { count: 0 }))
       .then((d: { count: number }) => setUnreadFeedback(d.count))
       .catch(() => null)
   }, [])
+
+  useEffect(() => {
+    fetchUnread()
+    const onRead = () => fetchUnread()
+    window.addEventListener('feedback-read', onRead)
+    return () => window.removeEventListener('feedback-read', onRead)
+  }, [fetchUnread])
 
   return (
     <aside className="flex h-14 w-full shrink-0 flex-col border-b border-white/10 bg-gradient-to-b from-[#0A1F33] to-[#0F2B46] md:h-screen md:w-64 md:border-b-0 md:border-r md:border-white/10 md:shadow-[var(--shadow-sidebar)]">
