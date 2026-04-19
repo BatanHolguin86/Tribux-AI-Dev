@@ -258,10 +258,25 @@ export function FeedbackDashboard() {
                       <p className="whitespace-pre-wrap">{msg.content}</p>
                     )}
                     {(msg.image_urls as string[])?.length > 0 && (
-                      <div className="mt-2 flex gap-2">
+                      <div className="mt-2 flex flex-wrap gap-2">
                         {(msg.image_urls as string[]).map((url, i) => (
-                          <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-[10px] underline opacity-70">
-                            Imagen {i + 1}
+                          <a
+                            key={i}
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative block overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={url}
+                              alt={`Imagen ${i + 1}`}
+                              className="h-24 w-24 object-cover transition-transform group-hover:scale-105"
+                              loading="lazy"
+                            />
+                            <span className="absolute bottom-0 left-0 right-0 bg-black/50 px-1.5 py-0.5 text-[9px] text-white">
+                              📷 Imagen {i + 1}
+                            </span>
                           </a>
                         ))}
                       </div>

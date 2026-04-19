@@ -350,6 +350,16 @@ export function FeedbackPageClient() {
                     <p className="mb-1 text-[10px] font-bold opacity-60">Equipo Tribux AI</p>
                   )}
                   <p className="whitespace-pre-wrap">{msg.content}</p>
+                  {msg.image_urls?.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {msg.image_urls.map((url, i) => (
+                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-lg">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={url} alt={`Imagen ${i + 1}`} className="h-20 w-20 object-cover" loading="lazy" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   <p className="mt-1 text-[9px] opacity-50">
                     {new Date(msg.created_at).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })}
                   </p>

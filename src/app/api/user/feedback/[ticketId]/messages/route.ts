@@ -23,6 +23,7 @@ export async function GET(
     .from('feedback_messages')
     .select('id, sender_type, content, image_urls, created_at')
     .eq('ticket_id', ticketId)
+    .neq('sender_type', 'ai_analyst')
     .order('created_at', { ascending: true })
 
   return Response.json(messages ?? [])
