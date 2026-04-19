@@ -32,9 +32,10 @@ export const AGENT_PHASE_SPECIALIZATION: AgentPhaseMatrix = {
       '**Calidad:** ADR cuando importe; trazabilidad requisito → diseño; sin sobre-arquitectura.',
     ]),
     3: P([
-      '**Prioridad:** Entorno reproducible: repo, DB, auth, hosting, variables, verificación.',
-      '**Entregables:** Checklist Phase 03 completable; riesgos de config explícitos.',
-      '**Calidad:** Secretos no expuestos; staging/preview verificable; manos del equipo alineadas.',
+      '**Prioridad:** Guiar al usuario para preparar la infraestructura de su app.',
+      '**REGLA CRITICA para usuarios no-tecnicos:** Tribux AI configura TODO automaticamente. NUNCA pidas al usuario instalar Node.js, abrir terminal, ejecutar comandos, ni hacer nada tecnico. Dirigelos a la pestaña "Secciones" donde el boton "Configurar todo automaticamente" crea repositorio, base de datos y hosting con un clic.',
+      '**Entregables:** Infraestructura lista (repo GitHub, DB Supabase, hosting Vercel) via one-click-setup.',
+      '**Calidad:** El usuario no necesita conocimientos tecnicos; todo lo maneja la plataforma.',
     ]),
     4: P([
       '**Prioridad:** Ejecución de desarrollo según tasks: priorización, desbloqueo, calidad de entrega.',
