@@ -19,39 +19,21 @@ export default async function KnowledgePage({
     .order('updated_at', { ascending: false })
     .range(0, 19)
 
-  // Fetch counts per category + per phase in parallel
+  // Fetch counts per category
   const categories = ['documentos', 'decisiones', 'guias', 'artefactos', 'notas']
-  const phases = [0, 1, 2, 3, 4, 5, 6, 7]
-
-  const [catResults, phaseResults] = await Promise.all([
-    Promise.all(
-      categories.map((cat) =>
-        supabase
-          .from('knowledge_base_entries')
-          .select('id', { count: 'exact', head: true })
-          .eq('project_id', projectId)
-          .eq('category', cat)
-      )
-    ),
-    Promise.all(
-      phases.map((p) =>
-        supabase
-          .from('knowledge_base_entries')
-          .select('id', { count: 'exact', head: true })
-          .eq('project_id', projectId)
-          .eq('phase_number', p)
-      )
-    ),
-  ])
+  const countResults = await Promise.all(
+    categories.map((cat) =>
+      supabase
+        .from('knowledge_base_entries')
+        .select('id', { count: 'exact', head: true })
+        .eq('project_id', projectId)
+        .eq('category', cat)
+    )
+  )
 
   const categoryCounts: Record<string, number> = {}
   categories.forEach((cat, i) => {
-    categoryCounts[cat] = catResults[i].count ?? 0
-  })
-
-  const phaseCounts: Record<number, number> = {}
-  phases.forEach((p, i) => {
-    phaseCounts[p] = phaseResults[i].count ?? 0
+    categoryCounts[cat] = countResults[i].count ?? 0
   })
 
   return (
@@ -60,7 +42,6 @@ export default async function KnowledgePage({
       initialEntries={(entries ?? []) as KnowledgeBaseEntry[]}
       initialTotal={count ?? 0}
       categoryCounts={categoryCounts}
-      phaseCounts={phaseCounts}
     />
   )
 }

@@ -14,7 +14,6 @@ export async function GET(
 
   const url = new URL(request.url)
   const category = url.searchParams.get('category')
-  const phase = url.searchParams.get('phase')
   const q = url.searchParams.get('q')
   const page = Math.max(1, parseInt(url.searchParams.get('page') ?? '1'))
   const offset = (page - 1) * PAGE_SIZE
@@ -29,10 +28,6 @@ export async function GET(
 
   if (category) {
     query = query.eq('category', category)
-  }
-
-  if (phase !== null && phase !== '') {
-    query = query.eq('phase_number', parseInt(phase))
   }
 
   if (q && q.trim()) {
