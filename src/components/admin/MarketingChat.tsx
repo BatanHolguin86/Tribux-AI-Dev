@@ -84,6 +84,8 @@ export function MarketingChat() {
   const [loadingThreads, setLoadingThreads] = useState(true)
   const [savingArtifact, setSavingArtifact] = useState(false)
   const [pendingMessage, setPendingMessage] = useState<string | null>(null)
+  const threadIdRef = useRef<string | null>(null)
+  threadIdRef.current = activeThreadId
 
   // Load threads
   const loadThreads = useCallback(async () => {
@@ -131,12 +133,20 @@ export function MarketingChat() {
       .finally(() => setLoadingMessages(false))
   }, [activeThreadId])
 
-  // Chat hook — uses custom transport that sends threadId + mode in the body
+  // Chat hook — custom fetch injects latest threadId from ref (avoids stale closure)
+  const modeRef = useRef<MarketingMode>(activeMode)
+  modeRef.current = activeMode
+
   const { messages, sendMessage, status, stop, error, setMessages } = useChat({
     id: activeThreadId ?? 'new',
     transport: new DefaultChatTransport({
       api: '/api/admin/marketing/chat',
-      body: { threadId: activeThreadId, mode: activeMode },
+      fetch: async (url: string | URL | Request, init?: RequestInit) => {
+        const body = JSON.parse((init?.body as string) ?? '{}')
+        body.threadId = threadIdRef.current
+        body.mode = modeRef.current
+        return globalThis.fetch(url, { ...init, body: JSON.stringify(body) })
+      },
     }),
     messages: initialMessages,
     onFinish() {
