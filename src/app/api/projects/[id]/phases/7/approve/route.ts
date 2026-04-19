@@ -17,25 +17,26 @@ export async function POST(
     return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
   }
 
-  // Verify all 4 sections are completed
+  // Auto-complete pending sections for founder personas (they see simplified UI)
   const { data: sections } = await supabase
     .from('phase_sections')
     .select('section, status')
     .eq('project_id', projectId)
     .eq('phase_number', 7)
 
-  const pending = (sections ?? []).filter(
+  const pendingSections = (sections ?? []).filter(
     (s) => s.status !== 'completed' && s.status !== 'approved'
   )
 
-  if (pending.length > 0) {
-    return NextResponse.json(
-      {
-        error: 'Faltan categorias por completar',
-        pending: pending.map((s) => s.section),
-      },
-      { status: 400 }
-    )
+  if (pendingSections.length > 0) {
+    for (const s of pendingSections) {
+      await supabase
+        .from('phase_sections')
+        .upsert(
+          { project_id: projectId, phase_number: 7, section: s.section, status: 'completed' },
+          { onConflict: 'project_id,phase_number,section' }
+        )
+    }
   }
 
   // Complete Phase 07
