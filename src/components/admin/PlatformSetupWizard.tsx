@@ -89,19 +89,112 @@ export function PlatformSetupWizard() {
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand-teal border-t-transparent" />
         </div>
       ) : (
-        PROVIDERS.map((provider) => (
-          <ProviderCard
-            key={provider.id}
-            config={provider}
-            status={statuses.find((s) => s.provider === provider.id) ?? null}
-            onUpdated={() => {
-              fetch('/api/admin/platform-config')
-                .then((r) => r.json())
-                .then((data) => setStatuses(data.providers ?? []))
-                .catch(() => {})
-            }}
-          />
-        ))
+        <>
+          {PROVIDERS.map((provider) => (
+            <ProviderCard
+              key={provider.id}
+              config={provider}
+              status={statuses.find((s) => s.provider === provider.id) ?? null}
+              onUpdated={() => {
+                fetch('/api/admin/platform-config')
+                  .then((r) => r.json())
+                  .then((data) => setStatuses(data.providers ?? []))
+                  .catch(() => {})
+              }}
+            />
+          ))}
+          <AIHealthCheck />
+        </>
+      )}
+    </div>
+  )
+}
+
+type HealthCheck = { ok: boolean; detail: string }
+type HealthResult = { status: string; model: string; checks: Record<string, HealthCheck> }
+
+function AIHealthCheck() {
+  const [result, setResult] = useState<HealthResult | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [lastChecked, setLastChecked] = useState<string | null>(null)
+
+  async function runCheck() {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/admin/health')
+      if (res.ok) {
+        setResult(await res.json())
+        setLastChecked(new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }))
+      }
+    } catch {
+      setResult({ status: 'error', model: '?', checks: { connection: { ok: false, detail: 'No se pudo conectar' } } })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { void runCheck() }, [])
+
+  const isHealthy = result?.status === 'healthy'
+
+  return (
+    <div className={`rounded-xl border-2 p-5 transition-colors ${
+      result === null ? 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+        : isHealthy ? 'border-green-200 bg-green-50/30 dark:border-green-900/50 dark:bg-green-950/10'
+        : 'border-red-200 bg-red-50/30 dark:border-red-900/50 dark:bg-red-950/10'
+    }`}>
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">🤖</span>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                Motor de IA (Anthropic)
+              </h2>
+              {result && (
+                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                  isHealthy
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                }`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${isHealthy ? 'bg-green-500' : 'bg-red-500'}`} />
+                  {isHealthy ? 'Operativo' : 'Con problemas'}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Agentes IA, generacion de documentos y chat. Modelo: {result?.model ?? '...'}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => void runCheck()}
+          disabled={loading}
+          className="flex items-center gap-1 rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-300"
+        >
+          {loading ? '⏳' : '🔄'} {loading ? 'Verificando...' : 'Verificar'}
+        </button>
+      </div>
+
+      {result && (
+        <div className="mt-3 space-y-2">
+          {Object.entries(result.checks).map(([key, check]) => (
+            <div key={key} className="flex items-start gap-2 rounded-lg bg-white/50 px-3 py-2 text-xs dark:bg-gray-800/50">
+              <span className={`mt-0.5 shrink-0 ${check.ok ? 'text-green-500' : 'text-red-500'}`}>
+                {check.ok ? '✓' : '✗'}
+              </span>
+              <div>
+                <span className="font-medium text-gray-700 dark:text-gray-300">
+                  {key === 'api_key' ? 'API Key' : key === 'api_call' ? 'Llamada de prueba' : key}
+                </span>
+                <p className="text-gray-500 dark:text-gray-400">{check.detail}</p>
+              </div>
+            </div>
+          ))}
+          {lastChecked && (
+            <p className="text-[10px] text-gray-400">Ultima verificacion: {lastChecked}</p>
+          )}
+        </div>
       )}
     </div>
   )

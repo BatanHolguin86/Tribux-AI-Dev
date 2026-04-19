@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useChat } from '@ai-sdk/react'
-import { TextStreamChatTransport } from 'ai'
+import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { StreamingIndicator } from '@/components/shared/chat/StreamingIndicator'
@@ -46,7 +46,7 @@ export function MiniAgentDrawer({ projectId, onClose }: MiniAgentDrawerProps) {
   }, [projectId])
 
   const { messages, sendMessage, status, stop, error } = useChat({
-    transport: new TextStreamChatTransport({
+    transport: new DefaultChatTransport({
       api: `/api/projects/${projectId}/agents/cto_virtual/threads/${threadId ?? 'pending'}/chat`,
     }),
     messages: [],

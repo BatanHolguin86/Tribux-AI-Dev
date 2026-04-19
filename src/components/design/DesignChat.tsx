@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
-import { TextStreamChatTransport } from 'ai'
+import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
 import { ChatInput } from '@/components/shared/chat/ChatInput'
 import { ChatMessage } from '@/components/shared/chat/ChatMessage'
@@ -40,7 +40,7 @@ export function DesignChat({
   const [caminoABusy, setCaminoABusy] = useState(false)
 
   const { messages, sendMessage, status, stop, error } = useChat({
-    transport: new TextStreamChatTransport({
+    transport: new DefaultChatTransport({
       api: `/api/projects/${projectId}/agents/ui_ux_designer/threads/${threadId}/chat`,
     }),
   })
