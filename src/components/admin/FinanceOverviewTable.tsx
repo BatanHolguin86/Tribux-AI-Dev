@@ -54,9 +54,6 @@ type OverviewResponse = {
     netProfitUsd: number
     infraCosts: InfraCosts
     ownerView?: {
-      devCostMonthly: number
-      totalOwnerCosts: number
-      netProfitAfterDev: number
       breakEvenUsers: number
       activePayingUsers: number
       trialUsers: number
@@ -249,21 +246,17 @@ export function FinanceOverviewTable() {
             <span className="text-sm font-semibold tabular-nums text-brand-primary dark:text-brand-teal">{formatUsd(summary.totalCostCurrentMonthUsd)}</span>
           </div>
 
-          {/* Development cost */}
-          {summary.ownerView && (
-            <div className="flex items-center justify-between rounded-lg bg-purple-50 px-4 py-2.5 border border-purple-200/50 dark:bg-purple-900/10 dark:border-purple-800/30">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-purple-500" />
-                <span className="text-sm font-medium text-purple-700 dark:text-purple-300">Desarrollo</span>
-                <span className="text-[10px] text-gray-400">
-                  {summary.ownerView.devCostMonthly > 0 ? 'Claude Code (tu desarrollo)' : 'Agrega COST_DEVELOPMENT_MONTHLY en Vercel'}
-                </span>
-              </div>
-              <span className="text-sm font-semibold tabular-nums text-purple-700 dark:text-purple-300">
-                {summary.ownerView.devCostMonthly > 0 ? formatUsd(summary.ownerView.devCostMonthly) : '—'}
-              </span>
+          {/* Development cost note */}
+          <div className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-2.5 border border-dashed border-gray-300 dark:bg-gray-800 dark:border-gray-600">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-gray-300" />
+              <span className="text-sm text-gray-500 dark:text-gray-400">Desarrollo (Claude Code)</span>
+              <span className="text-[10px] text-gray-400">No rastreable via API</span>
             </div>
-          )}
+            <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-brand-teal hover:underline">
+              Ver en Anthropic →
+            </a>
+          </div>
         </div>
 
         {/* Totals */}
@@ -271,7 +264,7 @@ export function FinanceOverviewTable() {
           <div className="flex items-center justify-between rounded-lg bg-red-50 px-4 py-3 dark:bg-red-900/10">
             <span className="text-sm font-semibold text-red-700 dark:text-red-400">Total costos</span>
             <span className="text-lg font-bold tabular-nums text-red-700 dark:text-red-400">
-              {formatUsd(summary.ownerView?.totalOwnerCosts ?? summary.totalCostsUsd)}
+              {formatUsd(summary.totalCostsUsd)}
             </span>
           </div>
           <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-4 py-3 dark:bg-emerald-900/10">
@@ -281,23 +274,17 @@ export function FinanceOverviewTable() {
             </span>
           </div>
           <div className={`flex items-center justify-between rounded-lg px-4 py-3 ${
-            (summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd) >= 0
-              ? 'bg-emerald-100 dark:bg-emerald-900/20'
-              : 'bg-red-100 dark:bg-red-900/20'
+            summary.netProfitUsd >= 0 ? 'bg-emerald-100 dark:bg-emerald-900/20' : 'bg-red-100 dark:bg-red-900/20'
           }`}>
             <span className={`text-sm font-bold ${
-              (summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd) >= 0
-                ? 'text-emerald-800 dark:text-emerald-300'
-                : 'text-red-800 dark:text-red-300'
+              summary.netProfitUsd >= 0 ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-800 dark:text-red-300'
             }`}>
-              {(summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd) >= 0 ? '✅ Profit' : '🔴 Deficit'}
+              {summary.netProfitUsd >= 0 ? '✅ Profit' : '🔴 Deficit'}
             </span>
             <span className={`text-xl font-display font-bold tabular-nums ${
-              (summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd) >= 0
-                ? 'text-emerald-800 dark:text-emerald-300'
-                : 'text-red-800 dark:text-red-300'
+              summary.netProfitUsd >= 0 ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-800 dark:text-red-300'
             }`}>
-              {formatUsd(Math.abs(summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd))}
+              {formatUsd(Math.abs(summary.netProfitUsd))}
             </span>
           </div>
         </div>
@@ -314,18 +301,18 @@ export function FinanceOverviewTable() {
             <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
               <div
                 className={`h-full rounded-full transition-all duration-700 ${
-                  summary.totalRevenueCurrentMonthUsd >= (summary.ownerView.totalOwnerCosts)
+                  summary.totalRevenueCurrentMonthUsd >= summary.totalCostsUsd
                     ? 'bg-emerald-500'
                     : 'bg-amber-400'
                 }`}
                 style={{
-                  width: `${Math.min(100, summary.ownerView.totalOwnerCosts > 0 ? (summary.totalRevenueCurrentMonthUsd / summary.ownerView.totalOwnerCosts) * 100 : 0)}%`,
+                  width: `${Math.min(100, summary.totalCostsUsd > 0 ? (summary.totalRevenueCurrentMonthUsd / summary.totalCostsUsd) * 100 : 0)}%`,
                 }}
               />
             </div>
             <div className="mt-1 flex items-center justify-between text-[10px] text-gray-400">
               <span>$0</span>
-              <span>Breakeven: {formatUsd(summary.ownerView.totalOwnerCosts)}</span>
+              <span>Breakeven: {formatUsd(summary.totalCostsUsd)}</span>
             </div>
           </div>
         )}
