@@ -29,14 +29,21 @@ export async function POST(request: Request) {
     const mode: string = body.mode ?? 'brand'
 
     // useChat/DefaultChatTransport sends messages array — extract last user message
+    // Supports both v3 format ({ content: string }) and v4 format ({ parts: [{ type: 'text', text }] })
     if (!message && Array.isArray(body.messages)) {
       const lastUser = [...body.messages].reverse().find((m: { role: string }) => m.role === 'user')
       if (lastUser) {
-        message = typeof lastUser.content === 'string'
-          ? lastUser.content
-          : Array.isArray(lastUser.content)
-            ? lastUser.content.map((p: { text?: string }) => p.text ?? '').join('')
-            : ''
+        const msg = lastUser as Record<string, unknown>
+        if (typeof msg.content === 'string') {
+          message = msg.content
+        } else if (Array.isArray(msg.content)) {
+          message = (msg.content as Array<{ text?: string }>).map((p) => p.text ?? '').join('')
+        } else if (Array.isArray(msg.parts)) {
+          message = (msg.parts as Array<{ type?: string; text?: string }>)
+            .filter((p) => p.type === 'text')
+            .map((p) => p.text ?? '')
+            .join('')
+        }
       }
     }
 
