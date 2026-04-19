@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   const supabase = await createClient()
   let query = supabase
     .from('marketing_artifacts')
-    .select('id, thread_id, title, type, status, created_at, updated_at')
+    .select('id, thread_id, title, type, content, status, created_at, updated_at')
     .order('updated_at', { ascending: false })
 
   if (type) query = query.eq('type', type)
