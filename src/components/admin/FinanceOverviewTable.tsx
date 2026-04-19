@@ -119,11 +119,16 @@ function KpiCard({
   )
 }
 
+type OperationalCost = { id: string; label: string; description: string | null; monthly_usd: number }
+
 export function FinanceOverviewTable() {
   const [data, setData] = useState<OverviewResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [month, setMonth] = useState<string>('')
+  const [editingCosts, setEditingCosts] = useState(false)
+  const [opCosts, setOpCosts] = useState<OperationalCost[]>([])
+  const [savingCost, setSavingCost] = useState<string | null>(null)
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -139,6 +144,25 @@ export function FinanceOverviewTable() {
         .finally(() => setLoading(false))
     })
   }, [month])
+
+  async function loadOpCosts() {
+    const res = await fetch('/api/admin/finance/costs')
+    if (res.ok) setOpCosts(await res.json())
+  }
+
+  async function saveOpCost(id: string, value: number) {
+    setSavingCost(id)
+    await fetch('/api/admin/finance/costs', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, monthly_usd: value }),
+    })
+    setSavingCost(null)
+    // Refresh overview to reflect new costs
+    const params = month ? `?month=${encodeURIComponent(month)}` : ''
+    const res = await fetch(`/api/admin/finance/overview${params}`)
+    if (res.ok) setData(await res.json())
+  }
 
   if (error) {
     return (
@@ -262,7 +286,15 @@ export function FinanceOverviewTable() {
 
             {/* Right: Costs */}
             <div>
-              <p className="mb-4 text-[10px] font-bold uppercase tracking-wider text-red-500 dark:text-red-400">Costos</p>
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-red-500 dark:text-red-400">Costos</p>
+                <button
+                  onClick={() => { void loadOpCosts(); setEditingCosts(!editingCosts) }}
+                  className="text-[11px] font-medium text-brand-teal hover:underline"
+                >
+                  {editingCosts ? 'Cerrar' : 'Editar costos'}
+                </button>
+              </div>
               <div className="space-y-3">
                 {infraEntries.map(([key, value]) => (
                   <div key={key} className="flex items-center gap-3">
@@ -295,6 +327,36 @@ export function FinanceOverviewTable() {
                   </a>
                 </div>
               </div>
+              {/* Inline edit form */}
+              {editingCosts && opCosts.length > 0 && (
+                <div className="mt-3 rounded-xl border border-brand-teal/20 bg-brand-teal/5 p-4 dark:bg-brand-primary/10">
+                  <p className="mb-3 text-xs font-semibold text-brand-primary dark:text-brand-teal">Editar costos mensuales</p>
+                  <div className="space-y-2">
+                    {opCosts.map((cost) => (
+                      <div key={cost.id} className="flex items-center gap-3">
+                        <span className="min-w-[100px] text-xs text-gray-600 dark:text-gray-400">{cost.label}</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-gray-400">$</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            defaultValue={cost.monthly_usd}
+                            onBlur={(e) => {
+                              const val = parseFloat(e.target.value) || 0
+                              if (val !== cost.monthly_usd) void saveOpCost(cost.id, val)
+                            }}
+                            className="w-20 rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-right text-xs tabular-nums dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                          />
+                        </div>
+                        {savingCost === cost.id && <span className="text-[10px] text-brand-teal">Guardando...</span>}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-[10px] text-gray-400">Cambia el valor y haz clic fuera para guardar. Se actualiza el P&L automaticamente.</p>
+                </div>
+              )}
+
               <div className="mt-4 flex items-center justify-between rounded-xl bg-red-50 px-5 py-3.5 dark:bg-red-900/10">
                 <span className="text-sm font-bold text-red-700 dark:text-red-400">Total costos</span>
                 <span className="font-display text-xl font-bold tabular-nums text-red-700 dark:text-red-400">{formatUsd(summary.totalCostsUsd)}</span>

@@ -135,16 +135,26 @@ export async function GET(request: Request) {
   const totalRevenue = totalPlanRevenue + totalCreditRevenue
 
   // Infrastructure costs (monthly estimates — update via env vars or here)
-  // Infrastructure costs: only show what's explicitly configured in env vars.
-  // No defaults — if not set, it's $0 (avoids showing invented numbers).
+  // Infrastructure costs: read from DB (operational_costs table, managed by admin)
+  // Fallback to env vars for backward compatibility, then to $0
+  const { data: dbCosts } = await supabase
+    .from('operational_costs')
+    .select('id, monthly_usd')
+
+  const costFromDb = (id: string, envKey: string): number => {
+    const row = (dbCosts ?? []).find((c) => c.id === id)
+    if (row && Number(row.monthly_usd) > 0) return Number(row.monthly_usd)
+    return Number(process.env[envKey] ?? 0)
+  }
+
   const infraCosts = {
-    supabase: Number(process.env.COST_SUPABASE_MONTHLY ?? 0),
-    vercel: Number(process.env.COST_VERCEL_MONTHLY ?? 0),
-    anthropicPlatform: Number(process.env.COST_ANTHROPIC_PLATFORM ?? 0),
-    domain: Number(process.env.COST_DOMAIN_MONTHLY ?? 0),
-    sentry: Number(process.env.COST_SENTRY_MONTHLY ?? 0),
-    resend: Number(process.env.COST_RESEND_MONTHLY ?? 0),
-    other: Number(process.env.COST_OTHER_MONTHLY ?? 0),
+    supabase: costFromDb('supabase', 'COST_SUPABASE_MONTHLY'),
+    vercel: costFromDb('vercel', 'COST_VERCEL_MONTHLY'),
+    anthropicPlatform: costFromDb('anthropic_platform', 'COST_ANTHROPIC_PLATFORM'),
+    domain: costFromDb('domain', 'COST_DOMAIN_MONTHLY'),
+    sentry: costFromDb('sentry', 'COST_SENTRY_MONTHLY'),
+    resend: costFromDb('resend', 'COST_RESEND_MONTHLY'),
+    other: costFromDb('other', 'COST_OTHER_MONTHLY'),
   }
   const totalInfraCost = Object.values(infraCosts).reduce((s, v) => s + v, 0)
   const totalCosts = totalAiCost + totalInfraCost
