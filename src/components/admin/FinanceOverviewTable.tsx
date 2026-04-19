@@ -223,116 +223,100 @@ export function FinanceOverviewTable() {
         </div>
 
         <div className="p-6">
-          {/* Two-column: Costs vs Revenue */}
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Left: Costs */}
+          {/* Two-column: Revenue (left) vs Costs (right) */}
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Left: Revenue */}
             <div>
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-red-500">Costos</p>
-              <div className="space-y-1.5">
+              <p className="mb-4 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Ingresos</p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-sm dark:bg-emerald-900/30">💳</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Suscripciones</p>
+                    <p className="text-[11px] text-gray-400">{summary.ownerView?.activePayingUsers ?? 0} usuario{(summary.ownerView?.activePayingUsers ?? 0) !== 1 ? 's' : ''} pagando</p>
+                  </div>
+                  <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(summary.totalPlanRevenueUsd ?? 0)}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-sm dark:bg-purple-900/30">💎</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Creditos extra</p>
+                    <p className="text-[11px] text-gray-400">Top-ups del mes</p>
+                  </div>
+                  <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(summary.totalCreditRevenueUsd ?? 0)}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-sm dark:bg-amber-900/30">👥</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Trial</p>
+                    <p className="text-[11px] text-gray-400">Pendientes de conversion</p>
+                  </div>
+                  <span className="text-base font-bold tabular-nums text-gray-500 dark:text-gray-400">{summary.ownerView?.trialUsers ?? 0}</span>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between rounded-xl bg-emerald-50 px-5 py-3.5 dark:bg-emerald-900/10">
+                <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">Total ingresos</span>
+                <span className="font-display text-xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400">{formatUsd(summary.totalRevenueCurrentMonthUsd)}</span>
+              </div>
+            </div>
+
+            {/* Right: Costs */}
+            <div>
+              <p className="mb-4 text-[10px] font-bold uppercase tracking-wider text-red-500 dark:text-red-400">Costos</p>
+              <div className="space-y-3">
                 {infraEntries.map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between py-1.5">
-                    <div className="flex items-center gap-2.5">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-100 text-xs dark:bg-gray-800">
-                        {key === 'supabase' ? '🗄️' : key === 'vercel' ? '▲' : key === 'domain' ? '🌐' : key === 'sentry' ? '🔍' : key === 'resend' ? '✉️' : '⚙️'}
-                      </span>
-                      <div>
-                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{INFRA_LABELS[key].name}</p>
-                        <p className="text-[10px] text-gray-400">{INFRA_LABELS[key].desc}</p>
-                      </div>
+                  <div key={key} className="flex items-center gap-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-sm dark:bg-gray-800">
+                      {key === 'supabase' ? '🗄️' : key === 'vercel' ? '▲' : key === 'domain' ? '🌐' : key === 'sentry' ? '🔍' : key === 'resend' ? '✉️' : '⚙️'}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{INFRA_LABELS[key].name}</p>
+                      <p className="text-[11px] text-gray-400">{INFRA_LABELS[key].desc}</p>
                     </div>
-                    <span className="text-sm font-semibold tabular-nums text-gray-900 dark:text-white">{formatUsd(value)}</span>
+                    <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(value)}</span>
                   </div>
                 ))}
-                {/* IA cost */}
-                <div className="flex items-center justify-between rounded-lg bg-brand-teal/5 px-3 py-2 dark:bg-brand-primary/10">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-teal/10 text-xs">🤖</span>
-                    <div>
-                      <p className="text-sm font-medium text-brand-primary dark:text-brand-teal">IA producto</p>
-                      <p className="text-[10px] text-gray-400">Consumo de tus usuarios</p>
-                    </div>
+                <div className="flex items-center gap-3 rounded-xl bg-brand-teal/5 px-3 py-2 dark:bg-brand-primary/10">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-teal/10 text-sm">🤖</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-brand-primary dark:text-brand-teal">IA producto</p>
+                    <p className="text-[11px] text-gray-400">Consumo de tus usuarios</p>
                   </div>
-                  <span className="text-sm font-bold tabular-nums text-brand-primary dark:text-brand-teal">{formatUsd(summary.totalCostCurrentMonthUsd)}</span>
+                  <span className="text-base font-bold tabular-nums text-brand-primary dark:text-brand-teal">{formatUsd(summary.totalCostCurrentMonthUsd)}</span>
                 </div>
-                {/* Dev cost link */}
-                <div className="flex items-center justify-between py-1.5 opacity-60">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-dashed border-gray-300 text-xs dark:border-gray-600">💻</span>
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Desarrollo</p>
-                      <p className="text-[10px] text-gray-400">Via Claude Code</p>
-                    </div>
+                <div className="flex items-center gap-3 opacity-50">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-dashed border-gray-300 text-sm dark:border-gray-600">💻</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Desarrollo</p>
+                    <p className="text-[11px] text-gray-400">Via Claude Code</p>
                   </div>
-                  <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="text-[11px] font-medium text-brand-teal hover:underline">
-                    Ver en Anthropic →
+                  <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="shrink-0 text-[11px] font-medium text-brand-teal hover:underline">
+                    Anthropic →
                   </a>
                 </div>
               </div>
-              {/* Total costs */}
-              <div className="mt-3 flex items-center justify-between rounded-xl bg-red-50 px-4 py-3 dark:bg-red-900/10">
+              <div className="mt-4 flex items-center justify-between rounded-xl bg-red-50 px-5 py-3.5 dark:bg-red-900/10">
                 <span className="text-sm font-bold text-red-700 dark:text-red-400">Total costos</span>
                 <span className="font-display text-xl font-bold tabular-nums text-red-700 dark:text-red-400">{formatUsd(summary.totalCostsUsd)}</span>
               </div>
             </div>
+          </div>
 
-            {/* Right: Revenue + Result */}
+          {/* Result card — full width */}
+          <div className={`mt-6 flex items-center justify-between rounded-xl px-6 py-5 ${
+            summary.netProfitUsd >= 0
+              ? 'bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200 dark:from-emerald-900/10 dark:to-emerald-900/5 dark:border-emerald-800/30'
+              : 'bg-gradient-to-r from-red-50 to-red-100/50 border border-red-200 dark:from-red-900/10 dark:to-red-900/5 dark:border-red-800/30'
+          }`}>
             <div>
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-emerald-500">Ingresos</p>
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between py-1.5">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-xs dark:bg-emerald-900/30">💳</span>
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Suscripciones</p>
-                      <p className="text-[10px] text-gray-400">{summary.ownerView?.activePayingUsers ?? 0} usuario{(summary.ownerView?.activePayingUsers ?? 0) !== 1 ? 's' : ''} pagando</p>
-                    </div>
-                  </div>
-                  <span className="text-sm font-semibold tabular-nums text-gray-900 dark:text-white">{formatUsd(summary.totalPlanRevenueUsd ?? 0)}</span>
-                </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100 text-xs dark:bg-purple-900/30">💎</span>
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Creditos extra</p>
-                      <p className="text-[10px] text-gray-400">Top-ups del mes</p>
-                    </div>
-                  </div>
-                  <span className="text-sm font-semibold tabular-nums text-gray-900 dark:text-white">{formatUsd(summary.totalCreditRevenueUsd ?? 0)}</span>
-                </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-xs dark:bg-amber-900/30">👥</span>
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Trial</p>
-                      <p className="text-[10px] text-gray-400">Pendientes de conversion</p>
-                    </div>
-                  </div>
-                  <span className="text-sm font-semibold tabular-nums text-gray-500 dark:text-gray-400">{summary.ownerView?.trialUsers ?? 0}</span>
-                </div>
-              </div>
-              {/* Total revenue */}
-              <div className="mt-3 flex items-center justify-between rounded-xl bg-emerald-50 px-4 py-3 dark:bg-emerald-900/10">
-                <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">Total revenue</span>
-                <span className="font-display text-xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400">{formatUsd(summary.totalRevenueCurrentMonthUsd)}</span>
-              </div>
-
-              {/* Result */}
-              <div className={`mt-3 flex items-center justify-between rounded-xl px-4 py-4 ${
-                summary.netProfitUsd >= 0
-                  ? 'bg-gradient-to-r from-emerald-50 to-emerald-100 dark:from-emerald-900/10 dark:to-emerald-900/20'
-                  : 'bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/10 dark:to-red-900/20'
-              }`}>
-                <div>
-                  <p className={`text-sm font-bold ${summary.netProfitUsd >= 0 ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-800 dark:text-red-300'}`}>
-                    {summary.netProfitUsd >= 0 ? 'Profit' : 'Deficit'}
-                  </p>
-                  <p className="text-[10px] text-gray-500">Revenue - Costos</p>
-                </div>
-                <span className={`font-display text-2xl font-bold tabular-nums ${summary.netProfitUsd >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'}`}>
-                  {summary.netProfitUsd < 0 && '-'}{formatUsd(Math.abs(summary.netProfitUsd))}
-                </span>
-              </div>
+              <p className={`font-display text-base font-bold ${summary.netProfitUsd >= 0 ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-800 dark:text-red-300'}`}>
+                {summary.netProfitUsd >= 0 ? 'Profit del mes' : 'Deficit del mes'}
+              </p>
+              <p className="mt-0.5 text-[11px] text-gray-500">Ingresos - Costos operativos</p>
             </div>
+            <span className={`font-display text-3xl font-bold tabular-nums ${summary.netProfitUsd >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'}`}>
+              {summary.netProfitUsd < 0 && '-'}{formatUsd(Math.abs(summary.netProfitUsd))}
+            </span>
           </div>
 
           {/* Breakeven bar */}
