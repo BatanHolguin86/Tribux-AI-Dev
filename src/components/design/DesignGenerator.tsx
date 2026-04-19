@@ -177,8 +177,10 @@ export function DesignGenerator({
         return
       }
 
-      // Refresh artifact list (map API fields to component fields)
-      const listRes = await fetch(`/api/projects/${projectId}/designs`)
+      // Wait for stream to complete (keeps Vercel connection alive)
+      await res.text()
+
+      // Refresh artifact list
       await refreshArtifactsWithThumbs()
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Error de conexion')

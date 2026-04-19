@@ -1,4 +1,4 @@
-import { generateText } from 'ai'
+import { streamText } from 'ai'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { defaultModel, AI_CONFIG } from '@/lib/ai/anthropic'
@@ -89,99 +89,115 @@ export async function POST(
     const discoveryDocs = await getApprovedDiscoveryDocs(projectId)
     const featureSpecs = await getApprovedFeatureSpecs(projectId)
 
-    // Generate ONE artifact PER screen (avoids token limit cutting off multi-screen designs)
-    const results: Array<{ screen: string; artifactId: string; success: boolean }> = []
+    // Stream generation to keep connection alive on Vercel Hobby (10s timeout for non-streaming)
+    // Generate ONE artifact PER screen sequentially, streaming tokens to keep alive
+    const encoder = new TextEncoder()
+    const responseStream = new ReadableStream({
+      async start(controller) {
+        const results: Array<{ screen: string; artifactId: string; success: boolean }> = []
 
-    for (const screen of parsed.data.screens) {
-      const systemPrompt = buildDesignGenerationPrompt({
-        projectName: project.name,
-        screens: [screen],
-        type: parsed.data.type,
-        featureSpecs,
-        discoveryDocs,
-        refinement: parsed.data.refinement,
-      })
-
-      // Create artifact record
-      const { data: artifact, error: insertError } = await supabase
-        .from('design_artifacts')
-        .insert({
-          project_id: projectId,
-          type: parsed.data.type,
-          screen_name: screen,
-          status: 'generating',
-          prompt_used: systemPrompt.slice(0, 2000),
-          storage_path: '',
-          mime_type: 'text/markdown',
-        })
-        .select('id')
-        .single()
-
-      if (insertError || !artifact) {
-        console.error('[Design generate] Insert error for', screen, insertError)
-        results.push({ screen, artifactId: '', success: false })
-        continue
-      }
-
-      try {
-        const { text: rawText, usage } = await generateText({
-          model: defaultModel,
-          system: systemPrompt,
-          messages: [
-            {
-              role: 'user',
-              content: `Genera el HTML visual para la pantalla: ${screen}. Responde SOLO con HTML completo, sin markdown.`,
-            },
-          ],
-          ...AI_CONFIG.designPrompts,
-        })
-
-        let text = rawText.trim()
-        if (text.startsWith('```')) {
-          text = text.replace(/^```(?:html)?\s*\n?/, '').replace(/\n?```\s*$/, '')
-        }
-
-        // Upload to storage (best effort)
-        const storagePath = `projects/${projectId}/designs/${artifact.id}.html`
         try {
-          const blob = new Blob([text], { type: 'text/html' })
-          await supabase.storage
-            .from('project-designs')
-            .upload(storagePath, blob, { contentType: 'text/html', upsert: true })
-        } catch (err) {
-          console.error('[Design generate] Storage upload failed', err)
+          for (const screen of parsed.data.screens) {
+            controller.enqueue(encoder.encode(`generating:${screen}\n`))
+
+            const systemPrompt = buildDesignGenerationPrompt({
+              projectName: project.name,
+              screens: [screen],
+              type: parsed.data.type,
+              featureSpecs,
+              discoveryDocs,
+              refinement: parsed.data.refinement,
+            })
+
+            const { data: artifact, error: insertError } = await supabase
+              .from('design_artifacts')
+              .insert({
+                project_id: projectId,
+                type: parsed.data.type,
+                screen_name: screen,
+                status: 'generating',
+                prompt_used: systemPrompt.slice(0, 2000),
+                storage_path: '',
+                mime_type: 'text/markdown',
+              })
+              .select('id')
+              .single()
+
+            if (insertError || !artifact) {
+              results.push({ screen, artifactId: '', success: false })
+              continue
+            }
+
+            try {
+              const result = streamText({
+                model: defaultModel,
+                system: systemPrompt,
+                messages: [
+                  {
+                    role: 'user',
+                    content: `Genera el HTML visual para la pantalla: ${screen}. Responde SOLO con HTML completo, sin markdown.`,
+                  },
+                ],
+                ...AI_CONFIG.designPrompts,
+              })
+
+              // Stream tokens to keep connection alive
+              let fullText = ''
+              for await (const chunk of result.textStream) {
+                controller.enqueue(encoder.encode(chunk))
+                fullText += chunk
+              }
+
+              let text = fullText.trim()
+              if (text.startsWith('```')) {
+                text = text.replace(/^```(?:html)?\s*\n?/, '').replace(/\n?```\s*$/, '')
+              }
+
+              const usageData = await result.usage
+
+              // Upload to storage (best effort)
+              const storagePath = `projects/${projectId}/designs/${artifact.id}.html`
+              try {
+                const blob = new Blob([text], { type: 'text/html' })
+                await supabase.storage
+                  .from('project-designs')
+                  .upload(storagePath, blob, { contentType: 'text/html', upsert: true })
+              } catch (err) {
+                console.error('[Design generate] Storage upload failed', err)
+              }
+
+              await supabase
+                .from('design_artifacts')
+                .update({ storage_path: storagePath, status: 'draft', content: text })
+                .eq('id', artifact.id)
+
+              const inputTokens = usageData?.inputTokens ?? estimateTokensFromText(systemPrompt)
+              const outputTokens = usageData?.outputTokens ?? estimateTokensFromText(text)
+              recordAiUsage(supabase, {
+                userId: user.id,
+                projectId,
+                eventType: 'design_generate',
+                model: defaultModel?.toString?.() ?? undefined,
+                inputTokens,
+                outputTokens,
+              }).catch(() => {})
+
+              results.push({ screen, artifactId: artifact.id, success: true })
+              controller.enqueue(encoder.encode(`\ndone:${screen}\n`))
+            } catch (err) {
+              console.error('[Design generate] Generation failed for', screen, err)
+              await supabase.from('design_artifacts').update({ status: 'draft' }).eq('id', artifact.id)
+              results.push({ screen, artifactId: artifact.id, success: false })
+            }
+          }
+        } finally {
+          controller.close()
         }
+      },
+    })
 
-        await supabase
-          .from('design_artifacts')
-          .update({ storage_path: storagePath, status: 'draft', content: text })
-          .eq('id', artifact.id)
-
-        // Record usage
-        const inputTokens = usage?.inputTokens ?? estimateTokensFromText(systemPrompt)
-        const outputTokens = usage?.outputTokens ?? estimateTokensFromText(text)
-        recordAiUsage(supabase, {
-          userId: user.id,
-          projectId,
-          eventType: 'design_generate',
-          model: defaultModel?.toString?.() ?? undefined,
-          inputTokens,
-          outputTokens,
-        }).catch(() => {})
-
-        results.push({ screen, artifactId: artifact.id, success: true })
-      } catch (err) {
-        console.error('[Design generate] Generation failed for', screen, err)
-        await supabase.from('design_artifacts').update({ status: 'draft' }).eq('id', artifact.id)
-        results.push({ screen, artifactId: artifact.id, success: false })
-      }
-    }
-
-    return Response.json({
-      success: results.some((r) => r.success),
-      generated: results.filter((r) => r.success).length,
-      total: parsed.data.screens.length,
-      results,
+    return new Response(responseStream, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     })
   } catch (error) {
     console.error('[Design generate] Error', error)
