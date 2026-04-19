@@ -86,3 +86,47 @@ export async function PATCH(
 
   return NextResponse.json(artifact)
 }
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string; artifactId: string }> },
+) {
+  const { id: projectId, artifactId } = await params
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+
+  // Get artifact to clean up storage
+  const { data: artifact } = await supabase
+    .from('design_artifacts')
+    .select('storage_path')
+    .eq('id', artifactId)
+    .eq('project_id', projectId)
+    .single()
+
+  if (!artifact) {
+    return NextResponse.json({ error: 'Artefacto no encontrado' }, { status: 404 })
+  }
+
+  // Delete from storage (best effort)
+  if (artifact.storage_path) {
+    await supabase.storage
+      .from('project-designs')
+      .remove([artifact.storage_path])
+      .catch(() => {})
+  }
+
+  // Delete from DB
+  const { error } = await supabase
+    .from('design_artifacts')
+    .delete()
+    .eq('id', artifactId)
+    .eq('project_id', projectId)
+
+  if (error) {
+    return NextResponse.json({ error: 'Error al eliminar artefacto' }, { status: 500 })
+  }
+
+  return NextResponse.json({ ok: true })
+}
