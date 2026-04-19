@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { parseGitHubUrl } from '@/lib/github/repo-context'
 import { getLatestGitHubDeployment, getLatestWorkflowRun } from '@/lib/github/workflows'
+import { getPlatformToken } from '@/lib/platform/config'
 
 export type ServiceStatus = 'connected' | 'partial' | 'missing' | 'error'
 
@@ -46,11 +47,18 @@ export async function GET(
         const parsed = parseGitHubUrl(project.repo_url)
         if (!parsed) throw new Error('URL inválida')
 
+        // Use platform token (PLATFORM_GITHUB_TOKEN) for private org repos
+        let ghToken = process.env.GITHUB_TOKEN ?? ''
+        try {
+          const platform = await getPlatformToken('github')
+          ghToken = platform.token
+        } catch { /* fallback to GITHUB_TOKEN */ }
+
         const res = await fetch(
           `${GITHUB_API}/repos/${parsed.owner}/${parsed.repo}`,
           {
             headers: {
-              Authorization: `token ${process.env.GITHUB_TOKEN ?? ''}`,
+              Authorization: `token ${ghToken}`,
               Accept: 'application/vnd.github.v3+json',
               'User-Agent': 'Tribux AI',
             },
@@ -71,7 +79,7 @@ export async function GET(
             },
           })
         } else if (res.status === 404) {
-          services.push({ id: 'github', status: 'partial', details: { url: project.repo_url, error: 'Repo no encontrado o privado (verifica GITHUB_TOKEN)' } })
+          services.push({ id: 'github', status: 'partial', details: { url: project.repo_url, error: 'Repo no encontrado o privado' } })
         } else {
           services.push({ id: 'github', status: 'partial', details: { url: project.repo_url, error: `GitHub API HTTP ${res.status}` } })
         }
@@ -82,17 +90,16 @@ export async function GET(
 
     // ── 2. Supabase ────────────────────────────────────────────────────────────
     const hasRef = !!project.supabase_project_ref
-    const hasToken = !!project.supabase_access_token
 
-    if (!hasRef && !hasToken) {
-      services.push({ id: 'supabase', status: 'missing', details: { reason: 'Project ref y access token no configurados' } })
-    } else if (!hasToken) {
-      services.push({ id: 'supabase', status: 'partial', details: { projectRef: project.supabase_project_ref, reason: 'Falta el access token' } })
+    if (!hasRef) {
+      services.push({ id: 'supabase', status: 'missing', details: { reason: 'No hay proyecto Supabase configurado' } })
     } else {
       try {
+        // Use platform management token (PLATFORM_SUPABASE_TOKEN), not the project's service role key
+        const platform = await getPlatformToken('supabase')
         const res = await fetch(
           `https://api.supabase.com/v1/projects/${project.supabase_project_ref}`,
-          { headers: { Authorization: `Bearer ${project.supabase_access_token}` } },
+          { headers: { Authorization: `Bearer ${platform.token}` } },
         )
 
         if (res.ok) {
@@ -111,14 +118,15 @@ export async function GET(
           services.push({
             id: 'supabase',
             status: 'partial',
-            details: { projectRef: project.supabase_project_ref, error: `Supabase API HTTP ${res.status} — verifica el token` },
+            details: { projectRef: project.supabase_project_ref, error: `Supabase API HTTP ${res.status}` },
           })
         }
       } catch {
+        // Fallback: if platform token not available, check if ref exists
         services.push({
           id: 'supabase',
-          status: 'partial',
-          details: { projectRef: project.supabase_project_ref, error: 'No se pudo conectar a Supabase API' },
+          status: project.supabase_project_ref ? 'partial' : 'missing',
+          details: { projectRef: project.supabase_project_ref, error: 'No se pudo verificar — token de management no configurado' },
         })
       }
     }
