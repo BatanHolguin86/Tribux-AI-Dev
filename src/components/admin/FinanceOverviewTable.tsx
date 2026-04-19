@@ -211,139 +211,125 @@ export function FinanceOverviewTable() {
         />
       </div>
 
-      {/* Infrastructure costs */}
-      {infraEntries.length > 0 && (
-        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            Costos de infraestructura
-            <span className="ml-2 text-xs font-normal text-gray-400 dark:text-gray-500">mensuales</span>
-          </h3>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {infraEntries.map(([key, value]) => (
-              <div
-                key={key}
-                className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-800 px-4 py-3 border border-gray-100 dark:border-gray-700"
-              >
-                <div>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {INFRA_LABELS[key].name}
-                  </span>
-                  <span className="block text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
-                    {INFRA_LABELS[key].desc}
-                  </span>
-                </div>
-                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 tabular-nums">
-                  {formatUsd(value)}
+      {/* Consolidated Cost Panel */}
+      <div className="rounded-xl border-2 border-brand-primary/20 bg-white dark:bg-gray-900 p-5">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="text-lg">💰</span>
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              P&L Completo — Tu inversion vs Revenue
+            </h3>
+            <p className="text-[11px] text-gray-400 dark:text-gray-500">
+              Todo lo que pagas para operar Tribux este mes
+            </p>
+          </div>
+        </div>
+
+        {/* Cost breakdown */}
+        <div className="space-y-2">
+          {/* Infra items */}
+          {infraEntries.map(([key, value]) => (
+            <div key={key} className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-2.5 dark:bg-gray-800">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-gray-400" />
+                <span className="text-sm text-gray-700 dark:text-gray-300">{INFRA_LABELS[key].name}</span>
+                <span className="text-[10px] text-gray-400">{INFRA_LABELS[key].desc}</span>
+              </div>
+              <span className="text-sm font-semibold tabular-nums text-gray-900 dark:text-white">{formatUsd(value)}</span>
+            </div>
+          ))}
+
+          {/* IA product cost */}
+          <div className="flex items-center justify-between rounded-lg bg-brand-teal/5 px-4 py-2.5 border border-brand-teal/20 dark:bg-brand-primary/10">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-brand-teal" />
+              <span className="text-sm font-medium text-brand-primary dark:text-brand-teal">IA producto</span>
+              <span className="text-[10px] text-gray-400">Lo que consumen tus usuarios</span>
+            </div>
+            <span className="text-sm font-semibold tabular-nums text-brand-primary dark:text-brand-teal">{formatUsd(summary.totalCostCurrentMonthUsd)}</span>
+          </div>
+
+          {/* Development cost */}
+          {summary.ownerView && (
+            <div className="flex items-center justify-between rounded-lg bg-purple-50 px-4 py-2.5 border border-purple-200/50 dark:bg-purple-900/10 dark:border-purple-800/30">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-purple-500" />
+                <span className="text-sm font-medium text-purple-700 dark:text-purple-300">Desarrollo</span>
+                <span className="text-[10px] text-gray-400">
+                  {summary.ownerView.devCostMonthly > 0 ? 'Claude Code (tu desarrollo)' : 'Agrega COST_DEVELOPMENT_MONTHLY en Vercel'}
                 </span>
               </div>
-            ))}
-            <div className="flex items-center justify-between rounded-lg bg-brand-surface dark:bg-brand-primary/20 px-4 py-3 border border-brand-teal/30 dark:border-brand-primary">
-              <div>
-                <span className="text-sm font-medium text-brand-primary dark:text-brand-teal">
-                  Costo IA
-                </span>
-                <span className="block text-[11px] text-brand-teal dark:text-brand-teal mt-0.5">
-                  Variable por uso
-                </span>
-              </div>
-              <span className="text-sm font-semibold text-brand-primary dark:text-brand-teal tabular-nums">
-                {formatUsd(summary.totalCostCurrentMonthUsd)}
+              <span className="text-sm font-semibold tabular-nums text-purple-700 dark:text-purple-300">
+                {summary.ownerView.devCostMonthly > 0 ? formatUsd(summary.ownerView.devCostMonthly) : '—'}
               </span>
             </div>
+          )}
+        </div>
+
+        {/* Totals */}
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center justify-between rounded-lg bg-red-50 px-4 py-3 dark:bg-red-900/10">
+            <span className="text-sm font-semibold text-red-700 dark:text-red-400">Total costos</span>
+            <span className="text-lg font-bold tabular-nums text-red-700 dark:text-red-400">
+              {formatUsd(summary.ownerView?.totalOwnerCosts ?? summary.totalCostsUsd)}
+            </span>
           </div>
-          <div className="mt-4 flex items-center justify-between rounded-lg bg-gradient-to-r from-[#E8F4F8] via-white to-[#E8F4F8] dark:from-[#0A1F33]/20 dark:via-gray-900 dark:to-[#0A1F33]/20 px-4 py-3 border border-brand-teal/30 dark:border-brand-primary">
-            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">Total costos del mes</span>
-            <span className="text-lg font-display font-bold text-gray-900 dark:text-white tabular-nums">
-              {formatUsd(summary.totalCostsUsd)}
+          <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-4 py-3 dark:bg-emerald-900/10">
+            <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Revenue</span>
+            <span className="text-lg font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
+              {formatUsd(summary.totalRevenueCurrentMonthUsd)}
+            </span>
+          </div>
+          <div className={`flex items-center justify-between rounded-lg px-4 py-3 ${
+            (summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd) >= 0
+              ? 'bg-emerald-100 dark:bg-emerald-900/20'
+              : 'bg-red-100 dark:bg-red-900/20'
+          }`}>
+            <span className={`text-sm font-bold ${
+              (summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd) >= 0
+                ? 'text-emerald-800 dark:text-emerald-300'
+                : 'text-red-800 dark:text-red-300'
+            }`}>
+              {(summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd) >= 0 ? '✅ Profit' : '🔴 Deficit'}
+            </span>
+            <span className={`text-xl font-display font-bold tabular-nums ${
+              (summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd) >= 0
+                ? 'text-emerald-800 dark:text-emerald-300'
+                : 'text-red-800 dark:text-red-300'
+            }`}>
+              {formatUsd(Math.abs(summary.ownerView?.netProfitAfterDev ?? summary.netProfitUsd))}
             </span>
           </div>
         </div>
-      )}
 
-      {/* Owner Investment Panel */}
-      {summary.ownerView && (
-        <div className="rounded-xl border-2 border-brand-primary/20 bg-gradient-to-br from-[#0F2B46]/5 to-white dark:from-[#0F2B46]/30 dark:to-gray-900 p-5">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="text-lg">👤</span>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                Inversion del Owner
-              </h3>
-              <p className="text-[11px] text-gray-400 dark:text-gray-500">
-                Tu costo total como fundador de Tribux (infra + producto + desarrollo)
-              </p>
+        {/* Breakeven bar */}
+        {summary.ownerView && (
+          <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-800">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-gray-500">Progreso hacia breakeven</span>
+              <span className="font-medium text-gray-600 dark:text-gray-300">
+                {summary.ownerView.activePayingUsers} pagando · {summary.ownerView.trialUsers} trial · Necesitas {summary.ownerView.breakEvenUsers} Starter
+              </span>
             </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
-              <p className="text-[11px] font-medium text-gray-400">Infra (fijo)</p>
-              <p className="mt-1 text-lg font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(summary.totalInfraCostUsd)}</p>
-              <p className="text-[10px] text-gray-400">Supabase + Vercel + dominio</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
-              <p className="text-[11px] font-medium text-gray-400">IA producto (variable)</p>
-              <p className="mt-1 text-lg font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(summary.totalCostCurrentMonthUsd)}</p>
-              <p className="text-[10px] text-gray-400">Lo que consumen tus usuarios</p>
-            </div>
-            <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
-              <p className="text-[11px] font-medium text-gray-400">Desarrollo (Claude Code)</p>
-              <p className="mt-1 text-lg font-bold tabular-nums text-gray-900 dark:text-white">
-                {summary.ownerView.devCostMonthly > 0 ? formatUsd(summary.ownerView.devCostMonthly) : '—'}
-              </p>
-              <p className="text-[10px] text-gray-400">
-                {summary.ownerView.devCostMonthly > 0 ? 'Configura COST_DEVELOPMENT_MONTHLY' : 'Agrega COST_DEVELOPMENT_MONTHLY en Vercel'}
-              </p>
-            </div>
-            <div className="rounded-lg border border-brand-primary/30 bg-brand-primary/5 px-4 py-3 dark:border-brand-primary/50 dark:bg-brand-primary/10">
-              <p className="text-[11px] font-medium text-brand-primary dark:text-brand-teal">Total inversion</p>
-              <p className="mt-1 text-lg font-bold tabular-nums text-brand-primary dark:text-white">{formatUsd(summary.ownerView.totalOwnerCosts)}</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                Breakeven: {summary.ownerView.breakEvenUsers} usuarios Starter
-              </p>
-            </div>
-          </div>
-
-          {/* Revenue vs Investment bar */}
-          <div className="mt-4 rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-900">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-500">Revenue</span>
-              <span className="font-semibold text-brand-teal">{formatUsd(summary.totalRevenueCurrentMonthUsd)}</span>
-            </div>
-            <div className="mt-1.5 h-3 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-              {summary.ownerView.totalOwnerCosts > 0 && (
-                <div
-                  className={`h-full rounded-full transition-all duration-700 ${
-                    summary.totalRevenueCurrentMonthUsd >= summary.ownerView.totalOwnerCosts
-                      ? 'bg-emerald-500'
-                      : 'bg-amber-400'
-                  }`}
-                  style={{
-                    width: `${Math.min(100, (summary.totalRevenueCurrentMonthUsd / summary.ownerView.totalOwnerCosts) * 100)}%`,
-                  }}
-                />
-              )}
+            <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+              <div
+                className={`h-full rounded-full transition-all duration-700 ${
+                  summary.totalRevenueCurrentMonthUsd >= (summary.ownerView.totalOwnerCosts)
+                    ? 'bg-emerald-500'
+                    : 'bg-amber-400'
+                }`}
+                style={{
+                  width: `${Math.min(100, summary.ownerView.totalOwnerCosts > 0 ? (summary.totalRevenueCurrentMonthUsd / summary.ownerView.totalOwnerCosts) * 100 : 0)}%`,
+                }}
+              />
             </div>
             <div className="mt-1 flex items-center justify-between text-[10px] text-gray-400">
               <span>$0</span>
               <span>Breakeven: {formatUsd(summary.ownerView.totalOwnerCosts)}</span>
             </div>
-            <div className="mt-2 flex items-center gap-4 text-xs">
-              <span className="flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                {summary.ownerView.activePayingUsers} pagando
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-brand-teal" />
-                {summary.ownerView.trialUsers} trial
-              </span>
-              <span className={`ml-auto font-semibold ${summary.ownerView.netProfitAfterDev >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                {summary.ownerView.netProfitAfterDev >= 0 ? 'Profit' : 'Deficit'}: {formatUsd(Math.abs(summary.ownerView.netProfitAfterDev))}
-              </span>
-            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Golden Record por Plan */}
       {planGoldenRecord.length > 0 && (
