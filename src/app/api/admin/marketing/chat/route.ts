@@ -1,10 +1,9 @@
 import { streamText } from 'ai'
 import { NextResponse } from 'next/server'
-import { anthropic } from '@ai-sdk/anthropic'
 import { requireFinancialAdmin } from '@/lib/admin/require-financial-admin'
 import { createClient } from '@/lib/supabase/server'
 import { AI_CONFIG } from '@/lib/ai/anthropic'
-import { ADVANCED_AGENT_MODEL_ID } from '@/lib/ai/agent-models'
+import { defaultModel, DEFAULT_MODEL_ID } from '@/lib/ai/anthropic'
 import { buildMarketingPrompt } from '@/lib/ai/prompts/marketing-strategist'
 import type { MarketingMode } from '@/lib/ai/prompts/marketing-strategist'
 import { formatChatErrorResponse } from '@/lib/ai/chat-errors'
@@ -23,10 +22,22 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { threadId, message, mode = 'brand' } = body as {
-      threadId: string
-      message: string
-      mode?: string
+
+    // Support both direct { threadId, message } and useChat format { messages: [...] }
+    const threadId: string = body.threadId ?? ''
+    let message: string = body.message ?? ''
+    const mode: string = body.mode ?? 'brand'
+
+    // useChat/DefaultChatTransport sends messages array — extract last user message
+    if (!message && Array.isArray(body.messages)) {
+      const lastUser = [...body.messages].reverse().find((m: { role: string }) => m.role === 'user')
+      if (lastUser) {
+        message = typeof lastUser.content === 'string'
+          ? lastUser.content
+          : Array.isArray(lastUser.content)
+            ? lastUser.content.map((p: { text?: string }) => p.text ?? '').join('')
+            : ''
+      }
     }
 
     if (!threadId || !message?.trim()) {
@@ -86,7 +97,7 @@ export async function POST(request: Request) {
     ]
 
     const systemPrompt = buildMarketingPrompt(activeMode)
-    const model = anthropic(ADVANCED_AGENT_MODEL_ID)
+    const model = defaultModel
 
     const result = streamText({
       model,
@@ -121,7 +132,7 @@ export async function POST(request: Request) {
           userId: auth.userId,
           projectId: null,
           eventType: 'agent_chat',
-          model: ADVANCED_AGENT_MODEL_ID,
+          model: DEFAULT_MODEL_ID,
           usage: { inputTokens, outputTokens },
         })
       },
