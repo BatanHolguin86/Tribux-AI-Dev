@@ -136,6 +136,9 @@ export function FinanceOverviewTable() {
   const [editingCosts, setEditingCosts] = useState(false)
   const [opCosts, setOpCosts] = useState<OperationalCost[]>([])
   const [savingCost, setSavingCost] = useState<string | null>(null)
+  const [editingInvestment, setEditingInvestment] = useState(false)
+  const [newCostLabel, setNewCostLabel] = useState('')
+  const [addingCost, setAddingCost] = useState(false)
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -174,6 +177,34 @@ export function FinanceOverviewTable() {
     if (toMonth) p.set('to', toMonth)
     const res = await fetch(`/api/admin/finance/overview${p.toString() ? `?${p.toString()}` : ''}`)
     if (res.ok) setData(await res.json())
+  }
+
+  async function addNewCost(label: string, isInvestment: boolean) {
+    if (!label.trim()) return
+    const id = label.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_')
+    const supabaseRes = await fetch('/api/admin/finance/costs', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, monthly_usd: 0 }),
+    })
+    // If cost doesn't exist, need to insert via a different approach
+    // Use the same endpoint but with upsert logic
+    if (!supabaseRes.ok) {
+      // Try creating it
+      await fetch('/api/admin/finance/costs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, label: label.trim(), description: isInvestment ? 'Inversion personal' : 'Costo operativo', monthly_usd: 0 }),
+      })
+    }
+    // Refresh data
+    const p = new URLSearchParams()
+    if (fromMonth) p.set('from', fromMonth)
+    if (toMonth) p.set('to', toMonth)
+    const res = await fetch(`/api/admin/finance/overview${p.toString() ? `?${p.toString()}` : ''}`)
+    if (res.ok) setData(await res.json())
+    setNewCostLabel('')
+    setAddingCost(false)
   }
 
   if (error) {
@@ -444,37 +475,96 @@ export function FinanceOverviewTable() {
       </div>
 
       {/* Founder Investment — SEPARATE from P&L */}
-      {investmentItems.length > 0 && (
-        <div className="rounded-xl border border-purple-200 bg-purple-50/30 dark:border-purple-800/30 dark:bg-purple-900/10 p-5">
-          <div className="flex items-center gap-2 mb-4">
+      <div className="rounded-xl border border-purple-200 bg-purple-50/30 dark:border-purple-800/30 dark:bg-purple-900/10 p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
             <span className="text-lg">👤</span>
             <div>
               <h3 className="text-sm font-semibold text-purple-800 dark:text-purple-300">Tu inversion personal</h3>
               <p className="text-[11px] text-purple-600/60 dark:text-purple-400/60">
-                Costos que TU pagas como fundador — NO afectan el P&L operativo del producto
+                NO afecta el P&L operativo
               </p>
             </div>
           </div>
-          <div className="space-y-2">
-            {investmentItems.map((cost) => (
-              <div key={cost.id} className="flex items-center justify-between rounded-lg bg-white/60 px-4 py-2.5 dark:bg-gray-900/40">
-                <div className="flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-sm dark:bg-purple-900/30">💻</span>
-                  <div>
-                    <p className="text-sm font-medium text-purple-800 dark:text-purple-300">{cost.label}</p>
-                    <p className="text-[10px] text-purple-600/60 dark:text-purple-400/60">{cost.description}</p>
-                  </div>
-                </div>
-                <span className="text-base font-bold tabular-nums text-purple-800 dark:text-purple-300">{formatUsd(cost.monthlyUsd)}/mes</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 rounded-lg bg-purple-100/50 px-4 py-2 text-[11px] text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
-            Este costo es para construir Tribux (desarrollo con Claude Code). Cuando el producto genere suficiente revenue, esta inversion se paga sola.
-            Necesitas <strong>{Math.ceil(totalInvestment / 49)} usuarios Starter</strong> solo para cubrir tu inversion personal (sin contar costos operativos).
-          </div>
+          <button
+            onClick={() => setEditingInvestment(!editingInvestment)}
+            className="text-[11px] font-medium text-purple-600 hover:underline dark:text-purple-400"
+          >
+            {editingInvestment ? 'Listo' : 'Editar'}
+          </button>
         </div>
-      )}
+        <div className="space-y-2">
+          {investmentItems.map((cost) => (
+            <div key={cost.id} className="flex items-center justify-between rounded-lg bg-white/60 px-4 py-2.5 dark:bg-gray-900/40">
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-sm dark:bg-purple-900/30">💻</span>
+                <div>
+                  <p className="text-sm font-medium text-purple-800 dark:text-purple-300">{cost.label}</p>
+                  <p className="text-[10px] text-purple-600/60 dark:text-purple-400/60">{cost.description}</p>
+                </div>
+              </div>
+              {editingInvestment ? (
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-purple-400">$</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    defaultValue={cost.monthlyUsd}
+                    onBlur={(e) => {
+                      const val = parseFloat(e.target.value) || 0
+                      if (val !== cost.monthlyUsd) void saveOpCost(cost.id, val)
+                    }}
+                    className="w-20 rounded-lg border border-purple-200 bg-white px-2 py-1.5 text-right text-sm font-bold tabular-nums dark:border-purple-800 dark:bg-gray-900 dark:text-white"
+                  />
+                  {savingCost === cost.id && <span className="text-[10px] text-purple-500">✓</span>}
+                </div>
+              ) : (
+                <span className="text-base font-bold tabular-nums text-purple-800 dark:text-purple-300">{formatUsd(cost.monthlyUsd)}/mes</span>
+              )}
+            </div>
+          ))}
+
+          {/* Add new investment cost */}
+          {editingInvestment && (
+            addingCost ? (
+              <div className="flex items-center gap-2 rounded-lg border border-dashed border-purple-300 bg-white/60 px-4 py-2.5 dark:border-purple-700 dark:bg-gray-900/40">
+                <input
+                  type="text"
+                  value={newCostLabel}
+                  onChange={(e) => setNewCostLabel(e.target.value)}
+                  placeholder="Nombre del costo..."
+                  className="flex-1 rounded-lg border border-purple-200 bg-white px-2 py-1.5 text-sm dark:border-purple-800 dark:bg-gray-900 dark:text-white"
+                  autoFocus
+                />
+                <button
+                  onClick={() => void addNewCost(newCostLabel, true)}
+                  disabled={!newCostLabel.trim()}
+                  className="rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-40"
+                >
+                  Agregar
+                </button>
+                <button onClick={() => { setAddingCost(false); setNewCostLabel('') }} className="text-xs text-gray-400">
+                  Cancelar
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAddingCost(true)}
+                className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-purple-300 py-2 text-xs font-medium text-purple-500 hover:bg-purple-50 dark:border-purple-700 dark:hover:bg-purple-900/20"
+              >
+                + Agregar costo personal
+              </button>
+            )
+          )}
+        </div>
+
+        {totalInvestment > 0 && (
+          <div className="mt-3 rounded-lg bg-purple-100/50 px-4 py-2 text-[11px] text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
+            Total: <strong>{formatUsd(totalInvestment)}/mes</strong> — Necesitas <strong>{Math.ceil(totalInvestment / 49)} usuarios Starter</strong> para cubrirlo.
+          </div>
+        )}
+      </div>
 
       {/* Golden Record por Plan */}
       {planGoldenRecord.length > 0 && (
