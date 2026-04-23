@@ -337,64 +337,54 @@ export function FinanceOverviewTable() {
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-red-500 dark:text-red-400">Costos</p>
                 <button
-                  onClick={() => { void loadOpCosts(); setEditingCosts(!editingCosts) }}
+                  onClick={() => setEditingCosts(!editingCosts)}
                   className="text-[11px] font-medium text-brand-teal hover:underline"
                 >
-                  {editingCosts ? 'Cerrar' : 'Editar costos'}
+                  {editingCosts ? 'Listo' : 'Editar'}
                 </button>
               </div>
               <div className="space-y-3">
-                {operationalItems.map((cost) => (
-                  <div key={cost.id} className={`flex items-center gap-3 ${cost.monthlyUsd > 0 ? '' : 'opacity-40'}`}>
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-sm dark:bg-gray-800">
-                      {cost.id === 'supabase' ? '🗄️' : cost.id === 'vercel' ? '▲' : cost.id === 'domain' ? '🌐' : cost.id === 'sentry' ? '🔍' : cost.id === 'resend' ? '✉️' : cost.id === 'github' ? '📦' : cost.id === 'stripe' ? '💳' : cost.id === 'anthropic_platform' ? '🤖' : '⚙️'}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{cost.label}</p>
-                      <p className="text-[11px] text-gray-400">{cost.description}</p>
-                    </div>
-                    <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(cost.monthlyUsd)}</span>
-                  </div>
-                ))}
-                {/* IA variable cost (automatic) */}
-                <div className="flex items-center gap-3 rounded-xl bg-brand-teal/5 px-3 py-2 dark:bg-brand-primary/10">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-teal/10 text-sm">🤖</span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-brand-primary dark:text-brand-teal">IA producto</p>
-                    <p className="text-[11px] text-gray-400">Consumo de tus usuarios (automatico)</p>
-                  </div>
-                  <span className="text-base font-bold tabular-nums text-brand-primary dark:text-brand-teal">{formatUsd(summary.totalCostCurrentMonthUsd)}</span>
-                </div>
-              </div>
-              {/* Inline edit form */}
-              {editingCosts && opCosts.length > 0 && (
-                <div className="mt-3 rounded-xl border border-brand-teal/20 bg-brand-teal/5 p-4 dark:bg-brand-primary/10">
-                  <p className="mb-3 text-xs font-semibold text-brand-primary dark:text-brand-teal">Editar costos mensuales</p>
-                  <div className="space-y-2">
-                    {opCosts.map((cost) => (
-                      <div key={cost.id} className="flex items-center gap-3">
-                        <span className="min-w-[100px] text-xs text-gray-600 dark:text-gray-400">{cost.label}</span>
+                {operationalItems.map((cost) => {
+                  const icon = cost.id === 'supabase' ? '🗄️' : cost.id === 'vercel' ? '▲' : cost.id === 'domain' ? '🌐' : cost.id === 'sentry' ? '🔍' : cost.id === 'resend' ? '✉️' : cost.id === 'github' ? '📦' : cost.id === 'stripe' ? '💳' : cost.id === 'anthropic_platform' ? '🤖' : '⚙️'
+                  return (
+                    <div key={cost.id} className={`flex items-center gap-3 ${cost.monthlyUsd > 0 ? '' : 'opacity-40'}`}>
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-sm dark:bg-gray-800">{icon}</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{cost.label}</p>
+                        <p className="text-[11px] text-gray-400">{cost.description}</p>
+                      </div>
+                      {editingCosts ? (
                         <div className="flex items-center gap-1">
                           <span className="text-xs text-gray-400">$</span>
                           <input
                             type="number"
                             min="0"
                             step="0.01"
-                            defaultValue={cost.monthly_usd}
+                            defaultValue={cost.monthlyUsd}
                             onBlur={(e) => {
                               const val = parseFloat(e.target.value) || 0
-                              if (val !== cost.monthly_usd) void saveOpCost(cost.id, val)
+                              if (val !== cost.monthlyUsd) void saveOpCost(cost.id, val)
                             }}
-                            className="w-20 rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-right text-xs tabular-nums dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                            className="w-20 rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-right text-sm font-bold tabular-nums dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                           />
+                          {savingCost === cost.id && <span className="text-[10px] text-brand-teal">✓</span>}
                         </div>
-                        {savingCost === cost.id && <span className="text-[10px] text-brand-teal">Guardando...</span>}
-                      </div>
-                    ))}
+                      ) : (
+                        <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(cost.monthlyUsd)}</span>
+                      )}
+                    </div>
+                  )
+                })}
+                {/* IA variable cost (automatic — not editable) */}
+                <div className="flex items-center gap-3 rounded-xl bg-brand-teal/5 px-3 py-2 dark:bg-brand-primary/10">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-teal/10 text-sm">🤖</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-brand-primary dark:text-brand-teal">IA producto</p>
+                    <p className="text-[11px] text-gray-400">Automatico (ai_usage_events)</p>
                   </div>
-                  <p className="mt-2 text-[10px] text-gray-400">Cambia el valor y haz clic fuera para guardar. Se actualiza el P&L automaticamente.</p>
+                  <span className="text-base font-bold tabular-nums text-brand-primary dark:text-brand-teal">{formatUsd(summary.totalCostCurrentMonthUsd)}</span>
                 </div>
-              )}
+              </div>
 
               <div className="mt-4 flex items-center justify-between rounded-xl bg-red-50 px-5 py-3.5 dark:bg-red-900/10">
                 <span className="text-sm font-bold text-red-700 dark:text-red-400">Total costos operativos</span>
