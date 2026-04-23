@@ -193,6 +193,13 @@ export function FinanceOverviewTable() {
   }
 
   const { summary, users, planGoldenRecord = [], operationalCosts: apiOpCosts = [] } = data
+
+  // Separate operational costs (affect P&L) from founder investment (personal)
+  const INVESTMENT_IDS = new Set(['claude_code'])
+  const operationalItems = apiOpCosts.filter((c) => !INVESTMENT_IDS.has(c.id))
+  const investmentItems = apiOpCosts.filter((c) => INVESTMENT_IDS.has(c.id))
+  const totalOperationalFixed = operationalItems.reduce((s, c) => s + c.monthlyUsd, 0) * (summary.rangeMonths ?? 1)
+  const totalInvestment = investmentItems.reduce((s, c) => s + c.monthlyUsd, 0) * (summary.rangeMonths ?? 1)
   const periodLabel = summary.periodStart && summary.periodEnd && summary.periodStart !== summary.periodEnd
     ? `${summary.periodStart} a ${summary.periodEnd}`
     : summary.periodStart ?? new Date().toISOString().slice(0, 7)
@@ -248,34 +255,30 @@ export function FinanceOverviewTable() {
         </div>
       </div>
 
-      {/* KPI cards */}
+      {/* KPI cards — operational only (no founder investment) */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
-          label="Ingresos del mes"
+          label="Revenue"
           value={formatUsd(summary.totalRevenueCurrentMonthUsd)}
-          subtitle={`${summary.totalUsers} usuario${summary.totalUsers !== 1 ? 's' : ''}`}
+          subtitle={`${summary.ownerView?.activePayingUsers ?? 0} pagando · ${summary.ownerView?.trialUsers ?? 0} trial`}
           variant="revenue"
         />
         <KpiCard
-          label="Costos totales"
-          value={formatUsd(summary.totalCostsUsd)}
-          subtitle={`IA ${formatUsd(summary.totalCostCurrentMonthUsd)} + Infra ${formatUsd(summary.totalInfraCostUsd)}`}
+          label="Costo operativo"
+          value={formatUsd(totalOperationalFixed + summary.totalCostCurrentMonthUsd)}
+          subtitle={`IA ${formatUsd(summary.totalCostCurrentMonthUsd)} + Infra ${formatUsd(totalOperationalFixed)}`}
           variant="cost"
         />
         <KpiCard
-          label="Ganancia neta"
-          value={formatUsd(summary.netProfitUsd)}
-          subtitle={`Margen: ${marginPct}%`}
+          label="Profit operativo"
+          value={formatUsd(summary.totalRevenueCurrentMonthUsd - totalOperationalFixed - summary.totalCostCurrentMonthUsd)}
+          subtitle={`Margen: ${summary.totalRevenueCurrentMonthUsd > 0 ? Math.round(((summary.totalRevenueCurrentMonthUsd - totalOperationalFixed - summary.totalCostCurrentMonthUsd) / summary.totalRevenueCurrentMonthUsd) * 100) : 0}%`}
           variant="profit"
         />
         <KpiCard
-          label="Costo IA mes anterior"
-          value={formatUsd(summary.totalCostPreviousMonthUsd)}
-          subtitle={
-            summary.totalCostPreviousMonthUsd > 0
-              ? `${summary.totalCostCurrentMonthUsd > summary.totalCostPreviousMonthUsd ? '+' : ''}${(((summary.totalCostCurrentMonthUsd - summary.totalCostPreviousMonthUsd) / summary.totalCostPreviousMonthUsd) * 100).toFixed(0)}% vs actual`
-              : 'Sin datos previos'
-          }
+          label="Tu inversion (personal)"
+          value={formatUsd(totalInvestment)}
+          subtitle={investmentItems.map((c) => c.label).join(', ') || 'Sin costos personales'}
         />
       </div>
 
@@ -284,10 +287,10 @@ export function FinanceOverviewTable() {
         {/* Header */}
         <div className="border-b border-gray-100 bg-[#F8FAFC] px-6 py-4 dark:border-gray-800 dark:bg-gray-800/50">
           <h3 className="font-display text-sm font-bold text-brand-primary dark:text-white">
-            P&L del Mes
+            P&L Operativo
           </h3>
           <p className="mt-0.5 text-[11px] text-brand-muted">
-            Costos operativos vs ingresos — {periodLabel}
+            Solo costos de operar Tribux (lo que pagas para que funcione el producto) — {periodLabel}
           </p>
         </div>
 
@@ -341,10 +344,10 @@ export function FinanceOverviewTable() {
                 </button>
               </div>
               <div className="space-y-3">
-                {apiOpCosts.map((cost) => (
+                {operationalItems.map((cost) => (
                   <div key={cost.id} className={`flex items-center gap-3 ${cost.monthlyUsd > 0 ? '' : 'opacity-40'}`}>
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-sm dark:bg-gray-800">
-                      {cost.id === 'supabase' ? '🗄️' : cost.id === 'vercel' ? '▲' : cost.id === 'domain' ? '🌐' : cost.id === 'sentry' ? '🔍' : cost.id === 'resend' ? '✉️' : cost.id === 'github' ? '📦' : cost.id === 'stripe' ? '💳' : cost.id === 'claude_code' ? '💻' : cost.id === 'anthropic_platform' ? '🤖' : '⚙️'}
+                      {cost.id === 'supabase' ? '🗄️' : cost.id === 'vercel' ? '▲' : cost.id === 'domain' ? '🌐' : cost.id === 'sentry' ? '🔍' : cost.id === 'resend' ? '✉️' : cost.id === 'github' ? '📦' : cost.id === 'stripe' ? '💳' : cost.id === 'anthropic_platform' ? '🤖' : '⚙️'}
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{cost.label}</p>
@@ -394,54 +397,94 @@ export function FinanceOverviewTable() {
               )}
 
               <div className="mt-4 flex items-center justify-between rounded-xl bg-red-50 px-5 py-3.5 dark:bg-red-900/10">
-                <span className="text-sm font-bold text-red-700 dark:text-red-400">Total costos</span>
-                <span className="font-display text-xl font-bold tabular-nums text-red-700 dark:text-red-400">{formatUsd(summary.totalCostsUsd)}</span>
+                <span className="text-sm font-bold text-red-700 dark:text-red-400">Total costos operativos</span>
+                <span className="font-display text-xl font-bold tabular-nums text-red-700 dark:text-red-400">{formatUsd(totalOperationalFixed + summary.totalCostCurrentMonthUsd)}</span>
               </div>
             </div>
           </div>
 
           {/* Result card — full width */}
-          <div className={`mt-6 flex items-center justify-between rounded-xl px-6 py-5 ${
-            summary.netProfitUsd >= 0
-              ? 'bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200 dark:from-emerald-900/10 dark:to-emerald-900/5 dark:border-emerald-800/30'
-              : 'bg-gradient-to-r from-red-50 to-red-100/50 border border-red-200 dark:from-red-900/10 dark:to-red-900/5 dark:border-red-800/30'
-          }`}>
-            <div>
-              <p className={`font-display text-base font-bold ${summary.netProfitUsd >= 0 ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-800 dark:text-red-300'}`}>
-                {summary.netProfitUsd >= 0 ? 'Profit del mes' : 'Deficit del mes'}
-              </p>
-              <p className="mt-0.5 text-[11px] text-gray-500">Ingresos - Costos operativos</p>
-            </div>
-            <span className={`font-display text-3xl font-bold tabular-nums ${summary.netProfitUsd >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'}`}>
-              {summary.netProfitUsd < 0 && '-'}{formatUsd(Math.abs(summary.netProfitUsd))}
-            </span>
-          </div>
-
-          {/* Breakeven bar */}
-          {summary.ownerView && (
-            <div className="mt-6 rounded-xl border border-gray-100 bg-[#F8FAFC] px-5 py-4 dark:border-gray-800 dark:bg-gray-800/30">
-              <div className="flex items-center justify-between text-xs mb-2">
-                <span className="font-medium text-gray-600 dark:text-gray-300">Breakeven</span>
-                <span className="text-gray-400">
-                  Necesitas <strong className="text-gray-600 dark:text-gray-300">{summary.ownerView.breakEvenUsers} Starter</strong> para cubrir costos
+          {(() => {
+            const opProfit = summary.totalRevenueCurrentMonthUsd - totalOperationalFixed - summary.totalCostCurrentMonthUsd
+            return (
+              <div className={`mt-6 flex items-center justify-between rounded-xl px-6 py-5 ${
+                opProfit >= 0
+                  ? 'bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200 dark:from-emerald-900/10 dark:to-emerald-900/5 dark:border-emerald-800/30'
+                  : 'bg-gradient-to-r from-red-50 to-red-100/50 border border-red-200 dark:from-red-900/10 dark:to-red-900/5 dark:border-red-800/30'
+              }`}>
+                <div>
+                  <p className={`font-display text-base font-bold ${opProfit >= 0 ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-800 dark:text-red-300'}`}>
+                    {opProfit >= 0 ? 'Profit operativo' : 'Deficit operativo'}
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-gray-500">Revenue - Costos de operar Tribux (sin tu inversion personal)</p>
+                </div>
+                <span className={`font-display text-3xl font-bold tabular-nums ${opProfit >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'}`}>
+                  {opProfit < 0 && '-'}{formatUsd(Math.abs(opProfit))}
                 </span>
               </div>
-              <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                <div
-                  className={`h-full rounded-full transition-all duration-700 ${
-                    summary.totalRevenueCurrentMonthUsd >= summary.totalCostsUsd ? 'bg-emerald-500' : 'bg-brand-amber'
-                  }`}
-                  style={{ width: `${Math.min(100, summary.totalCostsUsd > 0 ? (summary.totalRevenueCurrentMonthUsd / summary.totalCostsUsd) * 100 : 0)}%` }}
-                />
+            )
+          })()}
+
+          {/* Breakeven bar — operational only */}
+          {(() => {
+            const opTotal = totalOperationalFixed + summary.totalCostCurrentMonthUsd
+            const opPct = opTotal > 0 ? (summary.totalRevenueCurrentMonthUsd / opTotal) * 100 : 0
+            return (
+              <div className="mt-6 rounded-xl border border-gray-100 bg-[#F8FAFC] px-5 py-4 dark:border-gray-800 dark:bg-gray-800/30">
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <span className="font-medium text-gray-600 dark:text-gray-300">Breakeven operativo</span>
+                  <span className="text-gray-400">
+                    {formatUsd(summary.totalRevenueCurrentMonthUsd)} de {formatUsd(opTotal)}
+                  </span>
+                </div>
+                <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                  <div
+                    className={`h-full rounded-full transition-all duration-700 ${opPct >= 100 ? 'bg-emerald-500' : 'bg-brand-amber'}`}
+                    style={{ width: `${Math.min(100, opPct)}%` }}
+                  />
+                </div>
+                <div className="mt-1.5 flex items-center justify-between text-[10px] text-gray-400">
+                  <span>$0</span>
+                  <span>{Math.round(opPct)}%</span>
+                </div>
               </div>
-              <div className="mt-1.5 flex items-center justify-between text-[10px] text-gray-400">
-                <span>{formatUsd(summary.totalRevenueCurrentMonthUsd)} de {formatUsd(summary.totalCostsUsd)}</span>
-                <span>{Math.round(summary.totalCostsUsd > 0 ? (summary.totalRevenueCurrentMonthUsd / summary.totalCostsUsd) * 100 : 0)}%</span>
-              </div>
-            </div>
-          )}
+            )
+          })()}
         </div>
       </div>
+
+      {/* Founder Investment — SEPARATE from P&L */}
+      {investmentItems.length > 0 && (
+        <div className="rounded-xl border border-purple-200 bg-purple-50/30 dark:border-purple-800/30 dark:bg-purple-900/10 p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-lg">👤</span>
+            <div>
+              <h3 className="text-sm font-semibold text-purple-800 dark:text-purple-300">Tu inversion personal</h3>
+              <p className="text-[11px] text-purple-600/60 dark:text-purple-400/60">
+                Costos que TU pagas como fundador — NO afectan el P&L operativo del producto
+              </p>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {investmentItems.map((cost) => (
+              <div key={cost.id} className="flex items-center justify-between rounded-lg bg-white/60 px-4 py-2.5 dark:bg-gray-900/40">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-sm dark:bg-purple-900/30">💻</span>
+                  <div>
+                    <p className="text-sm font-medium text-purple-800 dark:text-purple-300">{cost.label}</p>
+                    <p className="text-[10px] text-purple-600/60 dark:text-purple-400/60">{cost.description}</p>
+                  </div>
+                </div>
+                <span className="text-base font-bold tabular-nums text-purple-800 dark:text-purple-300">{formatUsd(cost.monthlyUsd)}/mes</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 rounded-lg bg-purple-100/50 px-4 py-2 text-[11px] text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
+            Este costo es para construir Tribux (desarrollo con Claude Code). Cuando el producto genere suficiente revenue, esta inversion se paga sola.
+            Necesitas <strong>{Math.ceil(totalInvestment / 49)} usuarios Starter</strong> solo para cubrir tu inversion personal (sin contar costos operativos).
+          </div>
+        </div>
+      )}
 
       {/* Golden Record por Plan */}
       {planGoldenRecord.length > 0 && (
