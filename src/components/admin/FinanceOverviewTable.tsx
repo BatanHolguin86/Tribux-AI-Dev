@@ -138,7 +138,7 @@ export function FinanceOverviewTable() {
   const [savingCost, setSavingCost] = useState<string | null>(null)
   const [editingInvestment, setEditingInvestment] = useState(false)
   const [newCostLabel, setNewCostLabel] = useState('')
-  const [addingCost, setAddingCost] = useState(false)
+  const [addingCost, setAddingCost] = useState<'operational' | 'investment' | null>(null)
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -179,6 +179,19 @@ export function FinanceOverviewTable() {
     if (res.ok) setData(await res.json())
   }
 
+  async function deleteCost(id: string) {
+    await fetch('/api/admin/finance/costs', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+    const p = new URLSearchParams()
+    if (fromMonth) p.set('from', fromMonth)
+    if (toMonth) p.set('to', toMonth)
+    const res = await fetch(`/api/admin/finance/overview${p.toString() ? `?${p.toString()}` : ''}`)
+    if (res.ok) setData(await res.json())
+  }
+
   async function addNewCost(label: string, isInvestment: boolean) {
     if (!label.trim()) return
     const id = label.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_')
@@ -204,7 +217,7 @@ export function FinanceOverviewTable() {
     const res = await fetch(`/api/admin/finance/overview${p.toString() ? `?${p.toString()}` : ''}`)
     if (res.ok) setData(await res.json())
     setNewCostLabel('')
-    setAddingCost(false)
+    setAddingCost(null)
   }
 
   if (error) {
@@ -385,7 +398,7 @@ export function FinanceOverviewTable() {
                         <p className="text-[11px] text-gray-400">{cost.description}</p>
                       </div>
                       {editingCosts ? (
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                           <span className="text-xs text-gray-400">$</span>
                           <input
                             type="number"
@@ -399,6 +412,15 @@ export function FinanceOverviewTable() {
                             className="w-20 rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-right text-sm font-bold tabular-nums dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                           />
                           {savingCost === cost.id && <span className="text-[10px] text-brand-teal">✓</span>}
+                          <button
+                            onClick={() => { if (confirm(`Eliminar ${cost.label}?`)) void deleteCost(cost.id) }}
+                            className="rounded p-1 text-gray-300 hover:text-red-500"
+                            title="Eliminar"
+                          >
+                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
                         </div>
                       ) : (
                         <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">{formatUsd(cost.monthlyUsd)}</span>
@@ -406,6 +428,38 @@ export function FinanceOverviewTable() {
                     </div>
                   )
                 })}
+                {/* Add new operational cost */}
+                {editingCosts && (
+                  addingCost === 'operational' ? (
+                    <div className="flex items-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-2.5 dark:border-gray-600 dark:bg-gray-800">
+                      <input
+                        type="text"
+                        value={newCostLabel}
+                        onChange={(e) => setNewCostLabel(e.target.value)}
+                        placeholder="Nombre del servicio..."
+                        className="flex-1 rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                        autoFocus
+                        onKeyDown={(e) => { if (e.key === 'Enter') void addNewCost(newCostLabel, false) }}
+                      />
+                      <button
+                        onClick={() => void addNewCost(newCostLabel, false)}
+                        disabled={!newCostLabel.trim()}
+                        className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-medium text-white disabled:opacity-40"
+                      >
+                        Agregar
+                      </button>
+                      <button onClick={() => { setAddingCost(null); setNewCostLabel('') }} className="text-xs text-gray-400">✕</button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setAddingCost('operational')}
+                      className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-gray-300 py-2 text-xs font-medium text-gray-500 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
+                    >
+                      + Agregar costo operativo
+                    </button>
+                  )
+                )}
+
                 {/* IA variable cost (automatic — not editable) */}
                 <div className="flex items-center gap-3 rounded-xl bg-brand-teal/5 px-3 py-2 dark:bg-brand-primary/10">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-teal/10 text-sm">🤖</span>
@@ -504,7 +558,7 @@ export function FinanceOverviewTable() {
                 </div>
               </div>
               {editingInvestment ? (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <span className="text-xs text-purple-400">$</span>
                   <input
                     type="number"
@@ -518,6 +572,14 @@ export function FinanceOverviewTable() {
                     className="w-20 rounded-lg border border-purple-200 bg-white px-2 py-1.5 text-right text-sm font-bold tabular-nums dark:border-purple-800 dark:bg-gray-900 dark:text-white"
                   />
                   {savingCost === cost.id && <span className="text-[10px] text-purple-500">✓</span>}
+                  <button
+                    onClick={() => { if (confirm(`Eliminar ${cost.label}?`)) void deleteCost(cost.id) }}
+                    className="rounded p-1 text-purple-300 hover:text-red-500"
+                  >
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
               ) : (
                 <span className="text-base font-bold tabular-nums text-purple-800 dark:text-purple-300">{formatUsd(cost.monthlyUsd)}/mes</span>
@@ -527,7 +589,7 @@ export function FinanceOverviewTable() {
 
           {/* Add new investment cost */}
           {editingInvestment && (
-            addingCost ? (
+            addingCost === 'investment' ? (
               <div className="flex items-center gap-2 rounded-lg border border-dashed border-purple-300 bg-white/60 px-4 py-2.5 dark:border-purple-700 dark:bg-gray-900/40">
                 <input
                   type="text"
@@ -536,6 +598,7 @@ export function FinanceOverviewTable() {
                   placeholder="Nombre del costo..."
                   className="flex-1 rounded-lg border border-purple-200 bg-white px-2 py-1.5 text-sm dark:border-purple-800 dark:bg-gray-900 dark:text-white"
                   autoFocus
+                  onKeyDown={(e) => { if (e.key === 'Enter') void addNewCost(newCostLabel, true) }}
                 />
                 <button
                   onClick={() => void addNewCost(newCostLabel, true)}
@@ -544,13 +607,11 @@ export function FinanceOverviewTable() {
                 >
                   Agregar
                 </button>
-                <button onClick={() => { setAddingCost(false); setNewCostLabel('') }} className="text-xs text-gray-400">
-                  Cancelar
-                </button>
+                <button onClick={() => { setAddingCost(null); setNewCostLabel('') }} className="text-xs text-gray-400">✕</button>
               </div>
             ) : (
               <button
-                onClick={() => setAddingCost(true)}
+                onClick={() => setAddingCost('investment')}
                 className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-purple-300 py-2 text-xs font-medium text-purple-500 hover:bg-purple-50 dark:border-purple-700 dark:hover:bg-purple-900/20"
               >
                 + Agregar costo personal
