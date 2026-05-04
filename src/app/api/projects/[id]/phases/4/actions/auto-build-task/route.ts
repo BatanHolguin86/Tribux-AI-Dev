@@ -30,6 +30,20 @@ export async function POST(
     } = await supabase.auth.getUser()
     if (!user) return new Response('Unauthorized', { status: 401 })
 
+    // Server-side plan guard
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('plan, subscription_status, trial_ends_at')
+      .eq('id', user.id)
+      .single()
+
+    if (profile) {
+      const { canAccessPhase } = await import('@/lib/plans/guards')
+      if (!canAccessPhase(4, profile)) {
+        return Response.json({ error: 'Plan insuficiente para Phase 04' }, { status: 403 })
+      }
+    }
+
     // Quota check — block heavy AI ops if budget exceeded
     const quotaBlock = await checkHeavyQuota(user.id)
     if (quotaBlock) return quotaBlock

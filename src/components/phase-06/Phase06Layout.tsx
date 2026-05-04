@@ -138,23 +138,27 @@ export function Phase06Layout({ projectId, categories: initialCategories, initia
                   Tu equipo IA esta preparando todo para publicar tu producto.
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-3">
-                  {categories.map((cat) => (
-                    <div
-                      key={cat.key}
-                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${
-                        cat.status === 'completed' || cat.status === 'approved'
-                          ? 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-900/10'
-                          : 'border-gray-200 dark:border-gray-700'
-                      }`}
-                    >
-                      <span className={`text-sm ${cat.status === 'completed' || cat.status === 'approved' ? 'text-green-500' : 'text-gray-400'}`}>
-                        {cat.status === 'completed' || cat.status === 'approved' ? '✓' : '○'}
-                      </span>
-                      <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                        {founderLabel((CATEGORY_CONFIGS as Record<string, { title: string }>)[cat.key]?.title ?? cat.key, isFounder)}
-                      </span>
-                    </div>
-                  ))}
+                  {categories.map((cat) => {
+                    const isDone = cat.status === 'completed' || cat.status === 'approved'
+                    return (
+                      <button
+                        key={cat.key}
+                        onClick={() => handleToggle(cat.key)}
+                        className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left transition-colors ${
+                          isDone
+                            ? 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-900/10'
+                            : 'border-gray-200 hover:border-brand-teal/50 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <span className={`text-sm ${isDone ? 'text-green-500' : 'text-gray-400'}`}>
+                          {isDone ? '✓' : '○'}
+                        </span>
+                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                          {founderLabel((CATEGORY_CONFIGS as Record<string, { title: string }>)[cat.key]?.title ?? cat.key, isFounder)}
+                        </span>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 

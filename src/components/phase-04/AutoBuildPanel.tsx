@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useFounderMode } from '@/hooks/useFounderMode'
 import type { TaskWithFeature } from '@/types/task'
 
 type Stage =
@@ -105,6 +106,7 @@ function StepDot({
 }
 
 export function AutoBuildPanel({ projectId, task, isOpen, onClose, onTaskStatusChange }: Props) {
+  const { hideCode } = useFounderMode()
   const [stage, setStage] = useState<Stage>('plan-running')
   const [planText, setPlanText] = useState('')
   const [codeText, setCodeText] = useState('')
@@ -310,13 +312,13 @@ export function AutoBuildPanel({ projectId, task, isOpen, onClose, onTaskStatusC
             </div>
           )}
 
-          {/* Step 2: Generated code */}
+          {/* Step 2: Generated code (hidden for emprendedor persona) */}
           {codeText && (
             <div>
               <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400">
-                🤖 Código generado
+                🤖 {hideCode ? 'Implementacion en progreso' : 'Código generado'}
               </p>
-              {filePaths.length > 0 && (
+              {!hideCode && filePaths.length > 0 && (
                 <div className="mb-2 flex flex-wrap gap-1">
                   {filePaths.map((fp) => (
                     <span
@@ -328,12 +330,25 @@ export function AutoBuildPanel({ projectId, task, isOpen, onClose, onTaskStatusC
                   ))}
                 </div>
               )}
-              <div className="max-h-44 overflow-y-auto rounded-lg bg-gray-950 p-3">
-                <pre className="text-xs text-gray-300">{codeText.slice(-2500)}</pre>
-                {stage === 'code-running' && (
-                  <span className="mt-1 block animate-pulse text-xs text-brand-teal">▌</span>
-                )}
-              </div>
+              {hideCode ? (
+                <div className="rounded-lg border border-brand-teal/20 bg-brand-teal/5 p-4 text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {stage === 'code-running' ? 'La IA esta escribiendo el codigo de tu app...' : `Se generaron ${filePaths.length} archivo${filePaths.length !== 1 ? 's' : ''}`}
+                  </p>
+                  {stage === 'code-running' && (
+                    <div className="mt-2 h-1.5 w-32 mx-auto overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                      <div className="h-full w-1/2 animate-pulse rounded-full bg-brand-teal" />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="max-h-44 overflow-y-auto rounded-lg bg-gray-950 p-3">
+                  <pre className="text-xs text-gray-300">{codeText.slice(-2500)}</pre>
+                  {stage === 'code-running' && (
+                    <span className="mt-1 block animate-pulse text-xs text-brand-teal">▌</span>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

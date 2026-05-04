@@ -49,6 +49,20 @@ export async function POST(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new Response('Unauthorized', { status: 401 })
 
+  // Server-side plan guard
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('plan, subscription_status, trial_ends_at')
+    .eq('id', user.id)
+    .single()
+
+  if (profile) {
+    const { canAccessPhase } = await import('@/lib/plans/guards')
+    if (!canAccessPhase(3, profile)) {
+      return Response.json({ error: 'Plan insuficiente para Phase 03' }, { status: 403 })
+    }
+  }
+
   // Use admin client for project query to bypass RLS (user already verified above)
   const adminSupabase = await createAdminClient()
   const { data: project, error: projectError } = await adminSupabase
