@@ -27,13 +27,18 @@ export async function updateSession(request: NextRequest) {
     },
   )
 
-  // Use getSession (reads JWT locally, fast) instead of getUser (HTTP call to Supabase, slow).
-  // This prevents MIDDLEWARE_INVOCATION_TIMEOUT on Vercel Hobby (5s limit).
-  // Full user verification still happens in API routes via getUser().
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-  const user = session?.user ?? null
+  // Use getSession (reads JWT locally) with timeout protection.
+  // If Supabase is slow/paused (free tier), don't block the entire site.
+  let user = null
+  try {
+    const sessionPromise = supabase.auth.getSession()
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000))
+    const { data } = await Promise.race([sessionPromise, timeoutPromise]) as { data: { session: { user: unknown } | null } }
+    user = data?.session?.user ?? null
+  } catch {
+    // Supabase unreachable or timed out — let the request through without auth
+    return supabaseResponse
+  }
 
   // Public routes that don't require auth
   const publicPaths = ['/login', '/register', '/forgot-password', '/auth/callback', '/auth/reset-password', '/admin/login']
