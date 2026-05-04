@@ -30,10 +30,15 @@ const PersonaModeContext = createContext<PersonaModeContextType>({
  *
  * | Persona      | hideCode | hideChecklists | showSpecs | autoApproveArch |
  * |-------------|----------|----------------|-----------|-----------------|
- * | founder     | ✅       | ✅             | ❌        | ✅              |
  * | emprendedor | ✅       | ✅             | ❌        | ✅              |
- * | pm          | ✅       | ❌             | ✅        | ❌              |
+ * | founder     | ❌       | ❌             | ✅        | ✅              |
+ * | pm          | ❌       | ❌             | ✅        | ❌              |
  * | consultor   | ❌       | ❌             | ✅        | ❌              |
+ *
+ * Camila (emprendedor): vista simplificada, sin codigo ni checklists
+ * Santiago (founder): ve todo (codigo, checklists, specs) pero con auto-approve
+ * Valentina (pm): ve todo excepto auto-approve
+ * Rodrigo (consultor): ve todo, control total
  */
 export function FounderModeProvider({
   persona,
@@ -42,7 +47,8 @@ export function FounderModeProvider({
   persona: string | null
   children: React.ReactNode
 }) {
-  const isFounder = persona === 'founder' || persona === 'emprendedor' || persona === 'ceo'
+  const isEmprendedor = persona === 'emprendedor'
+  const isFounder = persona === 'founder' || persona === 'ceo' || isEmprendedor
   const isPM = persona === 'pm'
   const isConsultor = persona === 'consultor'
 
@@ -51,9 +57,11 @@ export function FounderModeProvider({
     isPM,
     isConsultor,
     persona,
-    hideCode: isFounder || isPM,
-    hideChecklists: isFounder,
-    showSpecs: isPM || isConsultor,
+    // Solo Camila (emprendedor) tiene vista simplificada
+    hideCode: isEmprendedor,
+    hideChecklists: isEmprendedor,
+    // Santiago, Valentina, Rodrigo ven specs. Camila no.
+    showSpecs: !isEmprendedor,
   }
 
   return (
